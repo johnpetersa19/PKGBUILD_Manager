@@ -1,6 +1,6 @@
 /target/
 /build/
 /pkg/
-/src/
+/src/PKGBUILD_Manager/
 *.pkg.tar.*
 Cargo.lock
