@@ -1,0 +1,24 @@
+pkgbase = pkgbuild-manager-git
+	pkgdesc = A Rust-based headless CLI tool and Nautilus context menu integration for PKGBUILD management
+	pkgver = v0.1.0.r0.9f9aa90
+	pkgrel = 1
+	url = https://github.com/john/PKGBUILD_Manager
+	install = pkgbuild-manager.install
+	arch = x86_64
+	license = GPL-3.0-or-later
+	makedepends = git
+	makedepends = meson
+	makedepends = ninja
+	makedepends = rust
+	makedepends = cargo
+	depends = pacman-contrib
+	depends = libnotify
+	optdepends = namcap: for auditing package metadata and structure
+	optdepends = shellcheck: for linting PKGBUILD bash code
+	optdepends = nautilus: for integration with Nautilus context menu
+	provides = pkgbuild-manager
+	conflicts = pkgbuild-manager
+	source = PKGBUILD_Manager::git+file:///home/john/Projects/PKGBUILD_Manager
+	sha256sums = SKIP
+
+pkgname = pkgbuild-manager-git
