@@ -1,0 +1,12 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
+src/actions/aur_push.rs
+src/actions/build.rs
+src/actions/checksums.rs
+src/actions/clean.rs
+src/actions/install.rs
+src/actions/mod.rs
+src/actions/namcap.rs
+src/actions/shellcheck.rs
+src/actions/srcinfo.rs
+src/main.rs

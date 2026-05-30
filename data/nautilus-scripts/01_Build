@@ -1,0 +1,13 @@
+#!/bin/bash
+# PKGBUILD Manager - Build package (makepkg)
+TARGET="${1:-.}"
+notify-send "PKGBUILD Manager" "Building package..."
+
+LOG_PATH="${TARGET}/makepkg-build.log"
+
+if pkgbuild_manager build "$TARGET" > "$LOG_PATH" 2>&1; then
+    rm -f "$LOG_PATH"
+    notify-send "PKGBUILD Manager" "✓ Build completed successfully!"
+else
+    notify-send -u critical "PKGBUILD Manager" "✗ Build failed! See: $(basename "$LOG_PATH")"
+fi

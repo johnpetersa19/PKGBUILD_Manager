@@ -1,0 +1,163 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: pkgbuild_manager 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-30 13:41-0300\n"
+"PO-Revision-Date: 2026-05-30 13:41-0300\n"
+"Last-Translator: John <john@example.com>\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Failed to resolve parent directory"
+msgstr "No se pudo resolver el directorio principal"
+
+msgid "Directory does not exist"
+msgstr "El directorio no existe"
+
+msgid "No PKGBUILD found in directory"
+msgstr "No se encontró ningún PKGBUILD en el directorio"
+
+msgid "Failed to read PKGBUILD info with makepkg --printsrcinfo"
+msgstr "No se pudo leer la información de PKGBUILD con makepkg --printsrcinfo"
+
+msgid "aur-push-tag requires a version tag argument"
+msgstr "aur-push-tag requiere un argumento de etiqueta de versión"
+
+msgid "Unknown command"
+msgstr "Comando desconocido"
+
+msgid "PKGBUILD Manager - CLI Tool"
+msgstr "Gestor de PKGBUILD - Herramienta de interfaz de comandos"
+
+msgid "Usage:"
+msgstr "Uso:"
+
+msgid "Build commands"
+msgstr "Comandos de compilación"
+
+msgid "Compile package (makepkg)"
+msgstr "Compilar paquete (makepkg)"
+
+msgid "Compile and clean srcdir (makepkg -c)"
+msgstr "Compilar y limpiar el directorio srcdir (makepkg -c)"
+
+msgid "Force recompile (makepkg -f)"
+msgstr "Forzar recompilación (makepkg -f)"
+
+msgid "Skip check() function (makepkg --nocheck)"
+msgstr "Omitir función check() (makepkg --nocheck)"
+
+msgid "Skip PGP signature check (makepkg --skippgpcheck)"
+msgstr "Omitir verificación de firma PGP (makepkg --skippgpcheck)"
+
+msgid "Compile with custom flags passed after path"
+msgstr "Compilar con flags personalizadas especificadas después de la ruta"
+
+msgid "Download and extract sources only (makepkg -o)"
+msgstr "Solo descargar y extraer fuentes (makepkg -o)"
+
+msgid "Install commands"
+msgstr "Comandos de instalación"
+
+msgid "Compile, install and resolve deps (makepkg -si)"
+msgstr "Compilar, instalar y resolver dependencias (makepkg -si)"
+
+msgid "Compile, install and clean srcdir (makepkg -sic)"
+msgstr "Compilar, instalar y limpiar el directorio srcdir (makepkg -sic)"
+
+msgid "Force compile and install (makepkg -sif)"
+msgstr "Forzar compilación e instalación (makepkg -sif)"
+
+msgid "Install and remove makedeps after (makepkg -sir)"
+msgstr "Instalar y eliminar dependencias de compilación después (makepkg -sir)"
+
+msgid "Install without running check()"
+msgstr "Instalar sin ejecutar la función check()"
+
+msgid "Install skipping PGP checks"
+msgstr "Instalar omitiendo verificaciones PGP"
+
+msgid "Install with custom flags passed after path"
+msgstr "Instalar con flags personalizadas especificadas después de la ruta"
+
+msgid "Package metadata commands"
+msgstr "Comandos de metadados del paquete"
+
+msgid "Update checksums in PKGBUILD (updpkgsums)"
+msgstr "Actualizar sumas de verificación en PKGBUILD (updpkgsums)"
+
+msgid "Generate checksums and print to stdout (makepkg -g)"
+msgstr "Generar sumas de verificación e imprimir en stdout (makepkg -g)"
+
+msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
+msgstr "Regenerar .SRCINFO (makepkg --printsrcinfo)"
+
+msgid "Audit commands"
+msgstr "Comandos de auditoría"
+
+msgid "Run namcap on PKGBUILD and built packages"
+msgstr "Ejecutar namcap en PKGBUILD y paquetes compilados"
+
+msgid "Run shellcheck on PKGBUILD"
+msgstr "Ejecutar shellcheck en PKGBUILD"
+
+msgid "Clean commands"
+msgstr "Comandos de limpieza"
+
+msgid "Clean srcdir with makepkg (makepkg -c)"
+msgstr "Limpiar el directorio srcdir con makepkg (makepkg -c)"
+
+msgid "Remove src/, pkg/ and built packages"
+msgstr "Eliminar src/, pkg/ y paquetes compilados"
+
+msgid "AUR/Git commands"
+msgstr "Comandos de AUR/Git"
+
+msgid "Stage, commit and push to AUR (auto message if not provided)"
+msgstr "Preparar cambios (stage), confirmar (commit) y subir a AUR (mensaje automático si no se especifica)"
+
+msgid "Push with version tag (e.g. 1.2.3-1)"
+msgstr "Subir cambios con etiqueta de versión (ej. 1.2.3-1)"
+
+msgid "Other"
+msgstr "Otros"
+
+msgid "Show this help message"
+msgstr "Mostrar este mensaje de ayuda"
+
+msgid "namcap not found. Install it with: sudo pacman -S namcap"
+msgstr "namcap no encontrado. Instale con: sudo pacman -S namcap"
+
+msgid "namcap failed with status"
+msgstr "namcap falló con estado"
+
+msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
+msgstr "shellcheck no encontrado. Instale con: sudo pacman -S shellcheck"
+
+msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
+msgstr "updpkgsums no encontrado. Instale con: sudo pacman -S pacman-contrib"
+
+msgid "makepkg -g failed:"
+msgstr "makepkg -g falló:"
+
+msgid "Removing src/ pkg/ and built packages in"
+msgstr "Eliminando src/, pkg/ y paquetes compilados en"
+
+msgid "Removed"
+msgstr "Eliminado"
+
+msgid "Note: nothing to commit or commit failed — continuing with push."
+msgstr "Nota: nada que confirmar o la confirmación falló — continuando con push."
+
+msgid "makepkg --printsrcinfo failed:"
+msgstr "makepkg --printsrcinfo falló:"
+
+msgid "Note: push to origin/master failed"
+msgstr "Nota: push a origin/master falló"
+
+msgid "Trying plain 'git push'..."
+msgstr "Intentando push simple ('git push')..."

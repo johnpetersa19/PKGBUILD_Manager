@@ -1,0 +1,13 @@
+#!/bin/bash
+# PKGBUILD Manager - Build and clean (makepkg -c)
+TARGET="${1:-.}"
+notify-send "PKGBUILD Manager" "Building package (with cleanup)..."
+
+LOG_PATH="${TARGET}/makepkg-build.log"
+
+if pkgbuild_manager build-clean "$TARGET" > "$LOG_PATH" 2>&1; then
+    rm -f "$LOG_PATH"
+    notify-send "PKGBUILD Manager" "✓ Build and cleanup completed!"
+else
+    notify-send -u critical "PKGBUILD Manager" "✗ Build failed! See: $(basename "$LOG_PATH")"
+fi
