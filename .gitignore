@@ -1,3 +1,6 @@
 /target/
 /build/
+/pkg/
+/src/
+*.pkg.tar.*
 Cargo.lock
