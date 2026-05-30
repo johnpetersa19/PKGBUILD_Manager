@@ -125,20 +125,23 @@ fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
     let base_scripts_dir = PathBuf::from(&home).join(".local/share/nautilus/scripts");
     let scripts_dir = base_scripts_dir.join("PKGBUILD");
 
-    // 1. Clean up old top-level symlinks if they exist to prevent clutter
+    // 1. Clean up all known old/stale top-level symlinks to prevent clutter.
+    //    This covers English, old Portuguese-prefixed, and clean display-name variants.
     let old_names = vec![
-        "00_Full Workflow", "00_Fluxo completo",
-        "01_Build", "01_Compilar",
-        "02_Install", "02_Instalar",
-        "02b_Build and Clean", "02b_Compilar e Limpar",
-        "03_Update Checksums", "03_Atualizar checksums",
-        "04_Update .SRCINFO", "04_Atualizar .SRCINFO",
-        "05_Namcap",
-        "05b_ShellCheck",
-        "06_Push AUR",
-        "07_Clean srcdir", "07_Limpar srcdir",
-        "07b_Clean Everything", "07b_Clean tudo", "07b_Limpar tudo",
-        "_run_in_terminal"
+        // English file names
+        "00_Full Workflow", "01_Build", "02_Install", "02b_Build and Clean",
+        "03_Update Checksums", "04_Update .SRCINFO", "05_Namcap", "05b_ShellCheck",
+        "06_Push AUR", "07_Clean srcdir", "07b_Clean Everything",
+        // Old Portuguese-prefixed names
+        "00_Fluxo completo", "01_Compilar", "02_Instalar", "02b_Compilar e Limpar",
+        "03_Atualizar checksums", "04_Atualizar .SRCINFO", "07_Limpar srcdir",
+        "07b_Clean tudo", "07b_Limpar tudo",
+        // Clean display-name variants (pt_BR)
+        "Fluxo Completo", "Compilar", "Instalar", "Compilar e Limpar",
+        "Atualizar Checksums", "Atualizar .SRCINFO", "Namcap", "ShellCheck",
+        "Enviar para AUR", "Limpar srcdir", "Limpar Tudo",
+        // Helper script
+        "_run_in_terminal",
     ];
     for name in old_names {
         let old_file = base_scripts_dir.join(name);

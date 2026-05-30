@@ -163,37 +163,37 @@ msgid "Trying plain 'git push'..."
 msgstr "Tentando push simples ('git push')..."
 
 msgid "00_Full Workflow"
-msgstr "00_Fluxo completo"
+msgstr "Fluxo Completo"
 
 msgid "01_Build"
-msgstr "01_Compilar"
+msgstr "Compilar"
 
 msgid "02_Install"
-msgstr "02_Instalar"
+msgstr "Instalar"
 
 msgid "02b_Build and Clean"
-msgstr "02b_Compilar e Limpar"
+msgstr "Compilar e Limpar"
 
 msgid "03_Update Checksums"
-msgstr "03_Atualizar checksums"
+msgstr "Atualizar Checksums"
 
 msgid "04_Update .SRCINFO"
-msgstr "04_Atualizar .SRCINFO"
+msgstr "Atualizar .SRCINFO"
 
 msgid "05_Namcap"
-msgstr "05_Namcap"
+msgstr "Namcap"
 
 msgid "05b_ShellCheck"
-msgstr "05b_ShellCheck"
+msgstr "ShellCheck"
 
 msgid "06_Push AUR"
-msgstr "06_Push AUR"
+msgstr "Enviar para AUR"
 
 msgid "07_Clean srcdir"
-msgstr "07_Limpar srcdir"
+msgstr "Limpar srcdir"
 
 msgid "07b_Clean Everything"
-msgstr "07b_Clean tudo"
+msgstr "Limpar Tudo"
 
 msgid "Symlink scripts to user directory with localization"
 msgstr "Criar links simbólicos dos scripts no diretório do usuário com localização"

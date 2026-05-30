@@ -1,7 +1,7 @@
 # Maintainer: John <john@example.com>
 pkgname=pkgbuild-manager-git
 _pkgname=PKGBUILD_Manager
-pkgver=v0.1.0.r0.9f9aa90
+pkgver=v0.1.0.r6.3e419a5
 pkgrel=1
 pkgdesc="A Rust-based headless CLI tool and Nautilus context menu integration for PKGBUILD management"
 arch=('x86_64')

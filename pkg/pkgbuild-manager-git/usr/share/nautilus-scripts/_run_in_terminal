@@ -1,0 +1,51 @@
+#!/bin/bash
+# _run_in_terminal: internal helper used by other PKGBUILD Manager scripts.
+# Usage: source _run_in_terminal && run_in_terminal "<command>"
+
+run_in_terminal() {
+    local cmd="$1"
+    local wait_key='echo; read -n1 -rsp "Press any key to exit..." && echo'
+
+    # 1. Official terminal emulators for Desktop Environments (DEs)
+    if command -v gnome-terminal &>/dev/null; then
+        gnome-terminal -- bash -c "$cmd; $wait_key"
+    elif command -v kgx &>/dev/null; then
+        kgx -e "bash -c '$cmd; $wait_key'"
+    elif command -v konsole &>/dev/null; then
+        konsole -e bash -c "$cmd; $wait_key"
+    elif command -v xfce4-terminal &>/dev/null; then
+        xfce4-terminal -e "bash -c '$cmd; $wait_key'"
+    elif command -v mate-terminal &>/dev/null; then
+        mate-terminal -e "bash -c '$cmd; $wait_key'"
+    elif command -v lxterminal &>/dev/null; then
+        lxterminal -e "bash -c '$cmd; $wait_key'"
+    elif command -v qterminal &>/dev/null; then
+        qterminal -e "bash -c '$cmd; $wait_key'"
+    elif command -v deepin-terminal &>/dev/null; then
+        deepin-terminal -e "bash -c '$cmd; $wait_key'"
+    elif command -v terminology &>/dev/null; then
+        terminology -e bash -c "$cmd; $wait_key"
+    elif command -v ukui-terminal &>/dev/null; then
+        ukui-terminal -e "bash -c '$cmd; $wait_key'"
+
+    # 2. Other popular and general-purpose terminal emulators
+    elif command -v tilix &>/dev/null; then
+        tilix -e "bash -c '$cmd; $wait_key'"
+    elif command -v alacritty &>/dev/null; then
+        alacritty -e bash -c "$cmd; $wait_key"
+    elif command -v kitty &>/dev/null; then
+        kitty bash -c "$cmd; $wait_key"
+    elif command -v wezterm &>/dev/null; then
+        wezterm start -- bash -c "$cmd; $wait_key"
+    elif command -v foot &>/dev/null; then
+        foot bash -c "$cmd; $wait_key"
+
+    # 3. Universal fallback
+    elif command -v xterm &>/dev/null; then
+        xterm -e "bash -c '$cmd; $wait_key'"
+    else
+        notify-send -u critical "PKGBUILD Manager" \
+            "No compatible terminal emulator found."
+        return 1
+    fi
+}

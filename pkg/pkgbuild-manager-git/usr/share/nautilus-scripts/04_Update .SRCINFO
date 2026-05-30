@@ -1,0 +1,10 @@
+#!/bin/bash
+# PKGBUILD Manager - Update .SRCINFO (makepkg --printsrcinfo)
+TARGET="${1:-.}"
+notify-send "PKGBUILD Manager" "Updating .SRCINFO..."
+
+if pkgbuild_manager srcinfo "$TARGET"; then
+    notify-send "PKGBUILD Manager" "✓ .SRCINFO updated successfully!"
+else
+    notify-send -u critical "PKGBUILD Manager" "✗ Failed to update .SRCINFO."
+fi

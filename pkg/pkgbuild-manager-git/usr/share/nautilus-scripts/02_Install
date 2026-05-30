@@ -1,0 +1,4 @@
+#!/bin/bash
+# PKGBUILD Manager - Instalar (makepkg -si)
+source "$(dirname "$0")/_run_in_terminal"
+run_in_terminal "pkgbuild_manager install '${1:-.}'"

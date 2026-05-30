@@ -1,0 +1,4 @@
+#!/bin/bash
+# PKGBUILD Manager - Push to AUR (git add, commit, push)
+source "$(dirname "$0")/_run_in_terminal"
+run_in_terminal "pkgbuild_manager aur-push '${1:-.}'"

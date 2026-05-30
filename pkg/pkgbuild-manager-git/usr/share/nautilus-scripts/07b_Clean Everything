@@ -1,0 +1,10 @@
+#!/bin/bash
+# PKGBUILD Manager - Clean EVERYTHING (src/, pkg/, compiled packages)
+TARGET="${1:-.}"
+notify-send "PKGBUILD Manager" "Cleaning everything (src/, pkg/, *.pkg.tar.*)..."
+
+if pkgbuild_manager clean-all "$TARGET"; then
+    notify-send "PKGBUILD Manager" "✓ Full cleanup completed!"
+else
+    notify-send -u critical "PKGBUILD Manager" "✗ Error during cleanup."
+fi
