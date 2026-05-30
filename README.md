@@ -57,27 +57,18 @@ sudo cp target/release/pkgbuild_manager /usr/local/bin/
 
 ### 2. Install Nautilus Scripts
 
-If you installed the project via **`makepkg` (the Arch package)**, the scripts are installed system-wide in `/usr/share/nautilus-scripts/`. Since Nautilus only looks for scripts in your user directory, you must symlink them:
+If you installed the project via **`makepkg` (the Arch package)**, you can automatically enable and translate the Nautilus scripts for your user by running:
 
 ```bash
-# Create directory if it doesn't exist
-mkdir -p ~/.local/share/nautilus/scripts/
-
-# Symlink all system-wide scripts to your user directory
-ln -sf /usr/share/nautilus-scripts/* ~/.local/share/nautilus/scripts/
+pkgbuild_manager setup-nautilus
 ```
 
-If you compiled manually (without `makepkg`) and want to install them for your user only, copy them directly from the source:
+This will create a `PKGBUILD` submenu inside Nautilus and automatically translate all commands to your system's language using `gettext`.
+
+If you compiled manually (without `makepkg`) and want to install them from the source folder, you can also run:
 
 ```bash
-# Create directory if it doesn't exist
-mkdir -p ~/.local/share/nautilus/scripts/
-
-# Copy all scripts from the project directory
-cp -r data/nautilus-scripts/* ~/.local/share/nautilus/scripts/
-
-# Make sure all scripts are executable
-chmod +x ~/.local/share/nautilus/scripts/*
+PKGBUILD_MANAGER_LOCALEDIR=build/po pkgbuild_manager setup-nautilus
 ```
 
 After installing or updating the scripts, restart Nautilus to apply changes:

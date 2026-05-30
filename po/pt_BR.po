@@ -161,3 +161,43 @@ msgstr "Nota: push para origin/master falhou"
 
 msgid "Trying plain 'git push'..."
 msgstr "Tentando push simples ('git push')..."
+
+msgid "00_Full Workflow"
+msgstr "00_Fluxo completo"
+
+msgid "01_Build"
+msgstr "01_Compilar"
+
+msgid "02_Install"
+msgstr "02_Instalar"
+
+msgid "02b_Build and Clean"
+msgstr "02b_Compilar e Limpar"
+
+msgid "03_Update Checksums"
+msgstr "03_Atualizar checksums"
+
+msgid "04_Update .SRCINFO"
+msgstr "04_Atualizar .SRCINFO"
+
+msgid "05_Namcap"
+msgstr "05_Namcap"
+
+msgid "05b_ShellCheck"
+msgstr "05b_ShellCheck"
+
+msgid "06_Push AUR"
+msgstr "06_Push AUR"
+
+msgid "07_Clean srcdir"
+msgstr "07_Limpar srcdir"
+
+msgid "07b_Clean Everything"
+msgstr "07b_Clean tudo"
+
+msgid "Symlink scripts to user directory with localization"
+msgstr "Criar links simbólicos dos scripts no diretório do usuário com localização"
+
+msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
+msgstr "Scripts do Nautilus configurados com sucesso sob o submenu 'PKGBUILD'."
+

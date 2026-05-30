@@ -28,7 +28,9 @@ use std::path::Path;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Set up gettext translations
-    let _ = bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+    let locale_dir = std::env::var("PKGBUILD_MANAGER_LOCALEDIR")
+        .unwrap_or_else(|_| LOCALEDIR.to_string());
+    let _ = bindtextdomain(GETTEXT_PACKAGE, &locale_dir);
     let _ = bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
     let _ = textdomain(GETTEXT_PACKAGE);
 
@@ -97,6 +99,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             actions::aur_push::run_with_tag(target_path, tag)?
         }
 
+        "setup-nautilus"   => {
+            setup_nautilus()?;
+        }
+
         "help" | "-h" | "--help" => {
             print_usage();
         }
@@ -107,6 +113,83 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
+    Ok(())
+}
+
+fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
+    use std::fs;
+    use std::os::unix::fs::symlink;
+    use std::path::PathBuf;
+
+    let home = std::env::var("HOME")?;
+    let base_scripts_dir = PathBuf::from(&home).join(".local/share/nautilus/scripts");
+    let scripts_dir = base_scripts_dir.join("PKGBUILD");
+
+    // 1. Clean up old top-level symlinks if they exist to prevent clutter
+    let old_names = vec![
+        "00_Full Workflow", "00_Fluxo completo",
+        "01_Build", "01_Compilar",
+        "02_Install", "02_Instalar",
+        "02b_Build and Clean", "02b_Compilar e Limpar",
+        "03_Update Checksums", "03_Atualizar checksums",
+        "04_Update .SRCINFO", "04_Atualizar .SRCINFO",
+        "05_Namcap",
+        "05b_ShellCheck",
+        "06_Push AUR",
+        "07_Clean srcdir", "07_Limpar srcdir",
+        "07b_Clean Everything", "07b_Clean tudo", "07b_Limpar tudo",
+        "_run_in_terminal"
+    ];
+    for name in old_names {
+        let old_file = base_scripts_dir.join(name);
+        if old_file.exists() || old_file.is_symlink() {
+            let _ = fs::remove_file(old_file);
+        }
+    }
+
+    // 2. Setup the PKGBUILD subdirectory
+    if scripts_dir.exists() {
+        let _ = fs::remove_dir_all(&scripts_dir);
+    }
+    fs::create_dir_all(&scripts_dir)?;
+
+    let mut system_scripts_dir = PathBuf::from("/usr/share/nautilus-scripts");
+    if !system_scripts_dir.exists() {
+        let local_dir = PathBuf::from("data/nautilus-scripts");
+        if local_dir.exists() {
+            system_scripts_dir = local_dir;
+        }
+    }
+
+    let scripts = vec![
+        ("00_Full Workflow", "00_Full Workflow"),
+        ("01_Build", "01_Build"),
+        ("02_Install", "02_Install"),
+        ("02b_Build and Clean", "02b_Build and Clean"),
+        ("03_Update Checksums", "03_Update Checksums"),
+        ("04_Update .SRCINFO", "04_Update .SRCINFO"),
+        ("05_Namcap", "05_Namcap"),
+        ("05b_ShellCheck", "05b_ShellCheck"),
+        ("06_Push AUR", "06_Push AUR"),
+        ("07_Clean srcdir", "07_Clean srcdir"),
+        ("07b_Clean Everything", "07b_Clean Everything"),
+        ("_run_in_terminal", "_run_in_terminal"),
+    ];
+
+    for (file_name, gettext_key) in scripts {
+        let src = system_scripts_dir.join(file_name);
+        if src.exists() {
+            let dest_name = if gettext_key == "_run_in_terminal" {
+                "_run_in_terminal".to_string()
+            } else {
+                gettext(gettext_key)
+            };
+            let dest = scripts_dir.join(dest_name);
+            let _ = symlink(&src, &dest);
+        }
+    }
+
+    println!("{}", gettext("Nautilus scripts successfully configured under 'PKGBUILD' submenu."));
     Ok(())
 }
 
@@ -151,5 +234,6 @@ fn print_usage() {
     println!("  aur-push-tag <ver> {}", gettext("Push with version tag (e.g. 1.2.3-1)"));
 
     println!("\n{}:", gettext("Other"));
+    println!("  setup-nautilus     {}", gettext("Symlink scripts to user directory with localization"));
     println!("  help               {}", gettext("Show this help message"));
 }
