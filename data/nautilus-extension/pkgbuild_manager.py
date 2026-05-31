@@ -16,22 +16,13 @@ gi.require_version("Nautilus", "4.1")
 from gi.repository import Nautilus, GObject
 
 # ---------------------------------------------------------------------------
-# Lazy gettext — initialised on first use so the GNOME session locale
-# (LANG / LC_MESSAGES) is already set when we look up translations.
+# Gettext setup
 # ---------------------------------------------------------------------------
 
 _DOMAIN = "pkgbuild_manager"
 _LOCALEDIR = os.environ.get("PKGBUILD_MANAGER_LOCALEDIR", "/usr/share/locale")
-_gettext_func = None
-
-def _tr(msgid: str) -> str:
-    """Translate msgid, initialising gettext on the first call."""
-    global _gettext_func
-    if _gettext_func is None:
-        t = gettext.translation(_DOMAIN, localedir=_LOCALEDIR, fallback=True)
-        _gettext_func = t.gettext
-    return _gettext_func(msgid)
-
+_t = gettext.translation(_DOMAIN, localedir=_LOCALEDIR, fallback=True)
+_ = _t.gettext
 
 # ---------------------------------------------------------------------------
 # Action list — (internal_script_name, gettext_msgid)
@@ -106,7 +97,7 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
             if not os.path.isfile(script_path) or not os.access(script_path, os.X_OK):
                 continue
 
-            label = _tr(msgid)
+            label = _(msgid)
 
             item = Nautilus.MenuItem(
                 name=f"PkgbuildManager::{script_name.replace(' ', '_')}",
@@ -114,6 +105,9 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
                 tip=f"Run {script_name}",
             )
 
+            # Each script receives the PKGBUILD path as $1 and runs in the
+            # background — feedback is delivered via notify-send by the script
+            # itself, so no terminal is needed here.
             def make_callback(spath, pkgpath):
                 def cb(_item):
                     subprocess.Popen(
