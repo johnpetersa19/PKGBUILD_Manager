@@ -1,14 +1,7 @@
 #!/bin/bash
-# PKGBUILD Manager - Full Workflow (build + install + clean)
+# PKGBUILD Manager - Full Workflow
 TARGET="$(dirname "$(realpath "${1:-.}")")" 
 source "$(dirname "$0")/_i18n"
+source "$(dirname "$0")/_run_in_terminal"
 notify-send "PKGBUILD Manager" "$MSG_FULL_WORKFLOW"
-
-LOG_PATH="${TARGET}/full_workflow.log"
-
-if pkgbuild_manager full-workflow "$TARGET" > "$LOG_PATH" 2>&1; then
-    rm -f "$LOG_PATH"
-    notify-send "PKGBUILD Manager" "$MSG_FULL_WORKFLOW_OK"
-else
-    notify-send -u critical "PKGBUILD Manager" "${MSG_FULL_WORKFLOW_FAIL}$(basename "$LOG_PATH")"
-fi
+run_in_terminal "pkgbuild_manager install '$TARGET'"
