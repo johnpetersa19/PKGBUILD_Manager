@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 14:00-0300\n"
+"POT-Creation-Date: 2026-05-31 15:30-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,13 +27,40 @@ msgstr ""
 msgid "02b_Build and Clean"
 msgstr ""
 
+msgid "08_Build Force"
+msgstr ""
+
+msgid "09_Build NoCheck"
+msgstr ""
+
+msgid "10_Build NoGPG"
+msgstr ""
+
+msgid "11_Fetch Sources"
+msgstr ""
+
 msgid "02_Install"
+msgstr ""
+
+msgid "12_Install Force"
+msgstr ""
+
+msgid "13_Install RmDeps"
+msgstr ""
+
+msgid "14_Install NoCheck"
+msgstr ""
+
+msgid "15_Install NoGPG"
 msgstr ""
 
 msgid "03_Update Checksums"
 msgstr ""
 
 msgid "04_Update .SRCINFO"
+msgstr ""
+
+msgid "16_Gen Checksums"
 msgstr ""
 
 msgid "05b_ShellCheck"
@@ -45,6 +72,9 @@ msgstr ""
 msgid "06_Push AUR"
 msgstr ""
 
+msgid "17_Push AUR Tag"
+msgstr ""
+
 msgid "07b_Clean Everything"
 msgstr ""
 
@@ -54,7 +84,7 @@ msgstr ""
 # ---------------------------------------------------------------------------
 # Settings panel (GTK app — src/settings/app.py)
 # ---------------------------------------------------------------------------
-msgid "PKGBUILD Manager — Menu Settings"
+msgid "PKGBUILD Manager \u2014 Menu Settings"
 msgstr ""
 
 msgid "Reset"
@@ -109,6 +139,42 @@ msgstr ""
 msgid "notify_build_fail"
 msgstr ""
 
+msgid "notify_build_force"
+msgstr ""
+
+msgid "notify_build_force_ok"
+msgstr ""
+
+msgid "notify_build_force_fail"
+msgstr ""
+
+msgid "notify_build_nocheck"
+msgstr ""
+
+msgid "notify_build_nocheck_ok"
+msgstr ""
+
+msgid "notify_build_nocheck_fail"
+msgstr ""
+
+msgid "notify_build_nogpg"
+msgstr ""
+
+msgid "notify_build_nogpg_ok"
+msgstr ""
+
+msgid "notify_build_nogpg_fail"
+msgstr ""
+
+msgid "notify_fetch_sources"
+msgstr ""
+
+msgid "notify_fetch_sources_ok"
+msgstr ""
+
+msgid "notify_fetch_sources_fail"
+msgstr ""
+
 msgid "notify_installing"
 msgstr ""
 
@@ -118,6 +184,42 @@ msgstr ""
 msgid "notify_install_fail"
 msgstr ""
 
+msgid "notify_install_force"
+msgstr ""
+
+msgid "notify_install_force_ok"
+msgstr ""
+
+msgid "notify_install_force_fail"
+msgstr ""
+
+msgid "notify_install_rmdeps"
+msgstr ""
+
+msgid "notify_install_rmdeps_ok"
+msgstr ""
+
+msgid "notify_install_rmdeps_fail"
+msgstr ""
+
+msgid "notify_install_nocheck"
+msgstr ""
+
+msgid "notify_install_nocheck_ok"
+msgstr ""
+
+msgid "notify_install_nocheck_fail"
+msgstr ""
+
+msgid "notify_install_nogpg"
+msgstr ""
+
+msgid "notify_install_nogpg_ok"
+msgstr ""
+
+msgid "notify_install_nogpg_fail"
+msgstr ""
+
 msgid "notify_checksums"
 msgstr ""
 
@@ -125,6 +227,15 @@ msgid "notify_checksums_ok"
 msgstr ""
 
 msgid "notify_checksums_fail"
+msgstr ""
+
+msgid "notify_genchecksums"
+msgstr ""
+
+msgid "notify_genchecksums_ok"
+msgstr ""
+
+msgid "notify_genchecksums_fail"
 msgstr ""
 
 msgid "notify_srcinfo"
@@ -167,6 +278,15 @@ msgid "notify_push_aur_ok"
 msgstr ""
 
 msgid "notify_push_aur_fail"
+msgstr ""
+
+msgid "notify_push_aur_tag"
+msgstr ""
+
+msgid "notify_push_aur_tag_ok"
+msgstr ""
+
+msgid "notify_push_aur_tag_fail"
 msgstr ""
 
 msgid "notify_clean_src"

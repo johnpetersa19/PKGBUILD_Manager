@@ -13,7 +13,6 @@ from gi.repository import Gtk, Adw, Gio
 
 import json
 import os
-import copy
 import subprocess
 import gettext
 from pathlib import Path
@@ -70,7 +69,7 @@ def _default_menu():
 
 def _all_actions():
     return [
-        # ── Build ─────────────────────────────────────────────────────────
+        # ── Build ───────────────────────────────────────────────────────
         {"id": "00_Full Workflow",       "label": _("00_Full Workflow")},
         {"id": "01_Build",               "label": _("01_Build")},
         {"id": "02b_Build and Clean",    "label": _("02b_Build and Clean")},
@@ -78,39 +77,43 @@ def _all_actions():
         {"id": "09_Build NoCheck",       "label": _("09_Build NoCheck")},
         {"id": "10_Build NoGPG",         "label": _("10_Build NoGPG")},
         {"id": "11_Fetch Sources",       "label": _("11_Fetch Sources")},
-        # ── Install ───────────────────────────────────────────────────────
+        # ── Install ─────────────────────────────────────────────────────
         {"id": "02_Install",             "label": _("02_Install")},
         {"id": "12_Install Force",       "label": _("12_Install Force")},
         {"id": "13_Install RmDeps",      "label": _("13_Install RmDeps")},
         {"id": "14_Install NoCheck",     "label": _("14_Install NoCheck")},
         {"id": "15_Install NoGPG",       "label": _("15_Install NoGPG")},
-        # ── Metadata ──────────────────────────────────────────────────────
+        # ── Metadata ─────────────────────────────────────────────────────
         {"id": "03_Update Checksums",    "label": _("03_Update Checksums")},
         {"id": "04_Update .SRCINFO",     "label": _("04_Update .SRCINFO")},
         {"id": "16_Gen Checksums",       "label": _("16_Gen Checksums")},
-        # ── Audit ─────────────────────────────────────────────────────────
+        # ── Audit ────────────────────────────────────────────────────────
         {"id": "05_Namcap",              "label": _("05_Namcap")},
         {"id": "05b_ShellCheck",         "label": _("05b_ShellCheck")},
-        # ── Git / AUR ─────────────────────────────────────────────────────
+        # ── Git / AUR ───────────────────────────────────────────────────
         {"id": "06_Push AUR",            "label": _("06_Push AUR")},
         {"id": "17_Push AUR Tag",        "label": _("17_Push AUR Tag")},
-        # ── Clean ─────────────────────────────────────────────────────────
+        # ── Clean ────────────────────────────────────────────────────────
         {"id": "07_Clean srcdir",        "label": _("07_Clean srcdir")},
         {"id": "07b_Clean Everything",   "label": _("07b_Clean Everything")},
     ]
 
 
 def load_config():
+    known_ids = {a["id"] for a in _all_actions()}
+    id_to_label = {a["id"]: a["label"] for a in _all_actions()}
+
     if CONFIG_FILE.exists():
         try:
             data = json.loads(CONFIG_FILE.read_text())
-            # Re-translate labels from known ids so saved configs also get
-            # translated on next load (if the user's locale changed).
-            id_to_label = {a["id"]: a["label"] for a in _all_actions()}
+            # Re-translate labels and discard any item whose id is no longer
+            # known (e.g. after a downgrade or config from an old version).
             for group in data:
-                for item in group.get("items", []):
-                    if item["id"] in id_to_label:
-                        item["label"] = id_to_label[item["id"]]
+                group["items"] = [
+                    {**item, "label": id_to_label.get(item["id"], item["label"])}
+                    for item in group.get("items", [])
+                    if item["id"] in known_ids
+                ]
             return data
         except Exception:
             pass
@@ -124,6 +127,17 @@ def save_config(data):
 
 
 def _notify_file_managers():
+    # Restart Nautilus in the background so new scripts become visible
+    # immediately without the user needing to manually close and reopen it.
+    # 'nautilus -q' quits all open Nautilus windows; the desktop/file manager
+    # daemon restarts automatically on next activation. No root required.
+    try:
+        subprocess.Popen(["nautilus", "-q"], close_fds=True)
+    except FileNotFoundError:
+        pass  # Nautilus not installed
+
+    # Dolphin: regenerate .desktop service files if the helper script exists
+    # and is executable by the current user (no sudo involved).
     regen = "/usr/share/pkgbuild-manager/regen-dolphin-desktop"
     if os.path.isfile(regen) and os.access(regen, os.X_OK):
         subprocess.Popen([regen], close_fds=True)
@@ -224,7 +238,6 @@ class SettingsApp(Adw.Application):
         name_entry = Gtk.Entry()
         name_entry.set_text(group["group"])
         name_entry.set_hexpand(True)
-        # Pass the group dict directly to avoid stale index captures
         name_entry.connect("changed", self._on_group_rename, group)
 
         del_btn = Gtk.Button(icon_name="user-trash-symbolic")
@@ -272,7 +285,6 @@ class SettingsApp(Adw.Application):
         label_entry = Gtk.Entry()
         label_entry.set_text(item["label"])
         label_entry.set_hexpand(True)
-        # Pass the item dict directly to avoid stale index captures
         label_entry.connect("changed", self._on_item_rename, item)
 
         up_btn = Gtk.Button(icon_name="go-up-symbolic")
@@ -299,7 +311,6 @@ class SettingsApp(Adw.Application):
     # --- Group callbacks ---
 
     def _on_group_rename(self, entry, group):
-        # Skip signals fired by set_text() during _render_groups() rebuild
         if self._rebuilding:
             return
         group["group"] = entry.get_text()
@@ -325,7 +336,6 @@ class SettingsApp(Adw.Application):
         self.menu_data[g_idx]["items"][i_idx]["enabled"] = state
 
     def _on_item_rename(self, entry, item):
-        # Skip signals fired by set_text() during _render_groups() rebuild
         if self._rebuilding:
             return
         item["label"] = entry.get_text()
@@ -342,7 +352,7 @@ class SettingsApp(Adw.Application):
         self._render_groups()
 
     def _on_add_item_dialog(self, _btn, g_idx):
-        # Show ALL actions — duplicates across groups are intentional.
+        # Always show ALL actions — duplicates across groups are intentional.
         available = _all_actions()
 
         dialog = Adw.Dialog()
@@ -353,7 +363,6 @@ class SettingsApp(Adw.Application):
         toolbar = Adw.ToolbarView()
         toolbar.add_top_bar(Adw.HeaderBar())
 
-        # Wrap list in a ScrolledWindow so all items are always reachable
         scroll = Gtk.ScrolledWindow(vexpand=True)
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
@@ -393,6 +402,7 @@ class SettingsApp(Adw.Application):
     # --- Save / Reset ---
 
     def _on_save(self, _btn):
+        # menu.json lives in XDG_CONFIG_HOME (~/.config/) — no root needed.
         save_config(self.menu_data)
         self.win.add_toast(Adw.Toast(title=_("Saved! Restart the file manager to apply.")))
 
