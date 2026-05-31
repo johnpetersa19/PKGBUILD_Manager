@@ -1,272 +1,144 @@
 #!/bin/bash
-# _i18n — centralised shell translations for PKGBUILD Manager scripts
-# Source this file at the top of every script:
+# _i18n — shell i18n helper for PKGBUILD Manager
+# Reads translations from the installed .po file for the current locale.
+# Source this at the top of every script:
 #   source "$(dirname "$0")/_i18n"
-# Then use the MSG_* variables for notify-send messages.
-# To add a new language: add an elif block matching the desired locale.
+#
+# To add a new language: create po/<lang>.po with the notify_* msgids
+# translated, run meson compile && meson install — no changes needed here.
 
-# Detect language from environment (same order as gettext)
+# ---------------------------------------------------------------------------
+# Detect locale (same priority order as gettext)
+# ---------------------------------------------------------------------------
 _LANG="${LANGUAGE:-${LC_ALL:-${LC_MESSAGES:-${LANG:-en}}}}"
-_LANG="${_LANG%%:*}"   # take only the first locale if LANGUAGE has colon-separated list
-_LANG="${_LANG%%.*}"   # strip encoding (e.g. pt_BR.UTF-8 → pt_BR)
+_LANG="${_LANG%%:*}"   # first entry if LANGUAGE has colon list
+_LANG="${_LANG%%.*}"   # strip encoding  (pt_BR.UTF-8 → pt_BR)
 
-case "$_LANG" in
-  pt_BR|pt)
-    MSG_BUILDING="Compilando pacote..."
-    MSG_BUILD_OK="✓ Compilação concluída com sucesso!"
-    MSG_BUILD_FAIL="✗ Compilação falhou! Veja: "
+# Candidates: exact match first, then language-only (pt_BR → pt)
+_LANG_SHORT="${_LANG%%_*}"
 
-    MSG_INSTALLING="Instalando pacote..."
-    MSG_INSTALL_OK="✓ Instalação concluída!"
-    MSG_INSTALL_FAIL="✗ Instalação falhou! Veja: "
+# ---------------------------------------------------------------------------
+# Locate the .po file: prefer installed system locale, fall back to repo
+# ---------------------------------------------------------------------------
+_SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_REPO_PO_DIR="$(cd "$_SCRIPTS_DIR/../../po" 2>/dev/null && pwd)"
 
-    MSG_CHECKSUMS="Atualizando checksums..."
-    MSG_CHECKSUMS_OK="✓ Checksums atualizados com sucesso!"
-    MSG_CHECKSUMS_FAIL="✗ Falha ao atualizar checksums! Veja: "
+_find_po() {
+    local lang="$1"
+    # 1. Installed alongside scripts (future packaging option)
+    local installed="/usr/share/pkgbuild-manager/i18n/${lang}.po"
+    [[ -f "$installed" ]] && { echo "$installed"; return; }
+    # 2. Repo po/ directory (dev / makepkg build tree)
+    local repo="${_REPO_PO_DIR}/${lang}.po"
+    [[ -f "$repo" ]] && { echo "$repo"; return; }
+    echo ""
+}
 
-    MSG_SRCINFO="Atualizando .SRCINFO..."
-    MSG_SRCINFO_OK="✓ .SRCINFO atualizado com sucesso!"
-    MSG_SRCINFO_FAIL="✗ Falha ao atualizar .SRCINFO! Veja: "
+_PO_FILE="$(_find_po "$_LANG")"
+[[ -z "$_PO_FILE" ]] && _PO_FILE="$(_find_po "$_LANG_SHORT")"
 
-    MSG_NAMCAP="Executando namcap..."
-    MSG_NAMCAP_WARN="⚠ Namcap concluído com avisos. Veja: "
-    MSG_NAMCAP_OK="✓ Namcap concluído! Nenhum aviso encontrado."
-    MSG_NAMCAP_FAIL="✗ Namcap falhou! Veja: "
+# ---------------------------------------------------------------------------
+# Parse a single msgid from the .po file
+# Returns the msgstr, or the msgid itself as fallback (English)
+# ---------------------------------------------------------------------------
+_getmsg() {
+    local msgid="$1"
+    local po="$2"
+    if [[ -z "$po" || ! -f "$po" ]]; then
+        # No .po found — return the English default embedded below
+        _en_fallback "$msgid"
+        return
+    fi
+    # awk: find the msgid line, grab the next non-empty msgstr
+    local result
+    result=$(awk -v id="$msgid" '
+        /^msgid "/ {
+            current = substr($0, 8, length($0)-8)
+        }
+        /^msgstr "/ && current == id {
+            val = substr($0, 9, length($0)-9)
+            if (val != "") { print val; exit }
+        }
+    ' "$po")
+    if [[ -z "$result" ]]; then
+        _en_fallback "$msgid"
+    else
+        # Unescape common .po escape sequences
+        printf '%b' "${result//\\"/\"}"
+    fi
+}
 
-    MSG_SHELLCHECK="Verificando com ShellCheck..."
-    MSG_SHELLCHECK_WARN="⚠ ShellCheck encontrou avisos. Veja: "
-    MSG_SHELLCHECK_OK="✓ ShellCheck: nenhum problema encontrado."
-    MSG_SHELLCHECK_FAIL="✗ ShellCheck falhou! Veja: "
+# English fallbacks — used when no .po is found or msgstr is empty
+_en_fallback() {
+    case "$1" in
+        notify_building)           echo "Building package..." ;;
+        notify_build_ok)           echo "✓ Build completed successfully!" ;;
+        notify_build_fail)         echo "✗ Build failed! See: " ;;
+        notify_installing)         echo "Installing package..." ;;
+        notify_install_ok)         echo "✓ Install completed!" ;;
+        notify_install_fail)       echo "✗ Install failed! See: " ;;
+        notify_checksums)          echo "Updating checksums..." ;;
+        notify_checksums_ok)       echo "✓ Checksums updated successfully!" ;;
+        notify_checksums_fail)     echo "✗ Failed to update checksums! See: " ;;
+        notify_srcinfo)            echo "Updating .SRCINFO..." ;;
+        notify_srcinfo_ok)         echo "✓ .SRCINFO updated successfully!" ;;
+        notify_srcinfo_fail)       echo "✗ Failed to update .SRCINFO! See: " ;;
+        notify_namcap)             echo "Running namcap..." ;;
+        notify_namcap_warn)        echo "⚠ Namcap finished with warnings. See: " ;;
+        notify_namcap_ok)          echo "✓ Namcap completed! No warnings found." ;;
+        notify_namcap_fail)        echo "✗ Namcap failed! See: " ;;
+        notify_shellcheck)         echo "Running ShellCheck..." ;;
+        notify_shellcheck_warn)    echo "⚠ ShellCheck found warnings. See: " ;;
+        notify_shellcheck_ok)      echo "✓ ShellCheck: no issues found." ;;
+        notify_shellcheck_fail)    echo "✗ ShellCheck failed! See: " ;;
+        notify_push_aur)           echo "Pushing to AUR..." ;;
+        notify_push_aur_ok)        echo "✓ Pushed to AUR successfully!" ;;
+        notify_push_aur_fail)      echo "✗ Failed to push to AUR! See: " ;;
+        notify_clean_src)          echo "Cleaning srcdir..." ;;
+        notify_clean_src_ok)       echo "✓ srcdir cleaned successfully!" ;;
+        notify_clean_src_fail)     echo "✗ Failed to clean srcdir! See: " ;;
+        notify_clean_all)          echo "Cleaning everything..." ;;
+        notify_clean_all_ok)       echo "✓ Everything cleaned successfully!" ;;
+        notify_clean_all_fail)     echo "✗ Failed to clean! See: " ;;
+        notify_full_workflow)      echo "Running full workflow..." ;;
+        notify_full_workflow_ok)   echo "✓ Full workflow completed!" ;;
+        notify_full_workflow_fail) echo "✗ Full workflow failed! See: " ;;
+        *)                         echo "$1" ;;
+    esac
+}
 
-    MSG_PUSH_AUR="Enviando para o AUR..."
-    MSG_PUSH_AUR_OK="✓ Enviado para o AUR com sucesso!"
-    MSG_PUSH_AUR_FAIL="✗ Falha ao enviar para o AUR! Veja: "
-
-    MSG_CLEAN_SRC="Limpando srcdir..."
-    MSG_CLEAN_SRC_OK="✓ srcdir limpo com sucesso!"
-    MSG_CLEAN_SRC_FAIL="✗ Falha ao limpar srcdir! Veja: "
-
-    MSG_CLEAN_ALL="Limpando tudo..."
-    MSG_CLEAN_ALL_OK="✓ Tudo limpo com sucesso!"
-    MSG_CLEAN_ALL_FAIL="✗ Falha ao limpar! Veja: "
-
-    MSG_FULL_WORKFLOW="Executando fluxo completo..."
-    MSG_FULL_WORKFLOW_OK="✓ Fluxo completo concluído!"
-    MSG_FULL_WORKFLOW_FAIL="✗ Fluxo completo falhou! Veja: "
-    ;;
-  es*)
-    MSG_BUILDING="Compilando paquete..."
-    MSG_BUILD_OK="✓ ¡Compilación completada con éxito!"
-    MSG_BUILD_FAIL="✗ ¡Compilación fallida! Ver: "
-
-    MSG_INSTALLING="Instalando paquete..."
-    MSG_INSTALL_OK="✓ ¡Instalación completada!"
-    MSG_INSTALL_FAIL="✗ ¡Instalación fallida! Ver: "
-
-    MSG_CHECKSUMS="Actualizando checksums..."
-    MSG_CHECKSUMS_OK="✓ ¡Checksums actualizados con éxito!"
-    MSG_CHECKSUMS_FAIL="✗ ¡Error al actualizar checksums! Ver: "
-
-    MSG_SRCINFO="Actualizando .SRCINFO..."
-    MSG_SRCINFO_OK="✓ ¡.SRCINFO actualizado con éxito!"
-    MSG_SRCINFO_FAIL="✗ ¡Error al actualizar .SRCINFO! Ver: "
-
-    MSG_NAMCAP="Ejecutando namcap..."
-    MSG_NAMCAP_WARN="⚠ Namcap terminó con advertencias. Ver: "
-    MSG_NAMCAP_OK="✓ ¡Namcap completado! No se encontraron advertencias."
-    MSG_NAMCAP_FAIL="✗ ¡Namcap falló! Ver: "
-
-    MSG_SHELLCHECK="Verificando con ShellCheck..."
-    MSG_SHELLCHECK_WARN="⚠ ShellCheck encontró advertencias. Ver: "
-    MSG_SHELLCHECK_OK="✓ ShellCheck: no se encontraron problemas."
-    MSG_SHELLCHECK_FAIL="✗ ¡ShellCheck falló! Ver: "
-
-    MSG_PUSH_AUR="Publicando en AUR..."
-    MSG_PUSH_AUR_OK="✓ ¡Publicado en AUR con éxito!"
-    MSG_PUSH_AUR_FAIL="✗ ¡Error al publicar en AUR! Ver: "
-
-    MSG_CLEAN_SRC="Limpiando srcdir..."
-    MSG_CLEAN_SRC_OK="✓ ¡srcdir limpiado con éxito!"
-    MSG_CLEAN_SRC_FAIL="✗ ¡Error al limpiar srcdir! Ver: "
-
-    MSG_CLEAN_ALL="Limpiando todo..."
-    MSG_CLEAN_ALL_OK="✓ ¡Todo limpiado con éxito!"
-    MSG_CLEAN_ALL_FAIL="✗ ¡Error al limpiar! Ver: "
-
-    MSG_FULL_WORKFLOW="Ejecutando flujo completo..."
-    MSG_FULL_WORKFLOW_OK="✓ ¡Flujo completo completado!"
-    MSG_FULL_WORKFLOW_FAIL="✗ ¡Flujo completo falló! Ver: "
-    ;;
-  de*)
-    MSG_BUILDING="Paket wird gebaut..."
-    MSG_BUILD_OK="✓ Build erfolgreich abgeschlossen!"
-    MSG_BUILD_FAIL="✗ Build fehlgeschlagen! Siehe: "
-
-    MSG_INSTALLING="Paket wird installiert..."
-    MSG_INSTALL_OK="✓ Installation abgeschlossen!"
-    MSG_INSTALL_FAIL="✗ Installation fehlgeschlagen! Siehe: "
-
-    MSG_CHECKSUMS="Prüfsummen werden aktualisiert..."
-    MSG_CHECKSUMS_OK="✓ Prüfsummen erfolgreich aktualisiert!"
-    MSG_CHECKSUMS_FAIL="✗ Fehler beim Aktualisieren der Prüfsummen! Siehe: "
-
-    MSG_SRCINFO=".SRCINFO wird aktualisiert..."
-    MSG_SRCINFO_OK="✓ .SRCINFO erfolgreich aktualisiert!"
-    MSG_SRCINFO_FAIL="✗ Fehler beim Aktualisieren von .SRCINFO! Siehe: "
-
-    MSG_NAMCAP="Namcap wird ausgeführt..."
-    MSG_NAMCAP_WARN="⚠ Namcap mit Warnungen abgeschlossen. Siehe: "
-    MSG_NAMCAP_OK="✓ Namcap abgeschlossen! Keine Warnungen gefunden."
-    MSG_NAMCAP_FAIL="✗ Namcap fehlgeschlagen! Siehe: "
-
-    MSG_SHELLCHECK="ShellCheck wird ausgeführt..."
-    MSG_SHELLCHECK_WARN="⚠ ShellCheck hat Warnungen gefunden. Siehe: "
-    MSG_SHELLCHECK_OK="✓ ShellCheck: Keine Probleme gefunden."
-    MSG_SHELLCHECK_FAIL="✗ ShellCheck fehlgeschlagen! Siehe: "
-
-    MSG_PUSH_AUR="An AUR übertragen..."
-    MSG_PUSH_AUR_OK="✓ Erfolgreich an AUR übertragen!"
-    MSG_PUSH_AUR_FAIL="✗ Fehler beim Übertragen an AUR! Siehe: "
-
-    MSG_CLEAN_SRC="srcdir wird bereinigt..."
-    MSG_CLEAN_SRC_OK="✓ srcdir erfolgreich bereinigt!"
-    MSG_CLEAN_SRC_FAIL="✗ Fehler beim Bereinigen von srcdir! Siehe: "
-
-    MSG_CLEAN_ALL="Alles wird bereinigt..."
-    MSG_CLEAN_ALL_OK="✓ Alles erfolgreich bereinigt!"
-    MSG_CLEAN_ALL_FAIL="✗ Fehler beim Bereinigen! Siehe: "
-
-    MSG_FULL_WORKFLOW="Vollständiger Ablauf wird ausgeführt..."
-    MSG_FULL_WORKFLOW_OK="✓ Vollständiger Ablauf abgeschlossen!"
-    MSG_FULL_WORKFLOW_FAIL="✗ Vollständiger Ablauf fehlgeschlagen! Siehe: "
-    ;;
-  fr*)
-    MSG_BUILDING="Construction du paquet..."
-    MSG_BUILD_OK="✓ Construction terminée avec succès !"
-    MSG_BUILD_FAIL="✗ Échec de la construction ! Voir : "
-
-    MSG_INSTALLING="Installation du paquet..."
-    MSG_INSTALL_OK="✓ Installation terminée !"
-    MSG_INSTALL_FAIL="✗ Échec de l'installation ! Voir : "
-
-    MSG_CHECKSUMS="Mise à jour des sommes de contrôle..."
-    MSG_CHECKSUMS_OK="✓ Sommes de contrôle mises à jour avec succès !"
-    MSG_CHECKSUMS_FAIL="✗ Échec de la mise à jour des sommes de contrôle ! Voir : "
-
-    MSG_SRCINFO="Mise à jour de .SRCINFO..."
-    MSG_SRCINFO_OK="✓ .SRCINFO mis à jour avec succès !"
-    MSG_SRCINFO_FAIL="✗ Échec de la mise à jour de .SRCINFO ! Voir : "
-
-    MSG_NAMCAP="Exécution de namcap..."
-    MSG_NAMCAP_WARN="⚠ Namcap terminé avec des avertissements. Voir : "
-    MSG_NAMCAP_OK="✓ Namcap terminé ! Aucun avertissement trouvé."
-    MSG_NAMCAP_FAIL="✗ Namcap a échoué ! Voir : "
-
-    MSG_SHELLCHECK="Vérification avec ShellCheck..."
-    MSG_SHELLCHECK_WARN="⚠ ShellCheck a trouvé des avertissements. Voir : "
-    MSG_SHELLCHECK_OK="✓ ShellCheck : aucun problème trouvé."
-    MSG_SHELLCHECK_FAIL="✗ ShellCheck a échoué ! Voir : "
-
-    MSG_PUSH_AUR="Envoi vers l'AUR..."
-    MSG_PUSH_AUR_OK="✓ Envoyé vers l'AUR avec succès !"
-    MSG_PUSH_AUR_FAIL="✗ Échec de l'envoi vers l'AUR ! Voir : "
-
-    MSG_CLEAN_SRC="Nettoyage de srcdir..."
-    MSG_CLEAN_SRC_OK="✓ srcdir nettoyé avec succès !"
-    MSG_CLEAN_SRC_FAIL="✗ Échec du nettoyage de srcdir ! Voir : "
-
-    MSG_CLEAN_ALL="Nettoyage de tout..."
-    MSG_CLEAN_ALL_OK="✓ Tout nettoyé avec succès !"
-    MSG_CLEAN_ALL_FAIL="✗ Échec du nettoyage ! Voir : "
-
-    MSG_FULL_WORKFLOW="Exécution du processus complet..."
-    MSG_FULL_WORKFLOW_OK="✓ Processus complet terminé !"
-    MSG_FULL_WORKFLOW_FAIL="✗ Processus complet échoué ! Voir : "
-    ;;
-  it*)
-    MSG_BUILDING="Compilazione del pacchetto..."
-    MSG_BUILD_OK="✓ Compilazione completata con successo!"
-    MSG_BUILD_FAIL="✗ Compilazione fallita! Vedi: "
-
-    MSG_INSTALLING="Installazione del pacchetto..."
-    MSG_INSTALL_OK="✓ Installazione completata!"
-    MSG_INSTALL_FAIL="✗ Installazione fallita! Vedi: "
-
-    MSG_CHECKSUMS="Aggiornamento dei checksum..."
-    MSG_CHECKSUMS_OK="✓ Checksum aggiornati con successo!"
-    MSG_CHECKSUMS_FAIL="✗ Aggiornamento checksum fallito! Vedi: "
-
-    MSG_SRCINFO="Aggiornamento di .SRCINFO..."
-    MSG_SRCINFO_OK="✓ .SRCINFO aggiornato con successo!"
-    MSG_SRCINFO_FAIL="✗ Aggiornamento .SRCINFO fallito! Vedi: "
-
-    MSG_NAMCAP="Esecuzione di namcap..."
-    MSG_NAMCAP_WARN="⚠ Namcap completato con avvisi. Vedi: "
-    MSG_NAMCAP_OK="✓ Namcap completato! Nessun avviso trovato."
-    MSG_NAMCAP_FAIL="✗ Namcap fallito! Vedi: "
-
-    MSG_SHELLCHECK="Verifica con ShellCheck..."
-    MSG_SHELLCHECK_WARN="⚠ ShellCheck ha trovato avvisi. Vedi: "
-    MSG_SHELLCHECK_OK="✓ ShellCheck: nessun problema trovato."
-    MSG_SHELLCHECK_FAIL="✗ ShellCheck fallito! Vedi: "
-
-    MSG_PUSH_AUR="Pubblicazione su AUR..."
-    MSG_PUSH_AUR_OK="✓ Pubblicato su AUR con successo!"
-    MSG_PUSH_AUR_FAIL="✗ Pubblicazione su AUR fallita! Vedi: "
-
-    MSG_CLEAN_SRC="Pulizia di srcdir..."
-    MSG_CLEAN_SRC_OK="✓ srcdir pulito con successo!"
-    MSG_CLEAN_SRC_FAIL="✗ Pulizia di srcdir fallita! Vedi: "
-
-    MSG_CLEAN_ALL="Pulizia di tutto..."
-    MSG_CLEAN_ALL_OK="✓ Tutto pulito con successo!"
-    MSG_CLEAN_ALL_FAIL="✗ Pulizia fallita! Vedi: "
-
-    MSG_FULL_WORKFLOW="Esecuzione del flusso completo..."
-    MSG_FULL_WORKFLOW_OK="✓ Flusso completo completato!"
-    MSG_FULL_WORKFLOW_FAIL="✗ Flusso completo fallito! Vedi: "
-    ;;
-  *) # fallback: English
-    MSG_BUILDING="Building package..."
-    MSG_BUILD_OK="✓ Build completed successfully!"
-    MSG_BUILD_FAIL="✗ Build failed! See: "
-
-    MSG_INSTALLING="Installing package..."
-    MSG_INSTALL_OK="✓ Install completed!"
-    MSG_INSTALL_FAIL="✗ Install failed! See: "
-
-    MSG_CHECKSUMS="Updating checksums..."
-    MSG_CHECKSUMS_OK="✓ Checksums updated successfully!"
-    MSG_CHECKSUMS_FAIL="✗ Failed to update checksums! See: "
-
-    MSG_SRCINFO="Updating .SRCINFO..."
-    MSG_SRCINFO_OK="✓ .SRCINFO updated successfully!"
-    MSG_SRCINFO_FAIL="✗ Failed to update .SRCINFO! See: "
-
-    MSG_NAMCAP="Running namcap..."
-    MSG_NAMCAP_WARN="⚠ Namcap finished with warnings. See: "
-    MSG_NAMCAP_OK="✓ Namcap completed! No warnings found."
-    MSG_NAMCAP_FAIL="✗ Namcap failed! See: "
-
-    MSG_SHELLCHECK="Running ShellCheck..."
-    MSG_SHELLCHECK_WARN="⚠ ShellCheck found warnings. See: "
-    MSG_SHELLCHECK_OK="✓ ShellCheck: no issues found."
-    MSG_SHELLCHECK_FAIL="✗ ShellCheck failed! See: "
-
-    MSG_PUSH_AUR="Pushing to AUR..."
-    MSG_PUSH_AUR_OK="✓ Pushed to AUR successfully!"
-    MSG_PUSH_AUR_FAIL="✗ Failed to push to AUR! See: "
-
-    MSG_CLEAN_SRC="Cleaning srcdir..."
-    MSG_CLEAN_SRC_OK="✓ srcdir cleaned successfully!"
-    MSG_CLEAN_SRC_FAIL="✗ Failed to clean srcdir! See: "
-
-    MSG_CLEAN_ALL="Cleaning everything..."
-    MSG_CLEAN_ALL_OK="✓ Everything cleaned successfully!"
-    MSG_CLEAN_ALL_FAIL="✗ Failed to clean! See: "
-
-    MSG_FULL_WORKFLOW="Running full workflow..."
-    MSG_FULL_WORKFLOW_OK="✓ Full workflow completed!"
-    MSG_FULL_WORKFLOW_FAIL="✗ Full workflow failed! See: "
-    ;;
-esac
+# ---------------------------------------------------------------------------
+# Export all MSG_* variables by reading from the .po file
+# ---------------------------------------------------------------------------
+MSG_BUILDING=$(_getmsg "notify_building"          "$_PO_FILE")
+MSG_BUILD_OK=$(_getmsg "notify_build_ok"           "$_PO_FILE")
+MSG_BUILD_FAIL=$(_getmsg "notify_build_fail"       "$_PO_FILE")
+MSG_INSTALLING=$(_getmsg "notify_installing"       "$_PO_FILE")
+MSG_INSTALL_OK=$(_getmsg "notify_install_ok"       "$_PO_FILE")
+MSG_INSTALL_FAIL=$(_getmsg "notify_install_fail"   "$_PO_FILE")
+MSG_CHECKSUMS=$(_getmsg "notify_checksums"         "$_PO_FILE")
+MSG_CHECKSUMS_OK=$(_getmsg "notify_checksums_ok"   "$_PO_FILE")
+MSG_CHECKSUMS_FAIL=$(_getmsg "notify_checksums_fail" "$_PO_FILE")
+MSG_SRCINFO=$(_getmsg "notify_srcinfo"             "$_PO_FILE")
+MSG_SRCINFO_OK=$(_getmsg "notify_srcinfo_ok"       "$_PO_FILE")
+MSG_SRCINFO_FAIL=$(_getmsg "notify_srcinfo_fail"   "$_PO_FILE")
+MSG_NAMCAP=$(_getmsg "notify_namcap"               "$_PO_FILE")
+MSG_NAMCAP_WARN=$(_getmsg "notify_namcap_warn"     "$_PO_FILE")
+MSG_NAMCAP_OK=$(_getmsg "notify_namcap_ok"         "$_PO_FILE")
+MSG_NAMCAP_FAIL=$(_getmsg "notify_namcap_fail"     "$_PO_FILE")
+MSG_SHELLCHECK=$(_getmsg "notify_shellcheck"       "$_PO_FILE")
+MSG_SHELLCHECK_WARN=$(_getmsg "notify_shellcheck_warn" "$_PO_FILE")
+MSG_SHELLCHECK_OK=$(_getmsg "notify_shellcheck_ok" "$_PO_FILE")
+MSG_SHELLCHECK_FAIL=$(_getmsg "notify_shellcheck_fail" "$_PO_FILE")
+MSG_PUSH_AUR=$(_getmsg "notify_push_aur"           "$_PO_FILE")
+MSG_PUSH_AUR_OK=$(_getmsg "notify_push_aur_ok"     "$_PO_FILE")
+MSG_PUSH_AUR_FAIL=$(_getmsg "notify_push_aur_fail" "$_PO_FILE")
+MSG_CLEAN_SRC=$(_getmsg "notify_clean_src"         "$_PO_FILE")
+MSG_CLEAN_SRC_OK=$(_getmsg "notify_clean_src_ok"   "$_PO_FILE")
+MSG_CLEAN_SRC_FAIL=$(_getmsg "notify_clean_src_fail" "$_PO_FILE")
+MSG_CLEAN_ALL=$(_getmsg "notify_clean_all"         "$_PO_FILE")
+MSG_CLEAN_ALL_OK=$(_getmsg "notify_clean_all_ok"   "$_PO_FILE")
+MSG_CLEAN_ALL_FAIL=$(_getmsg "notify_clean_all_fail" "$_PO_FILE")
+MSG_FULL_WORKFLOW=$(_getmsg "notify_full_workflow" "$_PO_FILE")
+MSG_FULL_WORKFLOW_OK=$(_getmsg "notify_full_workflow_ok" "$_PO_FILE")
+MSG_FULL_WORKFLOW_FAIL=$(_getmsg "notify_full_workflow_fail" "$_PO_FILE")

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-30 13:41-0300\n"
-"PO-Revision-Date: 2026-05-30 13:41-0300\n"
+"POT-Creation-Date: 2026-05-31 02:43-0300\n"
+"PO-Revision-Date: 2026-05-31 02:43-0300\n"
 "Last-Translator: John <john@example.com>\n"
 "Language-Team: Portuguese (Brazil)\n"
 "Language: pt_BR\n"
@@ -12,6 +12,138 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+# Menu labels
+msgid "00_Full Workflow"
+msgstr "Fluxo Completo"
+
+msgid "01_Build"
+msgstr "Compilar"
+
+msgid "02b_Build and Clean"
+msgstr "Compilar e Limpar"
+
+msgid "02_Install"
+msgstr "Instalar"
+
+msgid "03_Update Checksums"
+msgstr "Atualizar Checksums"
+
+msgid "04_Update .SRCINFO"
+msgstr "Atualizar .SRCINFO"
+
+msgid "05b_ShellCheck"
+msgstr "Verificar com ShellCheck"
+
+msgid "05_Namcap"
+msgstr "Analisar com Namcap"
+
+msgid "06_Push AUR"
+msgstr "Enviar para AUR"
+
+msgid "07b_Clean Everything"
+msgstr "Limpar Tudo"
+
+msgid "07_Clean srcdir"
+msgstr "Limpar srcdir"
+
+# Notification messages
+msgid "notify_building"
+msgstr "Compilando pacote..."
+
+msgid "notify_build_ok"
+msgstr "✓ Compilação concluída com sucesso!"
+
+msgid "notify_build_fail"
+msgstr "✗ Compilação falhou! Veja: "
+
+msgid "notify_installing"
+msgstr "Instalando pacote..."
+
+msgid "notify_install_ok"
+msgstr "✓ Instalação concluída!"
+
+msgid "notify_install_fail"
+msgstr "✗ Instalação falhou! Veja: "
+
+msgid "notify_checksums"
+msgstr "Atualizando checksums..."
+
+msgid "notify_checksums_ok"
+msgstr "✓ Checksums atualizados com sucesso!"
+
+msgid "notify_checksums_fail"
+msgstr "✗ Falha ao atualizar checksums! Veja: "
+
+msgid "notify_srcinfo"
+msgstr "Atualizando .SRCINFO..."
+
+msgid "notify_srcinfo_ok"
+msgstr "✓ .SRCINFO atualizado com sucesso!"
+
+msgid "notify_srcinfo_fail"
+msgstr "✗ Falha ao atualizar .SRCINFO! Veja: "
+
+msgid "notify_namcap"
+msgstr "Executando namcap..."
+
+msgid "notify_namcap_warn"
+msgstr "⚠ Namcap concluído com avisos. Veja: "
+
+msgid "notify_namcap_ok"
+msgstr "✓ Namcap concluído! Nenhum aviso encontrado."
+
+msgid "notify_namcap_fail"
+msgstr "✗ Namcap falhou! Veja: "
+
+msgid "notify_shellcheck"
+msgstr "Verificando com ShellCheck..."
+
+msgid "notify_shellcheck_warn"
+msgstr "⚠ ShellCheck encontrou avisos. Veja: "
+
+msgid "notify_shellcheck_ok"
+msgstr "✓ ShellCheck: nenhum problema encontrado."
+
+msgid "notify_shellcheck_fail"
+msgstr "✗ ShellCheck falhou! Veja: "
+
+msgid "notify_push_aur"
+msgstr "Enviando para o AUR..."
+
+msgid "notify_push_aur_ok"
+msgstr "✓ Enviado para o AUR com sucesso!"
+
+msgid "notify_push_aur_fail"
+msgstr "✗ Falha ao enviar para o AUR! Veja: "
+
+msgid "notify_clean_src"
+msgstr "Limpando srcdir..."
+
+msgid "notify_clean_src_ok"
+msgstr "✓ srcdir limpo com sucesso!"
+
+msgid "notify_clean_src_fail"
+msgstr "✗ Falha ao limpar srcdir! Veja: "
+
+msgid "notify_clean_all"
+msgstr "Limpando tudo..."
+
+msgid "notify_clean_all_ok"
+msgstr "✓ Tudo limpo com sucesso!"
+
+msgid "notify_clean_all_fail"
+msgstr "✗ Falha ao limpar! Veja: "
+
+msgid "notify_full_workflow"
+msgstr "Executando fluxo completo..."
+
+msgid "notify_full_workflow_ok"
+msgstr "✓ Fluxo completo concluído!"
+
+msgid "notify_full_workflow_fail"
+msgstr "✗ Fluxo completo falhou! Veja: "
+
+# CLI strings
 msgid "Failed to resolve parent directory"
 msgstr "Falha ao resolver o diretório pai"
 
@@ -36,167 +168,11 @@ msgstr "Gerenciador de PKGBUILD - Ferramenta CLI"
 msgid "Usage:"
 msgstr "Uso:"
 
-msgid "Build commands"
-msgstr "Comandos de compilação"
-
-msgid "Compile package (makepkg)"
-msgstr "Compilar pacote (makepkg)"
-
-msgid "Compile and clean srcdir (makepkg -c)"
-msgstr "Compilar e limpar o srcdir (makepkg -c)"
-
-msgid "Force recompile (makepkg -f)"
-msgstr "Forçar recompilação (makepkg -f)"
-
-msgid "Skip check() function (makepkg --nocheck)"
-msgstr "Pular função check() (makepkg --nocheck)"
-
-msgid "Skip PGP signature check (makepkg --skippgpcheck)"
-msgstr "Pular verificação de assinatura PGP (makepkg --skippgpcheck)"
-
-msgid "Compile with custom flags passed after path"
-msgstr "Compilar com flags personalizadas passadas após o caminho"
-
-msgid "Download and extract sources only (makepkg -o)"
-msgstr "Apenas baixar e extrair fontes (makepkg -o)"
-
-msgid "Install commands"
-msgstr "Comandos de instalação"
-
-msgid "Compile, install and resolve deps (makepkg -si)"
-msgstr "Compilar, instalar e resolver dependências (makepkg -si)"
-
-msgid "Compile, install and clean srcdir (makepkg -sic)"
-msgstr "Compilar, instalar e limpar o srcdir (makepkg -sic)"
-
-msgid "Force compile and install (makepkg -sif)"
-msgstr "Forçar compilação e instalação (makepkg -sif)"
-
-msgid "Install and remove makedeps after (makepkg -sir)"
-msgstr "Instalar e remover dependências de compilação depois (makepkg -sir)"
-
-msgid "Install without running check()"
-msgstr "Instalar sem rodar a função check()"
-
-msgid "Install skipping PGP checks"
-msgstr "Instalar pulando verificações PGP"
-
-msgid "Install with custom flags passed after path"
-msgstr "Instalar com flags personalizadas passadas após o caminho"
-
-msgid "Package metadata commands"
-msgstr "Comandos de metadados do pacote"
-
-msgid "Update checksums in PKGBUILD (updpkgsums)"
-msgstr "Atualizar checksums no PKGBUILD (updpkgsums)"
-
-msgid "Generate checksums and print to stdout (makepkg -g)"
-msgstr "Gerar checksums e imprimir no stdout (makepkg -g)"
-
-msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
-msgstr "Regerar .SRCINFO (makepkg --printsrcinfo)"
-
-msgid "Audit commands"
-msgstr "Comandos de auditoria"
-
-msgid "Run namcap on PKGBUILD and built packages"
-msgstr "Executar namcap no PKGBUILD e nos pacotes compilados"
-
-msgid "Run shellcheck on PKGBUILD"
-msgstr "Executar shellcheck no PKGBUILD"
-
-msgid "Clean commands"
-msgstr "Comandos de limpeza"
-
-msgid "Clean srcdir with makepkg (makepkg -c)"
-msgstr "Limpar o srcdir com makepkg (makepkg -c)"
-
-msgid "Remove src/, pkg/ and built packages"
-msgstr "Remover src/, pkg/ e pacotes compilados"
-
-msgid "AUR/Git commands"
-msgstr "Comandos do AUR/Git"
-
-msgid "Stage, commit and push to AUR (auto message if not provided)"
-msgstr "Adicionar ao stage, fazer commit e push para o AUR (mensagem automática se não informada)"
-
-msgid "Push with version tag (e.g. 1.2.3-1)"
-msgstr "Fazer push com tag de versão (ex: 1.2.3-1)"
-
-msgid "Other"
-msgstr "Outros"
-
-msgid "Show this help message"
-msgstr "Mostrar esta mensagem de ajuda"
-
 msgid "namcap not found. Install it with: sudo pacman -S namcap"
 msgstr "namcap não encontrado. Instale com: sudo pacman -S namcap"
-
-msgid "namcap failed with status"
-msgstr "namcap falhou com status"
 
 msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
 msgstr "shellcheck não encontrado. Instale com: sudo pacman -S shellcheck"
 
 msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
 msgstr "updpkgsums não encontrado. Instale com: sudo pacman -S pacman-contrib"
-
-msgid "makepkg -g failed:"
-msgstr "makepkg -g falhou:"
-
-msgid "Removing src/ pkg/ and built packages in"
-msgstr "Removendo src/, pkg/ e pacotes compilados em"
-
-msgid "Removed"
-msgstr "Removido"
-
-msgid "Note: nothing to commit or commit failed — continuing with push."
-msgstr "Nota: nada para commitar ou o commit falhou — continuando com o push."
-
-msgid "makepkg --printsrcinfo failed:"
-msgstr "makepkg --printsrcinfo falhou:"
-
-msgid "Note: push to origin/master failed"
-msgstr "Nota: push para origin/master falhou"
-
-msgid "Trying plain 'git push'..."
-msgstr "Tentando push simples ('git push')..."
-
-msgid "00_Full Workflow"
-msgstr "Fluxo Completo"
-
-msgid "01_Build"
-msgstr "Compilar"
-
-msgid "02_Install"
-msgstr "Instalar"
-
-msgid "02b_Build and Clean"
-msgstr "Compilar e Limpar"
-
-msgid "03_Update Checksums"
-msgstr "Atualizar Checksums"
-
-msgid "04_Update .SRCINFO"
-msgstr "Atualizar .SRCINFO"
-
-msgid "05_Namcap"
-msgstr "Analisar com Namcap"
-
-msgid "05b_ShellCheck"
-msgstr "Verificar com ShellCheck"
-
-msgid "06_Push AUR"
-msgstr "Enviar para AUR"
-
-msgid "07_Clean srcdir"
-msgstr "Limpar srcdir"
-
-msgid "07b_Clean Everything"
-msgstr "Limpar Tudo"
-
-msgid "Symlink scripts to user directory with localization"
-msgstr "Criar links simbólicos dos scripts no diretório do usuário com localização"
-
-msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
-msgstr "Scripts do Nautilus configurados com sucesso sob o submenu 'PKGBUILD'."

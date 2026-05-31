@@ -1,0 +1,190 @@
+# PKGBUILD Manager — translation template
+# Copyright (C) 2026 John Peter Sa
+# This file is distributed under the same license as the pkgbuild_manager package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pkgbuild_manager 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-31 02:43-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# ---------------------------------------------------------------------------
+# Menu labels (used by the Nautilus Python extension)
+# ---------------------------------------------------------------------------
+
+msgid "00_Full Workflow"
+msgstr ""
+
+msgid "01_Build"
+msgstr ""
+
+msgid "02b_Build and Clean"
+msgstr ""
+
+msgid "02_Install"
+msgstr ""
+
+msgid "03_Update Checksums"
+msgstr ""
+
+msgid "04_Update .SRCINFO"
+msgstr ""
+
+msgid "05b_ShellCheck"
+msgstr ""
+
+msgid "05_Namcap"
+msgstr ""
+
+msgid "06_Push AUR"
+msgstr ""
+
+msgid "07b_Clean Everything"
+msgstr ""
+
+msgid "07_Clean srcdir"
+msgstr ""
+
+# ---------------------------------------------------------------------------
+# Notification messages (used by the bash scripts via _i18n)
+# ---------------------------------------------------------------------------
+
+msgid "notify_building"
+msgstr ""
+
+msgid "notify_build_ok"
+msgstr ""
+
+msgid "notify_build_fail"
+msgstr ""
+
+msgid "notify_installing"
+msgstr ""
+
+msgid "notify_install_ok"
+msgstr ""
+
+msgid "notify_install_fail"
+msgstr ""
+
+msgid "notify_checksums"
+msgstr ""
+
+msgid "notify_checksums_ok"
+msgstr ""
+
+msgid "notify_checksums_fail"
+msgstr ""
+
+msgid "notify_srcinfo"
+msgstr ""
+
+msgid "notify_srcinfo_ok"
+msgstr ""
+
+msgid "notify_srcinfo_fail"
+msgstr ""
+
+msgid "notify_namcap"
+msgstr ""
+
+msgid "notify_namcap_warn"
+msgstr ""
+
+msgid "notify_namcap_ok"
+msgstr ""
+
+msgid "notify_namcap_fail"
+msgstr ""
+
+msgid "notify_shellcheck"
+msgstr ""
+
+msgid "notify_shellcheck_warn"
+msgstr ""
+
+msgid "notify_shellcheck_ok"
+msgstr ""
+
+msgid "notify_shellcheck_fail"
+msgstr ""
+
+msgid "notify_push_aur"
+msgstr ""
+
+msgid "notify_push_aur_ok"
+msgstr ""
+
+msgid "notify_push_aur_fail"
+msgstr ""
+
+msgid "notify_clean_src"
+msgstr ""
+
+msgid "notify_clean_src_ok"
+msgstr ""
+
+msgid "notify_clean_src_fail"
+msgstr ""
+
+msgid "notify_clean_all"
+msgstr ""
+
+msgid "notify_clean_all_ok"
+msgstr ""
+
+msgid "notify_clean_all_fail"
+msgstr ""
+
+msgid "notify_full_workflow"
+msgstr ""
+
+msgid "notify_full_workflow_ok"
+msgstr ""
+
+msgid "notify_full_workflow_fail"
+msgstr ""
+
+# ---------------------------------------------------------------------------
+# CLI / Rust binary strings
+# ---------------------------------------------------------------------------
+
+msgid "Failed to resolve parent directory"
+msgstr ""
+
+msgid "Directory does not exist"
+msgstr ""
+
+msgid "No PKGBUILD found in directory"
+msgstr ""
+
+msgid "Failed to read PKGBUILD info with makepkg --printsrcinfo"
+msgstr ""
+
+msgid "aur-push-tag requires a version tag argument"
+msgstr ""
+
+msgid "Unknown command"
+msgstr ""
+
+msgid "PKGBUILD Manager - CLI Tool"
+msgstr ""
+
+msgid "Usage:"
+msgstr ""
+
+msgid "namcap not found. Install it with: sudo pacman -S namcap"
+msgstr ""
+
+msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
+msgstr ""
+
+msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
+msgstr ""

@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-30 13:41-0300\n"
-"PO-Revision-Date: 2026-05-30 13:41-0300\n"
-"Last-Translator: John <john@example.com>\n"
+"POT-Creation-Date: 2026-05-31 02:43-0300\n"
+"PO-Revision-Date: 2026-05-31 02:43-0300\n"
+"Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -12,167 +12,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-msgid "Failed to resolve parent directory"
-msgstr "Impossible de résoudre le dossier parent"
-
-msgid "Directory does not exist"
-msgstr "Le dossier n'existe pas"
-
-msgid "No PKGBUILD found in directory"
-msgstr "Aucun PKGBUILD trouvé dans le dossier"
-
-msgid "Failed to read PKGBUILD info with makepkg --printsrcinfo"
-msgstr "Impossible de lire les informations du PKGBUILD avec makepkg --printsrcinfo"
-
-msgid "aur-push-tag requires a version tag argument"
-msgstr "aur-push-tag requiert un argument de tag de version"
-
-msgid "Unknown command"
-msgstr "Commande inconnue"
-
-msgid "PKGBUILD Manager - CLI Tool"
-msgstr "PKGBUILD Manager - Outil CLI"
-
-msgid "Usage:"
-msgstr "Utilisation :"
-
-msgid "Build commands"
-msgstr "Commandes de compilation"
-
-msgid "Compile package (makepkg)"
-msgstr "Compiler le paquet (makepkg)"
-
-msgid "Compile and clean srcdir (makepkg -c)"
-msgstr "Compiler et nettoyer le dossier src (makepkg -c)"
-
-msgid "Force recompile (makepkg -f)"
-msgstr "Forcer la recompilation (makepkg -f)"
-
-msgid "Skip check() function (makepkg --nocheck)"
-msgstr "Ignorer la fonction check() (makepkg --nocheck)"
-
-msgid "Skip PGP signature check (makepkg --skippgpcheck)"
-msgstr "Ignorer la vérification de signature PGP (makepkg --skippgpcheck)"
-
-msgid "Compile with custom flags passed after path"
-msgstr "Compiler avec des options personnalisées passées après le chemin"
-
-msgid "Download and extract sources only (makepkg -o)"
-msgstr "Télécharger et extraire les sources uniquement (makepkg -o)"
-
-msgid "Install commands"
-msgstr "Commandes d'installation"
-
-msgid "Compile, install and resolve deps (makepkg -si)"
-msgstr "Compiler, installer et résoudre les dépendances (makepkg -si)"
-
-msgid "Compile, install and clean srcdir (makepkg -sic)"
-msgstr "Compiler, installer et nettoyer le dossier src (makepkg -sic)"
-
-msgid "Force compile and install (makepkg -sif)"
-msgstr "Forcer la compilation et l'installation (makepkg -sif)"
-
-msgid "Install and remove makedeps after (makepkg -sir)"
-msgstr "Installer et supprimer les dépendances de compilation après (makepkg -sir)"
-
-msgid "Install without running check()"
-msgstr "Installer sans exécuter la fonction check()"
-
-msgid "Install skipping PGP checks"
-msgstr "Installer en ignorant les vérifications PGP"
-
-msgid "Install with custom flags passed after path"
-msgstr "Installer avec des options personnalisées passées après le chemin"
-
-msgid "Package metadata commands"
-msgstr "Commandes de métadonnées du paquet"
-
-msgid "Update checksums in PKGBUILD (updpkgsums)"
-msgstr "Mettre à jour les sommes de contrôle dans PKGBUILD (updpkgsums)"
-
-msgid "Generate checksums and print to stdout (makepkg -g)"
-msgstr "Générer les sommes de contrôle et les afficher sur stdout (makepkg -g)"
-
-msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
-msgstr "Régénérer .SRCINFO (makepkg --printsrcinfo)"
-
-msgid "Audit commands"
-msgstr "Commandes d'audit"
-
-msgid "Run namcap on PKGBUILD and built packages"
-msgstr "Lancer namcap sur le PKGBUILD et les paquets compilés"
-
-msgid "Run shellcheck on PKGBUILD"
-msgstr "Lancer shellcheck sur le PKGBUILD"
-
-msgid "Clean commands"
-msgstr "Commandes de nettoyage"
-
-msgid "Clean srcdir with makepkg (makepkg -c)"
-msgstr "Nettoyer le dossier src avec makepkg (makepkg -c)"
-
-msgid "Remove src/, pkg/ and built packages"
-msgstr "Supprimer src/, pkg/ et les paquets compilés"
-
-msgid "AUR/Git commands"
-msgstr "Commandes AUR/Git"
-
-msgid "Stage, commit and push to AUR (auto message if not provided)"
-msgstr "Ajouter à l'index, commiter et pousser vers l'AUR (message automatique si non fourni)"
-
-msgid "Push with version tag (e.g. 1.2.3-1)"
-msgstr "Pousser avec un tag de version (ex. 1.2.3-1)"
-
-msgid "Other"
-msgstr "Autre"
-
-msgid "Show this help message"
-msgstr "Afficher ce message d'aide"
-
-msgid "namcap not found. Install it with: sudo pacman -S namcap"
-msgstr "namcap non trouvé. Installez-le avec : sudo pacman -S namcap"
-
-msgid "namcap failed with status"
-msgstr "namcap a échoué avec le statut"
-
-msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
-msgstr "shellcheck non trouvé. Installez-le avec : sudo pacman -S shellcheck"
-
-msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
-msgstr "updpkgsums non trouvé. Installez-le avec : sudo pacman -S pacman-contrib"
-
-msgid "makepkg -g failed:"
-msgstr "makepkg -g a échoué :"
-
-msgid "Removing src/ pkg/ and built packages in"
-msgstr "Suppression de src/, pkg/ et des paquets compilés dans"
-
-msgid "Removed"
-msgstr "Supprimé"
-
-msgid "Note: nothing to commit or commit failed — continuing with push."
-msgstr "Note : rien à commiter ou le commit a échoué — poursuite du push."
-
-msgid "makepkg --printsrcinfo failed:"
-msgstr "makepkg --printsrcinfo a échoué :"
-
-msgid "Note: push to origin/master failed"
-msgstr "Note : échec du push vers origin/master"
-
-msgid "Trying plain 'git push'..."
-msgstr "Tentant de push simple ('git push')..."
-
+# Menu labels
 msgid "00_Full Workflow"
 msgstr "Processus complet"
 
 msgid "01_Build"
 msgstr "Compiler"
 
-msgid "02_Install"
-msgstr "Installer"
-
 msgid "02b_Build and Clean"
 msgstr "Compiler et nettoyer"
+
+msgid "02_Install"
+msgstr "Installer"
 
 msgid "03_Update Checksums"
 msgstr "Mettre à jour les sommes de contrôle"
@@ -180,23 +31,148 @@ msgstr "Mettre à jour les sommes de contrôle"
 msgid "04_Update .SRCINFO"
 msgstr "Mettre à jour .SRCINFO"
 
-msgid "05_Namcap"
-msgstr "Analyser avec Namcap"
-
 msgid "05b_ShellCheck"
 msgstr "Vérifier avec ShellCheck"
+
+msgid "05_Namcap"
+msgstr "Analyser avec Namcap"
 
 msgid "06_Push AUR"
 msgstr "Envoyer vers l'AUR"
 
-msgid "07_Clean srcdir"
-msgstr "Nettoyer srcdir"
-
 msgid "07b_Clean Everything"
 msgstr "Tout nettoyer"
 
-msgid "Symlink scripts to user directory with localization"
-msgstr "Créer des liens symboliques des scripts dans le répertoire utilisateur avec localisation"
+msgid "07_Clean srcdir"
+msgstr "Nettoyer srcdir"
 
-msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
-msgstr "Scripts Nautilus configurés avec succès dans le sous-menu 'PKGBUILD'."
+# Notification messages
+msgid "notify_building"
+msgstr "Construction du paquet..."
+
+msgid "notify_build_ok"
+msgstr "✓ Construction terminée avec succès !"
+
+msgid "notify_build_fail"
+msgstr "✗ Échec de la construction ! Voir : "
+
+msgid "notify_installing"
+msgstr "Installation du paquet..."
+
+msgid "notify_install_ok"
+msgstr "✓ Installation terminée !"
+
+msgid "notify_install_fail"
+msgstr "✗ Échec de l'installation ! Voir : "
+
+msgid "notify_checksums"
+msgstr "Mise à jour des sommes de contrôle..."
+
+msgid "notify_checksums_ok"
+msgstr "✓ Sommes de contrôle mises à jour avec succès !"
+
+msgid "notify_checksums_fail"
+msgstr "✗ Échec de la mise à jour des sommes de contrôle ! Voir : "
+
+msgid "notify_srcinfo"
+msgstr "Mise à jour de .SRCINFO..."
+
+msgid "notify_srcinfo_ok"
+msgstr "✓ .SRCINFO mis à jour avec succès !"
+
+msgid "notify_srcinfo_fail"
+msgstr "✗ Échec de la mise à jour de .SRCINFO ! Voir : "
+
+msgid "notify_namcap"
+msgstr "Exécution de namcap..."
+
+msgid "notify_namcap_warn"
+msgstr "⚠ Namcap terminé avec des avertissements. Voir : "
+
+msgid "notify_namcap_ok"
+msgstr "✓ Namcap terminé ! Aucun avertissement trouvé."
+
+msgid "notify_namcap_fail"
+msgstr "✗ Namcap a échoué ! Voir : "
+
+msgid "notify_shellcheck"
+msgstr "Vérification avec ShellCheck..."
+
+msgid "notify_shellcheck_warn"
+msgstr "⚠ ShellCheck a trouvé des avertissements. Voir : "
+
+msgid "notify_shellcheck_ok"
+msgstr "✓ ShellCheck : aucun problème trouvé."
+
+msgid "notify_shellcheck_fail"
+msgstr "✗ ShellCheck a échoué ! Voir : "
+
+msgid "notify_push_aur"
+msgstr "Envoi vers l'AUR..."
+
+msgid "notify_push_aur_ok"
+msgstr "✓ Envoyé vers l'AUR avec succès !"
+
+msgid "notify_push_aur_fail"
+msgstr "✗ Échec de l'envoi vers l'AUR ! Voir : "
+
+msgid "notify_clean_src"
+msgstr "Nettoyage de srcdir..."
+
+msgid "notify_clean_src_ok"
+msgstr "✓ srcdir nettoyé avec succès !"
+
+msgid "notify_clean_src_fail"
+msgstr "✗ Échec du nettoyage de srcdir ! Voir : "
+
+msgid "notify_clean_all"
+msgstr "Nettoyage de tout..."
+
+msgid "notify_clean_all_ok"
+msgstr "✓ Tout nettoyé avec succès !"
+
+msgid "notify_clean_all_fail"
+msgstr "✗ Échec du nettoyage ! Voir : "
+
+msgid "notify_full_workflow"
+msgstr "Exécution du processus complet..."
+
+msgid "notify_full_workflow_ok"
+msgstr "✓ Processus complet terminé !"
+
+msgid "notify_full_workflow_fail"
+msgstr "✗ Processus complet échoué ! Voir : "
+
+# CLI strings
+msgid "Failed to resolve parent directory"
+msgstr "Impossible de résoudre le répertoire parent"
+
+msgid "Directory does not exist"
+msgstr "Le répertoire n'existe pas"
+
+msgid "No PKGBUILD found in directory"
+msgstr "Aucun PKGBUILD trouvé dans le répertoire"
+
+msgid "Failed to read PKGBUILD info with makepkg --printsrcinfo"
+msgstr "Échec de la lecture des informations PKGBUILD avec makepkg --printsrcinfo"
+
+msgid "aur-push-tag requires a version tag argument"
+msgstr "aur-push-tag nécessite un argument d'étiquette de version"
+
+msgid "Unknown command"
+msgstr "Commande inconnue"
+
+msgid "PKGBUILD Manager - CLI Tool"
+msgstr "Gestionnaire PKGBUILD - Outil CLI"
+
+msgid "Usage:"
+msgstr "Utilisation :"
+
+msgid "namcap not found. Install it with: sudo pacman -S namcap"
+msgstr "namcap introuvable. Installez-le avec : sudo pacman -S namcap"
+
+msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
+msgstr "shellcheck introuvable. Installez-le avec : sudo pacman -S shellcheck"
+
+msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
+msgstr "updpkgsums introuvable. Installez-le avec : sudo pacman -S pacman-contrib"
