@@ -136,14 +136,16 @@ fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
     ];
     for name in stale_names {
         let p = scripts_root.join(name);
-        if p.exists() || p.symlink_metadata().is_ok() {
+        // symlink_metadata() succeeds for both regular files and symlinks
+        // (including broken symlinks), so a single check is sufficient.
+        if p.symlink_metadata().is_ok() {
             let _ = fs::remove_file(&p);
         }
     }
     let pkgbuild_dir = scripts_root.join("PKGBUILD");
-    if pkgbuild_dir.exists() {
+    if pkgbuild_dir.symlink_metadata().is_ok() {
         if let Err(e) = fs::remove_dir_all(&pkgbuild_dir) {
-            eprintln!("Warning: could not remove stale PKGBUILD dir: {e}");
+            eprintln!("{}: {e}", gettext("Warning: could not remove stale PKGBUILD dir"));
         }
     }
 
@@ -152,12 +154,11 @@ fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     let ext = PathBuf::from("/usr/share/nautilus-python/extensions/pkgbuild_manager.py");
     if !ext.exists() {
-        return Err(
+        return Err(gettext(
             "Nautilus extension not found at \
              /usr/share/nautilus-python/extensions/pkgbuild_manager.py. \
              Please reinstall the package."
-            .into(),
-        );
+        ).into());
     }
 
     // ------------------------------------------------------------------
