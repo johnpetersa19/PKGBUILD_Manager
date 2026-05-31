@@ -1,0 +1,465 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: pkgbuild_manager 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-31 14:00-0300\n"
+"PO-Revision-Date: 2026-05-31 14:10-0300\n"
+"Last-Translator: AI <ai@example.com>\n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+# Menu labels
+msgid "00_Full Workflow"
+msgstr "Полный рабочий процесс"
+
+msgid "01_Build"
+msgstr "Собрать"
+
+msgid "02b_Build and Clean"
+msgstr "Собрать и очистить"
+
+msgid "08_Build Force"
+msgstr "Собрать (Принудительно)"
+
+msgid "09_Build NoCheck"
+msgstr "Собрать (Без тестов)"
+
+msgid "10_Build NoGPG"
+msgstr "Собрать (Без GPG)"
+
+msgid "11_Fetch Sources"
+msgstr "Загрузить исходники"
+
+msgid "02_Install"
+msgstr "Установить"
+
+msgid "12_Install Force"
+msgstr "Установить (Принудительно)"
+
+msgid "13_Install RmDeps"
+msgstr "Установить (Удалить зависимости)"
+
+msgid "14_Install NoCheck"
+msgstr "Установить (Без тестов)"
+
+msgid "15_Install NoGPG"
+msgstr "Установить (Без GPG)"
+
+msgid "03_Update Checksums"
+msgstr "Обновить контрольные суммы"
+
+msgid "04_Update .SRCINFO"
+msgstr "Обновить .SRCINFO"
+
+msgid "16_Gen Checksums"
+msgstr "Создать контрольные суммы"
+
+msgid "05b_ShellCheck"
+msgstr "Запустить ShellCheck"
+
+msgid "05_Namcap"
+msgstr "Запустить Namcap"
+
+msgid "06_Push AUR"
+msgstr "Отправить в AUR"
+
+msgid "17_Push AUR Tag"
+msgstr "Отправить тег в AUR"
+
+msgid "07b_Clean Everything"
+msgstr "Очистить всё"
+
+msgid "07_Clean srcdir"
+msgstr "Очистить каталог источников"
+
+# Settings panel
+msgid "PKGBUILD Manager — Menu Settings"
+msgstr "PKGBUILD Manager — Настройки меню"
+
+msgid "Reset"
+msgstr "Сбросить"
+
+msgid "Save"
+msgstr "Сохранить"
+
+msgid "+ Add Group"
+msgstr "+ Добавить группу"
+
+msgid "+ Add Item"
+msgstr "+ Добавить элемент"
+
+msgid "New Group"
+msgstr "Новая группа"
+
+msgid "Add Action"
+msgstr "Добавить действие"
+
+msgid "All actions are already in a group."
+msgstr "Все действия уже находятся в группе."
+
+msgid "Saved! Restart the file manager to apply."
+msgstr "Сохранено! Перезапустите файловый менеджер для применения."
+
+# Default group names
+msgid "Actions"
+msgstr "Действия"
+
+msgid "Metadata"
+msgstr "Метаданные"
+
+msgid "Audit"
+msgstr "Аудит"
+
+msgid "Git / AUR"
+msgstr "Git / AUR"
+
+msgid "Clean"
+msgstr "Очистка"
+
+# Notification messages
+msgid "notify_building"
+msgstr "Сборка пакета..."
+
+msgid "notify_build_ok"
+msgstr "✓ Сборка успешно завершена!"
+
+msgid "notify_build_fail"
+msgstr "✗ Сборка завершилась с ошибкой! Смотрите: "
+
+msgid "notify_build_force"
+msgstr "Принудительная пересборка..."
+
+msgid "notify_build_force_ok"
+msgstr "✓ Принудительная пересборка завершена!"
+
+msgid "notify_build_force_fail"
+msgstr "✗ Принудительная пересборка завершилась с ошибкой! Смотрите: "
+
+msgid "notify_build_nocheck"
+msgstr "Сборка (без тестов)..."
+
+msgid "notify_build_nocheck_ok"
+msgstr "✓ Сборка (без тестов) завершена!"
+
+msgid "notify_build_nocheck_fail"
+msgstr "✗ Сборка (без тестов) завершилась с ошибкой! Смотрите: "
+
+msgid "notify_build_nogpg"
+msgstr "Сборка (без GPG)..."
+
+msgid "notify_build_nogpg_ok"
+msgstr "✓ Сборка (без GPG) завершена!"
+
+msgid "notify_build_nogpg_fail"
+msgstr "✗ Сборка (без GPG) завершилась с ошибкой! Смотрите: "
+
+msgid "notify_fetch_sources"
+msgstr "Загрузка исходников..."
+
+msgid "notify_fetch_sources_ok"
+msgstr "✓ Исходники успешно загружены!"
+
+msgid "notify_fetch_sources_fail"
+msgstr "✗ Ошибка загрузки исходников! Смотрите: "
+
+msgid "notify_installing"
+msgstr "Установка пакета..."
+
+msgid "notify_install_ok"
+msgstr "✓ Установка завершена!"
+
+msgid "notify_install_fail"
+msgstr "✗ Установка завершилась с ошибкой! Смотрите: "
+
+msgid "notify_install_force"
+msgstr "Принудительная установка..."
+
+msgid "notify_install_force_ok"
+msgstr "✓ Принудительная установка завершена!"
+
+msgid "notify_install_force_fail"
+msgstr "✗ Принудительная установка завершилась с ошибкой! Смотрите: "
+
+msgid "notify_install_rmdeps"
+msgstr "Установка (удаление зависимостей сборки)..."
+
+msgid "notify_install_rmdeps_ok"
+msgstr "✓ Установка (rmdeps) завершена!"
+
+msgid "notify_install_rmdeps_fail"
+msgstr "✗ Установка (rmdeps) завершилась с ошибкой! Смотрите: "
+
+msgid "notify_install_nocheck"
+msgstr "Установка (без тестов)..."
+
+msgid "notify_install_nocheck_ok"
+msgstr "✓ Установка (без тестов) завершена!"
+
+msgid "notify_install_nocheck_fail"
+msgstr "✗ Установка (без тестов) завершилась с ошибкой! Смотрите: "
+
+msgid "notify_install_nogpg"
+msgstr "Установка (без GPG)..."
+
+msgid "notify_install_nogpg_ok"
+msgstr "✓ Установка (без GPG) завершена!"
+
+msgid "notify_install_nogpg_fail"
+msgstr "✗ Установка (без GPG) завершилась с ошибкой! Смотрите: "
+
+msgid "notify_checksums"
+msgstr "Обновление контрольных сумм..."
+
+msgid "notify_checksums_ok"
+msgstr "✓ Контрольные суммы успешно обновлены!"
+
+msgid "notify_checksums_fail"
+msgstr "✗ Ошибка обновления контрольных сумм! Смотрите: "
+
+msgid "notify_genchecksums"
+msgstr "Генерация контрольных сумм..."
+
+msgid "notify_genchecksums_ok"
+msgstr "✓ Контрольные суммы успешно созданы!"
+
+msgid "notify_genchecksums_fail"
+msgstr "✗ Ошибка генерации контрольных сумм! Смотрите: "
+
+msgid "notify_srcinfo"
+msgstr "Обновление .SRCINFO..."
+
+msgid "notify_srcinfo_ok"
+msgstr "✓ .SRCINFO успешно обновлён!"
+
+msgid "notify_srcinfo_fail"
+msgstr "✗ Ошибка обновления .SRCINFO! Смотрите: "
+
+msgid "notify_namcap"
+msgstr "Запуск namcap..."
+
+msgid "notify_namcap_warn"
+msgstr "⚠ Namcap завершён с предупреждениями. Смотрите: "
+
+msgid "notify_namcap_ok"
+msgstr "✓ Namcap завершён! Предупреждений не найдено."
+
+msgid "notify_namcap_fail"
+msgstr "✗ Namcap завершился с ошибкой! Смотрите: "
+
+msgid "notify_shellcheck"
+msgstr "Запуск ShellCheck..."
+
+msgid "notify_shellcheck_warn"
+msgstr "⚠ ShellCheck обнаружил предупреждения. Смотрите: "
+
+msgid "notify_shellcheck_ok"
+msgstr "✓ ShellCheck: Проблем не найдено."
+
+msgid "notify_shellcheck_fail"
+msgstr "✗ ShellCheck завершился с ошибкой! Смотрите: "
+
+msgid "notify_push_aur"
+msgstr "Отправка в AUR..."
+
+msgid "notify_push_aur_ok"
+msgstr "✓ Успешно отправлено в AUR!"
+
+msgid "notify_push_aur_fail"
+msgstr "✗ Ошибка отправки в AUR! Смотрите: "
+
+msgid "notify_push_aur_tag"
+msgstr "Создание тега и отправка в AUR..."
+
+msgid "notify_push_aur_tag_ok"
+msgstr "✓ Тег создан и отправлен в AUR!"
+
+msgid "notify_push_aur_tag_fail"
+msgstr "✗ Ошибка создания тега/отправки в AUR! Смотрите: "
+
+msgid "notify_clean_src"
+msgstr "Очистка каталога источников..."
+
+msgid "notify_clean_src_ok"
+msgstr "✓ Каталог источников успешно очищен!"
+
+msgid "notify_clean_src_fail"
+msgstr "✗ Ошибка очистки каталога источников! Смотрите: "
+
+msgid "notify_clean_all"
+msgstr "Полная очистка..."
+
+msgid "notify_clean_all_ok"
+msgstr "✓ Всё успешно очищено!"
+
+msgid "notify_clean_all_fail"
+msgstr "✗ Ошибка очистки! Смотрите: "
+
+msgid "notify_full_workflow"
+msgstr "Выполнение полного рабочего процесса..."
+
+msgid "notify_full_workflow_ok"
+msgstr "✓ Полный рабочий процесс завершён!"
+
+msgid "notify_full_workflow_fail"
+msgstr "✗ Полный рабочий процесс завершился с ошибкой! Смотрите: "
+
+# CLI strings
+msgid "Failed to resolve parent directory"
+msgstr "Не удалось определить родительский каталог"
+
+msgid "Directory does not exist"
+msgstr "Каталог не существует"
+
+msgid "No PKGBUILD found in directory"
+msgstr "PKGBUILD не найден в каталоге"
+
+msgid "Failed to read PKGBUILD info with makepkg --printsrcinfo"
+msgstr "Не удалось прочитать информацию PKGBUILD с помощью makepkg --printsrcinfo"
+
+msgid "aur-push-tag requires a version tag argument"
+msgstr "aur-push-tag требует аргумент тега версии"
+
+msgid "Unknown command"
+msgstr "Неизвестная команда"
+
+msgid "PKGBUILD Manager - CLI Tool"
+msgstr "PKGBUILD Manager - Инструмент командной строки"
+
+msgid "Usage:"
+msgstr "Использование:"
+
+msgid "Build commands"
+msgstr "Команды сборки"
+
+msgid "Compile package (makepkg)"
+msgstr "Собрать пакет (makepkg)"
+
+msgid "Compile and clean srcdir (makepkg -c)"
+msgstr "Собрать и очистить каталог источников (makepkg -c)"
+
+msgid "Force recompile (makepkg -f)"
+msgstr "Принудительная пересборка (makepkg -f)"
+
+msgid "Skip check() function (makepkg --nocheck)"
+msgstr "Пропустить функцию check() (makepkg --nocheck)"
+
+msgid "Skip PGP signature check (makepkg --skippgpcheck)"
+msgstr "Пропустить проверку подписи PGP (makepkg --skippgpcheck)"
+
+msgid "Compile with custom flags passed after path"
+msgstr "Собрать с пользовательскими флагами после пути"
+
+msgid "Download and extract sources only (makepkg -o)"
+msgstr "Только загрузить и извлечь исходники (makepkg -o)"
+
+msgid "Install commands"
+msgstr "Команды установки"
+
+msgid "Compile, install and resolve deps (makepkg -si)"
+msgstr "Собрать, установить и разрешить зависимости (makepkg -si)"
+
+msgid "Compile, install and clean srcdir (makepkg -sic)"
+msgstr "Собрать, установить и очистить каталог источников (makepkg -sic)"
+
+msgid "Force compile and install (makepkg -sif)"
+msgstr "Принудительно собрать и установить (makepkg -sif)"
+
+msgid "Install and remove makedeps after (makepkg -sir)"
+msgstr "Установить и удалить зависимости сборки (makepkg -sir)"
+
+msgid "Install without running check()"
+msgstr "Установить без запуска check()"
+
+msgid "Install skipping PGP checks"
+msgstr "Установить, пропустив проверки PGP"
+
+msgid "Install with custom flags passed after path"
+msgstr "Установить с пользовательскими флагами после пути"
+
+msgid "Package metadata commands"
+msgstr "Команды метаданных пакета"
+
+msgid "Update checksums in PKGBUILD (updpkgsums)"
+msgstr "Обновить контрольные суммы в PKGBUILD (updpkgsums)"
+
+msgid "Generate checksums and print to stdout (makepkg -g)"
+msgstr "Создать контрольные суммы и вывести на экран (makepkg -g)"
+
+msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
+msgstr "Пересоздать .SRCINFO (makepkg --printsrcinfo)"
+
+msgid "Audit commands"
+msgstr "Команды аудита"
+
+msgid "Run namcap on PKGBUILD and built packages"
+msgstr "Запустить namcap для PKGBUILD и собранных пакетов"
+
+msgid "Run shellcheck on PKGBUILD"
+msgstr "Запустить shellcheck для PKGBUILD"
+
+msgid "Clean commands"
+msgstr "Команды очистки"
+
+msgid "Clean srcdir with makepkg (makepkg -c)"
+msgstr "Очистить каталог источников с помощью makepkg (makepkg -c)"
+
+msgid "Remove src/, pkg/ and built packages"
+msgstr "Удалить src/, pkg/ и собранные пакеты"
+
+msgid "AUR/Git commands"
+msgstr "Команды AUR/Git"
+
+msgid "Stage, commit and push to AUR (auto message if not provided)"
+msgstr "Подготовить, зафиксировать и отправить в AUR (авто-сообщение, если не задано)"
+
+msgid "Push with version tag (e.g. 1.2.3-1)"
+msgstr "Отправить с тегом версии (например 1.2.3-1)"
+
+msgid "Other"
+msgstr "Прочее"
+
+msgid "Show this help message"
+msgstr "Показать это справочное сообщение"
+
+msgid "namcap not found. Install it with: sudo pacman -S namcap"
+msgstr "namcap не найден. Установите: sudo pacman -S namcap"
+
+msgid "namcap failed with status"
+msgstr "namcap завершился со статусом"
+
+msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
+msgstr "shellcheck не найден. Установите: sudo pacman -S shellcheck"
+
+msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
+msgstr "updpkgsums не найден. Установите: sudo pacman -S pacman-contrib"
+
+msgid "makepkg -g failed:"
+msgstr "makepkg -g завершился с ошибкой:"
+
+msgid "Removing src/ pkg/ and built packages in"
+msgstr "Удаление src/, pkg/ и собранных пакетов в"
+
+msgid "Removed"
+msgstr "Удалено"
+
+msgid "Note: nothing to commit or commit failed — continuing with push."
+msgstr "Примечание: нечего фиксировать или фиксация завершилась с ошибкой — продолжение отправки."
+
+msgid "makepkg --printsrcinfo failed:"
+msgstr "makepkg --printsrcinfo завершился с ошибкой:"
+
+msgid "Note: push to origin/master failed"
+msgstr "Примечание: отправка в origin/master завершилась с ошибкой"
+
+msgid "Trying plain 'git push'..."
+msgstr "Попытка обычного 'git push'..."
+
+msgid "Symlink scripts to user directory with localization"
+msgstr "Создать символические ссылки на скрипты в каталоге пользователя с локализацией"
+
+msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
+msgstr "Скрипты Nautilus успешно настроены в подменю 'PKGBUILD'."

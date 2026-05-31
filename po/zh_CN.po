@@ -1,0 +1,465 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: pkgbuild_manager 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-31 14:00-0300\n"
+"PO-Revision-Date: 2026-05-31 14:10-0300\n"
+"Last-Translator: AI <ai@example.com>\n"
+"Language-Team: Chinese (Simplified)\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+# Menu labels
+msgid "00_Full Workflow"
+msgstr "完整工作流"
+
+msgid "01_Build"
+msgstr "构建"
+
+msgid "02b_Build and Clean"
+msgstr "构建并清理"
+
+msgid "08_Build Force"
+msgstr "构建（强制）"
+
+msgid "09_Build NoCheck"
+msgstr "构建（跳过检查）"
+
+msgid "10_Build NoGPG"
+msgstr "构建（跳过GPG）"
+
+msgid "11_Fetch Sources"
+msgstr "获取源代码"
+
+msgid "02_Install"
+msgstr "安装"
+
+msgid "12_Install Force"
+msgstr "安装（强制）"
+
+msgid "13_Install RmDeps"
+msgstr "安装（删除依赖）"
+
+msgid "14_Install NoCheck"
+msgstr "安装（跳过检查）"
+
+msgid "15_Install NoGPG"
+msgstr "安装（跳过GPG）"
+
+msgid "03_Update Checksums"
+msgstr "更新校验和"
+
+msgid "04_Update .SRCINFO"
+msgstr "更新 .SRCINFO"
+
+msgid "16_Gen Checksums"
+msgstr "生成校验和"
+
+msgid "05b_ShellCheck"
+msgstr "运行 ShellCheck"
+
+msgid "05_Namcap"
+msgstr "运行 Namcap"
+
+msgid "06_Push AUR"
+msgstr "推送到 AUR"
+
+msgid "17_Push AUR Tag"
+msgstr "推送标签到 AUR"
+
+msgid "07b_Clean Everything"
+msgstr "全部清理"
+
+msgid "07_Clean srcdir"
+msgstr "清理源目录"
+
+# Settings panel
+msgid "PKGBUILD Manager — Menu Settings"
+msgstr "PKGBUILD Manager — 菜单设置"
+
+msgid "Reset"
+msgstr "重置"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "+ Add Group"
+msgstr "+ 添加组"
+
+msgid "+ Add Item"
+msgstr "+ 添加项目"
+
+msgid "New Group"
+msgstr "新建组"
+
+msgid "Add Action"
+msgstr "添加操作"
+
+msgid "All actions are already in a group."
+msgstr "所有操作已在组中。"
+
+msgid "Saved! Restart the file manager to apply."
+msgstr "已保存！请重启文件管理器以应用更改。"
+
+# Default group names
+msgid "Actions"
+msgstr "操作"
+
+msgid "Metadata"
+msgstr "元数据"
+
+msgid "Audit"
+msgstr "审查"
+
+msgid "Git / AUR"
+msgstr "Git / AUR"
+
+msgid "Clean"
+msgstr "清理"
+
+# Notification messages
+msgid "notify_building"
+msgstr "正在构建软件包..."
+
+msgid "notify_build_ok"
+msgstr "✓ 构建成功完成！"
+
+msgid "notify_build_fail"
+msgstr "✗ 构建失败！请查看："
+
+msgid "notify_build_force"
+msgstr "正在强制重新构建..."
+
+msgid "notify_build_force_ok"
+msgstr "✓ 强制重新构建完成！"
+
+msgid "notify_build_force_fail"
+msgstr "✗ 强制重新构建失败！请查看："
+
+msgid "notify_build_nocheck"
+msgstr "正在构建（跳过测试）..."
+
+msgid "notify_build_nocheck_ok"
+msgstr "✓ 构建（跳过测试）完成！"
+
+msgid "notify_build_nocheck_fail"
+msgstr "✗ 构建（跳过测试）失败！请查看："
+
+msgid "notify_build_nogpg"
+msgstr "正在构建（跳过GPG）..."
+
+msgid "notify_build_nogpg_ok"
+msgstr "✓ 构建（跳过GPG）完成！"
+
+msgid "notify_build_nogpg_fail"
+msgstr "✗ 构建（跳过GPG）失败！请查看："
+
+msgid "notify_fetch_sources"
+msgstr "正在获取源代码..."
+
+msgid "notify_fetch_sources_ok"
+msgstr "✓ 源代码获取成功！"
+
+msgid "notify_fetch_sources_fail"
+msgstr "✗ 获取源代码失败！请查看："
+
+msgid "notify_installing"
+msgstr "正在安装软件包..."
+
+msgid "notify_install_ok"
+msgstr "✓ 安装完成！"
+
+msgid "notify_install_fail"
+msgstr "✗ 安装失败！请查看："
+
+msgid "notify_install_force"
+msgstr "正在强制安装..."
+
+msgid "notify_install_force_ok"
+msgstr "✓ 强制安装完成！"
+
+msgid "notify_install_force_fail"
+msgstr "✗ 强制安装失败！请查看："
+
+msgid "notify_install_rmdeps"
+msgstr "正在安装（删除构建依赖）..."
+
+msgid "notify_install_rmdeps_ok"
+msgstr "✓ 安装（rmdeps）完成！"
+
+msgid "notify_install_rmdeps_fail"
+msgstr "✗ 安装（rmdeps）失败！请查看："
+
+msgid "notify_install_nocheck"
+msgstr "正在安装（跳过测试）..."
+
+msgid "notify_install_nocheck_ok"
+msgstr "✓ 安装（跳过测试）完成！"
+
+msgid "notify_install_nocheck_fail"
+msgstr "✗ 安装（跳过测试）失败！请查看："
+
+msgid "notify_install_nogpg"
+msgstr "正在安装（跳过GPG）..."
+
+msgid "notify_install_nogpg_ok"
+msgstr "✓ 安装（跳过GPG）完成！"
+
+msgid "notify_install_nogpg_fail"
+msgstr "✗ 安装（跳过GPG）失败！请查看："
+
+msgid "notify_checksums"
+msgstr "正在更新校验和..."
+
+msgid "notify_checksums_ok"
+msgstr "✓ 校验和更新成功！"
+
+msgid "notify_checksums_fail"
+msgstr "✗ 更新校验和失败！请查看："
+
+msgid "notify_genchecksums"
+msgstr "正在生成校验和..."
+
+msgid "notify_genchecksums_ok"
+msgstr "✓ 校验和生成成功！"
+
+msgid "notify_genchecksums_fail"
+msgstr "✗ 生成校验和失败！请查看："
+
+msgid "notify_srcinfo"
+msgstr "正在更新 .SRCINFO..."
+
+msgid "notify_srcinfo_ok"
+msgstr "✓ .SRCINFO 更新成功！"
+
+msgid "notify_srcinfo_fail"
+msgstr "✗ 更新 .SRCINFO 失败！请查看："
+
+msgid "notify_namcap"
+msgstr "正在运行 namcap..."
+
+msgid "notify_namcap_warn"
+msgstr "⚠ Namcap 完成，有警告。请查看："
+
+msgid "notify_namcap_ok"
+msgstr "✓ Namcap 完成！未发现警告。"
+
+msgid "notify_namcap_fail"
+msgstr "✗ Namcap 失败！请查看："
+
+msgid "notify_shellcheck"
+msgstr "正在运行 ShellCheck..."
+
+msgid "notify_shellcheck_warn"
+msgstr "⚠ ShellCheck 发现警告。请查看："
+
+msgid "notify_shellcheck_ok"
+msgstr "✓ ShellCheck：未发现问题。"
+
+msgid "notify_shellcheck_fail"
+msgstr "✗ ShellCheck 失败！请查看："
+
+msgid "notify_push_aur"
+msgstr "正在推送到 AUR..."
+
+msgid "notify_push_aur_ok"
+msgstr "✓ 成功推送到 AUR！"
+
+msgid "notify_push_aur_fail"
+msgstr "✗ 推送到 AUR 失败！请查看："
+
+msgid "notify_push_aur_tag"
+msgstr "正在创建标签并推送到 AUR..."
+
+msgid "notify_push_aur_tag_ok"
+msgstr "✓ 标签已创建并推送到 AUR！"
+
+msgid "notify_push_aur_tag_fail"
+msgstr "✗ 创建标签/推送到 AUR 失败！请查看："
+
+msgid "notify_clean_src"
+msgstr "正在清理源目录..."
+
+msgid "notify_clean_src_ok"
+msgstr "✓ 源目录清理成功！"
+
+msgid "notify_clean_src_fail"
+msgstr "✗ 清理源目录失败！请查看："
+
+msgid "notify_clean_all"
+msgstr "正在全部清理..."
+
+msgid "notify_clean_all_ok"
+msgstr "✓ 全部清理成功！"
+
+msgid "notify_clean_all_fail"
+msgstr "✗ 清理失败！请查看："
+
+msgid "notify_full_workflow"
+msgstr "正在执行完整工作流..."
+
+msgid "notify_full_workflow_ok"
+msgstr "✓ 完整工作流完成！"
+
+msgid "notify_full_workflow_fail"
+msgstr "✗ 完整工作流失败！请查看："
+
+# CLI strings
+msgid "Failed to resolve parent directory"
+msgstr "无法解析父目录"
+
+msgid "Directory does not exist"
+msgstr "目录不存在"
+
+msgid "No PKGBUILD found in directory"
+msgstr "目录中未找到 PKGBUILD"
+
+msgid "Failed to read PKGBUILD info with makepkg --printsrcinfo"
+msgstr "使用 makepkg --printsrcinfo 读取 PKGBUILD 信息失败"
+
+msgid "aur-push-tag requires a version tag argument"
+msgstr "aur-push-tag 需要一个版本标签参数"
+
+msgid "Unknown command"
+msgstr "未知命令"
+
+msgid "PKGBUILD Manager - CLI Tool"
+msgstr "PKGBUILD Manager - 命令行工具"
+
+msgid "Usage:"
+msgstr "用法："
+
+msgid "Build commands"
+msgstr "构建命令"
+
+msgid "Compile package (makepkg)"
+msgstr "编译软件包（makepkg）"
+
+msgid "Compile and clean srcdir (makepkg -c)"
+msgstr "编译并清理源目录（makepkg -c）"
+
+msgid "Force recompile (makepkg -f)"
+msgstr "强制重新编译（makepkg -f）"
+
+msgid "Skip check() function (makepkg --nocheck)"
+msgstr "跳过 check() 函数（makepkg --nocheck）"
+
+msgid "Skip PGP signature check (makepkg --skippgpcheck)"
+msgstr "跳过 PGP 签名检查（makepkg --skippgpcheck）"
+
+msgid "Compile with custom flags passed after path"
+msgstr "使用路径后传递的自定义标志编译"
+
+msgid "Download and extract sources only (makepkg -o)"
+msgstr "仅下载并解压源代码（makepkg -o）"
+
+msgid "Install commands"
+msgstr "安装命令"
+
+msgid "Compile, install and resolve deps (makepkg -si)"
+msgstr "编译、安装并解决依赖（makepkg -si）"
+
+msgid "Compile, install and clean srcdir (makepkg -sic)"
+msgstr "编译、安装并清理源目录（makepkg -sic）"
+
+msgid "Force compile and install (makepkg -sif)"
+msgstr "强制编译并安装（makepkg -sif）"
+
+msgid "Install and remove makedeps after (makepkg -sir)"
+msgstr "安装并在之后删除构建依赖（makepkg -sir）"
+
+msgid "Install without running check()"
+msgstr "安装时不运行 check()"
+
+msgid "Install skipping PGP checks"
+msgstr "安装时跳过 PGP 检查"
+
+msgid "Install with custom flags passed after path"
+msgstr "使用路径后传递的自定义标志安装"
+
+msgid "Package metadata commands"
+msgstr "软件包元数据命令"
+
+msgid "Update checksums in PKGBUILD (updpkgsums)"
+msgstr "更新 PKGBUILD 中的校验和（updpkgsums）"
+
+msgid "Generate checksums and print to stdout (makepkg -g)"
+msgstr "生成校验和并输出到标准输出（makepkg -g）"
+
+msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
+msgstr "重新生成 .SRCINFO（makepkg --printsrcinfo）"
+
+msgid "Audit commands"
+msgstr "审查命令"
+
+msgid "Run namcap on PKGBUILD and built packages"
+msgstr "对 PKGBUILD 和已构建软件包运行 namcap"
+
+msgid "Run shellcheck on PKGBUILD"
+msgstr "对 PKGBUILD 运行 shellcheck"
+
+msgid "Clean commands"
+msgstr "清理命令"
+
+msgid "Clean srcdir with makepkg (makepkg -c)"
+msgstr "使用 makepkg 清理源目录（makepkg -c）"
+
+msgid "Remove src/, pkg/ and built packages"
+msgstr "删除 src/、pkg/ 和已构建的软件包"
+
+msgid "AUR/Git commands"
+msgstr "AUR/Git 命令"
+
+msgid "Stage, commit and push to AUR (auto message if not provided)"
+msgstr "暂存、提交并推送到 AUR（未提供时自动生成提交信息）"
+
+msgid "Push with version tag (e.g. 1.2.3-1)"
+msgstr "使用版本标签推送（例如 1.2.3-1）"
+
+msgid "Other"
+msgstr "其他"
+
+msgid "Show this help message"
+msgstr "显示此帮助信息"
+
+msgid "namcap not found. Install it with: sudo pacman -S namcap"
+msgstr "未找到 namcap。请安装：sudo pacman -S namcap"
+
+msgid "namcap failed with status"
+msgstr "namcap 失败，状态码："
+
+msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
+msgstr "未找到 shellcheck。请安装：sudo pacman -S shellcheck"
+
+msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
+msgstr "未找到 updpkgsums。请安装：sudo pacman -S pacman-contrib"
+
+msgid "makepkg -g failed:"
+msgstr "makepkg -g 失败："
+
+msgid "Removing src/ pkg/ and built packages in"
+msgstr "正在删除以下目录中的 src/、pkg/ 和已构建的软件包"
+
+msgid "Removed"
+msgstr "已删除"
+
+msgid "Note: nothing to commit or commit failed — continuing with push."
+msgstr "注意：无内容可提交或提交失败 — 继续推送。"
+
+msgid "makepkg --printsrcinfo failed:"
+msgstr "makepkg --printsrcinfo 失败："
+
+msgid "Note: push to origin/master failed"
+msgstr "注意：推送到 origin/master 失败"
+
+msgid "Trying plain 'git push'..."
+msgstr "尝试普通 'git push'..."
+
+msgid "Symlink scripts to user directory with localization"
+msgstr "将脚本符号链接到用户目录（含本地化）"
+
+msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
+msgstr "Nautilus 脚本已成功配置在 'PKGBUILD' 子菜单下。"

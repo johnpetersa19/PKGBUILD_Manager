@@ -1,0 +1,465 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: pkgbuild_manager 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-31 14:00-0300\n"
+"PO-Revision-Date: 2026-05-31 14:10-0300\n"
+"Last-Translator: AI <ai@example.com>\n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+# Menu labels
+msgid "00_Full Workflow"
+msgstr "フルワークフロー"
+
+msgid "01_Build"
+msgstr "ビルド"
+
+msgid "02b_Build and Clean"
+msgstr "ビルドしてクリーン"
+
+msgid "08_Build Force"
+msgstr "ビルド（強制）"
+
+msgid "09_Build NoCheck"
+msgstr "ビルド（チェックなし）"
+
+msgid "10_Build NoGPG"
+msgstr "ビルド（GPGなし）"
+
+msgid "11_Fetch Sources"
+msgstr "ソースを取得"
+
+msgid "02_Install"
+msgstr "インストール"
+
+msgid "12_Install Force"
+msgstr "インストール（強制）"
+
+msgid "13_Install RmDeps"
+msgstr "インストール（依存関係を削除）"
+
+msgid "14_Install NoCheck"
+msgstr "インストール（チェックなし）"
+
+msgid "15_Install NoGPG"
+msgstr "インストール（GPGなし）"
+
+msgid "03_Update Checksums"
+msgstr "チェックサムを更新"
+
+msgid "04_Update .SRCINFO"
+msgstr ".SRCINFOを更新"
+
+msgid "16_Gen Checksums"
+msgstr "チェックサムを生成"
+
+msgid "05b_ShellCheck"
+msgstr "ShellCheckを実行"
+
+msgid "05_Namcap"
+msgstr "Namcapを実行"
+
+msgid "06_Push AUR"
+msgstr "AURにプッシュ"
+
+msgid "17_Push AUR Tag"
+msgstr "AURにタグをプッシュ"
+
+msgid "07b_Clean Everything"
+msgstr "すべてをクリーン"
+
+msgid "07_Clean srcdir"
+msgstr "ソースディレクトリをクリーン"
+
+# Settings panel
+msgid "PKGBUILD Manager — Menu Settings"
+msgstr "PKGBUILD Manager — メニュー設定"
+
+msgid "Reset"
+msgstr "リセット"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "+ Add Group"
+msgstr "+ グループを追加"
+
+msgid "+ Add Item"
+msgstr "+ 項目を追加"
+
+msgid "New Group"
+msgstr "新しいグループ"
+
+msgid "Add Action"
+msgstr "アクションを追加"
+
+msgid "All actions are already in a group."
+msgstr "すべてのアクションはすでにグループに含まれています。"
+
+msgid "Saved! Restart the file manager to apply."
+msgstr "保存しました！適用するにはファイルマネージャーを再起動してください。"
+
+# Default group names
+msgid "Actions"
+msgstr "アクション"
+
+msgid "Metadata"
+msgstr "メタデータ"
+
+msgid "Audit"
+msgstr "監査"
+
+msgid "Git / AUR"
+msgstr "Git / AUR"
+
+msgid "Clean"
+msgstr "クリーン"
+
+# Notification messages
+msgid "notify_building"
+msgstr "パッケージをビルド中..."
+
+msgid "notify_build_ok"
+msgstr "✓ ビルドが正常に完了しました！"
+
+msgid "notify_build_fail"
+msgstr "✗ ビルドに失敗しました！確認してください："
+
+msgid "notify_build_force"
+msgstr "強制的に再ビルド中..."
+
+msgid "notify_build_force_ok"
+msgstr "✓ 強制再ビルドが完了しました！"
+
+msgid "notify_build_force_fail"
+msgstr "✗ 強制再ビルドに失敗しました！確認してください："
+
+msgid "notify_build_nocheck"
+msgstr "ビルド中（チェックなし）..."
+
+msgid "notify_build_nocheck_ok"
+msgstr "✓ ビルド（チェックなし）が完了しました！"
+
+msgid "notify_build_nocheck_fail"
+msgstr "✗ ビルド（チェックなし）に失敗しました！確認してください："
+
+msgid "notify_build_nogpg"
+msgstr "ビルド中（GPGなし）..."
+
+msgid "notify_build_nogpg_ok"
+msgstr "✓ ビルド（GPGなし）が完了しました！"
+
+msgid "notify_build_nogpg_fail"
+msgstr "✗ ビルド（GPGなし）に失敗しました！確認してください："
+
+msgid "notify_fetch_sources"
+msgstr "ソースを取得中..."
+
+msgid "notify_fetch_sources_ok"
+msgstr "✓ ソースの取得が成功しました！"
+
+msgid "notify_fetch_sources_fail"
+msgstr "✗ ソースの取得に失敗しました！確認してください："
+
+msgid "notify_installing"
+msgstr "パッケージをインストール中..."
+
+msgid "notify_install_ok"
+msgstr "✓ インストールが完了しました！"
+
+msgid "notify_install_fail"
+msgstr "✗ インストールに失敗しました！確認してください："
+
+msgid "notify_install_force"
+msgstr "強制的にインストール中..."
+
+msgid "notify_install_force_ok"
+msgstr "✓ 強制インストールが完了しました！"
+
+msgid "notify_install_force_fail"
+msgstr "✗ 強制インストールに失敗しました！確認してください："
+
+msgid "notify_install_rmdeps"
+msgstr "インストール中（ビルド依存関係を削除）..."
+
+msgid "notify_install_rmdeps_ok"
+msgstr "✓ インストール（rmdeps）が完了しました！"
+
+msgid "notify_install_rmdeps_fail"
+msgstr "✗ インストール（rmdeps）に失敗しました！確認してください："
+
+msgid "notify_install_nocheck"
+msgstr "インストール中（チェックなし）..."
+
+msgid "notify_install_nocheck_ok"
+msgstr "✓ インストール（チェックなし）が完了しました！"
+
+msgid "notify_install_nocheck_fail"
+msgstr "✗ インストール（チェックなし）に失敗しました！確認してください："
+
+msgid "notify_install_nogpg"
+msgstr "インストール中（GPGなし）..."
+
+msgid "notify_install_nogpg_ok"
+msgstr "✓ インストール（GPGなし）が完了しました！"
+
+msgid "notify_install_nogpg_fail"
+msgstr "✗ インストール（GPGなし）に失敗しました！確認してください："
+
+msgid "notify_checksums"
+msgstr "チェックサムを更新中..."
+
+msgid "notify_checksums_ok"
+msgstr "✓ チェックサムが正常に更新されました！"
+
+msgid "notify_checksums_fail"
+msgstr "✗ チェックサムの更新に失敗しました！確認してください："
+
+msgid "notify_genchecksums"
+msgstr "チェックサムを生成中..."
+
+msgid "notify_genchecksums_ok"
+msgstr "✓ チェックサムが正常に生成されました！"
+
+msgid "notify_genchecksums_fail"
+msgstr "✗ チェックサムの生成に失敗しました！確認してください："
+
+msgid "notify_srcinfo"
+msgstr ".SRCINFOを更新中..."
+
+msgid "notify_srcinfo_ok"
+msgstr "✓ .SRCINFOが正常に更新されました！"
+
+msgid "notify_srcinfo_fail"
+msgstr "✗ .SRCINFOの更新に失敗しました！確認してください："
+
+msgid "notify_namcap"
+msgstr "namcapを実行中..."
+
+msgid "notify_namcap_warn"
+msgstr "⚠ Namcapが警告付きで完了しました。確認してください："
+
+msgid "notify_namcap_ok"
+msgstr "✓ Namcapが完了しました！警告は見つかりませんでした。"
+
+msgid "notify_namcap_fail"
+msgstr "✗ Namcapに失敗しました！確認してください："
+
+msgid "notify_shellcheck"
+msgstr "ShellCheckを実行中..."
+
+msgid "notify_shellcheck_warn"
+msgstr "⚠ ShellCheckが警告を検出しました。確認してください："
+
+msgid "notify_shellcheck_ok"
+msgstr "✓ ShellCheck：問題は見つかりませんでした。"
+
+msgid "notify_shellcheck_fail"
+msgstr "✗ ShellCheckに失敗しました！確認してください："
+
+msgid "notify_push_aur"
+msgstr "AURにプッシュ中..."
+
+msgid "notify_push_aur_ok"
+msgstr "✓ AURへのプッシュが成功しました！"
+
+msgid "notify_push_aur_fail"
+msgstr "✗ AURへのプッシュに失敗しました！確認してください："
+
+msgid "notify_push_aur_tag"
+msgstr "タグを作成してAURにプッシュ中..."
+
+msgid "notify_push_aur_tag_ok"
+msgstr "✓ タグを作成してAURにプッシュしました！"
+
+msgid "notify_push_aur_tag_fail"
+msgstr "✗ タグ作成/AURへのプッシュに失敗しました！確認してください："
+
+msgid "notify_clean_src"
+msgstr "ソースディレクトリをクリーン中..."
+
+msgid "notify_clean_src_ok"
+msgstr "✓ ソースディレクトリのクリーンが完了しました！"
+
+msgid "notify_clean_src_fail"
+msgstr "✗ ソースディレクトリのクリーンに失敗しました！確認してください："
+
+msgid "notify_clean_all"
+msgstr "すべてをクリーン中..."
+
+msgid "notify_clean_all_ok"
+msgstr "✓ すべてのクリーンが完了しました！"
+
+msgid "notify_clean_all_fail"
+msgstr "✗ クリーンに失敗しました！確認してください："
+
+msgid "notify_full_workflow"
+msgstr "フルワークフローを実行中..."
+
+msgid "notify_full_workflow_ok"
+msgstr "✓ フルワークフローが完了しました！"
+
+msgid "notify_full_workflow_fail"
+msgstr "✗ フルワークフローに失敗しました！確認してください："
+
+# CLI strings
+msgid "Failed to resolve parent directory"
+msgstr "親ディレクトリを解決できませんでした"
+
+msgid "Directory does not exist"
+msgstr "ディレクトリが存在しません"
+
+msgid "No PKGBUILD found in directory"
+msgstr "ディレクトリにPKGBUILDが見つかりませんでした"
+
+msgid "Failed to read PKGBUILD info with makepkg --printsrcinfo"
+msgstr "makepkg --printsrcinfo でPKGBUILD情報を読み取れませんでした"
+
+msgid "aur-push-tag requires a version tag argument"
+msgstr "aur-push-tagにはバージョンタグの引数が必要です"
+
+msgid "Unknown command"
+msgstr "不明なコマンド"
+
+msgid "PKGBUILD Manager - CLI Tool"
+msgstr "PKGBUILD Manager - CLIツール"
+
+msgid "Usage:"
+msgstr "使い方："
+
+msgid "Build commands"
+msgstr "ビルドコマンド"
+
+msgid "Compile package (makepkg)"
+msgstr "パッケージをコンパイル（makepkg）"
+
+msgid "Compile and clean srcdir (makepkg -c)"
+msgstr "コンパイルしてソースディレクトリをクリーン（makepkg -c）"
+
+msgid "Force recompile (makepkg -f)"
+msgstr "強制的に再コンパイル（makepkg -f）"
+
+msgid "Skip check() function (makepkg --nocheck)"
+msgstr "check()関数をスキップ（makepkg --nocheck）"
+
+msgid "Skip PGP signature check (makepkg --skippgpcheck)"
+msgstr "PGP署名チェックをスキップ（makepkg --skippgpcheck）"
+
+msgid "Compile with custom flags passed after path"
+msgstr "パスの後に渡されたカスタムフラグでコンパイル"
+
+msgid "Download and extract sources only (makepkg -o)"
+msgstr "ソースのみをダウンロードして展開（makepkg -o）"
+
+msgid "Install commands"
+msgstr "インストールコマンド"
+
+msgid "Compile, install and resolve deps (makepkg -si)"
+msgstr "コンパイル、インストール、依存関係を解決（makepkg -si）"
+
+msgid "Compile, install and clean srcdir (makepkg -sic)"
+msgstr "コンパイル、インストール、ソースディレクトリをクリーン（makepkg -sic）"
+
+msgid "Force compile and install (makepkg -sif)"
+msgstr "強制的にコンパイルしてインストール（makepkg -sif）"
+
+msgid "Install and remove makedeps after (makepkg -sir)"
+msgstr "インストールして後でビルド依存関係を削除（makepkg -sir）"
+
+msgid "Install without running check()"
+msgstr "check()を実行せずにインストール"
+
+msgid "Install skipping PGP checks"
+msgstr "PGPチェックをスキップしてインストール"
+
+msgid "Install with custom flags passed after path"
+msgstr "パスの後に渡されたカスタムフラグでインストール"
+
+msgid "Package metadata commands"
+msgstr "パッケージメタデータコマンド"
+
+msgid "Update checksums in PKGBUILD (updpkgsums)"
+msgstr "PKGBUILD内のチェックサムを更新（updpkgsums）"
+
+msgid "Generate checksums and print to stdout (makepkg -g)"
+msgstr "チェックサムを生成して標準出力に出力（makepkg -g）"
+
+msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
+msgstr ".SRCINFOを再生成（makepkg --printsrcinfo）"
+
+msgid "Audit commands"
+msgstr "監査コマンド"
+
+msgid "Run namcap on PKGBUILD and built packages"
+msgstr "PKGBUILDと構築済みパッケージにnamcapを実行"
+
+msgid "Run shellcheck on PKGBUILD"
+msgstr "PKGBUILDにshellcheckを実行"
+
+msgid "Clean commands"
+msgstr "クリーンコマンド"
+
+msgid "Clean srcdir with makepkg (makepkg -c)"
+msgstr "makepkgでソースディレクトリをクリーン（makepkg -c）"
+
+msgid "Remove src/, pkg/ and built packages"
+msgstr "src/、pkg/と構築済みパッケージを削除"
+
+msgid "AUR/Git commands"
+msgstr "AUR/Gitコマンド"
+
+msgid "Stage, commit and push to AUR (auto message if not provided)"
+msgstr "AURにステージ、コミット、プッシュ（未指定時は自動メッセージ）"
+
+msgid "Push with version tag (e.g. 1.2.3-1)"
+msgstr "バージョンタグでプッシュ（例：1.2.3-1）"
+
+msgid "Other"
+msgstr "その他"
+
+msgid "Show this help message"
+msgstr "このヘルプメッセージを表示"
+
+msgid "namcap not found. Install it with: sudo pacman -S namcap"
+msgstr "namcapが見つかりません。インストール：sudo pacman -S namcap"
+
+msgid "namcap failed with status"
+msgstr "namcapがステータスで失敗しました"
+
+msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
+msgstr "shellcheckが見つかりません。インストール：sudo pacman -S shellcheck"
+
+msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
+msgstr "updpkgsumsが見つかりません。インストール：sudo pacman -S pacman-contrib"
+
+msgid "makepkg -g failed:"
+msgstr "makepkg -gが失敗しました："
+
+msgid "Removing src/ pkg/ and built packages in"
+msgstr "src/、pkg/と構築済みパッケージを削除中："
+
+msgid "Removed"
+msgstr "削除済み"
+
+msgid "Note: nothing to commit or commit failed — continuing with push."
+msgstr "注意：コミットするものがないかコミットに失敗しました — プッシュを継続します。"
+
+msgid "makepkg --printsrcinfo failed:"
+msgstr "makepkg --printsrcinfoが失敗しました："
+
+msgid "Note: push to origin/master failed"
+msgstr "注意：origin/masterへのプッシュに失敗しました"
+
+msgid "Trying plain 'git push'..."
+msgstr "通常の'git push'を試みています..."
+
+msgid "Symlink scripts to user directory with localization"
+msgstr "ローカライズ付きでスクリプトをユーザーディレクトリにシンボリックリンク"
+
+msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
+msgstr "Nautilusスクリプトが'PKGBUILD'サブメニュー下に正常に設定されました。"

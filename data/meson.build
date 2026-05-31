@@ -28,6 +28,9 @@ po_files = [
   '../po/de.po',
   '../po/fr.po',
   '../po/it.po',
+  '../po/ru.po',
+  '../po/zh_CN.po',
+  '../po/ja.po',
 ]
 
 install_data(
