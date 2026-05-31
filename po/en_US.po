@@ -1,0 +1,477 @@
+# PKGBUILD Manager — translation template
+# Copyright (C) 2026 John Peter Sa
+# This file is distributed under the same license as the pkgbuild_manager package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pkgbuild_manager 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-31 15:30-0300\n"
+"PO-Revision-Date: 2026-05-31 20:14-0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+# ---------------------------------------------------------------------------
+# Menu labels (Nautilus Python extension + settings app)
+# ---------------------------------------------------------------------------
+msgid "00_Full Workflow"
+msgstr "00_Full Workflow"
+
+msgid "01_Build"
+msgstr "01_Build"
+
+msgid "02b_Build and Clean"
+msgstr "02b_Build and Clean"
+
+msgid "08_Build Force"
+msgstr "08_Build Force"
+
+msgid "09_Build NoCheck"
+msgstr "09_Build NoCheck"
+
+msgid "10_Build NoGPG"
+msgstr "10_Build NoGPG"
+
+msgid "11_Fetch Sources"
+msgstr "11_Fetch Sources"
+
+msgid "02_Install"
+msgstr "02_Install"
+
+msgid "12_Install Force"
+msgstr "12_Install Force"
+
+msgid "13_Install RmDeps"
+msgstr "13_Install RmDeps"
+
+msgid "14_Install NoCheck"
+msgstr "14_Install NoCheck"
+
+msgid "15_Install NoGPG"
+msgstr "15_Install NoGPG"
+
+msgid "03_Update Checksums"
+msgstr "03_Update Checksums"
+
+msgid "04_Update .SRCINFO"
+msgstr "04_Update .SRCINFO"
+
+msgid "16_Gen Checksums"
+msgstr "16_Gen Checksums"
+
+msgid "05b_ShellCheck"
+msgstr "05b_ShellCheck"
+
+msgid "05_Namcap"
+msgstr "05_Namcap"
+
+msgid "06_Push AUR"
+msgstr "06_Push AUR"
+
+msgid "17_Push AUR Tag"
+msgstr "17_Push AUR Tag"
+
+msgid "07b_Clean Everything"
+msgstr "07b_Clean Everything"
+
+msgid "07_Clean srcdir"
+msgstr "07_Clean srcdir"
+
+# ---------------------------------------------------------------------------
+# Settings panel (GTK app — src/settings/app.py)
+# ---------------------------------------------------------------------------
+msgid "PKGBUILD Manager — Menu Settings"
+msgstr "PKGBUILD Manager — Menu Settings"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "+ Add Group"
+msgstr "+ Add Group"
+
+msgid "+ Add Item"
+msgstr "+ Add Item"
+
+msgid "New Group"
+msgstr "New Group"
+
+msgid "Add Action"
+msgstr "Add Action"
+
+msgid "All actions are already in a group."
+msgstr "All actions are already in a group."
+
+msgid "Saved! Restart the file manager to apply."
+msgstr "Saved! Restart the file manager to apply."
+
+# Default group names
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Metadata"
+msgstr "Metadata"
+
+msgid "Audit"
+msgstr "Audit"
+
+msgid "Git / AUR"
+msgstr "Git / AUR"
+
+msgid "Clean"
+msgstr "Clean"
+
+# ---------------------------------------------------------------------------
+# Notification messages (bash scripts via _i18n)
+# ---------------------------------------------------------------------------
+msgid "notify_building"
+msgstr "notify_building"
+
+msgid "notify_build_ok"
+msgstr "notify_build_ok"
+
+msgid "notify_build_fail"
+msgstr "notify_build_fail"
+
+msgid "notify_build_force"
+msgstr "notify_build_force"
+
+msgid "notify_build_force_ok"
+msgstr "notify_build_force_ok"
+
+msgid "notify_build_force_fail"
+msgstr "notify_build_force_fail"
+
+msgid "notify_build_nocheck"
+msgstr "notify_build_nocheck"
+
+msgid "notify_build_nocheck_ok"
+msgstr "notify_build_nocheck_ok"
+
+msgid "notify_build_nocheck_fail"
+msgstr "notify_build_nocheck_fail"
+
+msgid "notify_build_nogpg"
+msgstr "notify_build_nogpg"
+
+msgid "notify_build_nogpg_ok"
+msgstr "notify_build_nogpg_ok"
+
+msgid "notify_build_nogpg_fail"
+msgstr "notify_build_nogpg_fail"
+
+msgid "notify_fetch_sources"
+msgstr "notify_fetch_sources"
+
+msgid "notify_fetch_sources_ok"
+msgstr "notify_fetch_sources_ok"
+
+msgid "notify_fetch_sources_fail"
+msgstr "notify_fetch_sources_fail"
+
+msgid "notify_installing"
+msgstr "notify_installing"
+
+msgid "notify_install_ok"
+msgstr "notify_install_ok"
+
+msgid "notify_install_fail"
+msgstr "notify_install_fail"
+
+msgid "notify_install_force"
+msgstr "notify_install_force"
+
+msgid "notify_install_force_ok"
+msgstr "notify_install_force_ok"
+
+msgid "notify_install_force_fail"
+msgstr "notify_install_force_fail"
+
+msgid "notify_install_rmdeps"
+msgstr "notify_install_rmdeps"
+
+msgid "notify_install_rmdeps_ok"
+msgstr "notify_install_rmdeps_ok"
+
+msgid "notify_install_rmdeps_fail"
+msgstr "notify_install_rmdeps_fail"
+
+msgid "notify_install_nocheck"
+msgstr "notify_install_nocheck"
+
+msgid "notify_install_nocheck_ok"
+msgstr "notify_install_nocheck_ok"
+
+msgid "notify_install_nocheck_fail"
+msgstr "notify_install_nocheck_fail"
+
+msgid "notify_install_nogpg"
+msgstr "notify_install_nogpg"
+
+msgid "notify_install_nogpg_ok"
+msgstr "notify_install_nogpg_ok"
+
+msgid "notify_install_nogpg_fail"
+msgstr "notify_install_nogpg_fail"
+
+msgid "notify_checksums"
+msgstr "notify_checksums"
+
+msgid "notify_checksums_ok"
+msgstr "notify_checksums_ok"
+
+msgid "notify_checksums_fail"
+msgstr "notify_checksums_fail"
+
+msgid "notify_genchecksums"
+msgstr "notify_genchecksums"
+
+msgid "notify_genchecksums_ok"
+msgstr "notify_genchecksums_ok"
+
+msgid "notify_genchecksums_fail"
+msgstr "notify_genchecksums_fail"
+
+msgid "notify_srcinfo"
+msgstr "notify_srcinfo"
+
+msgid "notify_srcinfo_ok"
+msgstr "notify_srcinfo_ok"
+
+msgid "notify_srcinfo_fail"
+msgstr "notify_srcinfo_fail"
+
+msgid "notify_namcap"
+msgstr "notify_namcap"
+
+msgid "notify_namcap_warn"
+msgstr "notify_namcap_warn"
+
+msgid "notify_namcap_ok"
+msgstr "notify_namcap_ok"
+
+msgid "notify_namcap_fail"
+msgstr "notify_namcap_fail"
+
+msgid "notify_shellcheck"
+msgstr "notify_shellcheck"
+
+msgid "notify_shellcheck_warn"
+msgstr "notify_shellcheck_warn"
+
+msgid "notify_shellcheck_ok"
+msgstr "notify_shellcheck_ok"
+
+msgid "notify_shellcheck_fail"
+msgstr "notify_shellcheck_fail"
+
+msgid "notify_push_aur"
+msgstr "notify_push_aur"
+
+msgid "notify_push_aur_ok"
+msgstr "notify_push_aur_ok"
+
+msgid "notify_push_aur_fail"
+msgstr "notify_push_aur_fail"
+
+msgid "notify_push_aur_tag"
+msgstr "notify_push_aur_tag"
+
+msgid "notify_push_aur_tag_ok"
+msgstr "notify_push_aur_tag_ok"
+
+msgid "notify_push_aur_tag_fail"
+msgstr "notify_push_aur_tag_fail"
+
+msgid "notify_clean_src"
+msgstr "notify_clean_src"
+
+msgid "notify_clean_src_ok"
+msgstr "notify_clean_src_ok"
+
+msgid "notify_clean_src_fail"
+msgstr "notify_clean_src_fail"
+
+msgid "notify_clean_all"
+msgstr "notify_clean_all"
+
+msgid "notify_clean_all_ok"
+msgstr "notify_clean_all_ok"
+
+msgid "notify_clean_all_fail"
+msgstr "notify_clean_all_fail"
+
+msgid "notify_full_workflow"
+msgstr "notify_full_workflow"
+
+msgid "notify_full_workflow_ok"
+msgstr "notify_full_workflow_ok"
+
+msgid "notify_full_workflow_fail"
+msgstr "notify_full_workflow_fail"
+
+# ---------------------------------------------------------------------------
+# CLI / Rust binary strings
+# ---------------------------------------------------------------------------
+msgid "Failed to resolve parent directory"
+msgstr "Failed to resolve parent directory"
+
+msgid "Directory does not exist"
+msgstr "Directory does not exist"
+
+msgid "No PKGBUILD found in directory"
+msgstr "No PKGBUILD found in directory"
+
+msgid "Failed to read PKGBUILD info with makepkg --printsrcinfo"
+msgstr "Failed to read PKGBUILD info with makepkg --printsrcinfo"
+
+msgid "aur-push-tag requires a version tag argument"
+msgstr "aur-push-tag requires a version tag argument"
+
+msgid "Unknown command"
+msgstr "Unknown command"
+
+msgid "PKGBUILD Manager - CLI Tool"
+msgstr "PKGBUILD Manager - CLI Tool"
+
+msgid "Usage:"
+msgstr "Usage:"
+
+msgid "Build commands"
+msgstr "Build commands"
+
+msgid "Compile package (makepkg)"
+msgstr "Compile package (makepkg)"
+
+msgid "Compile and clean srcdir (makepkg -c)"
+msgstr "Compile and clean srcdir (makepkg -c)"
+
+msgid "Force recompile (makepkg -f)"
+msgstr "Force recompile (makepkg -f)"
+
+msgid "Skip check() function (makepkg --nocheck)"
+msgstr "Skip check() function (makepkg --nocheck)"
+
+msgid "Skip PGP signature check (makepkg --skippgpcheck)"
+msgstr "Skip PGP signature check (makepkg --skippgpcheck)"
+
+msgid "Compile with custom flags passed after path"
+msgstr "Compile with custom flags passed after path"
+
+msgid "Download and extract sources only (makepkg -o)"
+msgstr "Download and extract sources only (makepkg -o)"
+
+msgid "Install commands"
+msgstr "Install commands"
+
+msgid "Compile, install and resolve deps (makepkg -si)"
+msgstr "Compile, install and resolve deps (makepkg -si)"
+
+msgid "Compile, install and clean srcdir (makepkg -sic)"
+msgstr "Compile, install and clean srcdir (makepkg -sic)"
+
+msgid "Force compile and install (makepkg -sif)"
+msgstr "Force compile and install (makepkg -sif)"
+
+msgid "Install and remove makedeps after (makepkg -sir)"
+msgstr "Install and remove makedeps after (makepkg -sir)"
+
+msgid "Install without running check()"
+msgstr "Install without running check()"
+
+msgid "Install skipping PGP checks"
+msgstr "Install skipping PGP checks"
+
+msgid "Install with custom flags passed after path"
+msgstr "Install with custom flags passed after path"
+
+msgid "Package metadata commands"
+msgstr "Package metadata commands"
+
+msgid "Update checksums in PKGBUILD (updpkgsums)"
+msgstr "Update checksums in PKGBUILD (updpkgsums)"
+
+msgid "Generate checksums and print to stdout (makepkg -g)"
+msgstr "Generate checksums and print to stdout (makepkg -g)"
+
+msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
+msgstr "Regenerate .SRCINFO (makepkg --printsrcinfo)"
+
+msgid "Audit commands"
+msgstr "Audit commands"
+
+msgid "Run namcap on PKGBUILD and built packages"
+msgstr "Run namcap on PKGBUILD and built packages"
+
+msgid "Run shellcheck on PKGBUILD"
+msgstr "Run shellcheck on PKGBUILD"
+
+msgid "Clean commands"
+msgstr "Clean commands"
+
+msgid "Clean srcdir with makepkg (makepkg -c)"
+msgstr "Clean srcdir with makepkg (makepkg -c)"
+
+msgid "Remove src/, pkg/ and built packages"
+msgstr "Remove src/, pkg/ and built packages"
+
+msgid "AUR/Git commands"
+msgstr "AUR/Git commands"
+
+msgid "Stage, commit and push to AUR (auto message if not provided)"
+msgstr "Stage, commit and push to AUR (auto message if not provided)"
+
+msgid "Push with version tag (e.g. 1.2.3-1)"
+msgstr "Push with version tag (e.g. 1.2.3-1)"
+
+msgid "Other"
+msgstr "Other"
+
+msgid "Show this help message"
+msgstr "Show this help message"
+
+msgid "namcap not found. Install it with: sudo pacman -S namcap"
+msgstr "namcap not found. Install it with: sudo pacman -S namcap"
+
+msgid "namcap failed with status"
+msgstr "namcap failed with status"
+
+msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
+msgstr "shellcheck not found. Install it with: sudo pacman -S shellcheck"
+
+msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
+msgstr "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
+
+msgid "makepkg -g failed:"
+msgstr "makepkg -g failed:"
+
+msgid "Removing src/ pkg/ and built packages in"
+msgstr "Removing src/ pkg/ and built packages in"
+
+msgid "Removed"
+msgstr "Removed"
+
+msgid "Note: nothing to commit or commit failed — continuing with push."
+msgstr "Note: nothing to commit or commit failed — continuing with push."
+
+msgid "makepkg --printsrcinfo failed:"
+msgstr "makepkg --printsrcinfo failed:"
+
+msgid "Note: push to origin/master failed"
+msgstr "Note: push to origin/master failed"
+
+msgid "Trying plain 'git push'..."
+msgstr "Trying plain 'git push'..."
+
+msgid "Symlink scripts to user directory with localization"
+msgstr "Symlink scripts to user directory with localization"
+
+msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
+msgstr "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
