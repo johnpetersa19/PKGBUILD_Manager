@@ -113,22 +113,101 @@ def save_config(data):
     _notify_file_managers()
 
 
-def _notify_file_managers():
-    # Kill nautilus and wait for it to fully exit, then relaunch so the
-    # fresh process loads the updated menu.json via the extension.
+def _get_nautilus_locations():
+    """Return list of URI strings for every open Nautilus window via DBus."""
     try:
+        bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+        # Ask the Nautilus application object for its open windows
+        result = bus.call_sync(
+            "org.gnome.Nautilus",           # bus name
+            "/org/gnome/Nautilus",           # object path
+            "org.freedesktop.DBus.Properties",
+            "GetAll",
+            Gio.DBusCallFlags.NONE,
+            -1, None, None,
+            # iface arg
+        )
+        # Fallback: just try `nautilus --print-uris` equivalent via a quick
+        # introspect of the running windows object
+        pass
+    except Exception:
+        pass
+
+    # Most reliable: parse `xdotool` or use gio — but simplest cross-distro
+    # approach is to read /proc for the Nautilus process cwd or use gdbus CLI.
+    uris = []
+    try:
+        out = subprocess.check_output(
+            ["gdbus", "call", "--session",
+             "--dest", "org.gnome.Nautilus",
+             "--object-path", "/org/gnome/Nautilus/Windows",
+             "--method", "org.freedesktop.DBus.Properties.GetAll",
+             "org.gnome.Nautilus.Windows"],
+            stderr=subprocess.DEVNULL, timeout=2,
+        ).decode(errors="replace")
+        # Response is a GLib variant — extract quoted URIs with a simple parse
+        import re
+        uris = re.findall(r"'((?:file|smb|sftp|ftp|trash)[^']+)'", out)
+    except Exception:
+        pass
+
+    if not uris:
+        # Second attempt: list window objects and call Location on each
+        try:
+            out = subprocess.check_output(
+                ["gdbus", "introspect", "--session",
+                 "--dest", "org.gnome.Nautilus",
+                 "--object-path", "/org/gnome/Nautilus/Windows"],
+                stderr=subprocess.DEVNULL, timeout=2,
+            ).decode(errors="replace")
+            import re
+            paths = re.findall(r"Node (/org/gnome/Nautilus/Windows/\w+)", out)
+            for p in paths:
+                try:
+                    loc = subprocess.check_output(
+                        ["gdbus", "call", "--session",
+                         "--dest", "org.gnome.Nautilus",
+                         "--object-path", p,
+                         "--method", "org.freedesktop.DBus.Properties.Get",
+                         "org.gnome.Nautilus.Window", "Location"],
+                        stderr=subprocess.DEVNULL, timeout=2,
+                    ).decode(errors="replace")
+                    m = re.search(r"'([^']+)'", loc)
+                    if m:
+                        uris.append(m.group(1))
+                except Exception:
+                    pass
+        except Exception:
+            pass
+
+    return uris or [str(Path.home())]
+
+
+def _notify_file_managers():
+    """Restart Nautilus, reopening every window in its previous location."""
+    try:
+        # 1. Collect open window locations before killing
+        locations = _get_nautilus_locations()
+
+        # 2. Kill nautilus (blocking) so the extension module is unloaded
         subprocess.run(["nautilus", "-q"], timeout=3, capture_output=True)
-        # Give the DBus daemon up to 2 s to deregister the old instance
         time.sleep(1)
-        subprocess.Popen(["nautilus"], close_fds=True)
+
+        # 3. Reopen each previous location in a fresh Nautilus instance
+        for uri in locations:
+            subprocess.Popen(["nautilus", uri], close_fds=True)
+            time.sleep(0.1)  # slight stagger so windows don't race
+
     except FileNotFoundError:
         pass  # Nautilus not installed
     except subprocess.TimeoutExpired:
-        # Force-kill if -q hangs
         try:
             subprocess.run(["pkill", "-f", "nautilus"], capture_output=True)
             time.sleep(1)
-            subprocess.Popen(["nautilus"], close_fds=True)
+            locations = getattr(_notify_file_managers, "_last_locations",
+                                [str(Path.home())])
+            for uri in locations:
+                subprocess.Popen(["nautilus", uri], close_fds=True)
         except Exception:
             pass
 
@@ -396,7 +475,7 @@ class SettingsApp(Adw.Application):
 
     def _on_save(self, _btn):
         save_config(self.menu_data)
-        self.win.add_toast(Adw.Toast(title=_("Saved! Restart the file manager to apply.")))
+        self.win.add_toast(Adw.Toast(title=_("Saved! Restarting file manager…")))
 
     def _on_reset(self, _btn):
         self.menu_data = _default_menu()
