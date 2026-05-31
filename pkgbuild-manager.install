@@ -1,6 +1,9 @@
 post_install() {
   echo ">>> To enable and localize the Nautilus context menu scripts for your user, run:"
   echo ">>>   pkgbuild_manager setup-nautilus"
+  echo ""
+  echo ">>> After installing or updating the scripts, restart Nautilus to apply changes:"
+  echo ">>>   nautilus -q"
 }
 
 post_upgrade() {
