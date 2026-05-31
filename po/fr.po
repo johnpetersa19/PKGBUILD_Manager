@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 02:43-0300\n"
-"PO-Revision-Date: 2026-05-31 02:43-0300\n"
+"POT-Creation-Date: 2026-05-31 02:50-0300\n"
+"PO-Revision-Date: 2026-05-31 02:50-0300\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -168,11 +168,134 @@ msgstr "Gestionnaire PKGBUILD - Outil CLI"
 msgid "Usage:"
 msgstr "Utilisation :"
 
+msgid "Build commands"
+msgstr "Commandes de construction"
+
+msgid "Compile package (makepkg)"
+msgstr "Compiler le paquet (makepkg)"
+
+msgid "Compile and clean srcdir (makepkg -c)"
+msgstr "Compiler et nettoyer srcdir (makepkg -c)"
+
+msgid "Force recompile (makepkg -f)"
+msgstr "Forcer la recompilation (makepkg -f)"
+
+msgid "Skip check() function (makepkg --nocheck)"
+msgstr "Ignorer la fonction check() (makepkg --nocheck)"
+
+msgid "Skip PGP signature check (makepkg --skippgpcheck)"
+msgstr "Ignorer la vérification de signature PGP (makepkg --skippgpcheck)"
+
+msgid "Compile with custom flags passed after path"
+msgstr "Compiler avec des drapeaux personnalisés passés après le chemin"
+
+msgid "Download and extract sources only (makepkg -o)"
+msgstr "Télécharger et extraire les sources uniquement (makepkg -o)"
+
+msgid "Install commands"
+msgstr "Commandes d'installation"
+
+msgid "Compile, install and resolve deps (makepkg -si)"
+msgstr "Compiler, installer et résoudre les dépendances (makepkg -si)"
+
+msgid "Compile, install and clean srcdir (makepkg -sic)"
+msgstr "Compiler, installer et nettoyer srcdir (makepkg -sic)"
+
+msgid "Force compile and install (makepkg -sif)"
+msgstr "Forcer la compilation et l'installation (makepkg -sif)"
+
+msgid "Install and remove makedeps after (makepkg -sir)"
+msgstr "Installer et supprimer les makedeps après (makepkg -sir)"
+
+msgid "Install without running check()"
+msgstr "Installer sans exécuter check()"
+
+msgid "Install skipping PGP checks"
+msgstr "Installer en ignorant les vérifications PGP"
+
+msgid "Install with custom flags passed after path"
+msgstr "Installer avec des drapeaux personnalisés passés après le chemin"
+
+msgid "Package metadata commands"
+msgstr "Commandes de métadonnées du paquet"
+
+msgid "Update checksums in PKGBUILD (updpkgsums)"
+msgstr "Mettre à jour les sommes de contrôle dans PKGBUILD (updpkgsums)"
+
+msgid "Generate checksums and print to stdout (makepkg -g)"
+msgstr "Générer les sommes de contrôle et afficher sur stdout (makepkg -g)"
+
+msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
+msgstr "Régénérer .SRCINFO (makepkg --printsrcinfo)"
+
+msgid "Audit commands"
+msgstr "Commandes d'audit"
+
+msgid "Run namcap on PKGBUILD and built packages"
+msgstr "Exécuter namcap sur PKGBUILD et les paquets construits"
+
+msgid "Run shellcheck on PKGBUILD"
+msgstr "Exécuter shellcheck sur PKGBUILD"
+
+msgid "Clean commands"
+msgstr "Commandes de nettoyage"
+
+msgid "Clean srcdir with makepkg (makepkg -c)"
+msgstr "Nettoyer srcdir avec makepkg (makepkg -c)"
+
+msgid "Remove src/, pkg/ and built packages"
+msgstr "Supprimer src/, pkg/ et les paquets construits"
+
+msgid "AUR/Git commands"
+msgstr "Commandes AUR/Git"
+
+msgid "Stage, commit and push to AUR (auto message if not provided)"
+msgstr "Indexer, valider et pousser vers l'AUR (message automatique si non fourni)"
+
+msgid "Push with version tag (e.g. 1.2.3-1)"
+msgstr "Pousser avec une étiquette de version (ex. 1.2.3-1)"
+
+msgid "Other"
+msgstr "Autre"
+
+msgid "Show this help message"
+msgstr "Afficher ce message d'aide"
+
 msgid "namcap not found. Install it with: sudo pacman -S namcap"
 msgstr "namcap introuvable. Installez-le avec : sudo pacman -S namcap"
+
+msgid "namcap failed with status"
+msgstr "namcap a échoué avec le statut"
 
 msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
 msgstr "shellcheck introuvable. Installez-le avec : sudo pacman -S shellcheck"
 
 msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
 msgstr "updpkgsums introuvable. Installez-le avec : sudo pacman -S pacman-contrib"
+
+msgid "makepkg -g failed:"
+msgstr "makepkg -g a échoué :"
+
+msgid "Removing src/ pkg/ and built packages in"
+msgstr "Suppression de src/, pkg/ et des paquets construits dans"
+
+msgid "Removed"
+msgstr "Supprimé"
+
+msgid "Note: nothing to commit or commit failed — continuing with push."
+msgstr "Remarque : rien à valider ou échec de la validation — poursuite avec le push."
+
+msgid "makepkg --printsrcinfo failed:"
+msgstr "makepkg --printsrcinfo a échoué :"
+
+msgid "Note: push to origin/master failed"
+msgstr "Remarque : le push vers origin/master a échoué"
+
+msgid "Trying plain 'git push'..."
+msgstr "Tentative de 'git push' simple..."
+
+msgid "Symlink scripts to user directory with localization"
+msgstr "Lier les scripts dans le répertoire utilisateur avec localisation"
+
+msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
+msgstr "Scripts Nautilus configurés avec succès dans le sous-menu 'PKGBUILD'."

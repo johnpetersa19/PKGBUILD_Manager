@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 02:43-0300\n"
+"POT-Creation-Date: 2026-05-31 02:50-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,9 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 # ---------------------------------------------------------------------------
-# Menu labels (used by the Nautilus Python extension)
+# Menu labels (Nautilus Python extension)
 # ---------------------------------------------------------------------------
-
 msgid "00_Full Workflow"
 msgstr ""
 
@@ -53,9 +52,8 @@ msgid "07_Clean srcdir"
 msgstr ""
 
 # ---------------------------------------------------------------------------
-# Notification messages (used by the bash scripts via _i18n)
+# Notification messages (bash scripts via _i18n)
 # ---------------------------------------------------------------------------
-
 msgid "notify_building"
 msgstr ""
 
@@ -155,7 +153,6 @@ msgstr ""
 # ---------------------------------------------------------------------------
 # CLI / Rust binary strings
 # ---------------------------------------------------------------------------
-
 msgid "Failed to resolve parent directory"
 msgstr ""
 
@@ -180,11 +177,134 @@ msgstr ""
 msgid "Usage:"
 msgstr ""
 
+msgid "Build commands"
+msgstr ""
+
+msgid "Compile package (makepkg)"
+msgstr ""
+
+msgid "Compile and clean srcdir (makepkg -c)"
+msgstr ""
+
+msgid "Force recompile (makepkg -f)"
+msgstr ""
+
+msgid "Skip check() function (makepkg --nocheck)"
+msgstr ""
+
+msgid "Skip PGP signature check (makepkg --skippgpcheck)"
+msgstr ""
+
+msgid "Compile with custom flags passed after path"
+msgstr ""
+
+msgid "Download and extract sources only (makepkg -o)"
+msgstr ""
+
+msgid "Install commands"
+msgstr ""
+
+msgid "Compile, install and resolve deps (makepkg -si)"
+msgstr ""
+
+msgid "Compile, install and clean srcdir (makepkg -sic)"
+msgstr ""
+
+msgid "Force compile and install (makepkg -sif)"
+msgstr ""
+
+msgid "Install and remove makedeps after (makepkg -sir)"
+msgstr ""
+
+msgid "Install without running check()"
+msgstr ""
+
+msgid "Install skipping PGP checks"
+msgstr ""
+
+msgid "Install with custom flags passed after path"
+msgstr ""
+
+msgid "Package metadata commands"
+msgstr ""
+
+msgid "Update checksums in PKGBUILD (updpkgsums)"
+msgstr ""
+
+msgid "Generate checksums and print to stdout (makepkg -g)"
+msgstr ""
+
+msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
+msgstr ""
+
+msgid "Audit commands"
+msgstr ""
+
+msgid "Run namcap on PKGBUILD and built packages"
+msgstr ""
+
+msgid "Run shellcheck on PKGBUILD"
+msgstr ""
+
+msgid "Clean commands"
+msgstr ""
+
+msgid "Clean srcdir with makepkg (makepkg -c)"
+msgstr ""
+
+msgid "Remove src/, pkg/ and built packages"
+msgstr ""
+
+msgid "AUR/Git commands"
+msgstr ""
+
+msgid "Stage, commit and push to AUR (auto message if not provided)"
+msgstr ""
+
+msgid "Push with version tag (e.g. 1.2.3-1)"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "Show this help message"
+msgstr ""
+
 msgid "namcap not found. Install it with: sudo pacman -S namcap"
+msgstr ""
+
+msgid "namcap failed with status"
 msgstr ""
 
 msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
 msgstr ""
 
 msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
+msgstr ""
+
+msgid "makepkg -g failed:"
+msgstr ""
+
+msgid "Removing src/ pkg/ and built packages in"
+msgstr ""
+
+msgid "Removed"
+msgstr ""
+
+msgid "Note: nothing to commit or commit failed — continuing with push."
+msgstr ""
+
+msgid "makepkg --printsrcinfo failed:"
+msgstr ""
+
+msgid "Note: push to origin/master failed"
+msgstr ""
+
+msgid "Trying plain 'git push'..."
+msgstr ""
+
+msgid "Symlink scripts to user directory with localization"
+msgstr ""
+
+msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
 msgstr ""
