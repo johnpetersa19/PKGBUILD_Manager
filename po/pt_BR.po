@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-31 02:50-0300\n"
-"PO-Revision-Date: 2026-05-31 02:50-0300\n"
+"PO-Revision-Date: 2026-05-31 14:00-0300\n"
 "Last-Translator: John <john@example.com>\n"
 "Language-Team: Portuguese (Brazil)\n"
 "Language: pt_BR\n"
@@ -45,6 +45,34 @@ msgstr "Limpar Tudo"
 
 msgid "07_Clean srcdir"
 msgstr "Limpar srcdir"
+
+# Settings panel
+msgid "PKGBUILD Manager — Menu Settings"
+msgstr "PKGBUILD Manager — Configurações do Menu"
+
+msgid "Reset"
+msgstr "Redefinir"
+
+msgid "Save"
+msgstr "Salvar"
+
+msgid "+ Add Group"
+msgstr "+ Adicionar Grupo"
+
+msgid "+ Add Item"
+msgstr "+ Adicionar Item"
+
+msgid "New Group"
+msgstr "Novo Grupo"
+
+msgid "Add Action"
+msgstr "Adicionar Ação"
+
+msgid "All actions are already in a group."
+msgstr "Todas as ações já estão em um grupo."
+
+msgid "Saved! Restart the file manager to apply."
+msgstr "Salvo! Reinicie o gerenciador de arquivos para aplicar."
 
 # Notification messages
 msgid "notify_building"

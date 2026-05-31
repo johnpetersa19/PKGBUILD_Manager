@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-31 02:50-0300\n"
-"PO-Revision-Date: 2026-05-31 02:50-0300\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2026-05-31 14:00-0300\n"
+"Last-Translator: Translator <translator@example.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -38,13 +38,41 @@ msgid "05_Namcap"
 msgstr "Analizar con Namcap"
 
 msgid "06_Push AUR"
-msgstr "Publicar en AUR"
+msgstr "Enviar al AUR"
 
 msgid "07b_Clean Everything"
 msgstr "Limpiar Todo"
 
 msgid "07_Clean srcdir"
 msgstr "Limpiar srcdir"
+
+# Settings panel
+msgid "PKGBUILD Manager — Menu Settings"
+msgstr "PKGBUILD Manager — Configuración del Menú"
+
+msgid "Reset"
+msgstr "Restablecer"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "+ Add Group"
+msgstr "+ Agregar Grupo"
+
+msgid "+ Add Item"
+msgstr "+ Agregar Elemento"
+
+msgid "New Group"
+msgstr "Nuevo Grupo"
+
+msgid "Add Action"
+msgstr "Agregar Acción"
+
+msgid "All actions are already in a group."
+msgstr "Todas las acciones ya están en un grupo."
+
+msgid "Saved! Restart the file manager to apply."
+msgstr "¡Guardado! Reinicia el gestor de archivos para aplicar."
 
 # Notification messages
 msgid "notify_building"
@@ -87,7 +115,7 @@ msgid "notify_namcap"
 msgstr "Ejecutando namcap..."
 
 msgid "notify_namcap_warn"
-msgstr "⚠ Namcap terminó con advertencias. Ver: "
+msgstr "⚠ Namcap completado con advertencias. Ver: "
 
 msgid "notify_namcap_ok"
 msgstr "✓ ¡Namcap completado! No se encontraron advertencias."
@@ -108,13 +136,13 @@ msgid "notify_shellcheck_fail"
 msgstr "✗ ¡ShellCheck falló! Ver: "
 
 msgid "notify_push_aur"
-msgstr "Publicando en AUR..."
+msgstr "Enviando al AUR..."
 
 msgid "notify_push_aur_ok"
-msgstr "✓ ¡Publicado en AUR con éxito!"
+msgstr "✓ ¡Enviado al AUR con éxito!"
 
 msgid "notify_push_aur_fail"
-msgstr "✗ ¡Error al publicar en AUR! Ver: "
+msgstr "✗ ¡Error al enviar al AUR! Ver: "
 
 msgid "notify_clean_src"
 msgstr "Limpiando srcdir..."
@@ -138,10 +166,10 @@ msgid "notify_full_workflow"
 msgstr "Ejecutando flujo completo..."
 
 msgid "notify_full_workflow_ok"
-msgstr "✓ ¡Flujo completo completado!"
+msgstr "✓ ¡Flujo completo finalizado!"
 
 msgid "notify_full_workflow_fail"
-msgstr "✗ ¡Flujo completo falló! Ver: "
+msgstr "✗ ¡El flujo completo falló! Ver: "
 
 # CLI strings
 msgid "Failed to resolve parent directory"
@@ -154,7 +182,7 @@ msgid "No PKGBUILD found in directory"
 msgstr "No se encontró PKGBUILD en el directorio"
 
 msgid "Failed to read PKGBUILD info with makepkg --printsrcinfo"
-msgstr "Error al leer información del PKGBUILD con makepkg --printsrcinfo"
+msgstr "Error al leer información de PKGBUILD con makepkg --printsrcinfo"
 
 msgid "aur-push-tag requires a version tag argument"
 msgstr "aur-push-tag requiere un argumento de etiqueta de versión"
@@ -187,7 +215,7 @@ msgid "Skip PGP signature check (makepkg --skippgpcheck)"
 msgstr "Omitir verificación de firma PGP (makepkg --skippgpcheck)"
 
 msgid "Compile with custom flags passed after path"
-msgstr "Compilar con flags personalizados pasados después de la ruta"
+msgstr "Compilar con flags personalizadas pasadas tras la ruta"
 
 msgid "Download and extract sources only (makepkg -o)"
 msgstr "Solo descargar y extraer fuentes (makepkg -o)"
@@ -205,7 +233,7 @@ msgid "Force compile and install (makepkg -sif)"
 msgstr "Forzar compilación e instalación (makepkg -sif)"
 
 msgid "Install and remove makedeps after (makepkg -sir)"
-msgstr "Instalar y eliminar makedeps después (makepkg -sir)"
+msgstr "Instalar y eliminar dependencias de compilación después (makepkg -sir)"
 
 msgid "Install without running check()"
 msgstr "Instalar sin ejecutar check()"
@@ -214,7 +242,7 @@ msgid "Install skipping PGP checks"
 msgstr "Instalar omitiendo verificaciones PGP"
 
 msgid "Install with custom flags passed after path"
-msgstr "Instalar con flags personalizados pasados después de la ruta"
+msgstr "Instalar con flags personalizadas pasadas tras la ruta"
 
 msgid "Package metadata commands"
 msgstr "Comandos de metadatos del paquete"
@@ -250,10 +278,10 @@ msgid "AUR/Git commands"
 msgstr "Comandos de AUR/Git"
 
 msgid "Stage, commit and push to AUR (auto message if not provided)"
-msgstr "Añadir al stage, hacer commit y push al AUR (mensaje automático si no se proporciona)"
+msgstr "Preparar, confirmar y enviar al AUR (mensaje automático si no se proporciona)"
 
 msgid "Push with version tag (e.g. 1.2.3-1)"
-msgstr "Push con etiqueta de versión (ej: 1.2.3-1)"
+msgstr "Enviar con etiqueta de versión (ej: 1.2.3-1)"
 
 msgid "Other"
 msgstr "Otros"
@@ -283,19 +311,19 @@ msgid "Removed"
 msgstr "Eliminado"
 
 msgid "Note: nothing to commit or commit failed — continuing with push."
-msgstr "Nota: nada que confirmar o el commit falló — continuando con el push."
+msgstr "Nota: nada que confirmar o la confirmación falló — continuando con el envío."
 
 msgid "makepkg --printsrcinfo failed:"
 msgstr "makepkg --printsrcinfo falló:"
 
 msgid "Note: push to origin/master failed"
-msgstr "Nota: push a origin/master falló"
+msgstr "Nota: el envío a origin/master falló"
 
 msgid "Trying plain 'git push'..."
-msgstr "Intentando push simple ('git push')..."
+msgstr "Intentando 'git push' simple..."
 
 msgid "Symlink scripts to user directory with localization"
-msgstr "Crear enlaces simbólicos de scripts en el directorio del usuario con localización"
+msgstr "Crear enlaces simbólicos de los scripts en el directorio de usuario con localización"
 
 msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
-msgstr "Scripts de Nautilus configurados correctamente bajo el submenú 'PKGBUILD'."
+msgstr "Scripts de Nautilus configurados con éxito en el submenú 'PKGBUILD'."

@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-31 02:50-0300\n"
-"PO-Revision-Date: 2026-05-31 02:50-0300\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2026-05-31 14:00-0300\n"
+"Last-Translator: Translator <translator@example.com>\n"
 "Language-Team: German\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -17,10 +17,10 @@ msgid "00_Full Workflow"
 msgstr "Vollständiger Ablauf"
 
 msgid "01_Build"
-msgstr "Paket bauen"
+msgstr "Erstellen"
 
 msgid "02b_Build and Clean"
-msgstr "Bauen und bereinigen"
+msgstr "Erstellen und Bereinigen"
 
 msgid "02_Install"
 msgstr "Installieren"
@@ -38,7 +38,7 @@ msgid "05_Namcap"
 msgstr "Mit Namcap analysieren"
 
 msgid "06_Push AUR"
-msgstr "An AUR übertragen"
+msgstr "Zum AUR pushen"
 
 msgid "07b_Clean Everything"
 msgstr "Alles bereinigen"
@@ -46,15 +46,43 @@ msgstr "Alles bereinigen"
 msgid "07_Clean srcdir"
 msgstr "srcdir bereinigen"
 
+# Settings panel
+msgid "PKGBUILD Manager — Menu Settings"
+msgstr "PKGBUILD Manager — Menüeinstellungen"
+
+msgid "Reset"
+msgstr "Zurücksetzen"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "+ Add Group"
+msgstr "+ Gruppe hinzufügen"
+
+msgid "+ Add Item"
+msgstr "+ Element hinzufügen"
+
+msgid "New Group"
+msgstr "Neue Gruppe"
+
+msgid "Add Action"
+msgstr "Aktion hinzufügen"
+
+msgid "All actions are already in a group."
+msgstr "Alle Aktionen sind bereits einer Gruppe zugeordnet."
+
+msgid "Saved! Restart the file manager to apply."
+msgstr "Gespeichert! Dateimanager neu starten, um die Änderungen zu übernehmen."
+
 # Notification messages
 msgid "notify_building"
-msgstr "Paket wird gebaut..."
+msgstr "Paket wird erstellt..."
 
 msgid "notify_build_ok"
-msgstr "✓ Build erfolgreich abgeschlossen!"
+msgstr "✓ Erstellung erfolgreich abgeschlossen!"
 
 msgid "notify_build_fail"
-msgstr "✗ Build fehlgeschlagen! Siehe: "
+msgstr "✗ Erstellung fehlgeschlagen! Siehe: "
 
 msgid "notify_installing"
 msgstr "Paket wird installiert..."
@@ -81,7 +109,7 @@ msgid "notify_srcinfo_ok"
 msgstr "✓ .SRCINFO erfolgreich aktualisiert!"
 
 msgid "notify_srcinfo_fail"
-msgstr "✗ Fehler beim Aktualisieren von .SRCINFO! Siehe: "
+msgstr "✗ Fehler beim Aktualisieren der .SRCINFO! Siehe: "
 
 msgid "notify_namcap"
 msgstr "Namcap wird ausgeführt..."
@@ -108,13 +136,13 @@ msgid "notify_shellcheck_fail"
 msgstr "✗ ShellCheck fehlgeschlagen! Siehe: "
 
 msgid "notify_push_aur"
-msgstr "An AUR übertragen..."
+msgstr "Wird zum AUR gepusht..."
 
 msgid "notify_push_aur_ok"
-msgstr "✓ Erfolgreich an AUR übertragen!"
+msgstr "✓ Erfolgreich zum AUR gepusht!"
 
 msgid "notify_push_aur_fail"
-msgstr "✗ Fehler beim Übertragen an AUR! Siehe: "
+msgstr "✗ Fehler beim Pushen zum AUR! Siehe: "
 
 msgid "notify_clean_src"
 msgstr "srcdir wird bereinigt..."
@@ -157,7 +185,7 @@ msgid "Failed to read PKGBUILD info with makepkg --printsrcinfo"
 msgstr "Fehler beim Lesen der PKGBUILD-Informationen mit makepkg --printsrcinfo"
 
 msgid "aur-push-tag requires a version tag argument"
-msgstr "aur-push-tag benötigt ein Versions-Tag-Argument"
+msgstr "aur-push-tag erfordert ein Versions-Tag-Argument"
 
 msgid "Unknown command"
 msgstr "Unbekannter Befehl"
@@ -169,7 +197,7 @@ msgid "Usage:"
 msgstr "Verwendung:"
 
 msgid "Build commands"
-msgstr "Build-Befehle"
+msgstr "Erstellungsbefehle"
 
 msgid "Compile package (makepkg)"
 msgstr "Paket kompilieren (makepkg)"
@@ -181,16 +209,16 @@ msgid "Force recompile (makepkg -f)"
 msgstr "Neukompilierung erzwingen (makepkg -f)"
 
 msgid "Skip check() function (makepkg --nocheck)"
-msgstr "Funktion check() überspringen (makepkg --nocheck)"
+msgstr "check()-Funktion überspringen (makepkg --nocheck)"
 
 msgid "Skip PGP signature check (makepkg --skippgpcheck)"
 msgstr "PGP-Signaturprüfung überspringen (makepkg --skippgpcheck)"
 
 msgid "Compile with custom flags passed after path"
-msgstr "Mit benutzerdefinierten Flags kompilieren (nach Pfad angegeben)"
+msgstr "Mit benutzerdefinierten Flags nach dem Pfad kompilieren"
 
 msgid "Download and extract sources only (makepkg -o)"
-msgstr "Nur Quellen herunterladen und extrahieren (makepkg -o)"
+msgstr "Nur Quellen herunterladen und entpacken (makepkg -o)"
 
 msgid "Install commands"
 msgstr "Installationsbefehle"
@@ -205,19 +233,19 @@ msgid "Force compile and install (makepkg -sif)"
 msgstr "Kompilierung und Installation erzwingen (makepkg -sif)"
 
 msgid "Install and remove makedeps after (makepkg -sir)"
-msgstr "Installieren und Makedeps danach entfernen (makepkg -sir)"
+msgstr "Installieren und Build-Abhängigkeiten danach entfernen (makepkg -sir)"
 
 msgid "Install without running check()"
-msgstr "Installieren ohne check() auszuführen"
+msgstr "Ohne Ausführung von check() installieren"
 
 msgid "Install skipping PGP checks"
-msgstr "Installieren ohne PGP-Prüfungen"
+msgstr "Installation ohne PGP-Prüfungen"
 
 msgid "Install with custom flags passed after path"
-msgstr "Mit benutzerdefinierten Flags installieren (nach Pfad angegeben)"
+msgstr "Mit benutzerdefinierten Flags nach dem Pfad installieren"
 
 msgid "Package metadata commands"
-msgstr "Paketmetadaten-Befehle"
+msgstr "Metadaten-Befehle des Pakets"
 
 msgid "Update checksums in PKGBUILD (updpkgsums)"
 msgstr "Prüfsummen in PKGBUILD aktualisieren (updpkgsums)"
@@ -232,10 +260,10 @@ msgid "Audit commands"
 msgstr "Prüfbefehle"
 
 msgid "Run namcap on PKGBUILD and built packages"
-msgstr "namcap für PKGBUILD und erstellte Pakete ausführen"
+msgstr "Namcap auf PKGBUILD und erstellte Pakete anwenden"
 
 msgid "Run shellcheck on PKGBUILD"
-msgstr "shellcheck für PKGBUILD ausführen"
+msgstr "Shellcheck auf PKGBUILD anwenden"
 
 msgid "Clean commands"
 msgstr "Bereinigungsbefehle"
@@ -250,10 +278,10 @@ msgid "AUR/Git commands"
 msgstr "AUR/Git-Befehle"
 
 msgid "Stage, commit and push to AUR (auto message if not provided)"
-msgstr "Stagen, committen und an AUR pushen (automatische Nachricht wenn keine angegeben)"
+msgstr "Stagen, committen und zum AUR pushen (automatische Nachricht, wenn nicht angegeben)"
 
 msgid "Push with version tag (e.g. 1.2.3-1)"
-msgstr "Push mit Versions-Tag (z.B. 1.2.3-1)"
+msgstr "Mit Versions-Tag pushen (z. B. 1.2.3-1)"
 
 msgid "Other"
 msgstr "Sonstiges"
@@ -283,7 +311,7 @@ msgid "Removed"
 msgstr "Entfernt"
 
 msgid "Note: nothing to commit or commit failed — continuing with push."
-msgstr "Hinweis: Nichts zu committen oder Commit fehlgeschlagen — fahre mit Push fort."
+msgstr "Hinweis: Nichts zum Committen oder Commit fehlgeschlagen — Push wird fortgesetzt."
 
 msgid "makepkg --printsrcinfo failed:"
 msgstr "makepkg --printsrcinfo fehlgeschlagen:"
@@ -292,10 +320,10 @@ msgid "Note: push to origin/master failed"
 msgstr "Hinweis: Push zu origin/master fehlgeschlagen"
 
 msgid "Trying plain 'git push'..."
-msgstr "Versuche einfachen 'git push'..."
+msgstr "Versuche einfaches 'git push'..."
 
 msgid "Symlink scripts to user directory with localization"
-msgstr "Skripte als Symlinks im Benutzerverzeichnis mit Lokalisierung einrichten"
+msgstr "Skripte mit Lokalisierung in das Benutzerverzeichnis verlinken"
 
 msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
 msgstr "Nautilus-Skripte erfolgreich im Untermenü 'PKGBUILD' konfiguriert."
