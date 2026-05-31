@@ -12,7 +12,7 @@ import gettext
 import subprocess
 import gi
 
-gi.require_version("Nautilus", "4.1")
+gi.require_version("Nautilus", "4.0")
 from gi.repository import Nautilus, GObject
 
 # ---------------------------------------------------------------------------
@@ -25,7 +25,6 @@ _LOCALEDIR = os.environ.get("PKGBUILD_MANAGER_LOCALEDIR", "/usr/share/locale")
 _gettext_func = None
 
 def _tr(msgid: str) -> str:
-    """Translate msgid, initialising gettext on the first call."""
     global _gettext_func
     if _gettext_func is None:
         t = gettext.translation(_DOMAIN, localedir=_LOCALEDIR, fallback=True)
@@ -35,7 +34,6 @@ def _tr(msgid: str) -> str:
 
 # ---------------------------------------------------------------------------
 # Action list — (internal_script_name, gettext_msgid)
-# Order here defines the menu order shown to the user.
 # ---------------------------------------------------------------------------
 
 _ACTIONS = [
@@ -52,9 +50,6 @@ _ACTIONS = [
     ("07_Clean srcdir",      "07_Clean srcdir"),
 ]
 
-# ---------------------------------------------------------------------------
-# Resolve the scripts directory
-# ---------------------------------------------------------------------------
 
 def _scripts_dir() -> str:
     installed = "/usr/share/pkgbuild-manager/scripts"
@@ -64,25 +59,20 @@ def _scripts_dir() -> str:
     return os.path.normpath(os.path.join(here, "..", "nautilus-scripts"))
 
 
-# ---------------------------------------------------------------------------
-# Nautilus extension class
-# ---------------------------------------------------------------------------
-
 class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
     """Injects a PKGBUILD submenu into the Nautilus right-click context menu."""
 
     def _get_items(self, files):
-        # Only show when exactly one local file called "PKGBUILD" is selected
         if len(files) != 1:
             return []
         f = files[0]
 
-        # Guard against remote/trash URIs where get_path() returns None
         if not f.get_uri().startswith("file://"):
             return []
         if f.get_name() != "PKGBUILD":
             return []
-        if f.get_file_type() != Nautilus.FileType.REGULAR:
+        # Nautilus.FileType is unavailable in nautilus-python 4.0/4.1
+        if f.is_directory():
             return []
 
         pkgbuild_path = f.get_location().get_path()
@@ -102,7 +92,6 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
         for script_name, msgid in _ACTIONS:
             script_path = os.path.join(scripts, script_name)
 
-            # Skip scripts that are not installed or not executable
             if not os.path.isfile(script_path) or not os.access(script_path, os.X_OK):
                 continue
 
