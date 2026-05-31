@@ -122,13 +122,18 @@ fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
     use std::path::PathBuf;
 
     let home = std::env::var("HOME")?;
-    let base_scripts_dir = PathBuf::from(&home).join(".local/share/nautilus/scripts");
-    let scripts_dir = base_scripts_dir.join("PKGBUILD");
 
-    // 1. Clean up all known old/stale top-level symlinks to prevent clutter.
-    //    This covers English, old Portuguese-prefixed, and clean display-name variants.
-    let old_names = vec![
-        // English file names
+    // Target: ~/.local/share/nautilus/scripts/PKGBUILD/
+    // Nautilus displays each subdirectory inside "scripts/" as a named submenu.
+    // Scripts placed directly inside PKGBUILD/ appear as menu entries under
+    // the "PKGBUILD" submenu — no extra nested folder is created.
+    let scripts_root = PathBuf::from(&home).join(".local/share/nautilus/scripts");
+    let pkgbuild_dir = scripts_root.join("PKGBUILD");
+
+    // 1. Remove every stale file/symlink that old versions may have placed
+    //    directly inside scripts/ (the root level, outside PKGBUILD/).
+    let stale_names = [
+        // English internal names
         "00_Full Workflow", "01_Build", "02_Install", "02b_Build and Clean",
         "03_Update Checksums", "04_Update .SRCINFO", "05_Namcap", "05b_ShellCheck",
         "06_Push AUR", "07_Clean srcdir", "07b_Clean Everything",
@@ -143,52 +148,75 @@ fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
         // Helper script
         "_run_in_terminal",
     ];
-    for name in old_names {
-        let old_file = base_scripts_dir.join(name);
-        if old_file.exists() || old_file.is_symlink() {
-            let _ = fs::remove_file(old_file);
+    for name in stale_names {
+        let path = scripts_root.join(name);
+        if path.exists() || path.is_symlink() {
+            let _ = fs::remove_file(&path);
         }
     }
 
-    // 2. Setup the PKGBUILD subdirectory
-    if scripts_dir.exists() {
-        let _ = fs::remove_dir_all(&scripts_dir);
+    // 2. Wipe and recreate the PKGBUILD/ directory so we start clean.
+    //    This removes any previously installed symlinks (e.g. with old translated
+    //    names) and avoids accumulating stale entries across runs.
+    if pkgbuild_dir.exists() {
+        fs::remove_dir_all(&pkgbuild_dir)?;
     }
-    fs::create_dir_all(&scripts_dir)?;
+    fs::create_dir_all(&pkgbuild_dir)?;
 
-    let mut system_scripts_dir = PathBuf::from("/usr/share/nautilus-scripts");
-    if !system_scripts_dir.exists() {
-        let local_dir = PathBuf::from("data/nautilus-scripts");
-        if local_dir.exists() {
-            system_scripts_dir = local_dir;
+    // 3. Resolve the system scripts directory.
+    //    Installed path: /usr/share/pkgbuild-manager/scripts/
+    //    Fallback for local development: data/nautilus-scripts/
+    let system_scripts_dir = {
+        let installed = PathBuf::from("/usr/share/pkgbuild-manager/scripts");
+        if installed.exists() {
+            installed
+        } else {
+            PathBuf::from("data/nautilus-scripts")
         }
-    }
+    };
 
-    let scripts = vec![
-        ("00_Full Workflow", "00_Full Workflow"),
-        ("01_Build", "01_Build"),
-        ("02_Install", "02_Install"),
+    // 4. Map each internal script filename → gettext key.
+    //    The gettext key is translated at runtime using the user's locale.
+    //    Internal filenames (source) stay in English for maintainability.
+    //    _run_in_terminal is a helper; it must not appear in the visible menu.
+    let actions = [
+        ("00_Full Workflow",    "00_Full Workflow"),
+        ("01_Build",            "01_Build"),
         ("02b_Build and Clean", "02b_Build and Clean"),
+        ("02_Install",          "02_Install"),
         ("03_Update Checksums", "03_Update Checksums"),
-        ("04_Update .SRCINFO", "04_Update .SRCINFO"),
-        ("05_Namcap", "05_Namcap"),
-        ("05b_ShellCheck", "05b_ShellCheck"),
-        ("06_Push AUR", "06_Push AUR"),
-        ("07_Clean srcdir", "07_Clean srcdir"),
-        ("07b_Clean Everything", "07b_Clean Everything"),
-        ("_run_in_terminal", "_run_in_terminal"),
+        ("04_Update .SRCINFO",  "04_Update .SRCINFO"),
+        ("05b_ShellCheck",      "05b_ShellCheck"),
+        ("05_Namcap",           "05_Namcap"),
+        ("06_Push AUR",         "06_Push AUR"),
+        ("07b_Clean Everything","07b_Clean Everything"),
+        ("07_Clean srcdir",     "07_Clean srcdir"),
     ];
 
-    for (file_name, gettext_key) in scripts {
+    // 5. Create one symlink per action directly inside PKGBUILD/.
+    //    Symlink name = translated label (e.g. "Compilar", "Build", "Compilar").
+    //    This is what Nautilus displays in the submenu — no numbers, no prefixes.
+    for (file_name, gettext_key) in actions {
         let src = system_scripts_dir.join(file_name);
         if src.exists() {
-            let dest_name = if gettext_key == "_run_in_terminal" {
-                "_run_in_terminal".to_string()
-            } else {
-                gettext(gettext_key)
-            };
-            let dest = scripts_dir.join(dest_name);
-            let _ = symlink(&src, &dest);
+            let label = gettext(gettext_key);
+            let dest = pkgbuild_dir.join(&label);
+            if let Err(e) = symlink(&src, &dest) {
+                eprintln!("Warning: could not symlink {file_name} as '{label}': {e}");
+            }
+        } else {
+            eprintln!("Warning: script not found, skipping: {}", src.display());
+        }
+    }
+
+    // 6. Also symlink _run_in_terminal with a leading underscore so Nautilus
+    //    keeps it at the bottom and does not translate it — it is an internal
+    //    helper, not a user-facing action.
+    let helper_src = system_scripts_dir.join("_run_in_terminal");
+    if helper_src.exists() {
+        let helper_dest = pkgbuild_dir.join("_run_in_terminal");
+        if let Err(e) = symlink(&helper_src, &helper_dest) {
+            eprintln!("Warning: could not symlink _run_in_terminal: {e}");
         }
     }
 
