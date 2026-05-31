@@ -25,6 +25,7 @@ install_data(
 po_files = [
   '../po/pt_BR.po',
   '../po/es.po',
+  '../po/en_US.po',
   '../po/de.po',
   '../po/fr.po',
   '../po/it.po',
