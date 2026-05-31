@@ -1,3 +1,4 @@
+use std::io;
 use std::path::Path;
 use std::process::Command;
 use super::{get_target_dir, run_command};
@@ -7,16 +8,20 @@ pub fn run(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     let target_dir = get_target_dir(path)?;
     run_command("updpkgsums", &[], &target_dir)
         .map_err(|e| {
-            if e.to_string().contains("NotFound") || e.to_string().contains("No such file") {
-                gettextrs::gettext("updpkgsums not found. Install it with: sudo pacman -S pacman-contrib").into()
-            } else {
-                e
+            // Downcast to io::Error to check for NotFound reliably
+            if let Some(io_err) = e.downcast_ref::<io::Error>() {
+                if io_err.kind() == io::ErrorKind::NotFound {
+                    return gettextrs::gettext(
+                        "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib",
+                    )
+                    .into();
+                }
             }
+            e
         })
 }
 
 /// Generate checksums and print them to stdout using `makepkg -g`.
-/// This is the equivalent of `makepkg -g >> PKGBUILD` — the caller decides what to do with output.
 pub fn generate(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     let target_dir = get_target_dir(path)?;
     println!(">>> makepkg -g (in {:?})", target_dir);

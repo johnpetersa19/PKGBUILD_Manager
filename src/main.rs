@@ -27,7 +27,6 @@ use std::env;
 use std::path::Path;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Set up gettext translations
     let locale_dir = std::env::var("PKGBUILD_MANAGER_LOCALEDIR")
         .unwrap_or_else(|_| LOCALEDIR.to_string());
     let _ = bindtextdomain(GETTEXT_PACKAGE, &locale_dir);
@@ -42,11 +41,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let command = &args[1];
 
-    // Commands that accept [path] [flags...] pattern:
-    //   pkgbuild_manager <command> [path] [extra flags...]
-    //
-    // If the second arg starts with '-', treat it as a flag with CWD as path.
-    // Otherwise treat second arg as path and remaining as flags.
     let (path_arg, extra_flags): (&str, Vec<&str>) = match args.get(2) {
         None => (".", vec![]),
         Some(s) if s.starts_with('-') => (".", args[2..].iter().map(|s| s.as_str()).collect()),
@@ -56,7 +50,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let target_path = Path::new(path_arg);
 
     match command.as_str() {
-        // --- makepkg variants ---
         "build"            => actions::build::run(target_path, &[])?,
         "build-clean"      => actions::build::run(target_path, &["-c"])?,
         "build-force"      => actions::build::run(target_path, &["-f"])?,
@@ -74,22 +67,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         "fetch-sources"    => actions::build::run(target_path, &["-o"])?,
 
-        // --- checksums & srcinfo ---
         "checksums"        => actions::checksums::run(target_path)?,
         "genchecksums"     => actions::checksums::generate(target_path)?,
         "srcinfo"          => actions::srcinfo::run(target_path)?,
 
-        // --- audit / quality ---
         "namcap"           => actions::namcap::run(target_path)?,
         "shellcheck"       => actions::shellcheck::run(target_path)?,
 
-        // --- clean ---
         "clean"            => actions::clean::run(target_path, false)?,
         "clean-all"        => actions::clean::run(target_path, true)?,
 
-        // --- AUR git ---
         "aur-push"         => {
-            // aur-push [path] [commit message]
             let message = extra_flags.first().copied();
             actions::aur_push::run(target_path, message)?
         }
@@ -99,13 +87,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             actions::aur_push::run_with_tag(target_path, tag)?
         }
 
-        "setup-nautilus"   => {
-            setup_nautilus()?;
-        }
+        "setup-nautilus"   => setup_nautilus()?,
 
-        "help" | "-h" | "--help" => {
-            print_usage();
-        }
+        "help" | "-h" | "--help" => print_usage(),
+
         _ => {
             eprintln!("{}: {}", gettext("Unknown command"), command);
             print_usage();
@@ -123,29 +108,20 @@ fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
 
     let home = std::env::var("HOME")?;
 
-    // Target: ~/.local/share/nautilus/scripts/PKGBUILD/
-    // Nautilus displays each subdirectory inside "scripts/" as a named submenu.
-    // Scripts placed directly inside PKGBUILD/ appear as menu entries under
-    // the "PKGBUILD" submenu — no extra nested folder is created.
     let scripts_root = PathBuf::from(&home).join(".local/share/nautilus/scripts");
     let pkgbuild_dir = scripts_root.join("PKGBUILD");
 
-    // 1. Remove every stale file/symlink that old versions may have placed
-    //    directly inside scripts/ (the root level, outside PKGBUILD/).
+    // Remove stale files/symlinks from previous versions
     let stale_names = [
-        // English internal names
         "00_Full Workflow", "01_Build", "02_Install", "02b_Build and Clean",
         "03_Update Checksums", "04_Update .SRCINFO", "05_Namcap", "05b_ShellCheck",
         "06_Push AUR", "07_Clean srcdir", "07b_Clean Everything",
-        // Old Portuguese-prefixed names
         "00_Fluxo completo", "01_Compilar", "02_Instalar", "02b_Compilar e Limpar",
         "03_Atualizar checksums", "04_Atualizar .SRCINFO", "07_Limpar srcdir",
         "07b_Clean tudo", "07b_Limpar tudo",
-        // Clean display-name variants (pt_BR)
         "Fluxo Completo", "Compilar", "Instalar", "Compilar e Limpar",
         "Atualizar Checksums", "Atualizar .SRCINFO", "Namcap", "ShellCheck",
         "Enviar para AUR", "Limpar srcdir", "Limpar Tudo",
-        // Helper script
         "_run_in_terminal",
     ];
     for name in stale_names {
@@ -155,47 +131,38 @@ fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    // 2. Wipe and recreate the PKGBUILD/ directory so we start clean.
-    //    This removes any previously installed symlinks (e.g. with old translated
-    //    names) and avoids accumulating stale entries across runs.
     if pkgbuild_dir.exists() {
         fs::remove_dir_all(&pkgbuild_dir)?;
     }
     fs::create_dir_all(&pkgbuild_dir)?;
 
-    // 3. Resolve the system scripts directory.
-    //    Installed path: /usr/share/pkgbuild-manager/scripts/
-    //    Fallback for local development: data/nautilus-scripts/
-    let system_scripts_dir = {
-        let installed = PathBuf::from("/usr/share/pkgbuild-manager/scripts");
-        if installed.exists() {
-            installed
-        } else {
-            PathBuf::from("data/nautilus-scripts")
-        }
+    // Resolve installed scripts dir — fail explicitly if neither location exists.
+    let installed = PathBuf::from("/usr/share/pkgbuild-manager/scripts");
+    let system_scripts_dir = if installed.exists() {
+        installed
+    } else {
+        return Err(format!(
+            "Scripts directory not found at {}. \
+             Please install the package with 'sudo meson install -C build' first.",
+            installed.display()
+        )
+        .into());
     };
 
-    // 4. Map each internal script filename → gettext key.
-    //    The gettext key is translated at runtime using the user's locale.
-    //    Internal filenames (source) stay in English for maintainability.
-    //    _run_in_terminal is a helper; it must not appear in the visible menu.
     let actions = [
-        ("00_Full Workflow",    "00_Full Workflow"),
-        ("01_Build",            "01_Build"),
-        ("02b_Build and Clean", "02b_Build and Clean"),
-        ("02_Install",          "02_Install"),
-        ("03_Update Checksums", "03_Update Checksums"),
-        ("04_Update .SRCINFO",  "04_Update .SRCINFO"),
-        ("05b_ShellCheck",      "05b_ShellCheck"),
-        ("05_Namcap",           "05_Namcap"),
-        ("06_Push AUR",         "06_Push AUR"),
-        ("07b_Clean Everything","07b_Clean Everything"),
-        ("07_Clean srcdir",     "07_Clean srcdir"),
+        ("00_Full Workflow",     "00_Full Workflow"),
+        ("01_Build",             "01_Build"),
+        ("02b_Build and Clean",  "02b_Build and Clean"),
+        ("02_Install",           "02_Install"),
+        ("03_Update Checksums",  "03_Update Checksums"),
+        ("04_Update .SRCINFO",   "04_Update .SRCINFO"),
+        ("05b_ShellCheck",       "05b_ShellCheck"),
+        ("05_Namcap",            "05_Namcap"),
+        ("06_Push AUR",          "06_Push AUR"),
+        ("07b_Clean Everything", "07b_Clean Everything"),
+        ("07_Clean srcdir",      "07_Clean srcdir"),
     ];
 
-    // 5. Create one symlink per action directly inside PKGBUILD/.
-    //    Symlink name = translated label (e.g. "Compilar", "Build", "Compilar").
-    //    This is what Nautilus displays in the submenu — no numbers, no prefixes.
     for (file_name, gettext_key) in actions {
         let src = system_scripts_dir.join(file_name);
         if src.exists() {
@@ -209,9 +176,6 @@ fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    // 6. Also symlink _run_in_terminal with a leading underscore so Nautilus
-    //    keeps it at the bottom and does not translate it — it is an internal
-    //    helper, not a user-facing action.
     let helper_src = system_scripts_dir.join("_run_in_terminal");
     if helper_src.exists() {
         let helper_dest = pkgbuild_dir.join("_run_in_terminal");

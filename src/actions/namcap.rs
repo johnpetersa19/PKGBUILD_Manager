@@ -4,24 +4,17 @@ use super::get_target_dir;
 
 pub fn run(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     let target_dir = get_target_dir(path)?;
-    
-    // We will run namcap on PKGBUILD
+
     let mut args = vec!["PKGBUILD".to_string()];
-    
-    // Check for any compiled packages (*.pkg.tar.zst) to inspect them as well
+
+    // Collect all *.pkg.tar.* files (zst, xz, gz, bz2, etc.)
     if let Ok(entries) = std::fs::read_dir(&target_dir) {
         for entry in entries.flatten() {
-            let path = entry.path();
-            if path.is_file() {
-                if let Some(ext) = path.extension() {
-                    if ext == "zst" {
-                        if let Some(filename) = path.file_name() {
-                            let filename_str = filename.to_string_lossy().into_owned();
-                            if filename_str.contains(".pkg.tar.") {
-                                args.push(filename_str);
-                            }
-                        }
-                    }
+            let p = entry.path();
+            if p.is_file() {
+                let name = p.file_name().unwrap_or_default().to_string_lossy();
+                if name.contains(".pkg.tar.") {
+                    args.push(name.into_owned());
                 }
             }
         }
@@ -29,7 +22,7 @@ pub fn run(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
 
     let args_slices: Vec<&str> = args.iter().map(|s| s.as_str()).collect();
     println!(">>> namcap {} (in {:?})", args_slices.join(" "), target_dir);
-    
+
     let status = Command::new("namcap")
         .args(&args_slices)
         .current_dir(&target_dir)

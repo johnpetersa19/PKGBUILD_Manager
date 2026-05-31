@@ -6,39 +6,39 @@ run_in_terminal() {
     local cmd="$1"
     local wait_key='echo; read -n1 -rsp "Press any key to exit..." && echo'
 
-    # 1. Official terminal emulators for Desktop Environments (DEs)
+    # 1. Official terminal emulators for Desktop Environments
     if command -v gnome-terminal &>/dev/null; then
         gnome-terminal -- bash -c "$cmd; $wait_key"
     elif command -v kgx &>/dev/null; then
-        kgx -e "bash -c '$cmd; $wait_key'"
+        kgx -- bash -c "$cmd; $wait_key"
     elif command -v konsole &>/dev/null; then
-        konsole -e bash -c "$cmd; $wait_key"
+        konsole -- bash -c "$cmd; $wait_key"
     elif command -v xfce4-terminal &>/dev/null; then
-        xfce4-terminal -e "bash -c '$cmd; $wait_key'"
+        xfce4-terminal -- bash -c "$cmd; $wait_key"
     elif command -v mate-terminal &>/dev/null; then
-        mate-terminal -e "bash -c '$cmd; $wait_key'"
+        mate-terminal -- bash -c "$cmd; $wait_key"
     elif command -v lxterminal &>/dev/null; then
-        lxterminal -e "bash -c '$cmd; $wait_key'"
+        lxterminal -- bash -c "$cmd; $wait_key"
     elif command -v qterminal &>/dev/null; then
-        qterminal -e "bash -c '$cmd; $wait_key'"
+        qterminal -- bash -c "$cmd; $wait_key"
     elif command -v deepin-terminal &>/dev/null; then
-        deepin-terminal -e "bash -c '$cmd; $wait_key'"
+        deepin-terminal -- bash -c "$cmd; $wait_key"
     elif command -v terminology &>/dev/null; then
-        terminology -e bash -c "$cmd; $wait_key"
+        terminology -- bash -c "$cmd; $wait_key"
     elif command -v ukui-terminal &>/dev/null; then
-        ukui-terminal -e "bash -c '$cmd; $wait_key'"
+        ukui-terminal -- bash -c "$cmd; $wait_key"
 
-    # 2. Other popular and general-purpose terminal emulators
+    # 2. Other popular terminal emulators
     elif command -v tilix &>/dev/null; then
-        tilix -e "bash -c '$cmd; $wait_key'"
+        tilix -- bash -c "$cmd; $wait_key"
     elif command -v alacritty &>/dev/null; then
-        alacritty -e bash -c "$cmd; $wait_key"
+        alacritty -- bash -c "$cmd; $wait_key"
     elif command -v kitty &>/dev/null; then
-        kitty bash -c "$cmd; $wait_key"
+        kitty -- bash -c "$cmd; $wait_key"
     elif command -v wezterm &>/dev/null; then
         wezterm start -- bash -c "$cmd; $wait_key"
     elif command -v foot &>/dev/null; then
-        foot bash -c "$cmd; $wait_key"
+        foot -- bash -c "$cmd; $wait_key"
 
     # 3. Universal fallback
     elif command -v xterm &>/dev/null; then
