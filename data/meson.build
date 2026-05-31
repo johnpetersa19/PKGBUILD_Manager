@@ -42,5 +42,6 @@ install_data(
 # without needing setup-nautilus. Requires nautilus-python (python-nautilus).
 install_data(
   'nautilus-extension/pkgbuild_manager.py',
-  install_dir: get_option('datadir') / 'nautilus-python/extensions'
+  install_dir: get_option('datadir') / 'nautilus-python/extensions',
+  install_mode: 'rwxr-xr-x',
 )
