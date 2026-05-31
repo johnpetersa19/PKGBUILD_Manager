@@ -13,3 +13,4 @@ Terminal=false
 Type=Application
 Categories=Development;
 Keywords=pkgbuild;aur;arch;package;
+NoDisplay=true
