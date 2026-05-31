@@ -6,8 +6,8 @@ use super::get_target_dir;
 
 pub fn run(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     let target_dir = get_target_dir(path)?;
-    println!(">>> makepkg --printsrcinfo > .SRCINFO (in {:?})", target_dir);
-    
+    println!("{} {:?}", gettextrs::gettext(">>> Regenerating .SRCINFO in"), target_dir);
+
     let output = Command::new("makepkg")
         .arg("--printsrcinfo")
         .current_dir(&target_dir)
@@ -15,7 +15,11 @@ pub fn run(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
 
     if !output.status.success() {
         let err_msg = String::from_utf8_lossy(&output.stderr);
-        return Err(format!("makepkg --printsrcinfo failed: {}", err_msg).into());
+        return Err(format!(
+            "{}: {}",
+            gettextrs::gettext("makepkg --printsrcinfo failed"),
+            err_msg
+        ).into());
     }
 
     let srcinfo_path = target_dir.join(".SRCINFO");

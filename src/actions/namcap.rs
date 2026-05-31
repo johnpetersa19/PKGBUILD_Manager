@@ -1,24 +1,13 @@
 use std::path::Path;
 use std::process::Command;
-use super::get_target_dir;
+use super::{get_target_dir, collect_pkg_files};
 
 pub fn run(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     let target_dir = get_target_dir(path)?;
 
     let mut args = vec!["PKGBUILD".to_string()];
-
-    // Collect all *.pkg.tar.* files (zst, xz, gz, bz2, etc.)
-    if let Ok(entries) = std::fs::read_dir(&target_dir) {
-        for entry in entries.flatten() {
-            let p = entry.path();
-            if p.is_file() {
-                let name = p.file_name().unwrap_or_default().to_string_lossy();
-                if name.contains(".pkg.tar.") {
-                    args.push(name.into_owned());
-                }
-            }
-        }
-    }
+    // Reuse shared helper — avoids duplicating read_dir logic from clean.rs
+    args.extend(collect_pkg_files(&target_dir));
 
     let args_slices: Vec<&str> = args.iter().map(|s| s.as_str()).collect();
     println!(">>> namcap {} (in {:?})", args_slices.join(" "), target_dir);
