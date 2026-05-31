@@ -1,9 +1,9 @@
-# Maintainer: John <john@example.com>
+# Maintainer: John Peter Sa <johnpetersa19@proton.me>
 pkgname=pkgbuild-manager-git
 _pkgname=PKGBUILD_Manager
-pkgver=r1.0
+pkgver=2.0.0
 pkgrel=1
-pkgdesc="A Rust-based headless CLI tool and Nautilus context menu integration for PKGBUILD management"
+pkgdesc="Rust CLI + GTK4 settings panel and multi-file-manager context-menu integration for PKGBUILD management"
 arch=('x86_64')
 url="https://github.com/johnpetersa19/PKGBUILD_Manager"
 license=('GPL-3.0-or-later')
@@ -12,8 +12,9 @@ depends=(
   'libnotify'
   'nautilus'
   'python-nautilus'
+  'python-gobject'
 )
-makedepends=('git' 'meson' 'ninja' 'rust' 'cargo')
+makedepends=('git' 'meson' 'ninja' 'rust' 'cargo' 'gettext')
 optdepends=(
   'namcap: for auditing package metadata and structure'
   'shellcheck: for linting PKGBUILD bash code'
@@ -24,7 +25,7 @@ optdepends=(
 provides=("pkgbuild-manager")
 conflicts=("pkgbuild-manager")
 install=pkgbuild-manager.install
-source=("$_pkgname::git+https://github.com/johnpetersa19/PKGBUILD_Manager.git")
+source=("$_pkgname::git+https://github.com/johnpetersa19/PKGBUILD_Manager.git#tag=v2.0.0")
 sha256sums=('SKIP')
 
 pkgver() {
