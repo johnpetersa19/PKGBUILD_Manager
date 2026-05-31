@@ -1,86 +1,59 @@
 #!/bin/bash
 # _run_in_terminal: internal helper used by other PKGBUILD Manager scripts.
 # Usage: source _run_in_terminal && run_in_terminal "<command>"
-#        source _run_in_terminal && reopen_file_manager "<path>"
+#
+# The terminal is launched fully detached — closing it never affects
+# the file manager window.
 
 run_in_terminal() {
     local cmd="$1"
     local wait_key='echo; read -n1 -rsp "Press any key to exit..." && echo'
 
+    _launch() {
+        "$@" &
+        disown
+    }
+
     # 1. Official terminal emulators for Desktop Environments
     if command -v gnome-terminal &>/dev/null; then
-        gnome-terminal -- bash -c "$cmd; $wait_key"
+        _launch gnome-terminal -- bash -c "$cmd; $wait_key"
     elif command -v kgx &>/dev/null; then
-        kgx -- bash -c "$cmd; $wait_key"
+        _launch kgx -- bash -c "$cmd; $wait_key"
     elif command -v konsole &>/dev/null; then
-        konsole -- bash -c "$cmd; $wait_key"
+        _launch konsole -- bash -c "$cmd; $wait_key"
     elif command -v xfce4-terminal &>/dev/null; then
-        xfce4-terminal -- bash -c "$cmd; $wait_key"
+        _launch xfce4-terminal -- bash -c "$cmd; $wait_key"
     elif command -v mate-terminal &>/dev/null; then
-        mate-terminal -- bash -c "$cmd; $wait_key"
+        _launch mate-terminal -- bash -c "$cmd; $wait_key"
     elif command -v lxterminal &>/dev/null; then
-        lxterminal -- bash -c "$cmd; $wait_key"
+        _launch lxterminal -- bash -c "$cmd; $wait_key"
     elif command -v qterminal &>/dev/null; then
-        qterminal -- bash -c "$cmd; $wait_key"
+        _launch qterminal -- bash -c "$cmd; $wait_key"
     elif command -v deepin-terminal &>/dev/null; then
-        deepin-terminal -- bash -c "$cmd; $wait_key"
+        _launch deepin-terminal -- bash -c "$cmd; $wait_key"
     elif command -v terminology &>/dev/null; then
-        terminology -- bash -c "$cmd; $wait_key"
+        _launch terminology -- bash -c "$cmd; $wait_key"
     elif command -v ukui-terminal &>/dev/null; then
-        ukui-terminal -- bash -c "$cmd; $wait_key"
+        _launch ukui-terminal -- bash -c "$cmd; $wait_key"
 
     # 2. Other popular terminal emulators
     elif command -v tilix &>/dev/null; then
-        tilix -- bash -c "$cmd; $wait_key"
+        _launch tilix -- bash -c "$cmd; $wait_key"
     elif command -v alacritty &>/dev/null; then
-        alacritty -- bash -c "$cmd; $wait_key"
+        _launch alacritty -- bash -c "$cmd; $wait_key"
     elif command -v kitty &>/dev/null; then
-        kitty -- bash -c "$cmd; $wait_key"
+        _launch kitty -- bash -c "$cmd; $wait_key"
     elif command -v wezterm &>/dev/null; then
-        wezterm start -- bash -c "$cmd; $wait_key"
+        _launch wezterm start -- bash -c "$cmd; $wait_key"
     elif command -v foot &>/dev/null; then
-        foot -- bash -c "$cmd; $wait_key"
+        _launch foot -- bash -c "$cmd; $wait_key"
 
     # 3. Universal fallback
     elif command -v xterm &>/dev/null; then
-        xterm -e "bash -c '$cmd; $wait_key'"
+        _launch xterm -e "bash -c '$cmd; $wait_key'"
     else
         notify-send -u critical "PKGBUILD Manager" \
             "No compatible terminal emulator found."
-        return 1
-    fi
-}
-
-reopen_file_manager() {
-    local path="$1"
-
-    # GNOME
-    if command -v nautilus &>/dev/null; then
-        pkill nautilus; sleep 1; nautilus "$path" &
-    # KDE
-    elif command -v dolphin &>/dev/null; then
-        pkill dolphin; sleep 1; dolphin "$path" &
-    # XFCE
-    elif command -v thunar &>/dev/null; then
-        pkill thunar; sleep 1; thunar "$path" &
-    # MATE
-    elif command -v caja &>/dev/null; then
-        pkill caja; sleep 1; caja "$path" &
-    # LXQt
-    elif command -v pcmanfm-qt &>/dev/null; then
-        pkill pcmanfm-qt; sleep 1; pcmanfm-qt "$path" &
-    # LXDE
-    elif command -v pcmanfm &>/dev/null; then
-        pkill pcmanfm; sleep 1; pcmanfm "$path" &
-    # Deepin
-    elif command -v dde-file-manager &>/dev/null; then
-        pkill dde-file-manager; sleep 1; dde-file-manager "$path" &
-    # Nemo (Cinnamon)
-    elif command -v nemo &>/dev/null; then
-        pkill nemo; sleep 1; nemo "$path" &
-    else
-        notify-send -u critical "PKGBUILD Manager" \
-            "No compatible file manager found."
         return 1
     fi
 }

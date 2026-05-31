@@ -4,8 +4,5 @@ TARGET="$(dirname "$(realpath "${1:-.}")")"
 source "$(dirname "$0")/_i18n"
 source "$(dirname "$0")/_run_in_terminal"
 
-CURRENT_DIR="$(pwd)"
-
 notify-send "PKGBUILD Manager" "$MSG_FULL_WORKFLOW"
 run_in_terminal "pkgbuild_manager install '$TARGET'"
-reopen_file_manager "$CURRENT_DIR"
