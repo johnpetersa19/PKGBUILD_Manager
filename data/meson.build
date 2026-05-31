@@ -18,7 +18,8 @@ nautilus_scripts = [
 
 install_data(
   nautilus_scripts,
-  install_dir: get_option('datadir') / 'pkgbuild-manager/scripts'
+  install_dir: get_option('datadir') / 'pkgbuild-manager/scripts',
+  install_mode: 'rwxr-xr-x',
 )
 
 # Plain .po files for the bash _i18n helper.
