@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # pkgbuild-manager-settings
 # GTK4 + Libadwaita settings panel.
-# Lets the user choose which actions appear in the file-manager context menu,
-# rename them, reorder them and group them into named submenus.
-# Config is saved to ~/.config/pkgbuild-manager/menu.json and is read at
-# runtime by all file-manager extensions (Nautilus, Nemo, Caja, Dolphin).
 
 import gi
 gi.require_version("Gtk", "4.0")
@@ -17,7 +13,6 @@ import subprocess
 import gettext
 from pathlib import Path
 
-# i18n setup
 gettext.bindtextdomain("pkgbuild_manager", "/usr/share/locale")
 gettext.textdomain("pkgbuild_manager")
 _ = gettext.gettext
@@ -69,7 +64,6 @@ def _default_menu():
 
 def _all_actions():
     return [
-        # ── Build ───────────────────────────────────────────────────────
         {"id": "00_Full Workflow",       "label": _("00_Full Workflow")},
         {"id": "01_Build",               "label": _("01_Build")},
         {"id": "02b_Build and Clean",    "label": _("02b_Build and Clean")},
@@ -77,23 +71,18 @@ def _all_actions():
         {"id": "09_Build NoCheck",       "label": _("09_Build NoCheck")},
         {"id": "10_Build NoGPG",         "label": _("10_Build NoGPG")},
         {"id": "11_Fetch Sources",       "label": _("11_Fetch Sources")},
-        # ── Install ─────────────────────────────────────────────────────
         {"id": "02_Install",             "label": _("02_Install")},
         {"id": "12_Install Force",       "label": _("12_Install Force")},
         {"id": "13_Install RmDeps",      "label": _("13_Install RmDeps")},
         {"id": "14_Install NoCheck",     "label": _("14_Install NoCheck")},
         {"id": "15_Install NoGPG",       "label": _("15_Install NoGPG")},
-        # ── Metadata ─────────────────────────────────────────────────────
         {"id": "03_Update Checksums",    "label": _("03_Update Checksums")},
         {"id": "04_Update .SRCINFO",     "label": _("04_Update .SRCINFO")},
         {"id": "16_Gen Checksums",       "label": _("16_Gen Checksums")},
-        # ── Audit ────────────────────────────────────────────────────────
         {"id": "05_Namcap",              "label": _("05_Namcap")},
         {"id": "05b_ShellCheck",         "label": _("05b_ShellCheck")},
-        # ── Git / AUR ───────────────────────────────────────────────────
         {"id": "06_Push AUR",            "label": _("06_Push AUR")},
         {"id": "17_Push AUR Tag",        "label": _("17_Push AUR Tag")},
-        # ── Clean ────────────────────────────────────────────────────────
         {"id": "07_Clean srcdir",        "label": _("07_Clean srcdir")},
         {"id": "07b_Clean Everything",   "label": _("07b_Clean Everything")},
     ]
@@ -102,12 +91,9 @@ def _all_actions():
 def load_config():
     known_ids = {a["id"] for a in _all_actions()}
     id_to_label = {a["id"]: a["label"] for a in _all_actions()}
-
     if CONFIG_FILE.exists():
         try:
             data = json.loads(CONFIG_FILE.read_text())
-            # Re-translate labels and discard any item whose id is no longer
-            # known (e.g. after a downgrade or config from an old version).
             for group in data:
                 group["items"] = [
                     {**item, "label": id_to_label.get(item["id"], item["label"])}
@@ -127,17 +113,10 @@ def save_config(data):
 
 
 def _notify_file_managers():
-    # Restart Nautilus in the background so new scripts become visible
-    # immediately without the user needing to manually close and reopen it.
-    # 'nautilus -q' quits all open Nautilus windows; the desktop/file manager
-    # daemon restarts automatically on next activation. No root required.
     try:
         subprocess.Popen(["nautilus", "-q"], close_fds=True)
     except FileNotFoundError:
-        pass  # Nautilus not installed
-
-    # Dolphin: regenerate .desktop service files if the helper script exists
-    # and is executable by the current user (no sudo involved).
+        pass
     regen = "/usr/share/pkgbuild-manager/regen-dolphin-desktop"
     if os.path.isfile(regen) and os.access(regen, os.X_OK):
         subprocess.Popen([regen], close_fds=True)
@@ -146,14 +125,19 @@ def _notify_file_managers():
 class SettingsApp(Adw.Application):
     def __init__(self):
         super().__init__(
-            application_id="io.github.johnpetersa19.PkgbuildManagerSettings",
+            application_id="io.github.johnpetersa19.PkgbuildManager",
             flags=Gio.ApplicationFlags.FLAGS_NONE,
         )
-        self.connect("activate", self._on_activate)
-        # Flag to suppress "changed" signals fired by set_text() during rebuild
+        self.win = None
         self._rebuilding = False
+        self.connect("activate", self._on_activate)
 
     def _on_activate(self, *_):
+        # If the window already exists (second launch via DBus), just
+        # bring it back to the foreground instead of creating a new one.
+        if self.win is not None:
+            self.win.present()
+            return
         self.menu_data = load_config()
         self._build_window()
         self.win.present()
@@ -162,6 +146,11 @@ class SettingsApp(Adw.Application):
         self.win = Adw.ApplicationWindow(application=self)
         self.win.set_title(_("PKGBUILD Manager — Menu Settings"))
         self.win.set_default_size(700, 600)
+
+        # When the window is closed, set self.win = None so the next
+        # activation creates a fresh window instead of re-presenting a
+        # destroyed one.
+        self.win.connect("destroy", self._on_window_destroy)
 
         toolbar_view = Adw.ToolbarView()
         header = Adw.HeaderBar()
@@ -191,8 +180,10 @@ class SettingsApp(Adw.Application):
 
         self._render_groups()
 
+    def _on_window_destroy(self, *_):
+        self.win = None
+
     def _render_groups(self):
-        # Suppress rename callbacks triggered by set_text() while rebuilding
         self._rebuilding = True
         try:
             while True:
@@ -352,7 +343,6 @@ class SettingsApp(Adw.Application):
         self._render_groups()
 
     def _on_add_item_dialog(self, _btn, g_idx):
-        # Always show ALL actions — duplicates across groups are intentional.
         available = _all_actions()
 
         dialog = Adw.Dialog()
@@ -402,7 +392,6 @@ class SettingsApp(Adw.Application):
     # --- Save / Reset ---
 
     def _on_save(self, _btn):
-        # menu.json lives in XDG_CONFIG_HOME (~/.config/) — no root needed.
         save_config(self.menu_data)
         self.win.add_toast(Adw.Toast(title=_("Saved! Restart the file manager to apply.")))
 
