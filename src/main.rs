@@ -101,18 +101,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+/// setup-nautilus
+///
+/// Removes any stale user-land symlinks/dirs created by older versions,
+/// verifies the Nautilus Python extension is installed, then restarts
+/// Nautilus so the extension loads cleanly.
+///
+/// The Python extension (pkgbuild_manager.py) is the ONLY source of the
+/// PKGBUILD context-menu. It reads scripts from
+/// /usr/share/pkgbuild-manager/scripts/, translates labels via .mo files,
+/// and filters internal helpers. No user-land symlinks are needed.
 fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
     use std::fs;
-    use std::os::unix::fs::symlink;
     use std::path::PathBuf;
+    use std::process::Command;
 
     let home = std::env::var("HOME")?;
-
     let scripts_root = PathBuf::from(&home).join(".local/share/nautilus/scripts");
-    let pkgbuild_dir = scripts_root.join("PKGBUILD");
 
-    // Remove stale files/symlinks from previous versions
-    let stale_names = [
+    // ------------------------------------------------------------------
+    // 1. Remove stale symlinks / dirs left by previous versions
+    // ------------------------------------------------------------------
+    let stale_names: &[&str] = &[
         "00_Full Workflow", "01_Build", "02_Install", "02b_Build and Clean",
         "03_Update Checksums", "04_Update .SRCINFO", "05_Namcap", "05b_ShellCheck",
         "06_Push AUR", "07_Clean srcdir", "07b_Clean Everything",
@@ -125,66 +135,43 @@ fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
         "_run_in_terminal",
     ];
     for name in stale_names {
-        let path = scripts_root.join(name);
-        if path.exists() || path.is_symlink() {
-            let _ = fs::remove_file(&path);
+        let p = scripts_root.join(name);
+        if p.exists() || p.symlink_metadata().is_ok() {
+            let _ = fs::remove_file(&p);
         }
     }
-
+    let pkgbuild_dir = scripts_root.join("PKGBUILD");
     if pkgbuild_dir.exists() {
-        fs::remove_dir_all(&pkgbuild_dir)?;
+        if let Err(e) = fs::remove_dir_all(&pkgbuild_dir) {
+            eprintln!("Warning: could not remove stale PKGBUILD dir: {e}");
+        }
     }
-    fs::create_dir_all(&pkgbuild_dir)?;
 
-    // Resolve installed scripts dir — fail explicitly if neither location exists.
-    let installed = PathBuf::from("/usr/share/pkgbuild-manager/scripts");
-    let system_scripts_dir = if installed.exists() {
-        installed
-    } else {
-        return Err(format!(
-            "Scripts directory not found at {}. \
-             Please install the package with 'sudo meson install -C build' first.",
-            installed.display()
+    // ------------------------------------------------------------------
+    // 2. Verify the Python extension is installed
+    // ------------------------------------------------------------------
+    let ext = PathBuf::from("/usr/share/nautilus-python/extensions/pkgbuild_manager.py");
+    if !ext.exists() {
+        return Err(
+            "Nautilus extension not found at \
+             /usr/share/nautilus-python/extensions/pkgbuild_manager.py. \
+             Please reinstall the package."
+            .into(),
+        );
+    }
+
+    // ------------------------------------------------------------------
+    // 3. Restart Nautilus
+    // ------------------------------------------------------------------
+    let _ = Command::new("nautilus").arg("-q").status();
+
+    println!(
+        "{}",
+        gettext(
+            "PKGBUILD Manager: Nautilus extension active. \
+             Right-click any PKGBUILD file to see the PKGBUILD submenu."
         )
-        .into());
-    };
-
-    let actions = [
-        ("00_Full Workflow",     "00_Full Workflow"),
-        ("01_Build",             "01_Build"),
-        ("02b_Build and Clean",  "02b_Build and Clean"),
-        ("02_Install",           "02_Install"),
-        ("03_Update Checksums",  "03_Update Checksums"),
-        ("04_Update .SRCINFO",   "04_Update .SRCINFO"),
-        ("05b_ShellCheck",       "05b_ShellCheck"),
-        ("05_Namcap",            "05_Namcap"),
-        ("06_Push AUR",          "06_Push AUR"),
-        ("07b_Clean Everything", "07b_Clean Everything"),
-        ("07_Clean srcdir",      "07_Clean srcdir"),
-    ];
-
-    for (file_name, gettext_key) in actions {
-        let src = system_scripts_dir.join(file_name);
-        if src.exists() {
-            let label = gettext(gettext_key);
-            let dest = pkgbuild_dir.join(&label);
-            if let Err(e) = symlink(&src, &dest) {
-                eprintln!("Warning: could not symlink {file_name} as '{label}': {e}");
-            }
-        } else {
-            eprintln!("Warning: script not found, skipping: {}", src.display());
-        }
-    }
-
-    let helper_src = system_scripts_dir.join("_run_in_terminal");
-    if helper_src.exists() {
-        let helper_dest = pkgbuild_dir.join("_run_in_terminal");
-        if let Err(e) = symlink(&helper_src, &helper_dest) {
-            eprintln!("Warning: could not symlink _run_in_terminal: {e}");
-        }
-    }
-
-    println!("{}", gettext("Nautilus scripts successfully configured under 'PKGBUILD' submenu."));
+    );
     Ok(())
 }
 
@@ -229,6 +216,6 @@ fn print_usage() {
     println!("  aur-push-tag <ver> {}", gettext("Push with version tag (e.g. 1.2.3-1)"));
 
     println!("\n{}:", gettext("Other"));
-    println!("  setup-nautilus     {}", gettext("Symlink scripts to user directory with localization"));
+    println!("  setup-nautilus     {}", gettext("Remove stale symlinks and verify the Nautilus extension"));
     println!("  help               {}", gettext("Show this help message"));
 }
