@@ -1,0 +1,11 @@
+[package]
+name = "pkgbuild_manager"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "pkgbuild_manager"
+path = "main.rs"
+
+[dependencies]
+gettext-rs = { version = "0.7", features = ["gettext-system"] }
