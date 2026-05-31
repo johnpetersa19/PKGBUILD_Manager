@@ -54,7 +54,7 @@ msgstr ""
 # ---------------------------------------------------------------------------
 # Settings panel (GTK app — src/settings/app.py)
 # ---------------------------------------------------------------------------
-msgid "PKGBUILD Manager \u2014 Menu Settings"
+msgid "PKGBUILD Manager — Menu Settings"
 msgstr ""
 
 msgid "Reset"
@@ -337,7 +337,7 @@ msgstr ""
 msgid "Removed"
 msgstr ""
 
-msgid "Note: nothing to commit or commit failed \u2014 continuing with push."
+msgid "Note: nothing to commit or commit failed — continuing with push."
 msgstr ""
 
 msgid "makepkg --printsrcinfo failed:"

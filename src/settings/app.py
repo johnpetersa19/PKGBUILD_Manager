@@ -128,7 +128,7 @@ class SettingsApp(Adw.Application):
 
     def _build_window(self):
         self.win = Adw.ApplicationWindow(application=self)
-        self.win.set_title(_("PKGBUILD Manager \u2014 Menu Settings"))
+        self.win.set_title(_("PKGBUILD Manager — Menu Settings"))
         self.win.set_default_size(700, 600)
 
         toolbar_view = Adw.ToolbarView()
