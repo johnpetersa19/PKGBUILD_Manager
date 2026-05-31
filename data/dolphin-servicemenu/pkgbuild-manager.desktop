@@ -1,0 +1,107 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=KonqPopupMenu/Plugin
+MimeType=application/octet-stream;
+X-KDE-ServiceTypes=KonqPopupMenu/Plugin
+X-KDE-Submenu=PKGBUILD
+Actions=FullWorkflow;Build;BuildClean;Install;UpdateChecksums;UpdateSrcinfo;Namcap;ShellCheck;PushAUR;CleanSrcdir;CleanAll;
+
+[Desktop Action FullWorkflow]
+Name=Full Workflow
+Name[pt_BR]=Fluxo Completo
+Name[es]=Flujo Completo
+Name[de]=Vollständiger Workflow
+Name[fr]=Flux Complet
+Name[it]=Flusso Completo
+Icon=io.github.john.PkgbuildManager
+Exec=bash /usr/share/pkgbuild-manager/scripts/00_Full\ Workflow %F
+
+[Desktop Action Build]
+Name=Build
+Name[pt_BR]=Compilar
+Name[es]=Compilar
+Name[de]=Kompilieren
+Name[fr]=Compiler
+Name[it]=Compilare
+Icon=io.github.john.PkgbuildManager
+Exec=bash /usr/share/pkgbuild-manager/scripts/01_Build %F
+
+[Desktop Action BuildClean]
+Name=Build and Clean
+Name[pt_BR]=Compilar e Limpar
+Name[es]=Compilar y Limpiar
+Name[de]=Kompilieren und Bereinigen
+Name[fr]=Compiler et Nettoyer
+Name[it]=Compilare e Pulire
+Icon=io.github.john.PkgbuildManager
+Exec=bash /usr/share/pkgbuild-manager/scripts/02b_Build\ and\ Clean %F
+
+[Desktop Action Install]
+Name=Install
+Name[pt_BR]=Instalar
+Name[es]=Instalar
+Name[de]=Installieren
+Name[fr]=Installer
+Name[it]=Installare
+Icon=io.github.john.PkgbuildManager
+Exec=bash /usr/share/pkgbuild-manager/scripts/02_Install %F
+
+[Desktop Action UpdateChecksums]
+Name=Update Checksums
+Name[pt_BR]=Atualizar Checksums
+Name[es]=Actualizar Checksums
+Name[de]=Prüfsummen aktualisieren
+Name[fr]=Mettre à jour les checksums
+Name[it]=Aggiorna Checksum
+Icon=io.github.john.PkgbuildManager
+Exec=bash /usr/share/pkgbuild-manager/scripts/03_Update\ Checksums %F
+
+[Desktop Action UpdateSrcinfo]
+Name=Update .SRCINFO
+Name[pt_BR]=Atualizar .SRCINFO
+Name[es]=Actualizar .SRCINFO
+Name[de]=.SRCINFO aktualisieren
+Name[fr]=Mettre à jour .SRCINFO
+Name[it]=Aggiorna .SRCINFO
+Icon=io.github.john.PkgbuildManager
+Exec=bash /usr/share/pkgbuild-manager/scripts/04_Update\ .SRCINFO %F
+
+[Desktop Action Namcap]
+Name=Namcap
+Icon=io.github.john.PkgbuildManager
+Exec=bash /usr/share/pkgbuild-manager/scripts/05_Namcap %F
+
+[Desktop Action ShellCheck]
+Name=ShellCheck
+Icon=io.github.john.PkgbuildManager
+Exec=bash /usr/share/pkgbuild-manager/scripts/05b_ShellCheck %F
+
+[Desktop Action PushAUR]
+Name=Push AUR
+Name[pt_BR]=Enviar para AUR
+Name[es]=Enviar al AUR
+Name[de]=AUR pushen
+Name[fr]=Pousser vers AUR
+Name[it]=Invia ad AUR
+Icon=io.github.john.PkgbuildManager
+Exec=bash /usr/share/pkgbuild-manager/scripts/06_Push\ AUR %F
+
+[Desktop Action CleanSrcdir]
+Name=Clean srcdir
+Name[pt_BR]=Limpar srcdir
+Name[es]=Limpiar srcdir
+Name[de]=srcdir bereinigen
+Name[fr]=Nettoyer srcdir
+Name[it]=Pulisci srcdir
+Icon=io.github.john.PkgbuildManager
+Exec=bash /usr/share/pkgbuild-manager/scripts/07_Clean\ srcdir %F
+
+[Desktop Action CleanAll]
+Name=Clean Everything
+Name[pt_BR]=Limpar Tudo
+Name[es]=Limpiar Todo
+Name[de]=Alles bereinigen
+Name[fr]=Tout nettoyer
+Name[it]=Pulisci Tutto
+Icon=io.github.john.PkgbuildManager
+Exec=bash /usr/share/pkgbuild-manager/scripts/07b_Clean\ Everything %F

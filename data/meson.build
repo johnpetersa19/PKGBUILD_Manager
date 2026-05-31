@@ -62,3 +62,11 @@ if run_command('test', '-d', caja_python_dir, check: false).returncode() == 0
     install_mode: 'rwxr-xr-x',
   )
 endif
+
+# Dolphin KIO Servicemenu (optional — only installed if KDE servicemenus dir exists)
+dolphin_servicemenu_dir = get_option('datadir') / 'kio/servicemenus'
+install_data(
+  'dolphin-servicemenu/pkgbuild-manager.desktop',
+  install_dir: dolphin_servicemenu_dir,
+  install_mode: 'rw-r--r--',
+)

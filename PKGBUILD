@@ -19,6 +19,7 @@ optdepends=(
   'shellcheck: for linting PKGBUILD bash code'
   'nemo-python: for Nemo (Cinnamon) right-click menu support'
   'caja-python: for Caja (MATE) right-click menu support'
+  'dolphin: for Dolphin (KDE) right-click menu support'
 )
 provides=("pkgbuild-manager")
 conflicts=("pkgbuild-manager")
