@@ -1,6 +1,7 @@
 #!/bin/bash
 # _run_in_terminal: internal helper used by other PKGBUILD Manager scripts.
 # Usage: source _run_in_terminal && run_in_terminal "<command>"
+#        source _run_in_terminal && reopen_file_manager "<path>"
 
 run_in_terminal() {
     local cmd="$1"
@@ -46,6 +47,40 @@ run_in_terminal() {
     else
         notify-send -u critical "PKGBUILD Manager" \
             "No compatible terminal emulator found."
+        return 1
+    fi
+}
+
+reopen_file_manager() {
+    local path="$1"
+
+    # GNOME
+    if command -v nautilus &>/dev/null; then
+        pkill nautilus; sleep 1; nautilus "$path" &
+    # KDE
+    elif command -v dolphin &>/dev/null; then
+        pkill dolphin; sleep 1; dolphin "$path" &
+    # XFCE
+    elif command -v thunar &>/dev/null; then
+        pkill thunar; sleep 1; thunar "$path" &
+    # MATE
+    elif command -v caja &>/dev/null; then
+        pkill caja; sleep 1; caja "$path" &
+    # LXQt
+    elif command -v pcmanfm-qt &>/dev/null; then
+        pkill pcmanfm-qt; sleep 1; pcmanfm-qt "$path" &
+    # LXDE
+    elif command -v pcmanfm &>/dev/null; then
+        pkill pcmanfm; sleep 1; pcmanfm "$path" &
+    # Deepin
+    elif command -v dde-file-manager &>/dev/null; then
+        pkill dde-file-manager; sleep 1; dde-file-manager "$path" &
+    # Nemo (Cinnamon)
+    elif command -v nemo &>/dev/null; then
+        pkill nemo; sleep 1; nemo "$path" &
+    else
+        notify-send -u critical "PKGBUILD Manager" \
+            "No compatible file manager found."
         return 1
     fi
 }

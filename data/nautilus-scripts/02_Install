@@ -4,13 +4,8 @@ TARGET="$(dirname "$(realpath "${1:-.}")")"
 source "$(dirname "$0")/_i18n"
 source "$(dirname "$0")/_run_in_terminal"
 
-# Save current folder before install
 CURRENT_DIR="$(pwd)"
 
 notify-send "PKGBUILD Manager" "$MSG_INSTALLING"
 run_in_terminal "pkgbuild_manager install '$TARGET'"
-
-# Reopen Nautilus in the same folder
-pkill nautilus
-sleep 1
-nautilus "$CURRENT_DIR" &
+reopen_file_manager "$CURRENT_DIR"
