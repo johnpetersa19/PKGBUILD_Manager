@@ -1,0 +1,65 @@
+>>> makepkg  (in "/home/john/Projects/PKGBUILD_Manager")
+==> Criando o pacote: pkgbuild-manager-git v0.1.0.r9.64f1a32-1 (sáb 30 mai 2026 23:36:02)
+==> Verificando as dependências de tempo de execução...
+==> Verificando as dependências de tempo de compilação...
+==> Obtendo fontes...
+  -> Atualizando repositório PKGBUILD_Manager do tipo git...
+==> Validando source arquivos com sha256sums...
+    PKGBUILD_Manager ... Ignorada
+==> Extraindo fontes...
+  -> Criando cópia de trabalho do repositório PKGBUILD_Manager do tipo git...
+Cloning into 'PKGBUILD_Manager'...
+done.
+==> Iniciando pkgver()...
+==> Versão atualizada: pkgbuild-manager-git v0.1.0.r20.458d243-1
+==> Iniciando build()...
+PKGBUILD_Manager has no wrap files
++ exec meson setup --prefix /usr --libexecdir lib --sbindir bin --buildtype plain --auto-features enabled --wrap-mode nodownload -D b_pie=true -D python.bytecompile=1 /home/john/Projects/PKGBUILD_Manager/src/PKGBUILD_Manager build
+The Meson build system
+Version: 1.11.1
+Source dir: /home/john/Projects/PKGBUILD_Manager/src/PKGBUILD_Manager
+Build dir: /home/john/Projects/PKGBUILD_Manager/src/build
+Build type: native build
+Project name: pkgbuild_manager
+Project version: 0.1.0
+Rust compiler for the host machine: rustc -C linker=cc (rustc 1.95.0 "1.95.0")
+Rust linker for the host machine:  ld.bfd 2.46.0
+Host machine cpu family: x86_64
+Host machine cpu: x86_64
+Configuring config.rs using configuration
+Program cargo found: YES (/usr/bin/cargo)
+Program msgfmt found: YES (/usr/bin/msgfmt)
+Program msginit found: YES (/usr/bin/msginit)
+Program msgmerge found: YES (/usr/bin/msgmerge)
+Program xgettext found: YES (/usr/bin/xgettext)
+Build targets in project: 9
+
+pkgbuild_manager 0.1.0
+
+  User defined options
+    auto_features     : enabled
+    b_pie             : true
+    buildtype         : plain
+    libexecdir        : lib
+    prefix            : /usr
+    python.bytecompile: 1
+    sbindir           : bin
+    wrap_mode         : nodownload
+
+Found ninja-1.13.2 at /usr/bin/ninja
+Generating targets:   0%|          | 0/9 eta ?                                              Writing build.ninja:   0%|          | 0/43 eta ?                                                ninja: Entering directory `/home/john/Projects/PKGBUILD_Manager/src/build'
+[0/6] Generating src/cargo-build with a custom command
+error: failed to parse manifest at `/home/john/Projects/PKGBUILD_Manager/Cargo.toml`
+
+Caused by:
+  no targets specified in the manifest
+  either src/lib.rs, src/main.rs, a [lib] section, or [[bin]] section must be present
+[5/6] Building translation po/de/LC_MESSAGES/pkgbuild_manager-de.mo
+FAILED: [code=101] src/pkgbuild_manager 
+/usr/bin/env CARGO_HOME=/home/john/Projects/PKGBUILD_Manager/src/build/cargo-home /usr/bin/cargo build --manifest-path /home/john/Projects/PKGBUILD_Manager/src/PKGBUILD_Manager/Cargo.toml --target-dir /home/john/Projects/PKGBUILD_Manager/src/build/src && cp src/debug/pkgbuild_manager src/pkgbuild_manager
+ninja: build stopped: subcommand failed.
+INFO: autodetecting backend as ninja
+INFO: calculating backend command to run: /usr/bin/ninja -C /home/john/Projects/PKGBUILD_Manager/src/build
+==> ERRO: Uma falha ocorreu em build().
+    Abortando...
+Error: "makepkg  exit status: 4"
