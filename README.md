@@ -12,7 +12,30 @@ The project has **no GUI**. Interactive actions (like package compilation or lin
 - **Metadata Management**: Quick commands to update checksums via `updpkgsums` and automatically regenerate `.SRCINFO`.
 - **Quality Assurance**: Automated linting/auditing using `namcap` (on the PKGBUILD and compiled `.pkg.tar.*` packages) and `shellcheck` (optimized for PKGBUILD bash code).
 - **Git & AUR Integration**: Auto-generates standard commit messages like `upgpkg: <name> <version>-<release>`, regenerates `.SRCINFO` automatically before staging, and supports pushing version tags.
-- **Nautilus Context Menu Integration**: A suite of scripts to execute any of the features directly from the Nautilus file manager.
+- **Nautilus Context Menu Integration**: A single `PKGBUILD` submenu appears when right-clicking any PKGBUILD file, with all actions translated to the user's system language automatically.
+- **Full Internationalization (i18n)**: All menu labels, desktop notifications, and CLI strings are translated. Languages currently supported: **English** (default), **Português (pt_BR)**, **Español (es)**, **Deutsch (de)**, **Français (fr)**, **Italiano (it)**. The locale is detected automatically from the environment (`LANG`, `LC_MESSAGES`, etc.) — no manual configuration required.
+
+---
+
+## Nautilus Menu Structure
+
+When right-clicking a `PKGBUILD` file in Nautilus, a single **PKGBUILD** submenu is shown. The labels below are displayed in the user's language automatically:
+
+| Internal script name | 🇧🇷 Português | 🇺🇸 English | 🇪🇸 Español |
+|---|---|---|---|
+| `00_Full Workflow` | Fluxo Completo | Full Workflow | Flujo Completo |
+| `01_Build` | Compilar | Build | Compilar |
+| `02b_Build and Clean` | Compilar e Limpar | Build and Clean | Compilar y Limpiar |
+| `02_Install` | Instalar | Install | Instalar |
+| `03_Update Checksums` | Atualizar Checksums | Update Checksums | Actualizar Checksums |
+| `04_Update .SRCINFO` | Atualizar .SRCINFO | Update .SRCINFO | Actualizar .SRCINFO |
+| `05b_ShellCheck` | Verificar com ShellCheck | ShellCheck | Verificar con ShellCheck |
+| `05_Namcap` | Analisar com Namcap | Namcap | Analizar con Namcap |
+| `06_Push AUR` | Enviar para AUR | Push AUR | Publicar en AUR |
+| `07b_Clean Everything` | Limpar Tudo | Clean Everything | Limpiar Todo |
+| `07_Clean srcdir` | Limpar srcdir | Clean srcdir | Limpiar srcdir |
+
+> The numeric prefixes (`00_`, `01_`, …) control ordering in the menu but are never shown to the user.
 
 ---
 
@@ -48,6 +71,12 @@ meson compile -C build
 sudo meson install -C build
 ```
 
+This installs:
+- The `pkgbuild_manager` binary to `/usr/bin/`
+- Nautilus action scripts to `/usr/share/pkgbuild-manager/scripts/`
+- Plain `.po` translation files to `/usr/share/pkgbuild-manager/i18n/` (read at runtime by the bash `_i18n` helper)
+- The Nautilus Python extension to `/usr/share/nautilus-python/extensions/`
+
 Alternatively, build with Cargo directly and copy the binary to your path:
 
 ```bash
@@ -63,9 +92,9 @@ If you installed the project via **`makepkg` (the Arch package)**, you can autom
 pkgbuild_manager setup-nautilus
 ```
 
-This will create a `PKGBUILD` submenu inside Nautilus and automatically translate all commands to your system's language using `gettext`.
+This creates the `PKGBUILD` submenu inside Nautilus with all actions translated to your system language.
 
-If you compiled manually (without `makepkg`) and want to install them from the source folder, you can also run:
+If you compiled manually (without `makepkg`) and want to install from the source folder, run:
 
 ```bash
 PKGBUILD_MANAGER_LOCALEDIR=build/po pkgbuild_manager setup-nautilus
@@ -75,6 +104,26 @@ After installing or updating the scripts, restart Nautilus to apply changes:
 ```bash
 nautilus -q
 ```
+
+---
+
+## How i18n Works
+
+The project uses a two-layer translation system:
+
+1. **Rust CLI & menu labels** — use `gettext` compiled `.mo` files (standard GNU gettext). These are compiled by Meson during `meson install` and stored in `/usr/share/locale/<lang>/LC_MESSAGES/pkgbuild_manager.mo`.
+
+2. **Bash scripts & desktop notifications** — use a lightweight bash helper (`_i18n`) that reads plain `.po` text files at runtime from `/usr/share/pkgbuild-manager/i18n/<lang>.po`. This avoids any dependency on `gettext` shell tools at runtime.
+
+The locale is resolved in priority order: `$LANGUAGE` → `$LC_ALL` → `$LC_MESSAGES` → `$LANG`. If no translation is found for the current locale, English strings are used as fallback.
+
+### Adding a New Language
+
+1. Copy an existing file, e.g. `po/pt_BR.po`, to `po/<lang>.po`.
+2. Translate all `msgstr` entries.
+3. Add the language code to `po/LINGUAS`.
+4. Add `'../po/<lang>.po'` to the `po_files` list in `data/meson.build`.
+5. Run `meson install` — no other changes are needed.
 
 ---
 
