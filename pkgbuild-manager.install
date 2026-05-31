@@ -1,18 +1,74 @@
+# Helper: inject Name[lang]= translations into the Dolphin .desktop
+# by reading msgstr values from the installed .po files.
+_update_dolphin_desktop() {
+    local desktop="/usr/share/kio/servicemenus/pkgbuild-manager.desktop"
+    local i18n_dir="/usr/share/pkgbuild-manager/i18n"
+
+    [ -f "$desktop" ] || return 0
+    [ -d "$i18n_dir" ] || return 0
+
+    # Mapping: desktop action key -> msgid used in .po files
+    declare -A ACTIONS=(
+        [FullWorkflow]="00_Full Workflow"
+        [Build]="01_Build"
+        [BuildClean]="02b_Build and Clean"
+        [Install]="02_Install"
+        [UpdateChecksums]="03_Update Checksums"
+        [UpdateSrcinfo]="04_Update .SRCINFO"
+        [Namcap]="05_Namcap"
+        [ShellCheck]="05b_ShellCheck"
+        [PushAUR]="06_Push AUR"
+        [CleanSrcdir]="07_Clean srcdir"
+        [CleanAll]="07b_Clean Everything"
+    )
+
+    # For each .po file found, extract lang code and translations
+    for po_file in "$i18n_dir"/*.po; do
+        [ -f "$po_file" ] || continue
+        local lang
+        lang=$(basename "$po_file" .po)
+
+        for action in "${!ACTIONS[@]}"; do
+            local msgid="${ACTIONS[$action]}"
+            # Extract msgstr for this msgid from the .po file
+            local msgstr
+            msgstr=$(awk -v id="$msgid" '
+                /^msgid "/ { found = ($0 == "msgid \"" id "\"") }
+                /^msgstr "/ && found { gsub(/^msgstr "|"$/, ""); print; found=0 }
+            ' "$po_file")
+
+            [ -z "$msgstr" ] && continue
+
+            local key="[Desktop Action ${action}]"
+            local name_line="Name[${lang}]=${msgstr}"
+
+            # Add Name[lang]= after the Name= line inside the correct action block
+            # Only add if not already present
+            if ! grep -q "^Name\[${lang}\]=" <(awk "/^${key}/,/^\[Desktop Action|^$/{print}" "$desktop"); then
+                sed -i "/^${key}/,/^\[Desktop Action\|^\[Desktop Entry\]/{/^Name=/{a\\
+${name_line}
+}}" "$desktop"
+            fi
+        done
+    done
+
+    echo ">>> Dolphin servicemenu translations updated."
+}
+
 post_install() {
-  echo ">>> PKGBUILD Manager installed."
-  echo ">>> The Nautilus extension activates automatically."
-  echo ">>> Right-click any PKGBUILD file to see the translated PKGBUILD submenu."
-  echo ">>> Restarting Nautilus..."
-  pkill -u "${SUDO_USER:-$USER}" nautilus 2>/dev/null || true
+    echo ">>> PKGBUILD Manager installed."
+    echo ">>> The Nautilus extension activates automatically."
+    echo ">>> Right-click any PKGBUILD file to see the translated PKGBUILD submenu."
+    _update_dolphin_desktop
+    pkill -u "${SUDO_USER:-$USER}" nautilus 2>/dev/null || true
 }
 
 post_upgrade() {
-  # Remove stale user-land symlinks created by versions prior to 0.2.0
-  _user="${SUDO_USER:-$USER}"
-  _scripts="$(eval echo ~$_user)/.local/share/nautilus/scripts"
-  if [ -d "$_scripts/PKGBUILD" ]; then
-    rm -rf "$_scripts/PKGBUILD"
-    echo ">>> Removed stale PKGBUILD symlink directory from previous version."
-  fi
-  post_install
+    _user="${SUDO_USER:-$USER}"
+    _scripts="$(eval echo ~$_user)/.local/share/nautilus/scripts"
+    if [ -d "$_scripts/PKGBUILD" ]; then
+        rm -rf "$_scripts/PKGBUILD"
+        echo ">>> Removed stale PKGBUILD symlink directory from previous version."
+    fi
+    post_install
 }
