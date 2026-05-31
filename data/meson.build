@@ -19,8 +19,3 @@ install_data(
   nautilus_scripts,
   install_dir: get_option('datadir') / 'pkgbuild-manager/scripts'
 )
-
-install_data(
-  'pkgbuild_manager_extension.py',
-  install_dir: get_option('datadir') / 'nautilus-python/extensions'
-)
