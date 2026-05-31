@@ -4,24 +4,29 @@
 
 import os
 import json
+import gettext
 import subprocess
 from pathlib import Path
 from gi.repository import Nautilus, GObject
 
+gettext.bindtextdomain("pkgbuild_manager", "/usr/share/locale")
+gettext.textdomain("pkgbuild_manager")
+_ = gettext.gettext
+
 CONFIG_FILE = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "pkgbuild-manager" / "menu.json"
 
 DEFAULT_ACTIONS = [
-    ("00_Full Workflow",     "Full Workflow"),
-    ("01_Build",             "Build"),
-    ("02b_Build and Clean",  "Build and Clean"),
-    ("02_Install",           "Install"),
-    ("03_Update Checksums",  "Update Checksums"),
-    ("04_Update .SRCINFO",   "Update .SRCINFO"),
-    ("05_Namcap",            "Namcap"),
-    ("05b_ShellCheck",       "ShellCheck"),
-    ("06_Push AUR",          "Push AUR"),
-    ("07_Clean srcdir",      "Clean srcdir"),
-    ("07b_Clean Everything", "Clean Everything"),
+    ("00_Full Workflow",     "00_Full Workflow"),
+    ("01_Build",             "01_Build"),
+    ("02b_Build and Clean",  "02b_Build and Clean"),
+    ("02_Install",           "02_Install"),
+    ("03_Update Checksums",  "03_Update Checksums"),
+    ("04_Update .SRCINFO",   "04_Update .SRCINFO"),
+    ("05_Namcap",            "05_Namcap"),
+    ("05b_ShellCheck",       "05b_ShellCheck"),
+    ("06_Push AUR",          "06_Push AUR"),
+    ("07_Clean srcdir",      "07_Clean srcdir"),
+    ("07b_Clean Everything", "07b_Clean Everything"),
 ]
 
 
@@ -45,7 +50,7 @@ def _load_menu():
             return result, len(data)
         except Exception:
             pass
-    return [(sid, lbl, "PKGBUILD") for sid, lbl in DEFAULT_ACTIONS], 1
+    return [(sid, _(sid), "PKGBUILD") for sid, _ in DEFAULT_ACTIONS], 1
 
 
 class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
