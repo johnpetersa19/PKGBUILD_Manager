@@ -23,8 +23,6 @@ install_data(
 )
 
 # Plain .po files for the bash _i18n helper.
-# _i18n reads text .po files at runtime — it cannot use compiled .mo binaries.
-# These are installed to /usr/share/pkgbuild-manager/i18n/<lang>.po.
 po_files = [
   '../po/pt_BR.po',
   '../po/es.po',
@@ -38,10 +36,29 @@ install_data(
   install_dir: get_option('datadir') / 'pkgbuild-manager/i18n'
 )
 
-# Nautilus Python extension — installed system-wide so Nautilus picks it up
-# without needing setup-nautilus. Requires nautilus-python (python-nautilus).
+# Nautilus extension (required)
 install_data(
   'nautilus-extension/pkgbuild_manager.py',
   install_dir: get_option('datadir') / 'nautilus-python/extensions',
   install_mode: 'rwxr-xr-x',
 )
+
+# Nemo extension (optional — only installed if nemo-python is present)
+nemo_python_dir = '/usr/share/nemo-python/extensions'
+if run_command('test', '-d', nemo_python_dir, check: false).returncode() == 0
+  install_data(
+    'nautilus-extension/pkgbuild_manager_nemo.py',
+    install_dir: nemo_python_dir,
+    install_mode: 'rwxr-xr-x',
+  )
+endif
+
+# Caja extension (optional — only installed if caja-python is present)
+caja_python_dir = '/usr/share/caja-python/extensions'
+if run_command('test', '-d', caja_python_dir, check: false).returncode() == 0
+  install_data(
+    'nautilus-extension/pkgbuild_manager_caja.py',
+    install_dir: caja_python_dir,
+    install_mode: 'rwxr-xr-x',
+  )
+endif
