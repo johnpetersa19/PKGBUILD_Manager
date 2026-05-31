@@ -1,14 +1,13 @@
 #!/bin/bash
 # PKGBUILD Manager - Build and Clean
-TARGET="${1:-.}"
+TARGET="$(dirname "$(realpath "${1:-.}")")" 
 source "$(dirname "$0")/_i18n"
 notify-send "PKGBUILD Manager" "$MSG_BUILDING"
 
-LOG_PATH="${TARGET}/makepkg-build.log"
+LOG_PATH="${TARGET}/build_clean.log"
 
-if pkgbuild_manager build "$TARGET" > "$LOG_PATH" 2>&1; then
+if pkgbuild_manager build-clean "$TARGET" > "$LOG_PATH" 2>&1; then
     rm -f "$LOG_PATH"
-    pkgbuild_manager clean-src "$TARGET" > /dev/null 2>&1
     notify-send "PKGBUILD Manager" "$MSG_BUILD_OK"
 else
     notify-send -u critical "PKGBUILD Manager" "${MSG_BUILD_FAIL}$(basename "$LOG_PATH")"

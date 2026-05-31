@@ -1,14 +1,14 @@
 #!/bin/bash
-# PKGBUILD Manager - ShellCheck lint
-TARGET="${1:-.}"
+# PKGBUILD Manager - ShellCheck
+TARGET="$(dirname "$(realpath "${1:-.}")")" 
 source "$(dirname "$0")/_i18n"
 notify-send "PKGBUILD Manager" "$MSG_SHELLCHECK"
 
 LOG_PATH="${TARGET}/shellcheck.log"
 
 if pkgbuild_manager shellcheck "$TARGET" > "$LOG_PATH" 2>&1; then
-    if [ -s "$LOG_PATH" ]; then
-        notify-send "PKGBUILD Manager" "${MSG_SHELLCHECK_WARN}$(basename "$LOG_PATH")"
+    if [[ -s "$LOG_PATH" ]]; then
+        notify-send -u normal "PKGBUILD Manager" "${MSG_SHELLCHECK_WARN}$(basename "$LOG_PATH")"
     else
         rm -f "$LOG_PATH"
         notify-send "PKGBUILD Manager" "$MSG_SHELLCHECK_OK"

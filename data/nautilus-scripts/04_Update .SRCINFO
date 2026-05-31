@@ -1,12 +1,12 @@
 #!/bin/bash
 # PKGBUILD Manager - Update .SRCINFO
-TARGET="${1:-.}"
+TARGET="$(dirname "$(realpath "${1:-.}")")" 
 source "$(dirname "$0")/_i18n"
 notify-send "PKGBUILD Manager" "$MSG_SRCINFO"
 
 LOG_PATH="${TARGET}/srcinfo.log"
 
-if pkgbuild_manager update-srcinfo "$TARGET" > "$LOG_PATH" 2>&1; then
+if pkgbuild_manager srcinfo "$TARGET" > "$LOG_PATH" 2>&1; then
     rm -f "$LOG_PATH"
     notify-send "PKGBUILD Manager" "$MSG_SRCINFO_OK"
 else

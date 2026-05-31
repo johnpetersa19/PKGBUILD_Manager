@@ -1,10 +1,10 @@
 #!/bin/bash
-# PKGBUILD Manager - Build package (makepkg)
-TARGET="${1:-.}"
+# PKGBUILD Manager - Build
+TARGET="$(dirname "$(realpath "${1:-.}")")" 
 source "$(dirname "$0")/_i18n"
 notify-send "PKGBUILD Manager" "$MSG_BUILDING"
 
-LOG_PATH="${TARGET}/makepkg-build.log"
+LOG_PATH="${TARGET}/build.log"
 
 if pkgbuild_manager build "$TARGET" > "$LOG_PATH" 2>&1; then
     rm -f "$LOG_PATH"

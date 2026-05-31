@@ -1,12 +1,12 @@
 #!/bin/bash
-# PKGBUILD Manager - Clean everything
-TARGET="${1:-.}"
+# PKGBUILD Manager - Clean Everything
+TARGET="$(dirname "$(realpath "${1:-.}")")" 
 source "$(dirname "$0")/_i18n"
 notify-send "PKGBUILD Manager" "$MSG_CLEAN_ALL"
 
-LOG_PATH="${TARGET}/clean.log"
+LOG_PATH="${TARGET}/clean_all.log"
 
-if pkgbuild_manager clean "$TARGET" > "$LOG_PATH" 2>&1; then
+if pkgbuild_manager clean-all "$TARGET" > "$LOG_PATH" 2>&1; then
     rm -f "$LOG_PATH"
     notify-send "PKGBUILD Manager" "$MSG_CLEAN_ALL_OK"
 else

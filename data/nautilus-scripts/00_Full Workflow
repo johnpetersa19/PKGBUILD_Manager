@@ -1,10 +1,10 @@
 #!/bin/bash
-# PKGBUILD Manager - Full Workflow
-TARGET="${1:-.}"
+# PKGBUILD Manager - Full Workflow (build + install + clean)
+TARGET="$(dirname "$(realpath "${1:-.}")")" 
 source "$(dirname "$0")/_i18n"
 notify-send "PKGBUILD Manager" "$MSG_FULL_WORKFLOW"
 
-LOG_PATH="${TARGET}/makepkg-full.log"
+LOG_PATH="${TARGET}/full_workflow.log"
 
 if pkgbuild_manager full-workflow "$TARGET" > "$LOG_PATH" 2>&1; then
     rm -f "$LOG_PATH"
