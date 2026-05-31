@@ -5,7 +5,7 @@
 import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Gtk, Adw, Gio
+from gi.repository import Gtk, Adw, Gio, GLib
 
 import json
 import os
@@ -117,24 +117,18 @@ def _get_nautilus_locations():
     """Return list of URI strings for every open Nautilus window via DBus."""
     try:
         bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-        # Ask the Nautilus application object for its open windows
         result = bus.call_sync(
-            "org.gnome.Nautilus",           # bus name
-            "/org/gnome/Nautilus",           # object path
+            "org.gnome.Nautilus",
+            "/org/gnome/Nautilus",
             "org.freedesktop.DBus.Properties",
             "GetAll",
             Gio.DBusCallFlags.NONE,
             -1, None, None,
-            # iface arg
         )
-        # Fallback: just try `nautilus --print-uris` equivalent via a quick
-        # introspect of the running windows object
         pass
     except Exception:
         pass
 
-    # Most reliable: parse `xdotool` or use gio — but simplest cross-distro
-    # approach is to read /proc for the Nautilus process cwd or use gdbus CLI.
     uris = []
     try:
         out = subprocess.check_output(
@@ -145,14 +139,12 @@ def _get_nautilus_locations():
              "org.gnome.Nautilus.Windows"],
             stderr=subprocess.DEVNULL, timeout=2,
         ).decode(errors="replace")
-        # Response is a GLib variant — extract quoted URIs with a simple parse
         import re
         uris = re.findall(r"'((?:file|smb|sftp|ftp|trash)[^']+)'", out)
     except Exception:
         pass
 
     if not uris:
-        # Second attempt: list window objects and call Location on each
         try:
             out = subprocess.check_output(
                 ["gdbus", "introspect", "--session",
@@ -186,20 +178,14 @@ def _get_nautilus_locations():
 def _notify_file_managers():
     """Restart Nautilus, reopening every window in its previous location."""
     try:
-        # 1. Collect open window locations before killing
         locations = _get_nautilus_locations()
-
-        # 2. Kill nautilus (blocking) so the extension module is unloaded
         subprocess.run(["nautilus", "-q"], timeout=3, capture_output=True)
         time.sleep(1)
-
-        # 3. Reopen each previous location in a fresh Nautilus instance
         for uri in locations:
             subprocess.Popen(["nautilus", uri], close_fds=True)
-            time.sleep(0.1)  # slight stagger so windows don't race
-
+            time.sleep(0.1)
     except FileNotFoundError:
-        pass  # Nautilus not installed
+        pass
     except subprocess.TimeoutExpired:
         try:
             subprocess.run(["pkill", "-f", "nautilus"], capture_output=True)
@@ -262,6 +248,7 @@ class SettingsApp(Adw.Application):
             margin_top=12, margin_bottom=12,
             margin_start=16, margin_end=16,
         )
+        self._scroll = scroll  # referência salva para controle de posição
         scroll.set_child(self.main_box)
         toolbar_view.set_content(scroll)
         self.win.set_content(toolbar_view)
@@ -271,8 +258,13 @@ class SettingsApp(Adw.Application):
     def _on_window_destroy(self, *_):
         self.win = None
 
-    def _render_groups(self):
+    def _render_groups(self, scroll_to_end=False):
         self._rebuilding = True
+        # Salva posição atual do scroll antes de reconstruir os widgets.
+        # Quando scroll_to_end=True (novo grupo), ignoramos a posição salva
+        # e rolamos até o fim após a reconstrução.
+        adj = self._scroll.get_vadjustment()
+        saved_pos = adj.get_value() if not scroll_to_end else None
         try:
             while True:
                 child = self.main_box.get_first_child()
@@ -290,6 +282,13 @@ class SettingsApp(Adw.Application):
             self.main_box.append(add_btn)
         finally:
             self._rebuilding = False
+
+        # Usa GLib.idle_add para restaurar/definir a posição do scroll após
+        # o GTK terminar de calcular o layout dos novos widgets.
+        if scroll_to_end:
+            GLib.idle_add(lambda: adj.set_value(adj.get_upper()) or False)
+        elif saved_pos is not None:
+            GLib.idle_add(lambda: adj.set_value(saved_pos) or False)
 
     def _build_group_widget(self, g_idx, group):
         frame = Gtk.Frame()
@@ -405,7 +404,7 @@ class SettingsApp(Adw.Application):
 
     def _on_add_group(self, _btn):
         self.menu_data.append({"group": _("New Group"), "items": []})
-        self._render_groups()
+        self._render_groups(scroll_to_end=True)
 
     def _on_item_toggle(self, _switch, state, g_idx, i_idx):
         self.menu_data[g_idx]["items"][i_idx]["enabled"] = state
