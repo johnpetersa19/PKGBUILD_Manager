@@ -9,4 +9,5 @@ src/actions/mod.rs
 src/actions/namcap.rs
 src/actions/shellcheck.rs
 src/actions/srcinfo.rs
+src/config.rs
 src/main.rs
