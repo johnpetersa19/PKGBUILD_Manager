@@ -1,10 +1,18 @@
 post_install() {
-  echo ">>> To enable and localize the Nautilus context menu scripts for your user, run:"
-  echo ">>>   pkgbuild_manager setup-nautilus"
-  echo ">>> Restarting Nautilus to apply changes..."
+  echo ">>> PKGBUILD Manager installed."
+  echo ">>> The Nautilus extension is active automatically."
+  echo ">>> Right-click any PKGBUILD file in Nautilus to see the PKGBUILD submenu."
+  echo ">>> Restarting Nautilus..."
   pkill -u "${SUDO_USER:-$USER}" nautilus 2>/dev/null || true
 }
 
 post_upgrade() {
+  # Clean up stale user-land symlinks from versions < 0.1.0.r35
+  NAUTILUS_SCRIPTS="${HOME:-/root}/.local/share/nautilus/scripts"
+  STALE_DIR="$NAUTILUS_SCRIPTS/PKGBUILD"
+  if [ -d "$STALE_DIR" ]; then
+    rm -rf "$STALE_DIR"
+    echo ">>> Removed stale PKGBUILD symlink directory from previous version."
+  fi
   post_install
 }
