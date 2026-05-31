@@ -77,8 +77,8 @@ msgid "07_Clean srcdir"
 msgstr "Limpar srcdir"
 
 # Settings panel
-msgid "PKGBUILD Manager \u2014 Menu Settings"
-msgstr "PKGBUILD Manager \u2014 Configurações do Menu"
+msgid "PKGBUILD Manager — Menu Settings"
+msgstr "PKGBUILD Manager — Configurações do Menu"
 
 msgid "Reset"
 msgstr "Redefinir"

@@ -84,7 +84,7 @@ msgstr ""
 # ---------------------------------------------------------------------------
 # Settings panel (GTK app — src/settings/app.py)
 # ---------------------------------------------------------------------------
-msgid "PKGBUILD Manager \u2014 Menu Settings"
+msgid "PKGBUILD Manager — Menu Settings"
 msgstr ""
 
 msgid "Reset"
