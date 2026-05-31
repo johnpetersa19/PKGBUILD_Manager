@@ -1,14 +1,17 @@
 #!/bin/bash
-# Regenerates /usr/share/kio/servicemenus/pkgbuild-manager.desktop
+# Regenerates ~/.local/share/kio/servicemenus/pkgbuild-manager.desktop
 # from ~/.config/pkgbuild-manager/menu.json.
-# Called automatically after saving settings.
+# Called automatically after saving settings. No root needed.
 
-DESKTOP="/usr/share/kio/servicemenus/pkgbuild-manager.desktop"
+# User-writable path — KDE reads this exactly like /usr/share/kio/servicemenus/
+DESKTOP_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/kio/servicemenus"
+DESKTOP="$DESKTOP_DIR/pkgbuild-manager.desktop"
 CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/pkgbuild-manager/menu.json"
 SCRIPTS="/usr/share/pkgbuild-manager/scripts"
 
-[ -f "$DESKTOP" ] || exit 0
-[ -f "$CONFIG" ]  || exit 0
+[ -f "$CONFIG" ] || exit 0
+
+mkdir -p "$DESKTOP_DIR"
 
 python3 - "$CONFIG" "$DESKTOP" "$SCRIPTS" <<'PYEOF'
 import sys, json, os
@@ -56,13 +59,5 @@ for a in actions:
         "",
     ]
 
-try:
-    open(desktop_path, "w").write("\n".join(lines))
-except PermissionError:
-    import subprocess, tempfile
-    tmp = tempfile.NamedTemporaryFile(mode="w", suffix=".desktop", delete=False)
-    tmp.write("\n".join(lines))
-    tmp.close()
-    subprocess.run(["pkexec", "cp", tmp.name, desktop_path])
-    os.unlink(tmp.name)
+open(desktop_path, "w").write("\n".join(lines))
 PYEOF
