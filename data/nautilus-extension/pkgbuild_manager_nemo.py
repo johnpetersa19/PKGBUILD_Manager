@@ -77,6 +77,13 @@ class PkgbuildMenuProvider(GObject.GObject, Nemo.MenuProvider):
 
         def make_cb(spath, pkgpath):
             def cb(_item):
+                if not os.path.isfile(spath) or not os.access(spath, os.X_OK):
+                    subprocess.Popen([
+                        "notify-send", "-a", "PKGBUILD Manager",
+                        "Script not found",
+                        f"Missing: {spath}\nReinstall pkgbuild-manager."
+                    ], close_fds=True)
+                    return
                 subprocess.Popen(["bash", spath, pkgpath],
                                  cwd=os.path.dirname(pkgpath), close_fds=True)
             return cb
@@ -84,8 +91,6 @@ class PkgbuildMenuProvider(GObject.GObject, Nemo.MenuProvider):
         if len(group_order) <= 1:
             for sid, label in groups.get(group_order[0] if group_order else "", []):
                 sp = os.path.join(scripts, sid)
-                if not os.path.isfile(sp) or not os.access(sp, os.X_OK):
-                    continue
                 it = Nemo.MenuItem(name=f"PkgbuildManager::{sid.replace(' ','_')}",
                                    label=label, tip=f"Run {sid}")
                 it.connect("activate", make_cb(sp, pkgbuild_path))
@@ -99,8 +104,6 @@ class PkgbuildMenuProvider(GObject.GObject, Nemo.MenuProvider):
                 git.set_submenu(gsub)
                 for sid, label in groups[gname]:
                     sp = os.path.join(scripts, sid)
-                    if not os.path.isfile(sp) or not os.access(sp, os.X_OK):
-                        continue
                     it = Nemo.MenuItem(name=f"PkgbuildManager::{sid.replace(' ','_')}",
                                        label=label, tip=f"Run {sid}")
                     it.connect("activate", make_cb(sp, pkgbuild_path))

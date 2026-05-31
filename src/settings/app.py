@@ -10,6 +10,7 @@ from gi.repository import Gtk, Adw, Gio
 import json
 import os
 import subprocess
+import time
 import gettext
 from pathlib import Path
 
@@ -113,10 +114,24 @@ def save_config(data):
 
 
 def _notify_file_managers():
+    # Kill nautilus and wait for it to fully exit, then relaunch so the
+    # fresh process loads the updated menu.json via the extension.
     try:
-        subprocess.Popen(["nautilus", "-q"], close_fds=True)
+        subprocess.run(["nautilus", "-q"], timeout=3, capture_output=True)
+        # Give the DBus daemon up to 2 s to deregister the old instance
+        time.sleep(1)
+        subprocess.Popen(["nautilus"], close_fds=True)
     except FileNotFoundError:
-        pass
+        pass  # Nautilus not installed
+    except subprocess.TimeoutExpired:
+        # Force-kill if -q hangs
+        try:
+            subprocess.run(["pkill", "-f", "nautilus"], capture_output=True)
+            time.sleep(1)
+            subprocess.Popen(["nautilus"], close_fds=True)
+        except Exception:
+            pass
+
     regen = "/usr/share/pkgbuild-manager/regen-dolphin-desktop"
     if os.path.isfile(regen) and os.access(regen, os.X_OK):
         subprocess.Popen([regen], close_fds=True)
@@ -133,8 +148,6 @@ class SettingsApp(Adw.Application):
         self.connect("activate", self._on_activate)
 
     def _on_activate(self, *_):
-        # If the window already exists (second launch via DBus), just
-        # bring it back to the foreground instead of creating a new one.
         if self.win is not None:
             self.win.present()
             return
@@ -144,12 +157,8 @@ class SettingsApp(Adw.Application):
 
     def _build_window(self):
         self.win = Adw.ApplicationWindow(application=self)
-        self.win.set_title(_("PKGBUILD Manager — Menu Settings"))
+        self.win.set_title(_("PKGBUILD Manager \u2014 Menu Settings"))
         self.win.set_default_size(700, 600)
-
-        # When the window is closed, set self.win = None so the next
-        # activation creates a fresh window instead of re-presenting a
-        # destroyed one.
         self.win.connect("destroy", self._on_window_destroy)
 
         toolbar_view = Adw.ToolbarView()
@@ -299,8 +308,6 @@ class SettingsApp(Adw.Application):
         row.append(del_btn)
         return row
 
-    # --- Group callbacks ---
-
     def _on_group_rename(self, entry, group):
         if self._rebuilding:
             return
@@ -320,8 +327,6 @@ class SettingsApp(Adw.Application):
     def _on_add_group(self, _btn):
         self.menu_data.append({"group": _("New Group"), "items": []})
         self._render_groups()
-
-    # --- Item callbacks ---
 
     def _on_item_toggle(self, _switch, state, g_idx, i_idx):
         self.menu_data[g_idx]["items"][i_idx]["enabled"] = state
@@ -388,8 +393,6 @@ class SettingsApp(Adw.Application):
         toolbar.set_content(scroll)
         dialog.set_child(toolbar)
         dialog.present(self.win)
-
-    # --- Save / Reset ---
 
     def _on_save(self, _btn):
         save_config(self.menu_data)
