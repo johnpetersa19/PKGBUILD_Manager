@@ -1,5 +1,5 @@
 use std::path::Path;
-use super::{get_target_dir, run_command, collect_pkg_files};
+use super::{get_target_dir, run_command};
 
 /// Clean the srcdir using `makepkg -c` (soft clean, preserves pkg/).
 /// Use `full = true` for a complete wipe: removes src/, pkg/, built packages
