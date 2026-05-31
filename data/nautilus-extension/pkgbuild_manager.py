@@ -12,7 +12,10 @@ import gettext
 import subprocess
 import gi
 
-gi.require_version("Nautilus", "4.0")
+# Do NOT call gi.require_version("Nautilus", ...) here.
+# nautilus-python pre-loads the correct Nautilus namespace before importing
+# extensions; calling require_version() after it is already loaded raises
+# ValueError if the version string doesn't match exactly.
 from gi.repository import Nautilus, GObject
 
 # ---------------------------------------------------------------------------
@@ -71,7 +74,7 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
             return []
         if f.get_name() != "PKGBUILD":
             return []
-        # Nautilus.FileType is unavailable in nautilus-python 4.0/4.1
+        # Nautilus.FileType is unavailable in nautilus-python; use is_directory()
         if f.is_directory():
             return []
 
