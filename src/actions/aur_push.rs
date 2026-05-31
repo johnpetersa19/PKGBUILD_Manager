@@ -15,7 +15,6 @@ pub fn run(path: &Path, message: Option<&str>) -> Result<(), Box<dyn std::error:
 ///
 /// `tag`: e.g. "1.2.3-1"
 pub fn run_with_tag(path: &Path, tag: &str) -> Result<(), Box<dyn std::error::Error>> {
-    // Resolve once — reused for both commit and tag steps.
     let target_dir = get_target_dir(path)?;
 
     run_with_dir(&target_dir, None)?;
@@ -32,7 +31,7 @@ pub fn run_with_tag(path: &Path, tag: &str) -> Result<(), Box<dyn std::error::Er
 }
 
 // Internal: perform the full stage → commit → push flow given an already-resolved dir.
-fn run_with_dir(target_dir: &PathBuf, message: Option<&str>) -> Result<(), Box<dyn std::error::Error>> {
+fn run_with_dir(target_dir: &Path, message: Option<&str>) -> Result<(), Box<dyn std::error::Error>> {
     // Regenerate .SRCINFO and parse package info from the same output in one pass.
     let srcinfo_content = regenerate_srcinfo(target_dir)?;
 
@@ -50,24 +49,34 @@ fn run_with_dir(target_dir: &PathBuf, message: Option<&str>) -> Result<(), Box<d
     };
 
     println!(">>> git commit -m {:?}", commit_msg);
-    let commit_status = Command::new("git")
+    let output = Command::new("git")
         .args(["commit", "-m", commit_msg])
         .current_dir(target_dir)
-        .status()?;
+        .output()?;
 
-    if !commit_status.success() {
-        println!(
-            "{}",
-            gettextrs::gettext("Note: nothing to commit or commit failed — continuing with push.")
-        );
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        // git exits 1 with "nothing to commit" message — that is not a real error,
+        // so we detect it explicitly and continue. Any other failure is propagated.
+        let combined = format!("{}{}", stdout, stderr);
+        if combined.contains("nothing to commit") || combined.contains("nothing added to commit") {
+            println!("{}", gettextrs::gettext("Note: nothing to commit — continuing with push."));
+        } else {
+            return Err(format!(
+                "{}: {}",
+                gettextrs::gettext("git commit failed"),
+                stderr.trim()
+            ).into());
+        }
     }
 
     push_to_aur(target_dir)
 }
 
 /// Regenerate .SRCINFO and return its content (avoids a second makepkg call).
-fn regenerate_srcinfo(dir: &PathBuf) -> Result<String, Box<dyn std::error::Error>> {
-    println!(">>> makepkg --printsrcinfo > .SRCINFO (in {:?})", dir);
+fn regenerate_srcinfo(dir: &Path) -> Result<String, Box<dyn std::error::Error>> {
+    println!("{} {:?}", gettextrs::gettext(">>> Regenerating .SRCINFO in"), dir);
     let output = Command::new("makepkg")
         .arg("--printsrcinfo")
         .current_dir(dir)
@@ -86,12 +95,17 @@ fn regenerate_srcinfo(dir: &PathBuf) -> Result<String, Box<dyn std::error::Error
 }
 
 /// Parse pkgname/pkgver/pkgrel from already-fetched .SRCINFO text.
+/// Stops iterating as soon as all three fields are found (early-exit).
 fn parse_pkgbuild_info(content: &str) -> (String, String, String) {
     let mut pkgname = String::from("unknown");
     let mut pkgver  = String::from("0");
     let mut pkgrel  = String::from("1");
 
     for line in content.lines() {
+        // Early-exit: all fields found, no need to scan the rest of the file
+        if pkgname != "unknown" && pkgver != "0" && pkgrel != "1" {
+            break;
+        }
         let line = line.trim();
         if let Some(val) = line.strip_prefix("pkgname = ") {
             pkgname = val.to_string();
@@ -105,7 +119,7 @@ fn parse_pkgbuild_info(content: &str) -> (String, String, String) {
     (pkgname, pkgver, pkgrel)
 }
 
-fn push_to_aur(dir: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+fn push_to_aur(dir: &Path) -> Result<(), Box<dyn std::error::Error>> {
     if let Err(e) = run_command("git", &["push", "origin", "master"], dir) {
         println!(
             "{} ({}) {}",
