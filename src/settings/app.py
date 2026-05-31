@@ -32,9 +32,9 @@ def _default_menu():
         {
             "group": _("Actions"),
             "items": [
-                {"id": "00_Full Workflow",    "label": _("00_Full Workflow"),   "enabled": True},
-                {"id": "02_Install",          "label": _("02_Install"),         "enabled": True},
-                {"id": "01_Build",            "label": _("01_Build"),           "enabled": True},
+                {"id": "00_Full Workflow",    "label": _("00_Full Workflow"),    "enabled": True},
+                {"id": "02_Install",          "label": _("02_Install"),          "enabled": True},
+                {"id": "01_Build",            "label": _("01_Build"),            "enabled": True},
                 {"id": "02b_Build and Clean", "label": _("02b_Build and Clean"), "enabled": True},
             ]
         },
@@ -120,6 +120,8 @@ class SettingsApp(Adw.Application):
             flags=Gio.ApplicationFlags.FLAGS_NONE,
         )
         self.connect("activate", self._on_activate)
+        # Flag to suppress "changed" signals fired by set_text() during rebuild
+        self._rebuilding = False
 
     def _on_activate(self, *_):
         self.menu_data = load_config()
@@ -160,20 +162,25 @@ class SettingsApp(Adw.Application):
         self._render_groups()
 
     def _render_groups(self):
-        while True:
-            child = self.main_box.get_first_child()
-            if child is None:
-                break
-            self.main_box.remove(child)
+        # Suppress rename callbacks triggered by set_text() while rebuilding
+        self._rebuilding = True
+        try:
+            while True:
+                child = self.main_box.get_first_child()
+                if child is None:
+                    break
+                self.main_box.remove(child)
 
-        for g_idx, group in enumerate(self.menu_data):
-            self.main_box.append(self._build_group_widget(g_idx, group))
+            for g_idx, group in enumerate(self.menu_data):
+                self.main_box.append(self._build_group_widget(g_idx, group))
 
-        add_btn = Gtk.Button(label=_("+ Add Group"))
-        add_btn.add_css_class("pill")
-        add_btn.set_halign(Gtk.Align.CENTER)
-        add_btn.connect("clicked", self._on_add_group)
-        self.main_box.append(add_btn)
+            add_btn = Gtk.Button(label=_("+ Add Group"))
+            add_btn.add_css_class("pill")
+            add_btn.set_halign(Gtk.Align.CENTER)
+            add_btn.connect("clicked", self._on_add_group)
+            self.main_box.append(add_btn)
+        finally:
+            self._rebuilding = False
 
     def _build_group_widget(self, g_idx, group):
         frame = Gtk.Frame()
@@ -201,7 +208,8 @@ class SettingsApp(Adw.Application):
         name_entry = Gtk.Entry()
         name_entry.set_text(group["group"])
         name_entry.set_hexpand(True)
-        name_entry.connect("changed", self._on_group_rename, g_idx)
+        # Pass the group dict directly to avoid stale index captures
+        name_entry.connect("changed", self._on_group_rename, group)
 
         del_btn = Gtk.Button(icon_name="user-trash-symbolic")
         del_btn.add_css_class("flat")
@@ -248,7 +256,8 @@ class SettingsApp(Adw.Application):
         label_entry = Gtk.Entry()
         label_entry.set_text(item["label"])
         label_entry.set_hexpand(True)
-        label_entry.connect("changed", self._on_item_rename, g_idx, i_idx)
+        # Pass the item dict directly to avoid stale index captures
+        label_entry.connect("changed", self._on_item_rename, item)
 
         up_btn = Gtk.Button(icon_name="go-up-symbolic")
         up_btn.add_css_class("flat")
@@ -273,8 +282,11 @@ class SettingsApp(Adw.Application):
 
     # --- Group callbacks ---
 
-    def _on_group_rename(self, entry, g_idx):
-        self.menu_data[g_idx]["group"] = entry.get_text()
+    def _on_group_rename(self, entry, group):
+        # Skip signals fired by set_text() during _render_groups() rebuild
+        if self._rebuilding:
+            return
+        group["group"] = entry.get_text()
 
     def _on_group_move(self, _btn, g_idx, direction):
         d = self.menu_data
@@ -296,8 +308,11 @@ class SettingsApp(Adw.Application):
     def _on_item_toggle(self, _switch, state, g_idx, i_idx):
         self.menu_data[g_idx]["items"][i_idx]["enabled"] = state
 
-    def _on_item_rename(self, entry, g_idx, i_idx):
-        self.menu_data[g_idx]["items"][i_idx]["label"] = entry.get_text()
+    def _on_item_rename(self, entry, item):
+        # Skip signals fired by set_text() during _render_groups() rebuild
+        if self._rebuilding:
+            return
+        item["label"] = entry.get_text()
 
     def _on_item_move(self, _btn, g_idx, i_idx, direction):
         items = self.menu_data[g_idx]["items"]
@@ -321,9 +336,14 @@ class SettingsApp(Adw.Application):
         dialog = Adw.Dialog()
         dialog.set_title(_("Add Action"))
         dialog.set_content_width(360)
+        dialog.set_content_height(480)
 
         toolbar = Adw.ToolbarView()
         toolbar.add_top_bar(Adw.HeaderBar())
+
+        # Wrap list in a ScrolledWindow so all items are always reachable
+        scroll = Gtk.ScrolledWindow(vexpand=True)
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
         list_box = Gtk.ListBox()
         list_box.set_selection_mode(Gtk.SelectionMode.SINGLE)
@@ -353,7 +373,8 @@ class SettingsApp(Adw.Application):
             self._render_groups()
 
         list_box.connect("row-activated", on_row_activated)
-        toolbar.set_content(list_box)
+        scroll.set_child(list_box)
+        toolbar.set_content(scroll)
         dialog.set_child(toolbar)
         dialog.present(self.win)
 
