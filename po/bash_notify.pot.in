@@ -1,0 +1,109 @@
+# PKGBUILD Manager — bash script notification keys
+# These are symbolic keys resolved at runtime by data/nautilus-scripts/_i18n.
+#
+# !! ADD new entries here when adding a new bash script operation !!
+# Each new operation needs:
+#   1. A notify_<name>       entry ("operation started")
+#   2. A notify_<name>_ok    entry ("operation succeeded")
+#   3. A notify_<name>_fail  entry ("operation failed")
+# Then add the English fallback in data/nautilus-scripts/_i18n → _en_fallback()
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "notify_building"
+msgstr ""
+
+msgid "notify_build_ok"
+msgstr ""
+
+msgid "notify_build_fail"
+msgstr ""
+
+msgid "notify_installing"
+msgstr ""
+
+msgid "notify_install_ok"
+msgstr ""
+
+msgid "notify_install_fail"
+msgstr ""
+
+msgid "notify_checksums"
+msgstr ""
+
+msgid "notify_checksums_ok"
+msgstr ""
+
+msgid "notify_checksums_fail"
+msgstr ""
+
+msgid "notify_srcinfo"
+msgstr ""
+
+msgid "notify_srcinfo_ok"
+msgstr ""
+
+msgid "notify_srcinfo_fail"
+msgstr ""
+
+msgid "notify_namcap"
+msgstr ""
+
+msgid "notify_namcap_warn"
+msgstr ""
+
+msgid "notify_namcap_ok"
+msgstr ""
+
+msgid "notify_namcap_fail"
+msgstr ""
+
+msgid "notify_shellcheck"
+msgstr ""
+
+msgid "notify_shellcheck_warn"
+msgstr ""
+
+msgid "notify_shellcheck_ok"
+msgstr ""
+
+msgid "notify_shellcheck_fail"
+msgstr ""
+
+msgid "notify_push_aur"
+msgstr ""
+
+msgid "notify_push_aur_ok"
+msgstr ""
+
+msgid "notify_push_aur_fail"
+msgstr ""
+
+msgid "notify_clean_src"
+msgstr ""
+
+msgid "notify_clean_src_ok"
+msgstr ""
+
+msgid "notify_clean_src_fail"
+msgstr ""
+
+msgid "notify_clean_all"
+msgstr ""
+
+msgid "notify_clean_all_ok"
+msgstr ""
+
+msgid "notify_clean_all_fail"
+msgstr ""
+
+msgid "notify_full_workflow"
+msgstr ""
+
+msgid "notify_full_workflow_ok"
+msgstr ""
+
+msgid "notify_full_workflow_fail"
+msgstr ""

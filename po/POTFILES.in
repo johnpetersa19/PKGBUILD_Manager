@@ -1,5 +1,11 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
+#
+# Rust files  → extracted via xgettext --keyword=gettext
+# Python files → extracted via xgettext --keyword=_
+#
+# NOTE: data/nautilus-extension/*.py are scanned automatically
+#       by po/meson.build and po/update-pot.sh — no need to list them here.
 src/actions/aur_push.rs
 src/actions/build.rs
 src/actions/checksums.rs
@@ -11,3 +17,4 @@ src/actions/shellcheck.rs
 src/actions/srcinfo.rs
 src/config.rs
 src/main.rs
+src/settings/app.py
