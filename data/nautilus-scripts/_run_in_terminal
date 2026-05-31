@@ -9,48 +9,50 @@ run_in_terminal() {
     local cmd="$1"
     local wait_key='echo; read -n1 -rsp "Press any key to exit..." && echo'
 
+    # setsid cria uma nova sessão de processo, isolando completamente do
+    # Nautilus. Sem isso, gnome-terminal/kgx perdem a sessão D-Bus antes
+    # de renderizar o comando e abrem uma janela vazia.
     _launch() {
-        "$@" &
-        disown
+        setsid "$@" &>/dev/null &
     }
 
     # 1. Official terminal emulators for Desktop Environments
     if command -v gnome-terminal &>/dev/null; then
-        _launch gnome-terminal -- bash -c "$cmd; $wait_key"
+        _launch gnome-terminal -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v kgx &>/dev/null; then
-        _launch kgx -- bash -c "$cmd; $wait_key"
+        _launch kgx -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v konsole &>/dev/null; then
-        _launch konsole -- bash -c "$cmd; $wait_key"
+        _launch konsole -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v xfce4-terminal &>/dev/null; then
-        _launch xfce4-terminal -- bash -c "$cmd; $wait_key"
+        _launch xfce4-terminal -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v mate-terminal &>/dev/null; then
-        _launch mate-terminal -- bash -c "$cmd; $wait_key"
+        _launch mate-terminal -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v lxterminal &>/dev/null; then
-        _launch lxterminal -- bash -c "$cmd; $wait_key"
+        _launch lxterminal -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v qterminal &>/dev/null; then
-        _launch qterminal -- bash -c "$cmd; $wait_key"
+        _launch qterminal -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v deepin-terminal &>/dev/null; then
-        _launch deepin-terminal -- bash -c "$cmd; $wait_key"
+        _launch deepin-terminal -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v terminology &>/dev/null; then
-        _launch terminology -- bash -c "$cmd; $wait_key"
+        _launch terminology -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v ukui-terminal &>/dev/null; then
-        _launch ukui-terminal -- bash -c "$cmd; $wait_key"
+        _launch ukui-terminal -- bash -c "$cmd; $wait_key; exec bash"
 
     # 2. Other popular terminal emulators
     elif command -v tilix &>/dev/null; then
-        _launch tilix -- bash -c "$cmd; $wait_key"
+        _launch tilix -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v alacritty &>/dev/null; then
-        _launch alacritty -- bash -c "$cmd; $wait_key"
+        _launch alacritty -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v kitty &>/dev/null; then
-        _launch kitty -- bash -c "$cmd; $wait_key"
+        _launch kitty -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v wezterm &>/dev/null; then
-        _launch wezterm start -- bash -c "$cmd; $wait_key"
+        _launch wezterm start -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v foot &>/dev/null; then
-        _launch foot -- bash -c "$cmd; $wait_key"
+        _launch foot -- bash -c "$cmd; $wait_key; exec bash"
 
     # 3. Universal fallback
     elif command -v xterm &>/dev/null; then
-        _launch xterm -e "bash -c '$cmd; $wait_key'"
+        _launch xterm -e "bash -c '$cmd; $wait_key; exec bash'"
     else
         notify-send -u critical "PKGBUILD Manager" \
             "No compatible terminal emulator found."
