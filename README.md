@@ -191,7 +191,7 @@ Locale resolution order: `$LANGUAGE` → `$LC_ALL` → `$LC_MESSAGES` → `$LANG
 
 ### Adding a New Language
 
-1. Copy `po/pt_BR.po` to `po/<lang>.po`.
+1. Copy `po/pkgbuild_manager.pot` to `po/<lang>.po`.
 2. Translate all `msgstr` entries.
 3. Add the language code to `po/LINGUAS`.
 4. Add `'../po/<lang>.po'` to `po_files` in `data/meson.build`.

@@ -46,6 +46,36 @@ msgstr "Alles bereinigen"
 msgid "07_Clean srcdir"
 msgstr "Quellverzeichnis bereinigen"
 
+msgid "08_Build Force"
+msgstr "Kompilieren (Erzwingen)"
+
+msgid "09_Build NoCheck"
+msgstr "Kompilieren (Ohne Tests)"
+
+msgid "10_Build NoGPG"
+msgstr "Kompilieren (Ohne GPG)"
+
+msgid "11_Fetch Sources"
+msgstr "Quellen Herunterladen"
+
+msgid "12_Install Force"
+msgstr "Installieren (Erzwingen)"
+
+msgid "13_Install RmDeps"
+msgstr "Installieren (Abhäng. entfernen)"
+
+msgid "14_Install NoCheck"
+msgstr "Installieren (Ohne Tests)"
+
+msgid "15_Install NoGPG"
+msgstr "Installieren (Ohne GPG)"
+
+msgid "16_Gen Checksums"
+msgstr "Prüfsummen Generieren"
+
+msgid "17_Push AUR Tag"
+msgstr "AUR-Tag Hochladen"
+
 # Settings panel
 msgid "PKGBUILD Manager — Menu Settings"
 msgstr "PKGBUILD-Manager — Menüeinstellungen"
@@ -100,6 +130,42 @@ msgstr "✓ Erstellung erfolgreich abgeschlossen!"
 msgid "notify_build_fail"
 msgstr "✗ Erstellung fehlgeschlagen! Siehe: "
 
+msgid "notify_build_force"
+msgstr "Neukompilierung wird erzwungen..."
+
+msgid "notify_build_force_fail"
+msgstr "✗ Erzwungene Neukompilierung fehlgeschlagen! Siehe: "
+
+msgid "notify_build_force_ok"
+msgstr "✓ Erzwungene Neukompilierung abgeschlossen!"
+
+msgid "notify_build_nocheck"
+msgstr "Kompilierung (ohne Tests)..."
+
+msgid "notify_build_nocheck_fail"
+msgstr "✗ Kompilierung (ohne Tests) fehlgeschlagen! Siehe: "
+
+msgid "notify_build_nocheck_ok"
+msgstr "✓ Kompilierung (ohne Tests) abgeschlossen!"
+
+msgid "notify_build_nogpg"
+msgstr "Kompilierung (ohne GPG)..."
+
+msgid "notify_build_nogpg_fail"
+msgstr "✗ Kompilierung (ohne GPG) fehlgeschlagen! Siehe: "
+
+msgid "notify_build_nogpg_ok"
+msgstr "✓ Kompilierung (ohne GPG) abgeschlossen!"
+
+msgid "notify_fetch_sources"
+msgstr "Quellen werden heruntergeladen..."
+
+msgid "notify_fetch_sources_fail"
+msgstr "✗ Herunterladen der Quellen fehlgeschlagen! Siehe: "
+
+msgid "notify_fetch_sources_ok"
+msgstr "✓ Quellen erfolgreich heruntergeladen!"
+
 msgid "notify_installing"
 msgstr "Paket wird installiert..."
 
@@ -108,6 +174,51 @@ msgstr "✓ Installation abgeschlossen!"
 
 msgid "notify_install_fail"
 msgstr "✗ Installation fehlgeschlagen! Siehe: "
+
+msgid "notify_install_force"
+msgstr "Installation wird erzwungen..."
+
+msgid "notify_install_force_fail"
+msgstr "✗ Erzwungene Installation fehlgeschlagen! Siehe: "
+
+msgid "notify_install_force_ok"
+msgstr "✓ Erzwungene Installation abgeschlossen!"
+
+msgid "notify_install_nocheck"
+msgstr "Installation (ohne Tests)..."
+
+msgid "notify_install_nocheck_fail"
+msgstr "✗ Installation (ohne Tests) fehlgeschlagen! Siehe: "
+
+msgid "notify_install_nocheck_ok"
+msgstr "✓ Installation (ohne Tests) abgeschlossen!"
+
+msgid "notify_install_nogpg"
+msgstr "Installation (ohne GPG)..."
+
+msgid "notify_install_nogpg_fail"
+msgstr "✗ Installation (ohne GPG) fehlgeschlagen! Siehe: "
+
+msgid "notify_install_nogpg_ok"
+msgstr "✓ Installation (ohne GPG) abgeschlossen!"
+
+msgid "notify_install_rmdeps"
+msgstr "Installation (Abhängigkeiten entfernen)..."
+
+msgid "notify_install_rmdeps_fail"
+msgstr "✗ Installation (rmdeps) fehlgeschlagen! Siehe: "
+
+msgid "notify_install_rmdeps_ok"
+msgstr "✓ Installation (rmdeps) abgeschlossen!"
+
+msgid "notify_genchecksums"
+msgstr "Prüfsummen werden generiert..."
+
+msgid "notify_genchecksums_fail"
+msgstr "✗ Generierung der Prüfsummen fehlgeschlagen! Siehe: "
+
+msgid "notify_genchecksums_ok"
+msgstr "✓ Prüfsummen erfolgreich generiert!"
 
 msgid "notify_checksums"
 msgstr "Prüfsummen werden aktualisiert..."
@@ -159,6 +270,15 @@ msgstr "✓ Erfolgreich zum AUR gepusht!"
 
 msgid "notify_push_aur_fail"
 msgstr "✗ Fehler beim Pushen zum AUR! Siehe: "
+
+msgid "notify_push_aur_tag"
+msgstr "Tag wird erstellt und zum AUR hochgeladen..."
+
+msgid "notify_push_aur_tag_fail"
+msgstr "✗ Tag erstellen/AUR hochladen fehlgeschlagen! Siehe: "
+
+msgid "notify_push_aur_tag_ok"
+msgstr "✓ Tag erstellt und zum AUR hochgeladen!"
 
 msgid "notify_clean_src"
 msgstr "Quellverzeichnis wird bereinigt..."
