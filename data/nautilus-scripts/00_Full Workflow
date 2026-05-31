@@ -1,27 +1,14 @@
 #!/bin/bash
-# PKGBUILD Manager - Full workflow (checksums → namcap → build → srcinfo → push)
-# Runs the typical day-to-day AUR maintainer pipeline end-to-end.
-source "$(dirname "$0")/_run_in_terminal"
-
-CMD='
-set -e
-echo "==> [1/5] Updating checksums..."
-pkgbuild_manager checksums "${TARGET}"
-echo
-echo "==> [2/5] Running namcap..."
-pkgbuild_manager namcap "${TARGET}"
-echo
-echo "==> [3/5] Building package (makepkg -sic)..."
-pkgbuild_manager install-clean "${TARGET}"
-echo
-echo "==> [4/5] Updating .SRCINFO..."
-pkgbuild_manager srcinfo "${TARGET}"
-echo
-echo "==> [5/5] Pushing to AUR (git push)..."
-pkgbuild_manager aur-push "${TARGET}"
-echo
-echo "✓ Full workflow completed successfully!"
-'
-
+# PKGBUILD Manager - Full Workflow
 TARGET="${1:-.}"
-run_in_terminal "TARGET='$TARGET'; $CMD"
+source "$(dirname "$0")/_i18n"
+notify-send "PKGBUILD Manager" "$MSG_FULL_WORKFLOW"
+
+LOG_PATH="${TARGET}/makepkg-full.log"
+
+if pkgbuild_manager full-workflow "$TARGET" > "$LOG_PATH" 2>&1; then
+    rm -f "$LOG_PATH"
+    notify-send "PKGBUILD Manager" "$MSG_FULL_WORKFLOW_OK"
+else
+    notify-send -u critical "PKGBUILD Manager" "${MSG_FULL_WORKFLOW_FAIL}$(basename "$LOG_PATH")"
+fi

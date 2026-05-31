@@ -1,22 +1,18 @@
 #!/bin/bash
-# PKGBUILD Manager - ShellCheck (lint PKGBUILD)
+# PKGBUILD Manager - ShellCheck lint
 TARGET="${1:-.}"
-notify-send "PKGBUILD Manager" "Running ShellCheck..."
+source "$(dirname "$0")/_i18n"
+notify-send "PKGBUILD Manager" "$MSG_SHELLCHECK"
 
 LOG_PATH="${TARGET}/shellcheck.log"
 
 if pkgbuild_manager shellcheck "$TARGET" > "$LOG_PATH" 2>&1; then
     if [ -s "$LOG_PATH" ]; then
-        notify-send "PKGBUILD Manager" "⚠ ShellCheck found warnings. See: $(basename "$LOG_PATH")"
+        notify-send "PKGBUILD Manager" "${MSG_SHELLCHECK_WARN}$(basename "$LOG_PATH")"
     else
         rm -f "$LOG_PATH"
-        notify-send "PKGBUILD Manager" "✓ ShellCheck completed! Code is clean."
+        notify-send "PKGBUILD Manager" "$MSG_SHELLCHECK_OK"
     fi
 else
-    if [ -s "$LOG_PATH" ]; then
-        notify-send -u critical "PKGBUILD Manager" "✗ ShellCheck found errors! See: $(basename "$LOG_PATH")"
-    else
-        notify-send -u critical "PKGBUILD Manager" "✗ Failed to run ShellCheck."
-        rm -f "$LOG_PATH"
-    fi
+    notify-send -u critical "PKGBUILD Manager" "${MSG_SHELLCHECK_FAIL}$(basename "$LOG_PATH")"
 fi

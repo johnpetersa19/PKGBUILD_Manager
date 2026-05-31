@@ -1,4 +1,14 @@
 #!/bin/bash
-# PKGBUILD Manager - Push to AUR (git add, commit, push)
-source "$(dirname "$0")/_run_in_terminal"
-run_in_terminal "pkgbuild_manager aur-push '${1:-.}'"
+# PKGBUILD Manager - Push to AUR
+TARGET="${1:-.}"
+source "$(dirname "$0")/_i18n"
+notify-send "PKGBUILD Manager" "$MSG_PUSH_AUR"
+
+LOG_PATH="${TARGET}/aur-push.log"
+
+if pkgbuild_manager push-aur "$TARGET" > "$LOG_PATH" 2>&1; then
+    rm -f "$LOG_PATH"
+    notify-send "PKGBUILD Manager" "$MSG_PUSH_AUR_OK"
+else
+    notify-send -u critical "PKGBUILD Manager" "${MSG_PUSH_AUR_FAIL}$(basename "$LOG_PATH")"
+fi

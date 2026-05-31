@@ -1,4 +1,14 @@
 #!/bin/bash
-# PKGBUILD Manager - Instalar (makepkg -si)
-source "$(dirname "$0")/_run_in_terminal"
-run_in_terminal "pkgbuild_manager install '${1:-.}'"
+# PKGBUILD Manager - Install package
+TARGET="${1:-.}"
+source "$(dirname "$0")/_i18n"
+notify-send "PKGBUILD Manager" "$MSG_INSTALLING"
+
+LOG_PATH="${TARGET}/makepkg-install.log"
+
+if pkgbuild_manager install "$TARGET" > "$LOG_PATH" 2>&1; then
+    rm -f "$LOG_PATH"
+    notify-send "PKGBUILD Manager" "$MSG_INSTALL_OK"
+else
+    notify-send -u critical "PKGBUILD Manager" "${MSG_INSTALL_FAIL}$(basename "$LOG_PATH")"
+fi

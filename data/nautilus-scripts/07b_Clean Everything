@@ -1,10 +1,14 @@
 #!/bin/bash
-# PKGBUILD Manager - Clean EVERYTHING (src/, pkg/, compiled packages)
+# PKGBUILD Manager - Clean everything
 TARGET="${1:-.}"
-notify-send "PKGBUILD Manager" "Cleaning everything (src/, pkg/, *.pkg.tar.*)..."
+source "$(dirname "$0")/_i18n"
+notify-send "PKGBUILD Manager" "$MSG_CLEAN_ALL"
 
-if pkgbuild_manager clean-all "$TARGET"; then
-    notify-send "PKGBUILD Manager" "✓ Full cleanup completed!"
+LOG_PATH="${TARGET}/clean.log"
+
+if pkgbuild_manager clean "$TARGET" > "$LOG_PATH" 2>&1; then
+    rm -f "$LOG_PATH"
+    notify-send "PKGBUILD Manager" "$MSG_CLEAN_ALL_OK"
 else
-    notify-send -u critical "PKGBUILD Manager" "✗ Error during cleanup."
+    notify-send -u critical "PKGBUILD Manager" "${MSG_CLEAN_ALL_FAIL}$(basename "$LOG_PATH")"
 fi

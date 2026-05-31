@@ -1,10 +1,14 @@
 #!/bin/bash
-# PKGBUILD Manager - Clean srcdir (makepkg -c)
+# PKGBUILD Manager - Clean srcdir
 TARGET="${1:-.}"
-notify-send "PKGBUILD Manager" "Cleaning srcdir..."
+source "$(dirname "$0")/_i18n"
+notify-send "PKGBUILD Manager" "$MSG_CLEAN_SRC"
 
-if pkgbuild_manager clean "$TARGET"; then
-    notify-send "PKGBUILD Manager" "✓ srcdir cleaned successfully!"
+LOG_PATH="${TARGET}/clean.log"
+
+if pkgbuild_manager clean-src "$TARGET" > "$LOG_PATH" 2>&1; then
+    rm -f "$LOG_PATH"
+    notify-send "PKGBUILD Manager" "$MSG_CLEAN_SRC_OK"
 else
-    notify-send -u critical "PKGBUILD Manager" "✗ Failed to clean srcdir."
+    notify-send -u critical "PKGBUILD Manager" "${MSG_CLEAN_SRC_FAIL}$(basename "$LOG_PATH")"
 fi

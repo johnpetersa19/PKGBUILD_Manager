@@ -1,17 +1,18 @@
 #!/bin/bash
 # PKGBUILD Manager - Namcap audit
 TARGET="${1:-.}"
-notify-send "PKGBUILD Manager" "Running namcap..."
+source "$(dirname "$0")/_i18n"
+notify-send "PKGBUILD Manager" "$MSG_NAMCAP"
 
 LOG_PATH="${TARGET}/namcap.log"
 
 if pkgbuild_manager namcap "$TARGET" > "$LOG_PATH" 2>&1; then
     if [ -s "$LOG_PATH" ]; then
-        notify-send "PKGBUILD Manager" "⚠ Namcap finished with warnings. See: $(basename "$LOG_PATH")"
+        notify-send "PKGBUILD Manager" "${MSG_NAMCAP_WARN}$(basename "$LOG_PATH")"
     else
         rm -f "$LOG_PATH"
-        notify-send "PKGBUILD Manager" "✓ Namcap completed! No warnings found."
+        notify-send "PKGBUILD Manager" "$MSG_NAMCAP_OK"
     fi
 else
-    notify-send -u critical "PKGBUILD Manager" "✗ Namcap failed! See: $(basename "$LOG_PATH")"
+    notify-send -u critical "PKGBUILD Manager" "${MSG_NAMCAP_FAIL}$(basename "$LOG_PATH")"
 fi
