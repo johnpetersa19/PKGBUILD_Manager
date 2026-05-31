@@ -1,36 +1,29 @@
 #!/bin/bash
-# _i18n — shell i18n helper for PKGBUILD Manager
-# Reads translations from the installed .po file for the current locale.
+# _i18n - shell i18n helper for PKGBUILD Manager
 # Source this at the top of every script:
 #   source "$(dirname "$0")/_i18n"
-#
-# To add a new language: create po/<lang>.po with the notify_* msgids
-# translated, run meson compile && meson install — no changes needed here.
 
 # ---------------------------------------------------------------------------
-# Detect locale (same priority order as gettext)
+# Detect locale
 # ---------------------------------------------------------------------------
 _LANG="${LANGUAGE:-${LC_ALL:-${LC_MESSAGES:-${LANG:-en}}}}"
-_LANG="${_LANG%%:*}"   # first entry if LANGUAGE has colon list
-_LANG="${_LANG%%.*}"   # strip encoding  (pt_BR.UTF-8 → pt_BR)
-
-# Candidates: exact match first, then language-only (pt_BR → pt)
+_LANG="${_LANG%%:*}"
+_LANG="${_LANG%%.*}"
 _LANG_SHORT="${_LANG%%_*}"
 
 # ---------------------------------------------------------------------------
-# Locate the .po file: prefer installed system locale, fall back to repo
+# Locate .po file
 # ---------------------------------------------------------------------------
 _SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-_REPO_PO_DIR="$(cd "$_SCRIPTS_DIR/../../po" 2>/dev/null && pwd)"
 
 _find_po() {
     local lang="$1"
-    # 1. Installed alongside scripts (future packaging option)
-    local installed="/usr/share/pkgbuild-manager/i18n/${lang}.po"
-    [[ -f "$installed" ]] && { echo "$installed"; return; }
-    # 2. Repo po/ directory (dev / makepkg build tree)
-    local repo="${_REPO_PO_DIR}/${lang}.po"
-    [[ -f "$repo" ]] && { echo "$repo"; return; }
+    local f
+    f="/usr/share/pkgbuild-manager/i18n/${lang}.po"
+    [[ -f "$f" ]] && { echo "$f"; return; }
+    f="${_SCRIPTS_DIR}/../../po/${lang}.po"
+    f="$(cd "$(dirname "$f")" 2>/dev/null && pwd)/$(basename "$f")"
+    [[ -f "$f" ]] && { echo "$f"; return; }
     echo ""
 }
 
@@ -38,107 +31,110 @@ _PO_FILE="$(_find_po "$_LANG")"
 [[ -z "$_PO_FILE" ]] && _PO_FILE="$(_find_po "$_LANG_SHORT")"
 
 # ---------------------------------------------------------------------------
-# Parse a single msgid from the .po file
-# Returns the msgstr, or the msgid itself as fallback (English)
+# Parse msgid from .po using grep+sed (no awk single-quote nesting)
 # ---------------------------------------------------------------------------
 _getmsg() {
     local msgid="$1"
     local po="$2"
     if [[ -z "$po" || ! -f "$po" ]]; then
-        # No .po found — return the English default embedded below
         _en_fallback "$msgid"
         return
     fi
-    # awk: find the msgid line, grab the next non-empty msgstr
-    local result
-    result=$(awk -v id="$msgid" '
-        /^msgid "/ {
-            current = substr($0, 8, length($0)-8)
-        }
-        /^msgstr "/ && current == id {
-            val = substr($0, 9, length($0)-9)
-            if (val != "") { print val; exit }
-        }
-    ' "$po")
-    if [[ -z "$result" ]]; then
+    # Find line number of: msgid "<msgid>"
+    local line_no
+    line_no=$(grep -n "^msgid \"${msgid}\"" "$po" | head -1 | cut -d: -f1)
+    if [[ -z "$line_no" ]]; then
         _en_fallback "$msgid"
-    else
-        # Unescape common .po escape sequences
-        printf '%b' "${result//\\"/\"}"
+        return
     fi
+    # Get the msgstr on the next line after that msgid
+    local next_line=$(( line_no + 1 ))
+    local raw
+    raw=$(sed -n "${next_line}p" "$po")
+    # Extract content between the first pair of double quotes after msgstr
+    if [[ "$raw" =~ ^msgstr[[:space:]]+\"(.*)\"$ ]]; then
+        local val="${BASH_REMATCH[1]}"
+        if [[ -n "$val" ]]; then
+            printf '%b' "${val//\\\"/\"}"
+            return
+        fi
+    fi
+    _en_fallback "$msgid"
 }
 
-# English fallbacks — used when no .po is found or msgstr is empty
+# ---------------------------------------------------------------------------
+# English fallbacks
+# ---------------------------------------------------------------------------
 _en_fallback() {
     case "$1" in
         notify_building)           echo "Building package..." ;;
-        notify_build_ok)           echo "✓ Build completed successfully!" ;;
-        notify_build_fail)         echo "✗ Build failed! See: " ;;
+        notify_build_ok)           echo "Build completed successfully!" ;;
+        notify_build_fail)         echo "Build failed! See: " ;;
         notify_installing)         echo "Installing package..." ;;
-        notify_install_ok)         echo "✓ Install completed!" ;;
-        notify_install_fail)       echo "✗ Install failed! See: " ;;
+        notify_install_ok)         echo "Install completed!" ;;
+        notify_install_fail)       echo "Install failed! See: " ;;
         notify_checksums)          echo "Updating checksums..." ;;
-        notify_checksums_ok)       echo "✓ Checksums updated successfully!" ;;
-        notify_checksums_fail)     echo "✗ Failed to update checksums! See: " ;;
+        notify_checksums_ok)       echo "Checksums updated successfully!" ;;
+        notify_checksums_fail)     echo "Failed to update checksums! See: " ;;
         notify_srcinfo)            echo "Updating .SRCINFO..." ;;
-        notify_srcinfo_ok)         echo "✓ .SRCINFO updated successfully!" ;;
-        notify_srcinfo_fail)       echo "✗ Failed to update .SRCINFO! See: " ;;
+        notify_srcinfo_ok)         echo ".SRCINFO updated successfully!" ;;
+        notify_srcinfo_fail)       echo "Failed to update .SRCINFO! See: " ;;
         notify_namcap)             echo "Running namcap..." ;;
-        notify_namcap_warn)        echo "⚠ Namcap finished with warnings. See: " ;;
-        notify_namcap_ok)          echo "✓ Namcap completed! No warnings found." ;;
-        notify_namcap_fail)        echo "✗ Namcap failed! See: " ;;
+        notify_namcap_warn)        echo "Namcap finished with warnings. See: " ;;
+        notify_namcap_ok)          echo "Namcap completed! No warnings found." ;;
+        notify_namcap_fail)        echo "Namcap failed! See: " ;;
         notify_shellcheck)         echo "Running ShellCheck..." ;;
-        notify_shellcheck_warn)    echo "⚠ ShellCheck found warnings. See: " ;;
-        notify_shellcheck_ok)      echo "✓ ShellCheck: no issues found." ;;
-        notify_shellcheck_fail)    echo "✗ ShellCheck failed! See: " ;;
+        notify_shellcheck_warn)    echo "ShellCheck found warnings. See: " ;;
+        notify_shellcheck_ok)      echo "ShellCheck: no issues found." ;;
+        notify_shellcheck_fail)    echo "ShellCheck failed! See: " ;;
         notify_push_aur)           echo "Pushing to AUR..." ;;
-        notify_push_aur_ok)        echo "✓ Pushed to AUR successfully!" ;;
-        notify_push_aur_fail)      echo "✗ Failed to push to AUR! See: " ;;
+        notify_push_aur_ok)        echo "Pushed to AUR successfully!" ;;
+        notify_push_aur_fail)      echo "Failed to push to AUR! See: " ;;
         notify_clean_src)          echo "Cleaning srcdir..." ;;
-        notify_clean_src_ok)       echo "✓ srcdir cleaned successfully!" ;;
-        notify_clean_src_fail)     echo "✗ Failed to clean srcdir! See: " ;;
+        notify_clean_src_ok)       echo "srcdir cleaned successfully!" ;;
+        notify_clean_src_fail)     echo "Failed to clean srcdir! See: " ;;
         notify_clean_all)          echo "Cleaning everything..." ;;
-        notify_clean_all_ok)       echo "✓ Everything cleaned successfully!" ;;
-        notify_clean_all_fail)     echo "✗ Failed to clean! See: " ;;
+        notify_clean_all_ok)       echo "Everything cleaned successfully!" ;;
+        notify_clean_all_fail)     echo "Failed to clean! See: " ;;
         notify_full_workflow)      echo "Running full workflow..." ;;
-        notify_full_workflow_ok)   echo "✓ Full workflow completed!" ;;
-        notify_full_workflow_fail) echo "✗ Full workflow failed! See: " ;;
+        notify_full_workflow_ok)   echo "Full workflow completed!" ;;
+        notify_full_workflow_fail) echo "Full workflow failed! See: " ;;
         *)                         echo "$1" ;;
     esac
 }
 
 # ---------------------------------------------------------------------------
-# Export all MSG_* variables by reading from the .po file
+# Export MSG_* variables
 # ---------------------------------------------------------------------------
-MSG_BUILDING=$(_getmsg "notify_building"          "$_PO_FILE")
-MSG_BUILD_OK=$(_getmsg "notify_build_ok"           "$_PO_FILE")
-MSG_BUILD_FAIL=$(_getmsg "notify_build_fail"       "$_PO_FILE")
-MSG_INSTALLING=$(_getmsg "notify_installing"       "$_PO_FILE")
-MSG_INSTALL_OK=$(_getmsg "notify_install_ok"       "$_PO_FILE")
-MSG_INSTALL_FAIL=$(_getmsg "notify_install_fail"   "$_PO_FILE")
-MSG_CHECKSUMS=$(_getmsg "notify_checksums"         "$_PO_FILE")
-MSG_CHECKSUMS_OK=$(_getmsg "notify_checksums_ok"   "$_PO_FILE")
-MSG_CHECKSUMS_FAIL=$(_getmsg "notify_checksums_fail" "$_PO_FILE")
-MSG_SRCINFO=$(_getmsg "notify_srcinfo"             "$_PO_FILE")
-MSG_SRCINFO_OK=$(_getmsg "notify_srcinfo_ok"       "$_PO_FILE")
-MSG_SRCINFO_FAIL=$(_getmsg "notify_srcinfo_fail"   "$_PO_FILE")
-MSG_NAMCAP=$(_getmsg "notify_namcap"               "$_PO_FILE")
-MSG_NAMCAP_WARN=$(_getmsg "notify_namcap_warn"     "$_PO_FILE")
-MSG_NAMCAP_OK=$(_getmsg "notify_namcap_ok"         "$_PO_FILE")
-MSG_NAMCAP_FAIL=$(_getmsg "notify_namcap_fail"     "$_PO_FILE")
-MSG_SHELLCHECK=$(_getmsg "notify_shellcheck"       "$_PO_FILE")
-MSG_SHELLCHECK_WARN=$(_getmsg "notify_shellcheck_warn" "$_PO_FILE")
-MSG_SHELLCHECK_OK=$(_getmsg "notify_shellcheck_ok" "$_PO_FILE")
-MSG_SHELLCHECK_FAIL=$(_getmsg "notify_shellcheck_fail" "$_PO_FILE")
-MSG_PUSH_AUR=$(_getmsg "notify_push_aur"           "$_PO_FILE")
-MSG_PUSH_AUR_OK=$(_getmsg "notify_push_aur_ok"     "$_PO_FILE")
-MSG_PUSH_AUR_FAIL=$(_getmsg "notify_push_aur_fail" "$_PO_FILE")
-MSG_CLEAN_SRC=$(_getmsg "notify_clean_src"         "$_PO_FILE")
-MSG_CLEAN_SRC_OK=$(_getmsg "notify_clean_src_ok"   "$_PO_FILE")
-MSG_CLEAN_SRC_FAIL=$(_getmsg "notify_clean_src_fail" "$_PO_FILE")
-MSG_CLEAN_ALL=$(_getmsg "notify_clean_all"         "$_PO_FILE")
-MSG_CLEAN_ALL_OK=$(_getmsg "notify_clean_all_ok"   "$_PO_FILE")
-MSG_CLEAN_ALL_FAIL=$(_getmsg "notify_clean_all_fail" "$_PO_FILE")
-MSG_FULL_WORKFLOW=$(_getmsg "notify_full_workflow" "$_PO_FILE")
-MSG_FULL_WORKFLOW_OK=$(_getmsg "notify_full_workflow_ok" "$_PO_FILE")
-MSG_FULL_WORKFLOW_FAIL=$(_getmsg "notify_full_workflow_fail" "$_PO_FILE")
+MSG_BUILDING=$(        _getmsg notify_building           "$_PO_FILE")
+MSG_BUILD_OK=$(        _getmsg notify_build_ok           "$_PO_FILE")
+MSG_BUILD_FAIL=$(      _getmsg notify_build_fail         "$_PO_FILE")
+MSG_INSTALLING=$(      _getmsg notify_installing         "$_PO_FILE")
+MSG_INSTALL_OK=$(      _getmsg notify_install_ok         "$_PO_FILE")
+MSG_INSTALL_FAIL=$(    _getmsg notify_install_fail       "$_PO_FILE")
+MSG_CHECKSUMS=$(       _getmsg notify_checksums          "$_PO_FILE")
+MSG_CHECKSUMS_OK=$(    _getmsg notify_checksums_ok       "$_PO_FILE")
+MSG_CHECKSUMS_FAIL=$(  _getmsg notify_checksums_fail     "$_PO_FILE")
+MSG_SRCINFO=$(         _getmsg notify_srcinfo            "$_PO_FILE")
+MSG_SRCINFO_OK=$(      _getmsg notify_srcinfo_ok         "$_PO_FILE")
+MSG_SRCINFO_FAIL=$(    _getmsg notify_srcinfo_fail       "$_PO_FILE")
+MSG_NAMCAP=$(          _getmsg notify_namcap             "$_PO_FILE")
+MSG_NAMCAP_WARN=$(     _getmsg notify_namcap_warn        "$_PO_FILE")
+MSG_NAMCAP_OK=$(       _getmsg notify_namcap_ok          "$_PO_FILE")
+MSG_NAMCAP_FAIL=$(     _getmsg notify_namcap_fail        "$_PO_FILE")
+MSG_SHELLCHECK=$(      _getmsg notify_shellcheck         "$_PO_FILE")
+MSG_SHELLCHECK_WARN=$( _getmsg notify_shellcheck_warn    "$_PO_FILE")
+MSG_SHELLCHECK_OK=$(   _getmsg notify_shellcheck_ok      "$_PO_FILE")
+MSG_SHELLCHECK_FAIL=$( _getmsg notify_shellcheck_fail    "$_PO_FILE")
+MSG_PUSH_AUR=$(        _getmsg notify_push_aur           "$_PO_FILE")
+MSG_PUSH_AUR_OK=$(     _getmsg notify_push_aur_ok        "$_PO_FILE")
+MSG_PUSH_AUR_FAIL=$(   _getmsg notify_push_aur_fail      "$_PO_FILE")
+MSG_CLEAN_SRC=$(       _getmsg notify_clean_src          "$_PO_FILE")
+MSG_CLEAN_SRC_OK=$(    _getmsg notify_clean_src_ok       "$_PO_FILE")
+MSG_CLEAN_SRC_FAIL=$(  _getmsg notify_clean_src_fail     "$_PO_FILE")
+MSG_CLEAN_ALL=$(       _getmsg notify_clean_all          "$_PO_FILE")
+MSG_CLEAN_ALL_OK=$(    _getmsg notify_clean_all_ok       "$_PO_FILE")
+MSG_CLEAN_ALL_FAIL=$(  _getmsg notify_clean_all_fail     "$_PO_FILE")
+MSG_FULL_WORKFLOW=$(   _getmsg notify_full_workflow      "$_PO_FILE")
+MSG_FULL_WORKFLOW_OK=$(_getmsg notify_full_workflow_ok   "$_PO_FILE")
+MSG_FULL_WORKFLOW_FAIL=$(_getmsg notify_full_workflow_fail "$_PO_FILE")
