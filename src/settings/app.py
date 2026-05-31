@@ -15,72 +15,90 @@ import json
 import os
 import copy
 import subprocess
+import gettext
 from pathlib import Path
+
+# i18n setup
+gettext.bindtextdomain("pkgbuild_manager", "/usr/share/locale")
+gettext.textdomain("pkgbuild_manager")
+_ = gettext.gettext
 
 CONFIG_DIR  = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "pkgbuild-manager"
 CONFIG_FILE = CONFIG_DIR / "menu.json"
 
-DEFAULT_MENU = [
-    {
-        "group": "Actions",
-        "items": [
-            {"id": "00_Full Workflow",    "label": "Full Workflow",   "enabled": True},
-            {"id": "02_Install",          "label": "Install",         "enabled": True},
-            {"id": "01_Build",            "label": "Build",           "enabled": True},
-            {"id": "02b_Build and Clean", "label": "Build and Clean", "enabled": True},
-        ]
-    },
-    {
-        "group": "Metadata",
-        "items": [
-            {"id": "03_Update Checksums", "label": "Update Checksums", "enabled": True},
-            {"id": "04_Update .SRCINFO",  "label": "Update .SRCINFO",  "enabled": True},
-        ]
-    },
-    {
-        "group": "Audit",
-        "items": [
-            {"id": "05_Namcap",      "label": "Namcap",     "enabled": True},
-            {"id": "05b_ShellCheck", "label": "ShellCheck", "enabled": True},
-        ]
-    },
-    {
-        "group": "Git / AUR",
-        "items": [
-            {"id": "06_Push AUR", "label": "Push AUR", "enabled": True},
-        ]
-    },
-    {
-        "group": "Clean",
-        "items": [
-            {"id": "07_Clean srcdir",      "label": "Clean srcdir",    "enabled": True},
-            {"id": "07b_Clean Everything", "label": "Clean Everything", "enabled": True},
-        ]
-    },
-]
 
-ALL_ACTIONS = [
-    {"id": "00_Full Workflow",     "label": "Full Workflow"},
-    {"id": "01_Build",             "label": "Build"},
-    {"id": "02b_Build and Clean",  "label": "Build and Clean"},
-    {"id": "02_Install",           "label": "Install"},
-    {"id": "03_Update Checksums",  "label": "Update Checksums"},
-    {"id": "04_Update .SRCINFO",   "label": "Update .SRCINFO"},
-    {"id": "05_Namcap",            "label": "Namcap"},
-    {"id": "05b_ShellCheck",       "label": "ShellCheck"},
-    {"id": "06_Push AUR",          "label": "Push AUR"},
-    {"id": "07_Clean srcdir",      "label": "Clean srcdir"},
-    {"id": "07b_Clean Everything", "label": "Clean Everything"},
-]
+def _default_menu():
+    return [
+        {
+            "group": _("Actions"),
+            "items": [
+                {"id": "00_Full Workflow",    "label": _("00_Full Workflow"),   "enabled": True},
+                {"id": "02_Install",          "label": _("02_Install"),         "enabled": True},
+                {"id": "01_Build",            "label": _("01_Build"),           "enabled": True},
+                {"id": "02b_Build and Clean", "label": _("02b_Build and Clean"), "enabled": True},
+            ]
+        },
+        {
+            "group": _("Metadata"),
+            "items": [
+                {"id": "03_Update Checksums", "label": _("03_Update Checksums"), "enabled": True},
+                {"id": "04_Update .SRCINFO",  "label": _("04_Update .SRCINFO"),  "enabled": True},
+            ]
+        },
+        {
+            "group": _("Audit"),
+            "items": [
+                {"id": "05_Namcap",      "label": _("05_Namcap"),      "enabled": True},
+                {"id": "05b_ShellCheck", "label": _("05b_ShellCheck"), "enabled": True},
+            ]
+        },
+        {
+            "group": _("Git / AUR"),
+            "items": [
+                {"id": "06_Push AUR", "label": _("06_Push AUR"), "enabled": True},
+            ]
+        },
+        {
+            "group": _("Clean"),
+            "items": [
+                {"id": "07_Clean srcdir",      "label": _("07_Clean srcdir"),      "enabled": True},
+                {"id": "07b_Clean Everything", "label": _("07b_Clean Everything"), "enabled": True},
+            ]
+        },
+    ]
+
+
+def _all_actions():
+    return [
+        {"id": "00_Full Workflow",     "label": _("00_Full Workflow")},
+        {"id": "01_Build",             "label": _("01_Build")},
+        {"id": "02b_Build and Clean",  "label": _("02b_Build and Clean")},
+        {"id": "02_Install",           "label": _("02_Install")},
+        {"id": "03_Update Checksums",  "label": _("03_Update Checksums")},
+        {"id": "04_Update .SRCINFO",   "label": _("04_Update .SRCINFO")},
+        {"id": "05_Namcap",            "label": _("05_Namcap")},
+        {"id": "05b_ShellCheck",       "label": _("05b_ShellCheck")},
+        {"id": "06_Push AUR",          "label": _("06_Push AUR")},
+        {"id": "07_Clean srcdir",      "label": _("07_Clean srcdir")},
+        {"id": "07b_Clean Everything", "label": _("07b_Clean Everything")},
+    ]
 
 
 def load_config():
     if CONFIG_FILE.exists():
         try:
-            return json.loads(CONFIG_FILE.read_text())
+            data = json.loads(CONFIG_FILE.read_text())
+            # Re-translate labels from known ids so saved configs also get
+            # translated on next load (if the user's locale changed).
+            id_to_label = {a["id"]: a["label"] for a in _all_actions()}
+            for group in data:
+                for item in group.get("items", []):
+                    if item["id"] in id_to_label:
+                        item["label"] = id_to_label[item["id"]]
+            return data
         except Exception:
             pass
-    return copy.deepcopy(DEFAULT_MENU)
+    return _default_menu()
 
 
 def save_config(data):
@@ -110,18 +128,18 @@ class SettingsApp(Adw.Application):
 
     def _build_window(self):
         self.win = Adw.ApplicationWindow(application=self)
-        self.win.set_title("PKGBUILD Manager — Menu Settings")
+        self.win.set_title(_("PKGBUILD Manager \u2014 Menu Settings"))
         self.win.set_default_size(700, 600)
 
         toolbar_view = Adw.ToolbarView()
         header = Adw.HeaderBar()
 
-        reset_btn = Gtk.Button(label="Reset")
+        reset_btn = Gtk.Button(label=_("Reset"))
         reset_btn.add_css_class("destructive-action")
         reset_btn.connect("clicked", self._on_reset)
         header.pack_start(reset_btn)
 
-        save_btn = Gtk.Button(label="Save")
+        save_btn = Gtk.Button(label=_("Save"))
         save_btn.add_css_class("suggested-action")
         save_btn.connect("clicked", self._on_save)
         header.pack_end(save_btn)
@@ -151,7 +169,7 @@ class SettingsApp(Adw.Application):
         for g_idx, group in enumerate(self.menu_data):
             self.main_box.append(self._build_group_widget(g_idx, group))
 
-        add_btn = Gtk.Button(label="+ Add Group")
+        add_btn = Gtk.Button(label=_("+ Add Group"))
         add_btn.add_css_class("pill")
         add_btn.set_halign(Gtk.Align.CENTER)
         add_btn.connect("clicked", self._on_add_group)
@@ -207,7 +225,7 @@ class SettingsApp(Adw.Application):
         for i_idx, item in enumerate(group["items"]):
             items_box.append(self._build_item_row(g_idx, i_idx, item, len(group["items"])))
 
-        add_item_btn = Gtk.Button(label="+ Add Item")
+        add_item_btn = Gtk.Button(label=_("+ Add Item"))
         add_item_btn.add_css_class("flat")
         add_item_btn.set_halign(Gtk.Align.START)
         add_item_btn.set_margin_start(4)
@@ -270,7 +288,7 @@ class SettingsApp(Adw.Application):
         self._render_groups()
 
     def _on_add_group(self, _btn):
-        self.menu_data.append({"group": "New Group", "items": []})
+        self.menu_data.append({"group": _("New Group"), "items": []})
         self._render_groups()
 
     # --- Item callbacks ---
@@ -294,14 +312,14 @@ class SettingsApp(Adw.Application):
 
     def _on_add_item_dialog(self, _btn, g_idx):
         used = {item["id"] for g in self.menu_data for item in g["items"]}
-        available = [a for a in ALL_ACTIONS if a["id"] not in used]
+        available = [a for a in _all_actions() if a["id"] not in used]
 
         if not available:
-            self.win.add_toast(Adw.Toast(title="All actions are already in a group."))
+            self.win.add_toast(Adw.Toast(title=_("All actions are already in a group.")))
             return
 
         dialog = Adw.Dialog()
-        dialog.set_title("Add Action")
+        dialog.set_title(_("Add Action"))
         dialog.set_content_width(360)
 
         toolbar = Adw.ToolbarView()
@@ -343,10 +361,10 @@ class SettingsApp(Adw.Application):
 
     def _on_save(self, _btn):
         save_config(self.menu_data)
-        self.win.add_toast(Adw.Toast(title="Saved! Restart the file manager to apply."))
+        self.win.add_toast(Adw.Toast(title=_("Saved! Restart the file manager to apply.")))
 
     def _on_reset(self, _btn):
-        self.menu_data = copy.deepcopy(DEFAULT_MENU)
+        self.menu_data = _default_menu()
         self._render_groups()
 
 
