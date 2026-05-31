@@ -5,14 +5,18 @@ pkgver=v0.1.0.r6.3e419a5
 pkgrel=1
 pkgdesc="A Rust-based headless CLI tool and Nautilus context menu integration for PKGBUILD management"
 arch=('x86_64')
-url="https://github.com/john/PKGBUILD_Manager"
+url="https://github.com/johnpetersa19/PKGBUILD_Manager"
 license=('GPL-3.0-or-later')
-depends=('pacman-contrib' 'libnotify')
+depends=(
+  'pacman-contrib'
+  'libnotify'
+  'nautilus'
+  'python-nautilus'
+)
 makedepends=('git' 'meson' 'ninja' 'rust' 'cargo')
 optdepends=(
   'namcap: for auditing package metadata and structure'
   'shellcheck: for linting PKGBUILD bash code'
-  'nautilus: for integration with Nautilus context menu'
 )
 provides=("pkgbuild-manager")
 conflicts=("pkgbuild-manager")
@@ -22,7 +26,6 @@ sha256sums=('SKIP')
 
 pkgver() {
   cd "$srcdir/$_pkgname"
-  # Generate version based on git commits
   git describe --long --tags | sed 's/\([^-]*-\)g/r\1/;s/-/./g'
 }
 
