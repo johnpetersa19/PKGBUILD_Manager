@@ -47,8 +47,8 @@ msgid "07_Clean srcdir"
 msgstr "Limpar srcdir"
 
 # Settings panel
-msgid "PKGBUILD Manager \u2014 Menu Settings"
-msgstr "PKGBUILD Manager \u2014 Configura\u00e7\u00f5es do Menu"
+msgid "PKGBUILD Manager — Menu Settings"
+msgstr "PKGBUILD Manager — Configurações do Menu"
 
 msgid "Reset"
 msgstr "Redefinir"
@@ -66,17 +66,17 @@ msgid "New Group"
 msgstr "Novo Grupo"
 
 msgid "Add Action"
-msgstr "Adicionar A\u00e7\u00e3o"
+msgstr "Adicionar Ação"
 
 msgid "All actions are already in a group."
-msgstr "Todas as a\u00e7\u00f5es j\u00e1 est\u00e3o em um grupo."
+msgstr "Todas as ações já estão em um grupo."
 
 msgid "Saved! Restart the file manager to apply."
 msgstr "Salvo! Reinicie o gerenciador de arquivos para aplicar."
 
 # Default group names
 msgid "Actions"
-msgstr "A\u00e7\u00f5es"
+msgstr "Ações"
 
 msgid "Metadata"
 msgstr "Metadados"
@@ -95,113 +95,113 @@ msgid "notify_building"
 msgstr "Compilando pacote..."
 
 msgid "notify_build_ok"
-msgstr "\u2713 Compila\u00e7\u00e3o conclu\u00edda com sucesso!"
+msgstr "✓ Compilação concluída com sucesso!"
 
 msgid "notify_build_fail"
-msgstr "\u2717 Compila\u00e7\u00e3o falhou! Veja: "
+msgstr "✗ Compilação falhou! Veja: "
 
 msgid "notify_installing"
 msgstr "Instalando pacote..."
 
 msgid "notify_install_ok"
-msgstr "\u2713 Instala\u00e7\u00e3o conclu\u00edda!"
+msgstr "✓ Instalação concluída!"
 
 msgid "notify_install_fail"
-msgstr "\u2717 Instala\u00e7\u00e3o falhou! Veja: "
+msgstr "✗ Instalação falhou! Veja: "
 
 msgid "notify_checksums"
 msgstr "Atualizando checksums..."
 
 msgid "notify_checksums_ok"
-msgstr "\u2713 Checksums atualizados com sucesso!"
+msgstr "✓ Checksums atualizados com sucesso!"
 
 msgid "notify_checksums_fail"
-msgstr "\u2717 Falha ao atualizar checksums! Veja: "
+msgstr "✗ Falha ao atualizar checksums! Veja: "
 
 msgid "notify_srcinfo"
 msgstr "Atualizando .SRCINFO..."
 
 msgid "notify_srcinfo_ok"
-msgstr "\u2713 .SRCINFO atualizado com sucesso!"
+msgstr "✓ .SRCINFO atualizado com sucesso!"
 
 msgid "notify_srcinfo_fail"
-msgstr "\u2717 Falha ao atualizar .SRCINFO! Veja: "
+msgstr "✗ Falha ao atualizar .SRCINFO! Veja: "
 
 msgid "notify_namcap"
 msgstr "Executando namcap..."
 
 msgid "notify_namcap_warn"
-msgstr "\u26a0 Namcap conclu\u00eddo com avisos. Veja: "
+msgstr "⚠ Namcap concluído com avisos. Veja: "
 
 msgid "notify_namcap_ok"
-msgstr "\u2713 Namcap conclu\u00eddo! Nenhum aviso encontrado."
+msgstr "✓ Namcap concluído! Nenhum aviso encontrado."
 
 msgid "notify_namcap_fail"
-msgstr "\u2717 Namcap falhou! Veja: "
+msgstr "✗ Namcap falhou! Veja: "
 
 msgid "notify_shellcheck"
 msgstr "Verificando com ShellCheck..."
 
 msgid "notify_shellcheck_warn"
-msgstr "\u26a0 ShellCheck encontrou avisos. Veja: "
+msgstr "⚠ ShellCheck encontrou avisos. Veja: "
 
 msgid "notify_shellcheck_ok"
-msgstr "\u2713 ShellCheck: nenhum problema encontrado."
+msgstr "✓ ShellCheck: nenhum problema encontrado."
 
 msgid "notify_shellcheck_fail"
-msgstr "\u2717 ShellCheck falhou! Veja: "
+msgstr "✗ ShellCheck falhou! Veja: "
 
 msgid "notify_push_aur"
 msgstr "Enviando para o AUR..."
 
 msgid "notify_push_aur_ok"
-msgstr "\u2713 Enviado para o AUR com sucesso!"
+msgstr "✓ Enviado para o AUR com sucesso!"
 
 msgid "notify_push_aur_fail"
-msgstr "\u2717 Falha ao enviar para o AUR! Veja: "
+msgstr "✗ Falha ao enviar para o AUR! Veja: "
 
 msgid "notify_clean_src"
 msgstr "Limpando srcdir..."
 
 msgid "notify_clean_src_ok"
-msgstr "\u2713 srcdir limpo com sucesso!"
+msgstr "✓ srcdir limpo com sucesso!"
 
 msgid "notify_clean_src_fail"
-msgstr "\u2717 Falha ao limpar srcdir! Veja: "
+msgstr "✗ Falha ao limpar srcdir! Veja: "
 
 msgid "notify_clean_all"
 msgstr "Limpando tudo..."
 
 msgid "notify_clean_all_ok"
-msgstr "\u2713 Tudo limpo com sucesso!"
+msgstr "✓ Tudo limpo com sucesso!"
 
 msgid "notify_clean_all_fail"
-msgstr "\u2717 Falha ao limpar! Veja: "
+msgstr "✗ Falha ao limpar! Veja: "
 
 msgid "notify_full_workflow"
 msgstr "Executando fluxo completo..."
 
 msgid "notify_full_workflow_ok"
-msgstr "\u2713 Fluxo completo conclu\u00eddo!"
+msgstr "✓ Fluxo completo concluído!"
 
 msgid "notify_full_workflow_fail"
-msgstr "\u2717 Fluxo completo falhou! Veja: "
+msgstr "✗ Fluxo completo falhou! Veja: "
 
 # CLI strings
 msgid "Failed to resolve parent directory"
-msgstr "Falha ao resolver o diret\u00f3rio pai"
+msgstr "Falha ao resolver o diretório pai"
 
 msgid "Directory does not exist"
-msgstr "O diret\u00f3rio n\u00e3o existe"
+msgstr "O diretório não existe"
 
 msgid "No PKGBUILD found in directory"
-msgstr "Nenhum PKGBUILD encontrado no diret\u00f3rio"
+msgstr "Nenhum PKGBUILD encontrado no diretório"
 
 msgid "Failed to read PKGBUILD info with makepkg --printsrcinfo"
-msgstr "Falha ao ler informa\u00e7\u00f5es do PKGBUILD com makepkg --printsrcinfo"
+msgstr "Falha ao ler informações do PKGBUILD com makepkg --printsrcinfo"
 
 msgid "aur-push-tag requires a version tag argument"
-msgstr "aur-push-tag requer um argumento de tag de vers\u00e3o"
+msgstr "aur-push-tag requer um argumento de tag de versão"
 
 msgid "Unknown command"
 msgstr "Comando desconhecido"
@@ -213,7 +213,7 @@ msgid "Usage:"
 msgstr "Uso:"
 
 msgid "Build commands"
-msgstr "Comandos de compila\u00e7\u00e3o"
+msgstr "Comandos de compilação"
 
 msgid "Compile package (makepkg)"
 msgstr "Compilar pacote (makepkg)"
@@ -222,43 +222,43 @@ msgid "Compile and clean srcdir (makepkg -c)"
 msgstr "Compilar e limpar o srcdir (makepkg -c)"
 
 msgid "Force recompile (makepkg -f)"
-msgstr "For\u00e7ar recompila\u00e7\u00e3o (makepkg -f)"
+msgstr "Forçar recompilação (makepkg -f)"
 
 msgid "Skip check() function (makepkg --nocheck)"
-msgstr "Pular fun\u00e7\u00e3o check() (makepkg --nocheck)"
+msgstr "Pular função check() (makepkg --nocheck)"
 
 msgid "Skip PGP signature check (makepkg --skippgpcheck)"
-msgstr "Pular verifica\u00e7\u00e3o de assinatura PGP (makepkg --skippgpcheck)"
+msgstr "Pular verificação de assinatura PGP (makepkg --skippgpcheck)"
 
 msgid "Compile with custom flags passed after path"
-msgstr "Compilar com flags personalizadas passadas ap\u00f3s o caminho"
+msgstr "Compilar com flags personalizadas passadas após o caminho"
 
 msgid "Download and extract sources only (makepkg -o)"
 msgstr "Apenas baixar e extrair fontes (makepkg -o)"
 
 msgid "Install commands"
-msgstr "Comandos de instala\u00e7\u00e3o"
+msgstr "Comandos de instalação"
 
 msgid "Compile, install and resolve deps (makepkg -si)"
-msgstr "Compilar, instalar e resolver depend\u00eancias (makepkg -si)"
+msgstr "Compilar, instalar e resolver dependências (makepkg -si)"
 
 msgid "Compile, install and clean srcdir (makepkg -sic)"
 msgstr "Compilar, instalar e limpar o srcdir (makepkg -sic)"
 
 msgid "Force compile and install (makepkg -sif)"
-msgstr "For\u00e7ar compila\u00e7\u00e3o e instala\u00e7\u00e3o (makepkg -sif)"
+msgstr "Forçar compilação e instalação (makepkg -sif)"
 
 msgid "Install and remove makedeps after (makepkg -sir)"
-msgstr "Instalar e remover depend\u00eancias de compila\u00e7\u00e3o depois (makepkg -sir)"
+msgstr "Instalar e remover dependências de compilação depois (makepkg -sir)"
 
 msgid "Install without running check()"
-msgstr "Instalar sem rodar a fun\u00e7\u00e3o check()"
+msgstr "Instalar sem rodar a função check()"
 
 msgid "Install skipping PGP checks"
-msgstr "Instalar pulando verifica\u00e7\u00f5es PGP"
+msgstr "Instalar pulando verificações PGP"
 
 msgid "Install with custom flags passed after path"
-msgstr "Instalar com flags personalizadas passadas ap\u00f3s o caminho"
+msgstr "Instalar com flags personalizadas passadas após o caminho"
 
 msgid "Package metadata commands"
 msgstr "Comandos de metadados do pacote"
@@ -294,10 +294,10 @@ msgid "AUR/Git commands"
 msgstr "Comandos do AUR/Git"
 
 msgid "Stage, commit and push to AUR (auto message if not provided)"
-msgstr "Adicionar ao stage, fazer commit e push para o AUR (mensagem autom\u00e1tica se n\u00e3o informada)"
+msgstr "Adicionar ao stage, fazer commit e push para o AUR (mensagem automática se não informada)"
 
 msgid "Push with version tag (e.g. 1.2.3-1)"
-msgstr "Fazer push com tag de vers\u00e3o (ex: 1.2.3-1)"
+msgstr "Fazer push com tag de versão (ex: 1.2.3-1)"
 
 msgid "Other"
 msgstr "Outros"
@@ -306,16 +306,16 @@ msgid "Show this help message"
 msgstr "Mostrar esta mensagem de ajuda"
 
 msgid "namcap not found. Install it with: sudo pacman -S namcap"
-msgstr "namcap n\u00e3o encontrado. Instale com: sudo pacman -S namcap"
+msgstr "namcap não encontrado. Instale com: sudo pacman -S namcap"
 
 msgid "namcap failed with status"
 msgstr "namcap falhou com status"
 
 msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
-msgstr "shellcheck n\u00e3o encontrado. Instale com: sudo pacman -S shellcheck"
+msgstr "shellcheck não encontrado. Instale com: sudo pacman -S shellcheck"
 
 msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
-msgstr "updpkgsums n\u00e3o encontrado. Instale com: sudo pacman -S pacman-contrib"
+msgstr "updpkgsums não encontrado. Instale com: sudo pacman -S pacman-contrib"
 
 msgid "makepkg -g failed:"
 msgstr "makepkg -g falhou:"
@@ -326,8 +326,8 @@ msgstr "Removendo src/, pkg/ e pacotes compilados em"
 msgid "Removed"
 msgstr "Removido"
 
-msgid "Note: nothing to commit or commit failed \u2014 continuing with push."
-msgstr "Nota: nada para commitar ou o commit falhou \u2014 continuando com o push."
+msgid "Note: nothing to commit or commit failed — continuing with push."
+msgstr "Nota: nada para commitar ou o commit falhou — continuando com o push."
 
 msgid "makepkg --printsrcinfo failed:"
 msgstr "makepkg --printsrcinfo falhou:"
@@ -339,7 +339,7 @@ msgid "Trying plain 'git push'..."
 msgstr "Tentando push simples ('git push')..."
 
 msgid "Symlink scripts to user directory with localization"
-msgstr "Criar links simb\u00f3licos dos scripts no diret\u00f3rio do usu\u00e1rio com localiza\u00e7\u00e3o"
+msgstr "Criar links simbólicos dos scripts no diretório do usuário com localização"
 
 msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
 msgstr "Scripts do Nautilus configurados com sucesso sob o submenu 'PKGBUILD'."
