@@ -22,7 +22,6 @@ install_data(
   install_mode: 'rwxr-xr-x',
 )
 
-# Plain .po files for the bash _i18n helper.
 po_files = [
   '../po/pt_BR.po',
   '../po/es.po',
@@ -43,7 +42,7 @@ install_data(
   install_mode: 'rwxr-xr-x',
 )
 
-# Nemo extension (optional — only installed if nemo-python is present)
+# Nemo extension (optional)
 nemo_python_dir = '/usr/share/nemo-python/extensions'
 if run_command('test', '-d', nemo_python_dir, check: false).returncode() == 0
   install_data(
@@ -53,7 +52,7 @@ if run_command('test', '-d', nemo_python_dir, check: false).returncode() == 0
   )
 endif
 
-# Caja extension (optional — only installed if caja-python is present)
+# Caja extension (optional)
 caja_python_dir = '/usr/share/caja-python/extensions'
 if run_command('test', '-d', caja_python_dir, check: false).returncode() == 0
   install_data(
@@ -63,10 +62,36 @@ if run_command('test', '-d', caja_python_dir, check: false).returncode() == 0
   )
 endif
 
-# Dolphin KIO Servicemenu (optional — only installed if KDE servicemenus dir exists)
-dolphin_servicemenu_dir = get_option('datadir') / 'kio/servicemenus'
+# Dolphin KIO Servicemenu (optional)
 install_data(
   'dolphin-servicemenu/pkgbuild-manager.desktop',
-  install_dir: dolphin_servicemenu_dir,
+  install_dir: get_option('datadir') / 'kio/servicemenus',
   install_mode: 'rw-r--r--',
+)
+
+# Settings Python module
+install_data(
+  '../src/settings/app.py',
+  '../src/settings/__main__.py',
+  install_dir: get_option('datadir') / 'pkgbuild-manager/python/settings',
+)
+
+# Settings launcher binary
+install_data(
+  'bin/pkgbuild-manager-settings',
+  install_dir: get_option('bindir'),
+  install_mode: 'rwxr-xr-x',
+)
+
+# Dolphin desktop regen helper
+install_data(
+  'regen-dolphin-desktop',
+  install_dir: get_option('datadir') / 'pkgbuild-manager',
+  install_mode: 'rwxr-xr-x',
+)
+
+# .desktop application entry
+install_data(
+  'applications/pkgbuild-manager-settings.desktop',
+  install_dir: get_option('datadir') / 'applications',
 )

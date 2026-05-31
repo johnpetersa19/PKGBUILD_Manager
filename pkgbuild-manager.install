@@ -1,65 +1,37 @@
-# Helper: inject Name[lang]= translations into the Dolphin .desktop
-# by reading msgstr values from the installed .po files.
-_update_dolphin_desktop() {
-    local desktop="/usr/share/kio/servicemenus/pkgbuild-manager.desktop"
-    local i18n_dir="/usr/share/pkgbuild-manager/i18n"
-
-    [ -f "$desktop" ] || return 0
-    [ -d "$i18n_dir" ] || return 0
-
-    # Mapping: desktop action key -> msgid used in .po files
-    declare -A ACTIONS=(
-        [FullWorkflow]="00_Full Workflow"
-        [Build]="01_Build"
-        [BuildClean]="02b_Build and Clean"
-        [Install]="02_Install"
-        [UpdateChecksums]="03_Update Checksums"
-        [UpdateSrcinfo]="04_Update .SRCINFO"
-        [Namcap]="05_Namcap"
-        [ShellCheck]="05b_ShellCheck"
-        [PushAUR]="06_Push AUR"
-        [CleanSrcdir]="07_Clean srcdir"
-        [CleanAll]="07b_Clean Everything"
-    )
-
-    # For each .po file found, extract lang code and translations
-    for po_file in "$i18n_dir"/*.po; do
-        [ -f "$po_file" ] || continue
-        local lang
-        lang=$(basename "$po_file" .po)
-
-        for action in "${!ACTIONS[@]}"; do
-            local msgid="${ACTIONS[$action]}"
-            # Extract msgstr for this msgid from the .po file
-            local msgstr
-            msgstr=$(awk -v id="$msgid" '
-                /^msgid "/ { found = ($0 == "msgid \"" id "\"") }
-                /^msgstr "/ && found { gsub(/^msgstr "|"$/, ""); print; found=0 }
-            ' "$po_file")
-
-            [ -z "$msgstr" ] && continue
-
-            local key="[Desktop Action ${action}]"
-            local name_line="Name[${lang}]=${msgstr}"
-
-            # Add Name[lang]= after the Name= line inside the correct action block
-            # Only add if not already present
-            if ! grep -q "^Name\[${lang}\]=" <(awk "/^${key}/,/^\[Desktop Action|^$/{print}" "$desktop"); then
-                sed -i "/^${key}/,/^\[Desktop Action\|^\[Desktop Entry\]/{/^Name=/{a\\
-${name_line}
-}}" "$desktop"
-            fi
-        done
-    done
-
-    echo ">>> Dolphin servicemenu translations updated."
-}
-
 post_install() {
     echo ">>> PKGBUILD Manager installed."
-    echo ">>> The Nautilus extension activates automatically."
-    echo ">>> Right-click any PKGBUILD file to see the translated PKGBUILD submenu."
-    _update_dolphin_desktop
+    echo ">>> Right-click any PKGBUILD file to see the PKGBUILD submenu."
+    echo ">>> Press Ctrl+Alt+P to open the menu settings panel."
+
+    # Register Ctrl+Alt+P shortcut (GNOME only, only if slot is free)
+    if command -v gsettings &>/dev/null; then
+        _user="${SUDO_USER:-$USER}"
+        _uid=$(id -u "$_user" 2>/dev/null)
+        _env="DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${_uid}/bus"
+        _gset="sudo -u $_user env $_env gsettings"
+        _binding="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/pkgbuild-manager/"
+
+        _current=$(${_gset} get org.gnome.settings-daemon.plugins.media-keys \
+            custom-keybindings 2>/dev/null || echo "[]")
+
+        if ! echo "$_current" | grep -q "pkgbuild-manager"; then
+            # Append to existing list instead of overwriting
+            _new=$(echo "$_current" | sed "s|]$|, '$_binding']|" | sed "s|\[\]|['$_binding']|")
+            ${_gset} set org.gnome.settings-daemon.plugins.media-keys \
+                custom-keybindings "$_new" 2>/dev/null || true
+            ${_gset} set \
+                org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${_binding} \
+                name "PKGBUILD Manager Settings" 2>/dev/null || true
+            ${_gset} set \
+                org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${_binding} \
+                command "pkgbuild-manager-settings" 2>/dev/null || true
+            ${_gset} set \
+                org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${_binding} \
+                binding "<Control><Alt>p" 2>/dev/null || true
+            echo ">>> Keyboard shortcut Ctrl+Alt+P registered."
+        fi
+    fi
+
     pkill -u "${SUDO_USER:-$USER}" nautilus 2>/dev/null || true
 }
 
@@ -71,4 +43,19 @@ post_upgrade() {
         echo ">>> Removed stale PKGBUILD symlink directory from previous version."
     fi
     post_install
+}
+
+post_remove() {
+    if command -v gsettings &>/dev/null; then
+        _user="${SUDO_USER:-$USER}"
+        _uid=$(id -u "$_user" 2>/dev/null)
+        _env="DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${_uid}/bus"
+        _gset="sudo -u $_user env $_env gsettings"
+        _binding="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/pkgbuild-manager/"
+        _current=$(${_gset} get org.gnome.settings-daemon.plugins.media-keys \
+            custom-keybindings 2>/dev/null || echo "[]")
+        _new=$(echo "$_current" | sed "s|, '$_binding'||" | sed "s|'$_binding', ||" | sed "s|'$_binding'||")
+        ${_gset} set org.gnome.settings-daemon.plugins.media-keys \
+            custom-keybindings "$_new" 2>/dev/null || true
+    fi
 }

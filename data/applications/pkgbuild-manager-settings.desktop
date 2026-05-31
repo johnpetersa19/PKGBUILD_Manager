@@ -1,0 +1,15 @@
+[Desktop Entry]
+Name=PKGBUILD Manager Settings
+Name[pt_BR]=Configurações do PKGBUILD Manager
+Name[es]=Configuración de PKGBUILD Manager
+Name[de]=PKGBUILD Manager Einstellungen
+Name[fr]=Paramètres PKGBUILD Manager
+Name[it]=Impostazioni PKGBUILD Manager
+Comment=Customize the PKGBUILD Manager context menu
+Comment[pt_BR]=Personalize o menu de contexto do PKGBUILD Manager
+Exec=pkgbuild-manager-settings
+Icon=io.github.john.PkgbuildManager
+Terminal=false
+Type=Application
+Categories=Development;
+Keywords=pkgbuild;aur;arch;package;

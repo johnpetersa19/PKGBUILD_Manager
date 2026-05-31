@@ -1,0 +1,68 @@
+#!/bin/bash
+# Regenerates /usr/share/kio/servicemenus/pkgbuild-manager.desktop
+# from ~/.config/pkgbuild-manager/menu.json.
+# Called automatically after saving settings.
+
+DESKTOP="/usr/share/kio/servicemenus/pkgbuild-manager.desktop"
+CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/pkgbuild-manager/menu.json"
+SCRIPTS="/usr/share/pkgbuild-manager/scripts"
+
+[ -f "$DESKTOP" ] || exit 0
+[ -f "$CONFIG" ]  || exit 0
+
+python3 - "$CONFIG" "$DESKTOP" "$SCRIPTS" <<'PYEOF'
+import sys, json, os
+
+config_path, desktop_path, scripts = sys.argv[1], sys.argv[2], sys.argv[3]
+
+try:
+    data = json.loads(open(config_path).read())
+except Exception as e:
+    print(f"regen-dolphin-desktop: failed to parse config: {e}", file=sys.stderr)
+    sys.exit(1)
+
+def safe_key(s):
+    return "".join(c if c.isalnum() else "_" for c in s)
+
+actions = [
+    {"id": item["id"], "label": item["label"]}
+    for group in data
+    for item in group.get("items", [])
+    if item.get("enabled", True)
+]
+
+if not actions:
+    sys.exit(0)
+
+lines = [
+    "[Desktop Entry]",
+    "Type=Service",
+    "ServiceTypes=KonqPopupMenu/Plugin",
+    "MimeType=application/octet-stream;",
+    "X-KDE-ServiceTypes=KonqPopupMenu/Plugin",
+    "X-KDE-Submenu=PKGBUILD",
+    "Actions=" + ";".join(safe_key(a["id"]) for a in actions) + ";",
+    "",
+]
+
+for a in actions:
+    key = safe_key(a["id"])
+    script = os.path.join(scripts, a["id"]).replace(" ", "\\ ")
+    lines += [
+        f"[Desktop Action {key}]",
+        f"Name={a['label']}",
+        "Icon=io.github.john.PkgbuildManager",
+        f"Exec=bash {script} %F",
+        "",
+    ]
+
+try:
+    open(desktop_path, "w").write("\n".join(lines))
+except PermissionError:
+    import subprocess, tempfile
+    tmp = tempfile.NamedTemporaryFile(mode="w", suffix=".desktop", delete=False)
+    tmp.write("\n".join(lines))
+    tmp.close()
+    subprocess.run(["pkexec", "cp", tmp.name, desktop_path])
+    os.unlink(tmp.name)
+PYEOF
