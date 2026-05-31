@@ -1,6 +1,7 @@
 subdir('icons')
 
 nautilus_scripts = [
+  'nautilus-scripts/_i18n',
   'nautilus-scripts/_run_in_terminal',
   'nautilus-scripts/00_Full Workflow',
   'nautilus-scripts/01_Build',
@@ -18,6 +19,22 @@ nautilus_scripts = [
 install_data(
   nautilus_scripts,
   install_dir: get_option('datadir') / 'pkgbuild-manager/scripts'
+)
+
+# Plain .po files for the bash _i18n helper.
+# _i18n reads text .po files at runtime — it cannot use compiled .mo binaries.
+# These are installed to /usr/share/pkgbuild-manager/i18n/<lang>.po.
+po_files = [
+  '../po/pt_BR.po',
+  '../po/es.po',
+  '../po/de.po',
+  '../po/fr.po',
+  '../po/it.po',
+]
+
+install_data(
+  po_files,
+  install_dir: get_option('datadir') / 'pkgbuild-manager/i18n'
 )
 
 # Nautilus Python extension — installed system-wide so Nautilus picks it up
