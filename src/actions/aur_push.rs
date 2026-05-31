@@ -30,7 +30,7 @@ pub fn run_with_tag(path: &Path, tag: &str) -> Result<(), Box<dyn std::error::Er
     Ok(())
 }
 
-// Internal: perform the full stage → commit → push flow given an already-resolved dir.
+// Internal: perform the full stage -> commit -> push flow given an already-resolved dir.
 fn run_with_dir(target_dir: &Path, message: Option<&str>) -> Result<(), Box<dyn std::error::Error>> {
     // Regenerate .SRCINFO and parse package info from the same output in one pass.
     let srcinfo_content = regenerate_srcinfo(target_dir)?;
@@ -96,23 +96,42 @@ fn regenerate_srcinfo(dir: &Path) -> Result<String, Box<dyn std::error::Error>> 
 
 /// Parse pkgname/pkgver/pkgrel from already-fetched .SRCINFO text.
 /// Stops iterating as soon as all three fields are found (early-exit).
+/// FIX: a condição anterior comparava com os valores default, nunca disparando
+/// o break quando pkgrel=1 (valor inicial igual ao default "1").
+/// Agora usa flags booleanas independentes para rastrear o que foi encontrado.
 fn parse_pkgbuild_info(content: &str) -> (String, String, String) {
     let mut pkgname = String::from("unknown");
     let mut pkgver  = String::from("0");
     let mut pkgrel  = String::from("1");
+    let mut found_name = false;
+    let mut found_ver  = false;
+    let mut found_rel  = false;
 
     for line in content.lines() {
-        // Early-exit: all fields found, no need to scan the rest of the file
-        if pkgname != "unknown" && pkgver != "0" && pkgrel != "1" {
+        if found_name && found_ver && found_rel {
             break;
         }
         let line = line.trim();
-        if let Some(val) = line.strip_prefix("pkgname = ") {
-            pkgname = val.to_string();
-        } else if let Some(val) = line.strip_prefix("pkgver = ") {
-            pkgver = val.to_string();
-        } else if let Some(val) = line.strip_prefix("pkgrel = ") {
-            pkgrel = val.to_string();
+        if !found_name {
+            if let Some(val) = line.strip_prefix("pkgname = ") {
+                pkgname = val.to_string();
+                found_name = true;
+                continue;
+            }
+        }
+        if !found_ver {
+            if let Some(val) = line.strip_prefix("pkgver = ") {
+                pkgver = val.to_string();
+                found_ver = true;
+                continue;
+            }
+        }
+        if !found_rel {
+            if let Some(val) = line.strip_prefix("pkgrel = ") {
+                pkgrel = val.to_string();
+                found_rel = true;
+                continue;
+            }
         }
     }
 

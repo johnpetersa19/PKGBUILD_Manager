@@ -1,6 +1,6 @@
 /* main.rs
  *
- * Copyright 2026 Unknown
+ * Copyright 2026 johnpetersa19
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

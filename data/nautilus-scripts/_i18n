@@ -31,35 +31,71 @@ _PO_FILE="$(_find_po "$_LANG")"
 [[ -z "$_PO_FILE" ]] && _PO_FILE="$(_find_po "$_LANG_SHORT")"
 
 # ---------------------------------------------------------------------------
-# Parse msgid from .po using grep+sed (no awk single-quote nesting)
+# OPTIMIZED: Parse entire .po file ONCE into an associative array.
+# Previous implementation called grep+sed for every single msgid (~70 calls).
+# Now we do a single sequential read of the file — ~70x less I/O.
+# Also fixes:
+#   - multiline msgstr support (concatenates continuation lines)
+#   - grep metacharacter safety (not needed anymore since we use pure bash read)
+# ---------------------------------------------------------------------------
+declare -A _I18N_CACHE
+
+_load_po() {
+    local po="$1"
+    [[ -z "$po" || ! -f "$po" ]] && return
+
+    local current_key=""
+    local current_val=""
+    local in_msgstr=0
+
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        # Blank line or comment resets state machine
+        if [[ -z "$line" || "$line" == \#* ]]; then
+            if [[ -n "$current_key" && -n "$current_val" ]]; then
+                _I18N_CACHE["$current_key"]="$current_val"
+            fi
+            current_key=""
+            current_val=""
+            in_msgstr=0
+            continue
+        fi
+
+        if [[ "$line" =~ ^msgid[[:space:]]+\"(.*)\"\ *$ ]]; then
+            # Save previous entry if any
+            if [[ -n "$current_key" && -n "$current_val" ]]; then
+                _I18N_CACHE["$current_key"]="$current_val"
+            fi
+            current_key="${BASH_REMATCH[1]}"
+            current_val=""
+            in_msgstr=0
+        elif [[ "$line" =~ ^msgstr[[:space:]]+\"(.*)\"\ *$ ]]; then
+            current_val="${BASH_REMATCH[1]}"
+            in_msgstr=1
+        elif [[ $in_msgstr -eq 1 && "$line" =~ ^\"(.*)\"\ *$ ]]; then
+            # Multiline msgstr continuation
+            current_val+="${BASH_REMATCH[1]}"
+        fi
+    done < "$po"
+
+    # Flush last entry
+    if [[ -n "$current_key" && -n "$current_val" ]]; then
+        _I18N_CACHE["$current_key"]="$current_val"
+    fi
+}
+
+_load_po "$_PO_FILE"
+
+# ---------------------------------------------------------------------------
+# Lookup a msgid from cache, fallback to English hardcoded strings
 # ---------------------------------------------------------------------------
 _getmsg() {
     local msgid="$1"
-    local po="$2"
-    if [[ -z "$po" || ! -f "$po" ]]; then
+    local val="${_I18N_CACHE[$msgid]:-}"
+    if [[ -n "$val" ]]; then
+        printf '%b' "${val//\\\"/\"}"
+    else
         _en_fallback "$msgid"
-        return
     fi
-    # Find line number of: msgid "<msgid>"
-    local line_no
-    line_no=$(grep -n "^msgid \"${msgid}\"" "$po" | head -1 | cut -d: -f1)
-    if [[ -z "$line_no" ]]; then
-        _en_fallback "$msgid"
-        return
-    fi
-    # Get the msgstr on the next line after that msgid
-    local next_line=$(( line_no + 1 ))
-    local raw
-    raw=$(sed -n "${next_line}p" "$po")
-    # Extract content between the first pair of double quotes after msgstr
-    if [[ "$raw" =~ ^msgstr[[:space:]]+\"(.*)\"$ ]]; then
-        local val="${BASH_REMATCH[1]}"
-        if [[ -n "$val" ]]; then
-            printf '%b' "${val//\\\"/\"}"
-            return
-        fi
-    fi
-    _en_fallback "$msgid"
 }
 
 # ---------------------------------------------------------------------------
@@ -141,74 +177,74 @@ _en_fallback() {
 }
 
 # ---------------------------------------------------------------------------
-# Export MSG_* variables
+# Export MSG_* variables (single cache lookup each, no grep/sed)
 # ---------------------------------------------------------------------------
 # Build
-MSG_BUILDING=$(             _getmsg notify_building            "$_PO_FILE")
-MSG_BUILD_OK=$(             _getmsg notify_build_ok            "$_PO_FILE")
-MSG_BUILD_FAIL=$(           _getmsg notify_build_fail          "$_PO_FILE")
-MSG_BUILD_FORCE=$(          _getmsg notify_build_force         "$_PO_FILE")
-MSG_BUILD_FORCE_OK=$(       _getmsg notify_build_force_ok      "$_PO_FILE")
-MSG_BUILD_FORCE_FAIL=$(     _getmsg notify_build_force_fail    "$_PO_FILE")
-MSG_BUILD_NOCHECK=$(        _getmsg notify_build_nocheck       "$_PO_FILE")
-MSG_BUILD_NOCHECK_OK=$(     _getmsg notify_build_nocheck_ok    "$_PO_FILE")
-MSG_BUILD_NOCHECK_FAIL=$(   _getmsg notify_build_nocheck_fail  "$_PO_FILE")
-MSG_BUILD_NOGPG=$(          _getmsg notify_build_nogpg         "$_PO_FILE")
-MSG_BUILD_NOGPG_OK=$(       _getmsg notify_build_nogpg_ok      "$_PO_FILE")
-MSG_BUILD_NOGPG_FAIL=$(     _getmsg notify_build_nogpg_fail    "$_PO_FILE")
-MSG_FETCH_SOURCES=$(        _getmsg notify_fetch_sources       "$_PO_FILE")
-MSG_FETCH_SOURCES_OK=$(     _getmsg notify_fetch_sources_ok    "$_PO_FILE")
-MSG_FETCH_SOURCES_FAIL=$(   _getmsg notify_fetch_sources_fail  "$_PO_FILE")
+MSG_BUILDING=$(             _getmsg notify_building            )
+MSG_BUILD_OK=$(             _getmsg notify_build_ok            )
+MSG_BUILD_FAIL=$(           _getmsg notify_build_fail          )
+MSG_BUILD_FORCE=$(          _getmsg notify_build_force         )
+MSG_BUILD_FORCE_OK=$(       _getmsg notify_build_force_ok      )
+MSG_BUILD_FORCE_FAIL=$(     _getmsg notify_build_force_fail    )
+MSG_BUILD_NOCHECK=$(        _getmsg notify_build_nocheck       )
+MSG_BUILD_NOCHECK_OK=$(     _getmsg notify_build_nocheck_ok    )
+MSG_BUILD_NOCHECK_FAIL=$(   _getmsg notify_build_nocheck_fail  )
+MSG_BUILD_NOGPG=$(          _getmsg notify_build_nogpg         )
+MSG_BUILD_NOGPG_OK=$(       _getmsg notify_build_nogpg_ok      )
+MSG_BUILD_NOGPG_FAIL=$(     _getmsg notify_build_nogpg_fail    )
+MSG_FETCH_SOURCES=$(        _getmsg notify_fetch_sources       )
+MSG_FETCH_SOURCES_OK=$(     _getmsg notify_fetch_sources_ok    )
+MSG_FETCH_SOURCES_FAIL=$(   _getmsg notify_fetch_sources_fail  )
 # Install
-MSG_INSTALLING=$(           _getmsg notify_installing          "$_PO_FILE")
-MSG_INSTALL_OK=$(           _getmsg notify_install_ok          "$_PO_FILE")
-MSG_INSTALL_FAIL=$(         _getmsg notify_install_fail        "$_PO_FILE")
-MSG_INSTALL_FORCE=$(        _getmsg notify_install_force       "$_PO_FILE")
-MSG_INSTALL_FORCE_OK=$(     _getmsg notify_install_force_ok    "$_PO_FILE")
-MSG_INSTALL_FORCE_FAIL=$(   _getmsg notify_install_force_fail  "$_PO_FILE")
-MSG_INSTALL_RMDEPS=$(       _getmsg notify_install_rmdeps      "$_PO_FILE")
-MSG_INSTALL_RMDEPS_OK=$(    _getmsg notify_install_rmdeps_ok   "$_PO_FILE")
-MSG_INSTALL_RMDEPS_FAIL=$(  _getmsg notify_install_rmdeps_fail "$_PO_FILE")
-MSG_INSTALL_NOCHECK=$(      _getmsg notify_install_nocheck     "$_PO_FILE")
-MSG_INSTALL_NOCHECK_OK=$(   _getmsg notify_install_nocheck_ok  "$_PO_FILE")
-MSG_INSTALL_NOCHECK_FAIL=$( _getmsg notify_install_nocheck_fail "$_PO_FILE")
-MSG_INSTALL_NOGPG=$(        _getmsg notify_install_nogpg       "$_PO_FILE")
-MSG_INSTALL_NOGPG_OK=$(     _getmsg notify_install_nogpg_ok    "$_PO_FILE")
-MSG_INSTALL_NOGPG_FAIL=$(   _getmsg notify_install_nogpg_fail  "$_PO_FILE")
+MSG_INSTALLING=$(           _getmsg notify_installing          )
+MSG_INSTALL_OK=$(           _getmsg notify_install_ok          )
+MSG_INSTALL_FAIL=$(         _getmsg notify_install_fail        )
+MSG_INSTALL_FORCE=$(        _getmsg notify_install_force       )
+MSG_INSTALL_FORCE_OK=$(     _getmsg notify_install_force_ok    )
+MSG_INSTALL_FORCE_FAIL=$(   _getmsg notify_install_force_fail  )
+MSG_INSTALL_RMDEPS=$(       _getmsg notify_install_rmdeps      )
+MSG_INSTALL_RMDEPS_OK=$(    _getmsg notify_install_rmdeps_ok   )
+MSG_INSTALL_RMDEPS_FAIL=$(  _getmsg notify_install_rmdeps_fail )
+MSG_INSTALL_NOCHECK=$(      _getmsg notify_install_nocheck     )
+MSG_INSTALL_NOCHECK_OK=$(   _getmsg notify_install_nocheck_ok  )
+MSG_INSTALL_NOCHECK_FAIL=$( _getmsg notify_install_nocheck_fail)
+MSG_INSTALL_NOGPG=$(        _getmsg notify_install_nogpg       )
+MSG_INSTALL_NOGPG_OK=$(     _getmsg notify_install_nogpg_ok    )
+MSG_INSTALL_NOGPG_FAIL=$(   _getmsg notify_install_nogpg_fail  )
 # Metadata
-MSG_CHECKSUMS=$(            _getmsg notify_checksums           "$_PO_FILE")
-MSG_CHECKSUMS_OK=$(         _getmsg notify_checksums_ok        "$_PO_FILE")
-MSG_CHECKSUMS_FAIL=$(       _getmsg notify_checksums_fail      "$_PO_FILE")
-MSG_GENCHECKSUMS=$(         _getmsg notify_genchecksums        "$_PO_FILE")
-MSG_GENCHECKSUMS_OK=$(      _getmsg notify_genchecksums_ok     "$_PO_FILE")
-MSG_GENCHECKSUMS_FAIL=$(    _getmsg notify_genchecksums_fail   "$_PO_FILE")
-MSG_SRCINFO=$(              _getmsg notify_srcinfo             "$_PO_FILE")
-MSG_SRCINFO_OK=$(           _getmsg notify_srcinfo_ok          "$_PO_FILE")
-MSG_SRCINFO_FAIL=$(         _getmsg notify_srcinfo_fail        "$_PO_FILE")
+MSG_CHECKSUMS=$(            _getmsg notify_checksums           )
+MSG_CHECKSUMS_OK=$(         _getmsg notify_checksums_ok        )
+MSG_CHECKSUMS_FAIL=$(       _getmsg notify_checksums_fail      )
+MSG_GENCHECKSUMS=$(         _getmsg notify_genchecksums        )
+MSG_GENCHECKSUMS_OK=$(      _getmsg notify_genchecksums_ok     )
+MSG_GENCHECKSUMS_FAIL=$(    _getmsg notify_genchecksums_fail   )
+MSG_SRCINFO=$(              _getmsg notify_srcinfo             )
+MSG_SRCINFO_OK=$(           _getmsg notify_srcinfo_ok          )
+MSG_SRCINFO_FAIL=$(         _getmsg notify_srcinfo_fail        )
 # Audit
-MSG_NAMCAP=$(               _getmsg notify_namcap              "$_PO_FILE")
-MSG_NAMCAP_WARN=$(          _getmsg notify_namcap_warn         "$_PO_FILE")
-MSG_NAMCAP_OK=$(            _getmsg notify_namcap_ok           "$_PO_FILE")
-MSG_NAMCAP_FAIL=$(          _getmsg notify_namcap_fail         "$_PO_FILE")
-MSG_SHELLCHECK=$(           _getmsg notify_shellcheck          "$_PO_FILE")
-MSG_SHELLCHECK_WARN=$(      _getmsg notify_shellcheck_warn     "$_PO_FILE")
-MSG_SHELLCHECK_OK=$(        _getmsg notify_shellcheck_ok       "$_PO_FILE")
-MSG_SHELLCHECK_FAIL=$(      _getmsg notify_shellcheck_fail     "$_PO_FILE")
+MSG_NAMCAP=$(               _getmsg notify_namcap              )
+MSG_NAMCAP_WARN=$(          _getmsg notify_namcap_warn         )
+MSG_NAMCAP_OK=$(            _getmsg notify_namcap_ok           )
+MSG_NAMCAP_FAIL=$(          _getmsg notify_namcap_fail         )
+MSG_SHELLCHECK=$(           _getmsg notify_shellcheck          )
+MSG_SHELLCHECK_WARN=$(      _getmsg notify_shellcheck_warn     )
+MSG_SHELLCHECK_OK=$(        _getmsg notify_shellcheck_ok       )
+MSG_SHELLCHECK_FAIL=$(      _getmsg notify_shellcheck_fail     )
 # Git / AUR
-MSG_PUSH_AUR=$(             _getmsg notify_push_aur            "$_PO_FILE")
-MSG_PUSH_AUR_OK=$(          _getmsg notify_push_aur_ok         "$_PO_FILE")
-MSG_PUSH_AUR_FAIL=$(        _getmsg notify_push_aur_fail       "$_PO_FILE")
-MSG_PUSH_AUR_TAG=$(         _getmsg notify_push_aur_tag        "$_PO_FILE")
-MSG_PUSH_AUR_TAG_OK=$(      _getmsg notify_push_aur_tag_ok     "$_PO_FILE")
-MSG_PUSH_AUR_TAG_FAIL=$(    _getmsg notify_push_aur_tag_fail   "$_PO_FILE")
+MSG_PUSH_AUR=$(             _getmsg notify_push_aur            )
+MSG_PUSH_AUR_OK=$(          _getmsg notify_push_aur_ok         )
+MSG_PUSH_AUR_FAIL=$(        _getmsg notify_push_aur_fail       )
+MSG_PUSH_AUR_TAG=$(         _getmsg notify_push_aur_tag        )
+MSG_PUSH_AUR_TAG_OK=$(      _getmsg notify_push_aur_tag_ok     )
+MSG_PUSH_AUR_TAG_FAIL=$(    _getmsg notify_push_aur_tag_fail   )
 # Clean
-MSG_CLEAN_SRC=$(            _getmsg notify_clean_src           "$_PO_FILE")
-MSG_CLEAN_SRC_OK=$(         _getmsg notify_clean_src_ok        "$_PO_FILE")
-MSG_CLEAN_SRC_FAIL=$(       _getmsg notify_clean_src_fail      "$_PO_FILE")
-MSG_CLEAN_ALL=$(            _getmsg notify_clean_all           "$_PO_FILE")
-MSG_CLEAN_ALL_OK=$(         _getmsg notify_clean_all_ok        "$_PO_FILE")
-MSG_CLEAN_ALL_FAIL=$(       _getmsg notify_clean_all_fail      "$_PO_FILE")
+MSG_CLEAN_SRC=$(            _getmsg notify_clean_src           )
+MSG_CLEAN_SRC_OK=$(         _getmsg notify_clean_src_ok        )
+MSG_CLEAN_SRC_FAIL=$(       _getmsg notify_clean_src_fail      )
+MSG_CLEAN_ALL=$(            _getmsg notify_clean_all           )
+MSG_CLEAN_ALL_OK=$(         _getmsg notify_clean_all_ok        )
+MSG_CLEAN_ALL_FAIL=$(       _getmsg notify_clean_all_fail      )
 # Full workflow
-MSG_FULL_WORKFLOW=$(        _getmsg notify_full_workflow       "$_PO_FILE")
-MSG_FULL_WORKFLOW_OK=$(     _getmsg notify_full_workflow_ok    "$_PO_FILE")
-MSG_FULL_WORKFLOW_FAIL=$(   _getmsg notify_full_workflow_fail  "$_PO_FILE")
+MSG_FULL_WORKFLOW=$(        _getmsg notify_full_workflow       )
+MSG_FULL_WORKFLOW_OK=$(     _getmsg notify_full_workflow_ok    )
+MSG_FULL_WORKFLOW_FAIL=$(   _getmsg notify_full_workflow_fail  )
