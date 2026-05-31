@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 02:50-0300\n"
+"POT-Creation-Date: 2026-05-31 14:00-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 # ---------------------------------------------------------------------------
-# Menu labels (Nautilus Python extension)
+# Menu labels (Nautilus Python extension + settings app)
 # ---------------------------------------------------------------------------
 msgid "00_Full Workflow"
 msgstr ""
@@ -49,6 +49,52 @@ msgid "07b_Clean Everything"
 msgstr ""
 
 msgid "07_Clean srcdir"
+msgstr ""
+
+# ---------------------------------------------------------------------------
+# Settings panel (GTK app — src/settings/app.py)
+# ---------------------------------------------------------------------------
+msgid "PKGBUILD Manager \u2014 Menu Settings"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "+ Add Group"
+msgstr ""
+
+msgid "+ Add Item"
+msgstr ""
+
+msgid "New Group"
+msgstr ""
+
+msgid "Add Action"
+msgstr ""
+
+msgid "All actions are already in a group."
+msgstr ""
+
+msgid "Saved! Restart the file manager to apply."
+msgstr ""
+
+# Default group names
+msgid "Actions"
+msgstr ""
+
+msgid "Metadata"
+msgstr ""
+
+msgid "Audit"
+msgstr ""
+
+msgid "Git / AUR"
+msgstr ""
+
+msgid "Clean"
 msgstr ""
 
 # ---------------------------------------------------------------------------
@@ -291,7 +337,7 @@ msgstr ""
 msgid "Removed"
 msgstr ""
 
-msgid "Note: nothing to commit or commit failed — continuing with push."
+msgid "Note: nothing to commit or commit failed \u2014 continuing with push."
 msgstr ""
 
 msgid "makepkg --printsrcinfo failed:"
