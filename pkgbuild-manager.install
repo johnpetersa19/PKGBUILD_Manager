@@ -1,9 +1,19 @@
 post_install() {
   echo ">>> To enable and localize the Nautilus context menu scripts for your user, run:"
   echo ">>>   pkgbuild_manager setup-nautilus"
-  echo ""
-  echo ">>> After installing or updating the scripts, restart Nautilus to apply changes:"
-  echo ">>>   nautilus -q"
+
+  # Restart Nautilus for every logged-in user so the extension loads immediately.
+  # We iterate over all users with an active loginctl session and run
+  # 'nautilus -q' in their D-Bus session so the kill reaches the right instance.
+  for uid in $(loginctl list-users --no-legend | awk '{print $1}'); do
+    user=$(id -nu "$uid" 2>/dev/null) || continue
+    bus=$(loginctl show-user "$uid" --property=Display --value 2>/dev/null)
+    xdg=$(su -l "$user" -c 'echo ${XDG_RUNTIME_DIR:-/run/user/'"$uid"'}' 2>/dev/null)
+    dbus_addr="unix:path=${xdg}/bus"
+    DBUS_SESSION_BUS_ADDRESS="$dbus_addr" \
+      su -l "$user" -c 'nautilus -q' 2>/dev/null && \
+      echo ">>> Nautilus restarted for user: $user"
+  done
 }
 
 post_upgrade() {
