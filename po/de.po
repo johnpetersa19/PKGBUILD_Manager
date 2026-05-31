@@ -181,10 +181,10 @@ msgid "04_Update .SRCINFO"
 msgstr ".SRCINFO aktualisieren"
 
 msgid "05_Namcap"
-msgstr "Namcap"
+msgstr "Mit Namcap analysieren"
 
 msgid "05b_ShellCheck"
-msgstr "ShellCheck"
+msgstr "Mit ShellCheck prüfen"
 
 msgid "06_Push AUR"
 msgstr "An AUR übertragen"

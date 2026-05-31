@@ -85,7 +85,7 @@ msgid "Install with custom flags passed after path"
 msgstr "Instalar con flags personalizadas especificadas después de la ruta"
 
 msgid "Package metadata commands"
-msgstr "Comandos de metadados del paquete"
+msgstr "Comandos de metadatos del paquete"
 
 msgid "Update checksums in PKGBUILD (updpkgsums)"
 msgstr "Actualizar sumas de verificación en PKGBUILD (updpkgsums)"
@@ -181,10 +181,10 @@ msgid "04_Update .SRCINFO"
 msgstr "Actualizar .SRCINFO"
 
 msgid "05_Namcap"
-msgstr "Namcap"
+msgstr "Analizar con Namcap"
 
 msgid "05b_ShellCheck"
-msgstr "ShellCheck"
+msgstr "Verificar con ShellCheck"
 
 msgid "06_Push AUR"
 msgstr "Publicar en AUR"

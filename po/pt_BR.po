@@ -181,10 +181,10 @@ msgid "04_Update .SRCINFO"
 msgstr "Atualizar .SRCINFO"
 
 msgid "05_Namcap"
-msgstr "Namcap"
+msgstr "Analisar com Namcap"
 
 msgid "05b_ShellCheck"
-msgstr "ShellCheck"
+msgstr "Verificar com ShellCheck"
 
 msgid "06_Push AUR"
 msgstr "Enviar para AUR"
@@ -200,4 +200,3 @@ msgstr "Criar links simbólicos dos scripts no diretório do usuário com locali
 
 msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
 msgstr "Scripts do Nautilus configurados com sucesso sob o submenu 'PKGBUILD'."
-
