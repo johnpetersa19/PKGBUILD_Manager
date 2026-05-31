@@ -20,6 +20,9 @@ Interactive actions (compilation, linting, etc.) open a terminal window. Backgro
 
 ## Settings Panel
 
+> **How to open:** press <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>P</kbd> from any window, or run `pkgbuild-manager-settings` in a terminal.
+> The app does **not** appear in the application grid by design — it is meant to be launched via the keyboard shortcut.
+
 The settings panel (`pkgbuild-manager-settings`) is a GTK4 + Libadwaita application that lets you fully customise the context-menu layout:
 
 - **Create / delete / rename groups** — organise actions into labelled submenus.
@@ -116,11 +119,12 @@ sudo cp target/release/pkgbuild_manager /usr/local/bin/
 
 ### First-Run Setup
 
-After installation, run the settings panel once to generate your initial `menu.json`:
+After installation, open the settings panel to generate your initial `menu.json`:
 
-```bash
-pkgbuild-manager-settings
-```
+- **Press <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>P</kbd>** — recommended, works from any window.
+- Or run `pkgbuild-manager-settings` in a terminal.
+
+> The settings app does **not** appear in the application grid by design (`NoDisplay=true`). Use the keyboard shortcut to open it.
 
 Or use the CLI to set up Nautilus scripts directly:
 
