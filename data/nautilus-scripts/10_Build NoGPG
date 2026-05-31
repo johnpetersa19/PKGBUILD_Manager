@@ -1,0 +1,14 @@
+#!/bin/bash
+# PKGBUILD Manager - Build NoGPG
+TARGET="$(dirname "$(realpath "${1:-.}")")" 
+source "$(dirname "$0")/_i18n"
+notify-send "PKGBUILD Manager" "$MSG_BUILD_NOGPG"
+
+LOG_PATH="${TARGET}/build-nogpg.log"
+
+if pkgbuild_manager build-nogpg "$TARGET" > "$LOG_PATH" 2>&1; then
+    rm -f "$LOG_PATH"
+    notify-send "PKGBUILD Manager" "$MSG_BUILD_NOGPG_OK"
+else
+    notify-send -u critical "PKGBUILD Manager" "${MSG_BUILD_NOGPG_FAIL}$(basename "$LOG_PATH")"
+fi

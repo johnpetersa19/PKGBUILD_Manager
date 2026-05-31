@@ -1,0 +1,14 @@
+#!/bin/bash
+# PKGBUILD Manager - Install NoGPG
+TARGET="$(dirname "$(realpath "${1:-.}")")" 
+source "$(dirname "$0")/_i18n"
+notify-send "PKGBUILD Manager" "$MSG_INSTALL_NOGPG"
+
+LOG_PATH="${TARGET}/install-nogpg.log"
+
+if pkgbuild_manager install-nogpg "$TARGET" > "$LOG_PATH" 2>&1; then
+    rm -f "$LOG_PATH"
+    notify-send "PKGBUILD Manager" "$MSG_INSTALL_NOGPG_OK"
+else
+    notify-send -u critical "PKGBUILD Manager" "${MSG_INSTALL_NOGPG_FAIL}$(basename "$LOG_PATH")"
+fi

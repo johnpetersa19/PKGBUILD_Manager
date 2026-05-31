@@ -1,0 +1,14 @@
+#!/bin/bash
+# PKGBUILD Manager - Install RmDeps
+TARGET="$(dirname "$(realpath "${1:-.}")")" 
+source "$(dirname "$0")/_i18n"
+notify-send "PKGBUILD Manager" "$MSG_INSTALL_RMDEPS"
+
+LOG_PATH="${TARGET}/install-rmdeps.log"
+
+if pkgbuild_manager install-rmdeps "$TARGET" > "$LOG_PATH" 2>&1; then
+    rm -f "$LOG_PATH"
+    notify-send "PKGBUILD Manager" "$MSG_INSTALL_RMDEPS_OK"
+else
+    notify-send -u critical "PKGBUILD Manager" "${MSG_INSTALL_RMDEPS_FAIL}$(basename "$LOG_PATH")"
+fi

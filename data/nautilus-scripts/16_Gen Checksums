@@ -1,0 +1,14 @@
+#!/bin/bash
+# PKGBUILD Manager - Gen Checksums
+TARGET="$(dirname "$(realpath "${1:-.}")")" 
+source "$(dirname "$0")/_i18n"
+notify-send "PKGBUILD Manager" "$MSG_GENCHECKSUMS"
+
+LOG_PATH="${TARGET}/genchecksums.log"
+
+if pkgbuild_manager genchecksums "$TARGET" > "$LOG_PATH" 2>&1; then
+    rm -f "$LOG_PATH"
+    notify-send "PKGBUILD Manager" "$MSG_GENCHECKSUMS_OK"
+else
+    notify-send -u critical "PKGBUILD Manager" "${MSG_GENCHECKSUMS_FAIL}$(basename "$LOG_PATH")"
+fi

@@ -1,0 +1,14 @@
+#!/bin/bash
+# PKGBUILD Manager - Install Force
+TARGET="$(dirname "$(realpath "${1:-.}")")" 
+source "$(dirname "$0")/_i18n"
+notify-send "PKGBUILD Manager" "$MSG_INSTALL_FORCE"
+
+LOG_PATH="${TARGET}/install-force.log"
+
+if pkgbuild_manager install-force "$TARGET" > "$LOG_PATH" 2>&1; then
+    rm -f "$LOG_PATH"
+    notify-send "PKGBUILD Manager" "$MSG_INSTALL_FORCE_OK"
+else
+    notify-send -u critical "PKGBUILD Manager" "${MSG_INSTALL_FORCE_FAIL}$(basename "$LOG_PATH")"
+fi

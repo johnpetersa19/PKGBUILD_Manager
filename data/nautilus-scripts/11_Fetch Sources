@@ -1,0 +1,14 @@
+#!/bin/bash
+# PKGBUILD Manager - Fetch Sources
+TARGET="$(dirname "$(realpath "${1:-.}")")" 
+source "$(dirname "$0")/_i18n"
+notify-send "PKGBUILD Manager" "$MSG_FETCH_SOURCES"
+
+LOG_PATH="${TARGET}/fetch-sources.log"
+
+if pkgbuild_manager fetch-sources "$TARGET" > "$LOG_PATH" 2>&1; then
+    rm -f "$LOG_PATH"
+    notify-send "PKGBUILD Manager" "$MSG_FETCH_SOURCES_OK"
+else
+    notify-send -u critical "PKGBUILD Manager" "${MSG_FETCH_SOURCES_FAIL}$(basename "$LOG_PATH")"
+fi

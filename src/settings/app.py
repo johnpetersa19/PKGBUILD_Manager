@@ -70,17 +70,33 @@ def _default_menu():
 
 def _all_actions():
     return [
-        {"id": "00_Full Workflow",     "label": _("00_Full Workflow")},
-        {"id": "01_Build",             "label": _("01_Build")},
-        {"id": "02b_Build and Clean",  "label": _("02b_Build and Clean")},
-        {"id": "02_Install",           "label": _("02_Install")},
-        {"id": "03_Update Checksums",  "label": _("03_Update Checksums")},
-        {"id": "04_Update .SRCINFO",   "label": _("04_Update .SRCINFO")},
-        {"id": "05_Namcap",            "label": _("05_Namcap")},
-        {"id": "05b_ShellCheck",       "label": _("05b_ShellCheck")},
-        {"id": "06_Push AUR",          "label": _("06_Push AUR")},
-        {"id": "07_Clean srcdir",      "label": _("07_Clean srcdir")},
-        {"id": "07b_Clean Everything", "label": _("07b_Clean Everything")},
+        # ── Build ─────────────────────────────────────────────────────────
+        {"id": "00_Full Workflow",       "label": _("00_Full Workflow")},
+        {"id": "01_Build",               "label": _("01_Build")},
+        {"id": "02b_Build and Clean",    "label": _("02b_Build and Clean")},
+        {"id": "08_Build Force",         "label": _("08_Build Force")},
+        {"id": "09_Build NoCheck",       "label": _("09_Build NoCheck")},
+        {"id": "10_Build NoGPG",         "label": _("10_Build NoGPG")},
+        {"id": "11_Fetch Sources",       "label": _("11_Fetch Sources")},
+        # ── Install ───────────────────────────────────────────────────────
+        {"id": "02_Install",             "label": _("02_Install")},
+        {"id": "12_Install Force",       "label": _("12_Install Force")},
+        {"id": "13_Install RmDeps",      "label": _("13_Install RmDeps")},
+        {"id": "14_Install NoCheck",     "label": _("14_Install NoCheck")},
+        {"id": "15_Install NoGPG",       "label": _("15_Install NoGPG")},
+        # ── Metadata ──────────────────────────────────────────────────────
+        {"id": "03_Update Checksums",    "label": _("03_Update Checksums")},
+        {"id": "04_Update .SRCINFO",     "label": _("04_Update .SRCINFO")},
+        {"id": "16_Gen Checksums",       "label": _("16_Gen Checksums")},
+        # ── Audit ─────────────────────────────────────────────────────────
+        {"id": "05_Namcap",              "label": _("05_Namcap")},
+        {"id": "05b_ShellCheck",         "label": _("05b_ShellCheck")},
+        # ── Git / AUR ─────────────────────────────────────────────────────
+        {"id": "06_Push AUR",            "label": _("06_Push AUR")},
+        {"id": "17_Push AUR Tag",        "label": _("17_Push AUR Tag")},
+        # ── Clean ─────────────────────────────────────────────────────────
+        {"id": "07_Clean srcdir",        "label": _("07_Clean srcdir")},
+        {"id": "07b_Clean Everything",   "label": _("07b_Clean Everything")},
     ]
 
 
@@ -326,12 +342,8 @@ class SettingsApp(Adw.Application):
         self._render_groups()
 
     def _on_add_item_dialog(self, _btn, g_idx):
-        used = {item["id"] for g in self.menu_data for item in g["items"]}
-        available = [a for a in _all_actions() if a["id"] not in used]
-
-        if not available:
-            self.win.add_toast(Adw.Toast(title=_("All actions are already in a group.")))
-            return
+        # Show ALL actions — duplicates across groups are intentional.
+        available = _all_actions()
 
         dialog = Adw.Dialog()
         dialog.set_title(_("Add Action"))

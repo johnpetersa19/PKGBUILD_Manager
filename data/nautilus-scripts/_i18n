@@ -67,74 +67,148 @@ _getmsg() {
 # ---------------------------------------------------------------------------
 _en_fallback() {
     case "$1" in
-        notify_building)           echo "Building package..." ;;
-        notify_build_ok)           echo "Build completed successfully!" ;;
-        notify_build_fail)         echo "Build failed! See: " ;;
-        notify_installing)         echo "Installing package..." ;;
-        notify_install_ok)         echo "Install completed!" ;;
-        notify_install_fail)       echo "Install failed! See: " ;;
-        notify_checksums)          echo "Updating checksums..." ;;
-        notify_checksums_ok)       echo "Checksums updated successfully!" ;;
-        notify_checksums_fail)     echo "Failed to update checksums! See: " ;;
-        notify_srcinfo)            echo "Updating .SRCINFO..." ;;
-        notify_srcinfo_ok)         echo ".SRCINFO updated successfully!" ;;
-        notify_srcinfo_fail)       echo "Failed to update .SRCINFO! See: " ;;
-        notify_namcap)             echo "Running namcap..." ;;
-        notify_namcap_warn)        echo "Namcap finished with warnings. See: " ;;
-        notify_namcap_ok)          echo "Namcap completed! No warnings found." ;;
-        notify_namcap_fail)        echo "Namcap failed! See: " ;;
-        notify_shellcheck)         echo "Running ShellCheck..." ;;
-        notify_shellcheck_warn)    echo "ShellCheck found warnings. See: " ;;
-        notify_shellcheck_ok)      echo "ShellCheck: no issues found." ;;
-        notify_shellcheck_fail)    echo "ShellCheck failed! See: " ;;
-        notify_push_aur)           echo "Pushing to AUR..." ;;
-        notify_push_aur_ok)        echo "Pushed to AUR successfully!" ;;
-        notify_push_aur_fail)      echo "Failed to push to AUR! See: " ;;
-        notify_clean_src)          echo "Cleaning srcdir..." ;;
-        notify_clean_src_ok)       echo "srcdir cleaned successfully!" ;;
-        notify_clean_src_fail)     echo "Failed to clean srcdir! See: " ;;
-        notify_clean_all)          echo "Cleaning everything..." ;;
-        notify_clean_all_ok)       echo "Everything cleaned successfully!" ;;
-        notify_clean_all_fail)     echo "Failed to clean! See: " ;;
-        notify_full_workflow)      echo "Running full workflow..." ;;
-        notify_full_workflow_ok)   echo "Full workflow completed!" ;;
-        notify_full_workflow_fail) echo "Full workflow failed! See: " ;;
-        *)                         echo "$1" ;;
+        # Build
+        notify_building)              echo "Building package..." ;;
+        notify_build_ok)              echo "Build completed successfully!" ;;
+        notify_build_fail)            echo "Build failed! See: " ;;
+        notify_build_force)           echo "Force-building package..." ;;
+        notify_build_force_ok)        echo "Force build completed!" ;;
+        notify_build_force_fail)      echo "Force build failed! See: " ;;
+        notify_build_nocheck)         echo "Building (skipping checks)..." ;;
+        notify_build_nocheck_ok)      echo "Build (no check) completed!" ;;
+        notify_build_nocheck_fail)    echo "Build (no check) failed! See: " ;;
+        notify_build_nogpg)           echo "Building (skipping GPG)..." ;;
+        notify_build_nogpg_ok)        echo "Build (no GPG) completed!" ;;
+        notify_build_nogpg_fail)      echo "Build (no GPG) failed! See: " ;;
+        notify_fetch_sources)         echo "Fetching sources..." ;;
+        notify_fetch_sources_ok)      echo "Sources fetched successfully!" ;;
+        notify_fetch_sources_fail)    echo "Failed to fetch sources! See: " ;;
+        # Install
+        notify_installing)            echo "Installing package..." ;;
+        notify_install_ok)            echo "Install completed!" ;;
+        notify_install_fail)          echo "Install failed! See: " ;;
+        notify_install_force)         echo "Force-installing package..." ;;
+        notify_install_force_ok)      echo "Force install completed!" ;;
+        notify_install_force_fail)    echo "Force install failed! See: " ;;
+        notify_install_rmdeps)        echo "Installing (removing build deps)..." ;;
+        notify_install_rmdeps_ok)     echo "Install (rmdeps) completed!" ;;
+        notify_install_rmdeps_fail)   echo "Install (rmdeps) failed! See: " ;;
+        notify_install_nocheck)       echo "Installing (skipping checks)..." ;;
+        notify_install_nocheck_ok)    echo "Install (no check) completed!" ;;
+        notify_install_nocheck_fail)  echo "Install (no check) failed! See: " ;;
+        notify_install_nogpg)         echo "Installing (skipping GPG)..." ;;
+        notify_install_nogpg_ok)      echo "Install (no GPG) completed!" ;;
+        notify_install_nogpg_fail)    echo "Install (no GPG) failed! See: " ;;
+        # Metadata
+        notify_checksums)             echo "Updating checksums..." ;;
+        notify_checksums_ok)          echo "Checksums updated successfully!" ;;
+        notify_checksums_fail)        echo "Failed to update checksums! See: " ;;
+        notify_genchecksums)          echo "Generating checksums..." ;;
+        notify_genchecksums_ok)       echo "Checksums generated successfully!" ;;
+        notify_genchecksums_fail)     echo "Failed to generate checksums! See: " ;;
+        notify_srcinfo)               echo "Updating .SRCINFO..." ;;
+        notify_srcinfo_ok)            echo ".SRCINFO updated successfully!" ;;
+        notify_srcinfo_fail)          echo "Failed to update .SRCINFO! See: " ;;
+        # Audit
+        notify_namcap)                echo "Running namcap..." ;;
+        notify_namcap_warn)           echo "Namcap finished with warnings. See: " ;;
+        notify_namcap_ok)             echo "Namcap completed! No warnings found." ;;
+        notify_namcap_fail)           echo "Namcap failed! See: " ;;
+        notify_shellcheck)            echo "Running ShellCheck..." ;;
+        notify_shellcheck_warn)       echo "ShellCheck found warnings. See: " ;;
+        notify_shellcheck_ok)         echo "ShellCheck: no issues found." ;;
+        notify_shellcheck_fail)       echo "ShellCheck failed! See: " ;;
+        # Git / AUR
+        notify_push_aur)              echo "Pushing to AUR..." ;;
+        notify_push_aur_ok)           echo "Pushed to AUR successfully!" ;;
+        notify_push_aur_fail)         echo "Failed to push to AUR! See: " ;;
+        notify_push_aur_tag)          echo "Tagging and pushing to AUR..." ;;
+        notify_push_aur_tag_ok)       echo "Tagged and pushed to AUR!" ;;
+        notify_push_aur_tag_fail)     echo "Failed to tag/push to AUR! See: " ;;
+        # Clean
+        notify_clean_src)             echo "Cleaning srcdir..." ;;
+        notify_clean_src_ok)          echo "srcdir cleaned successfully!" ;;
+        notify_clean_src_fail)        echo "Failed to clean srcdir! See: " ;;
+        notify_clean_all)             echo "Cleaning everything..." ;;
+        notify_clean_all_ok)          echo "Everything cleaned successfully!" ;;
+        notify_clean_all_fail)        echo "Failed to clean! See: " ;;
+        # Full workflow
+        notify_full_workflow)         echo "Running full workflow..." ;;
+        notify_full_workflow_ok)      echo "Full workflow completed!" ;;
+        notify_full_workflow_fail)    echo "Full workflow failed! See: " ;;
+        *)                            echo "$1" ;;
     esac
 }
 
 # ---------------------------------------------------------------------------
 # Export MSG_* variables
 # ---------------------------------------------------------------------------
-MSG_BUILDING=$(        _getmsg notify_building           "$_PO_FILE")
-MSG_BUILD_OK=$(        _getmsg notify_build_ok           "$_PO_FILE")
-MSG_BUILD_FAIL=$(      _getmsg notify_build_fail         "$_PO_FILE")
-MSG_INSTALLING=$(      _getmsg notify_installing         "$_PO_FILE")
-MSG_INSTALL_OK=$(      _getmsg notify_install_ok         "$_PO_FILE")
-MSG_INSTALL_FAIL=$(    _getmsg notify_install_fail       "$_PO_FILE")
-MSG_CHECKSUMS=$(       _getmsg notify_checksums          "$_PO_FILE")
-MSG_CHECKSUMS_OK=$(    _getmsg notify_checksums_ok       "$_PO_FILE")
-MSG_CHECKSUMS_FAIL=$(  _getmsg notify_checksums_fail     "$_PO_FILE")
-MSG_SRCINFO=$(         _getmsg notify_srcinfo            "$_PO_FILE")
-MSG_SRCINFO_OK=$(      _getmsg notify_srcinfo_ok         "$_PO_FILE")
-MSG_SRCINFO_FAIL=$(    _getmsg notify_srcinfo_fail       "$_PO_FILE")
-MSG_NAMCAP=$(          _getmsg notify_namcap             "$_PO_FILE")
-MSG_NAMCAP_WARN=$(     _getmsg notify_namcap_warn        "$_PO_FILE")
-MSG_NAMCAP_OK=$(       _getmsg notify_namcap_ok          "$_PO_FILE")
-MSG_NAMCAP_FAIL=$(     _getmsg notify_namcap_fail        "$_PO_FILE")
-MSG_SHELLCHECK=$(      _getmsg notify_shellcheck         "$_PO_FILE")
-MSG_SHELLCHECK_WARN=$( _getmsg notify_shellcheck_warn    "$_PO_FILE")
-MSG_SHELLCHECK_OK=$(   _getmsg notify_shellcheck_ok      "$_PO_FILE")
-MSG_SHELLCHECK_FAIL=$( _getmsg notify_shellcheck_fail    "$_PO_FILE")
-MSG_PUSH_AUR=$(        _getmsg notify_push_aur           "$_PO_FILE")
-MSG_PUSH_AUR_OK=$(     _getmsg notify_push_aur_ok        "$_PO_FILE")
-MSG_PUSH_AUR_FAIL=$(   _getmsg notify_push_aur_fail      "$_PO_FILE")
-MSG_CLEAN_SRC=$(       _getmsg notify_clean_src          "$_PO_FILE")
-MSG_CLEAN_SRC_OK=$(    _getmsg notify_clean_src_ok       "$_PO_FILE")
-MSG_CLEAN_SRC_FAIL=$(  _getmsg notify_clean_src_fail     "$_PO_FILE")
-MSG_CLEAN_ALL=$(       _getmsg notify_clean_all          "$_PO_FILE")
-MSG_CLEAN_ALL_OK=$(    _getmsg notify_clean_all_ok       "$_PO_FILE")
-MSG_CLEAN_ALL_FAIL=$(  _getmsg notify_clean_all_fail     "$_PO_FILE")
-MSG_FULL_WORKFLOW=$(   _getmsg notify_full_workflow      "$_PO_FILE")
-MSG_FULL_WORKFLOW_OK=$(_getmsg notify_full_workflow_ok   "$_PO_FILE")
-MSG_FULL_WORKFLOW_FAIL=$(_getmsg notify_full_workflow_fail "$_PO_FILE")
+# Build
+MSG_BUILDING=$(             _getmsg notify_building            "$_PO_FILE")
+MSG_BUILD_OK=$(             _getmsg notify_build_ok            "$_PO_FILE")
+MSG_BUILD_FAIL=$(           _getmsg notify_build_fail          "$_PO_FILE")
+MSG_BUILD_FORCE=$(          _getmsg notify_build_force         "$_PO_FILE")
+MSG_BUILD_FORCE_OK=$(       _getmsg notify_build_force_ok      "$_PO_FILE")
+MSG_BUILD_FORCE_FAIL=$(     _getmsg notify_build_force_fail    "$_PO_FILE")
+MSG_BUILD_NOCHECK=$(        _getmsg notify_build_nocheck       "$_PO_FILE")
+MSG_BUILD_NOCHECK_OK=$(     _getmsg notify_build_nocheck_ok    "$_PO_FILE")
+MSG_BUILD_NOCHECK_FAIL=$(   _getmsg notify_build_nocheck_fail  "$_PO_FILE")
+MSG_BUILD_NOGPG=$(          _getmsg notify_build_nogpg         "$_PO_FILE")
+MSG_BUILD_NOGPG_OK=$(       _getmsg notify_build_nogpg_ok      "$_PO_FILE")
+MSG_BUILD_NOGPG_FAIL=$(     _getmsg notify_build_nogpg_fail    "$_PO_FILE")
+MSG_FETCH_SOURCES=$(        _getmsg notify_fetch_sources       "$_PO_FILE")
+MSG_FETCH_SOURCES_OK=$(     _getmsg notify_fetch_sources_ok    "$_PO_FILE")
+MSG_FETCH_SOURCES_FAIL=$(   _getmsg notify_fetch_sources_fail  "$_PO_FILE")
+# Install
+MSG_INSTALLING=$(           _getmsg notify_installing          "$_PO_FILE")
+MSG_INSTALL_OK=$(           _getmsg notify_install_ok          "$_PO_FILE")
+MSG_INSTALL_FAIL=$(         _getmsg notify_install_fail        "$_PO_FILE")
+MSG_INSTALL_FORCE=$(        _getmsg notify_install_force       "$_PO_FILE")
+MSG_INSTALL_FORCE_OK=$(     _getmsg notify_install_force_ok    "$_PO_FILE")
+MSG_INSTALL_FORCE_FAIL=$(   _getmsg notify_install_force_fail  "$_PO_FILE")
+MSG_INSTALL_RMDEPS=$(       _getmsg notify_install_rmdeps      "$_PO_FILE")
+MSG_INSTALL_RMDEPS_OK=$(    _getmsg notify_install_rmdeps_ok   "$_PO_FILE")
+MSG_INSTALL_RMDEPS_FAIL=$(  _getmsg notify_install_rmdeps_fail "$_PO_FILE")
+MSG_INSTALL_NOCHECK=$(      _getmsg notify_install_nocheck     "$_PO_FILE")
+MSG_INSTALL_NOCHECK_OK=$(   _getmsg notify_install_nocheck_ok  "$_PO_FILE")
+MSG_INSTALL_NOCHECK_FAIL=$( _getmsg notify_install_nocheck_fail "$_PO_FILE")
+MSG_INSTALL_NOGPG=$(        _getmsg notify_install_nogpg       "$_PO_FILE")
+MSG_INSTALL_NOGPG_OK=$(     _getmsg notify_install_nogpg_ok    "$_PO_FILE")
+MSG_INSTALL_NOGPG_FAIL=$(   _getmsg notify_install_nogpg_fail  "$_PO_FILE")
+# Metadata
+MSG_CHECKSUMS=$(            _getmsg notify_checksums           "$_PO_FILE")
+MSG_CHECKSUMS_OK=$(         _getmsg notify_checksums_ok        "$_PO_FILE")
+MSG_CHECKSUMS_FAIL=$(       _getmsg notify_checksums_fail      "$_PO_FILE")
+MSG_GENCHECKSUMS=$(         _getmsg notify_genchecksums        "$_PO_FILE")
+MSG_GENCHECKSUMS_OK=$(      _getmsg notify_genchecksums_ok     "$_PO_FILE")
+MSG_GENCHECKSUMS_FAIL=$(    _getmsg notify_genchecksums_fail   "$_PO_FILE")
+MSG_SRCINFO=$(              _getmsg notify_srcinfo             "$_PO_FILE")
+MSG_SRCINFO_OK=$(           _getmsg notify_srcinfo_ok          "$_PO_FILE")
+MSG_SRCINFO_FAIL=$(         _getmsg notify_srcinfo_fail        "$_PO_FILE")
+# Audit
+MSG_NAMCAP=$(               _getmsg notify_namcap              "$_PO_FILE")
+MSG_NAMCAP_WARN=$(          _getmsg notify_namcap_warn         "$_PO_FILE")
+MSG_NAMCAP_OK=$(            _getmsg notify_namcap_ok           "$_PO_FILE")
+MSG_NAMCAP_FAIL=$(          _getmsg notify_namcap_fail         "$_PO_FILE")
+MSG_SHELLCHECK=$(           _getmsg notify_shellcheck          "$_PO_FILE")
+MSG_SHELLCHECK_WARN=$(      _getmsg notify_shellcheck_warn     "$_PO_FILE")
+MSG_SHELLCHECK_OK=$(        _getmsg notify_shellcheck_ok       "$_PO_FILE")
+MSG_SHELLCHECK_FAIL=$(      _getmsg notify_shellcheck_fail     "$_PO_FILE")
+# Git / AUR
+MSG_PUSH_AUR=$(             _getmsg notify_push_aur            "$_PO_FILE")
+MSG_PUSH_AUR_OK=$(          _getmsg notify_push_aur_ok         "$_PO_FILE")
+MSG_PUSH_AUR_FAIL=$(        _getmsg notify_push_aur_fail       "$_PO_FILE")
+MSG_PUSH_AUR_TAG=$(         _getmsg notify_push_aur_tag        "$_PO_FILE")
+MSG_PUSH_AUR_TAG_OK=$(      _getmsg notify_push_aur_tag_ok     "$_PO_FILE")
+MSG_PUSH_AUR_TAG_FAIL=$(    _getmsg notify_push_aur_tag_fail   "$_PO_FILE")
+# Clean
+MSG_CLEAN_SRC=$(            _getmsg notify_clean_src           "$_PO_FILE")
+MSG_CLEAN_SRC_OK=$(         _getmsg notify_clean_src_ok        "$_PO_FILE")
+MSG_CLEAN_SRC_FAIL=$(       _getmsg notify_clean_src_fail      "$_PO_FILE")
+MSG_CLEAN_ALL=$(            _getmsg notify_clean_all           "$_PO_FILE")
+MSG_CLEAN_ALL_OK=$(         _getmsg notify_clean_all_ok        "$_PO_FILE")
+MSG_CLEAN_ALL_FAIL=$(       _getmsg notify_clean_all_fail      "$_PO_FILE")
+# Full workflow
+MSG_FULL_WORKFLOW=$(        _getmsg notify_full_workflow       "$_PO_FILE")
+MSG_FULL_WORKFLOW_OK=$(     _getmsg notify_full_workflow_ok    "$_PO_FILE")
+MSG_FULL_WORKFLOW_FAIL=$(   _getmsg notify_full_workflow_fail  "$_PO_FILE")
