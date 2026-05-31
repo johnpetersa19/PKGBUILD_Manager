@@ -19,3 +19,10 @@ install_data(
   nautilus_scripts,
   install_dir: get_option('datadir') / 'pkgbuild-manager/scripts'
 )
+
+# Nautilus Python extension — installed system-wide so Nautilus picks it up
+# without needing setup-nautilus. Requires nautilus-python (python-nautilus).
+install_data(
+  'nautilus-extension/pkgbuild_manager.py',
+  install_dir: get_option('datadir') / 'nautilus-python/extensions'
+)
