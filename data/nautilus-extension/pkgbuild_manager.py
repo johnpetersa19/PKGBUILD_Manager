@@ -1,43 +1,31 @@
 #!/usr/bin/env python3
 # pkgbuild_manager.py — Nautilus Python extension
 # Adds a "PKGBUILD" submenu directly in the right-click context menu.
-# Labels are loaded from installed .mo files via gettext — add a new .po
-# file and recompile to support a new language, no changes needed here.
+# Labels are loaded from installed .mo files via gettext.
 #
 # Install to: /usr/share/nautilus-python/extensions/  (system-wide, via meson)
-#          or ~/.local/share/nautilus/extensions/4/    (Nautilus 43+, per-user)
 #
 # Requires: nautilus-python (python-nautilus on Arch)
 
 import os
 import gettext
 import subprocess
-import shutil
 import gi
 
 gi.require_version("Nautilus", "4.0")
 from gi.repository import Nautilus, GObject
 
 # ---------------------------------------------------------------------------
-# Gettext setup — reads compiled .mo from the standard locale directory.
-# PKGBUILD_MANAGER_LOCALEDIR env var allows overriding for development.
+# Gettext setup
 # ---------------------------------------------------------------------------
 
 _DOMAIN = "pkgbuild_manager"
-_LOCALEDIR = os.environ.get(
-    "PKGBUILD_MANAGER_LOCALEDIR",
-    "/usr/share/locale",
-)
-
-# Load the translation for the current locale (falls back to msgid if missing)
+_LOCALEDIR = os.environ.get("PKGBUILD_MANAGER_LOCALEDIR", "/usr/share/locale")
 _t = gettext.translation(_DOMAIN, localedir=_LOCALEDIR, fallback=True)
 _ = _t.gettext
 
 # ---------------------------------------------------------------------------
 # Action list — (internal_script_name, gettext_msgid)
-# The msgid must match exactly what is in the .po/.mo files.
-# To add a new language: create po/<lang>.po with the msgids below translated,
-# run `meson compile` — no changes needed in this file.
 # Order here defines the menu order shown to the user.
 # ---------------------------------------------------------------------------
 
@@ -56,7 +44,7 @@ _ACTIONS = [
 ]
 
 # ---------------------------------------------------------------------------
-# Resolve the scripts directory (installed or dev fallback)
+# Resolve the scripts directory
 # ---------------------------------------------------------------------------
 
 def _scripts_dir() -> str:
@@ -75,16 +63,23 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
     """Injects a PKGBUILD submenu into the Nautilus right-click context menu."""
 
     def _get_items(self, files):
-        # Only show when exactly one file called "PKGBUILD" is selected
+        # Only show when exactly one local file called "PKGBUILD" is selected
         if len(files) != 1:
             return []
         f = files[0]
+
+        # Guard against remote/trash URIs where get_path() returns None
+        if not f.get_uri().startswith("file://"):
+            return []
         if f.get_name() != "PKGBUILD":
             return []
         if f.get_file_type() != Nautilus.FileType.REGULAR:
             return []
 
         pkgbuild_path = f.get_location().get_path()
+        if pkgbuild_path is None:
+            return []
+
         scripts = _scripts_dir()
 
         top = Nautilus.MenuItem(
@@ -97,11 +92,11 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
 
         for script_name, msgid in _ACTIONS:
             script_path = os.path.join(scripts, script_name)
-            if not os.path.exists(script_path):
+
+            # Skip scripts that are not installed or not executable
+            if not os.path.isfile(script_path) or not os.access(script_path, os.X_OK):
                 continue
 
-            # gettext returns the translated label; falls back to msgid if
-            # no .mo is installed or the msgid has no translation yet
             label = _(msgid)
 
             item = Nautilus.MenuItem(
@@ -110,23 +105,16 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
                 tip=f"Run {script_name}",
             )
 
+            # Each script receives the PKGBUILD path as $1 and runs in the
+            # background — feedback is delivered via notify-send by the script
+            # itself, so no terminal is needed here.
             def make_callback(spath, pkgpath):
                 def cb(_item):
-                    terminal = _find_terminal()
-                    run_helper = os.path.join(os.path.dirname(spath), "_run_in_terminal")
-                    env = os.environ.copy()
-                    env["NAUTILUS_SCRIPT_SELECTED_FILE_PATHS"] = pkgpath + "\n"
-                    if terminal and os.path.exists(run_helper):
-                        subprocess.Popen(
-                            [terminal, "--", run_helper, spath, pkgpath],
-                            env=env,
-                        )
-                    else:
-                        subprocess.Popen(
-                            ["bash", spath],
-                            env=env,
-                            cwd=os.path.dirname(pkgpath),
-                        )
+                    subprocess.Popen(
+                        ["bash", spath, pkgpath],
+                        cwd=os.path.dirname(pkgpath),
+                        close_fds=True,
+                    )
                 return cb
 
             item.connect("activate", make_callback(script_path, pkgbuild_path))
@@ -139,12 +127,3 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
 
     def get_background_items(self, folder):
         return []
-
-
-def _find_terminal() -> str | None:
-    """Return the path to an available terminal emulator, or None."""
-    for t in ("kgx", "gnome-terminal", "konsole", "xfce4-terminal", "xterm", "alacritty", "foot", "kitty"):
-        path = shutil.which(t)
-        if path:
-            return path
-    return None
