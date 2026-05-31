@@ -47,34 +47,3 @@ pub fn run_command(cmd_name: &str, args: &[&str], dir: &Path) -> Result<(), Box<
         Err(format!("{} {} {}", cmd_name, args.join(" "), status).into())
     }
 }
-
-/// Read pkgname and pkgver from the PKGBUILD in the target directory.
-/// Uses `makepkg --printsrcinfo` for reliable parsing.
-pub fn read_pkgbuild_info(dir: &Path) -> Result<(String, String, String), Box<dyn std::error::Error>> {
-    let output = Command::new("makepkg")
-        .arg("--printsrcinfo")
-        .current_dir(dir)
-        .output()?;
-
-    if !output.status.success() {
-        return Err(gettext("Failed to read PKGBUILD info with makepkg --printsrcinfo").into());
-    }
-
-    let content = String::from_utf8_lossy(&output.stdout).to_string();
-    let mut pkgname = String::from("unknown");
-    let mut pkgver  = String::from("0");
-    let mut pkgrel  = String::from("1");
-
-    for line in content.lines() {
-        let line = line.trim();
-        if let Some(val) = line.strip_prefix("pkgname = ") {
-            pkgname = val.to_string();
-        } else if let Some(val) = line.strip_prefix("pkgver = ") {
-            pkgver = val.to_string();
-        } else if let Some(val) = line.strip_prefix("pkgrel = ") {
-            pkgrel = val.to_string();
-        }
-    }
-
-    Ok((pkgname, pkgver, pkgrel))
-}
