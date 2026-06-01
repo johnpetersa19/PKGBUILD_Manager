@@ -1,5 +1,5 @@
 # Maintainer: John Peter Sa <johnpetersa19@proton.me>
-pkgname=pkgbuild-manager-git
+pkgname=pkgbuild-manager
 _pkgname=PKGBUILD_Manager
 pkgver=2.1.0
 pkgrel=1
@@ -23,7 +23,7 @@ optdepends=(
   'dolphin: for Dolphin (KDE) right-click menu support'
 )
 provides=("pkgbuild-manager")
-conflicts=("pkgbuild-manager")
+conflicts=("pkgbuild-manager-git")
 install=pkgbuild-manager.install
 source=("$_pkgname-$pkgver.tar.gz::https://github.com/johnpetersa19/PKGBUILD_Manager/archive/refs/tags/v${pkgver}.tar.gz")
 sha256sums=('3f1e5024e01514bfa26c403c8edc1e6d0fade5de0c8f2613aa1d14b9e3d35817')
