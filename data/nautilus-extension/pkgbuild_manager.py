@@ -50,7 +50,7 @@ def _load_menu():
             return result, len(data)
         except Exception:
             pass
-    return [(sid, _(sid), "PKGBUILD") for sid, _ in DEFAULT_ACTIONS], 1
+    return [(sid, _(sid), "PKGBUILD") for sid, default_label in DEFAULT_ACTIONS], 1
 
 
 class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
