@@ -1,14 +1,10 @@
 # po/meson.build
 #
-# .mo files are compiled from the .po files in this directory by i18n.gettext().
-# The list of languages is read from the LINGUAS file.
+# Compiles .po files into .mo binaries and installs them.
+# Language list is read from the LINGUAS file in this directory.
 #
-# .pot generation (for translators) is a separate optional step:
+# To regenerate the .pot template from sources, run:
 #   meson compile -C build generate-pot
-#
-# i18n.gettext() handles:
-#   - msgfmt    to compile .po -> .mo
-#   - installation of .mo to $localedir/<lang>/LC_MESSAGES/
 
 i18n = import('i18n')
 
@@ -18,12 +14,10 @@ root_dir = meson.project_source_root()
 
 # ─── Compile and install .mo files ───────────────────────────────────────────
 # Reads LINGUAS for the list of languages.
-# Looks for <lang>.po in the current source directory (po/).
-# Compiles each .po -> .mo with msgfmt.
+# For each language, compiles po/<lang>.po -> .mo with msgfmt.
 # Installs to $localedir/<lang>/LC_MESSAGES/pkgbuild_manager.mo
 i18n.gettext(pkg,
   args:        ['--keyword=gettext', '--keyword=_'],
-  preset:      'glib',
   install:     true,
   install_dir: get_option('localedir'),
 )
