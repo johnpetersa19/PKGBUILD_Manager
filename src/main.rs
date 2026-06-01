@@ -22,11 +22,17 @@ mod config;
 mod actions;
 
 use config::{GETTEXT_PACKAGE, LOCALEDIR};
-use gettextrs::{bind_textdomain_codeset, bindtextdomain, textdomain, gettext};
+use gettextrs::{bind_textdomain_codeset, bindtextdomain, textdomain, gettext, LocaleCategory};
 use std::env;
 use std::path::Path;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // setlocale MUST be called before bindtextdomain/textdomain so that
+    // the C library initialises the locale from the environment (LANG,
+    // LC_ALL, …). Without this call gettextrs silently falls back to the
+    // "C" locale and never loads any .mo file.
+    gettextrs::setlocale(LocaleCategory::LcAll, "");
+
     let locale_dir = std::env::var("PKGBUILD_MANAGER_LOCALEDIR")
         .unwrap_or_else(|_| LOCALEDIR.to_string());
     let _ = bindtextdomain(GETTEXT_PACKAGE, &locale_dir);
