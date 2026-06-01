@@ -1,7 +1,7 @@
 # Maintainer: John Peter Sa <johnpetersa19@proton.me>
 pkgname=pkgbuild-manager-git
 _pkgname=PKGBUILD_Manager
-pkgver=2.1.0
+pkgver=r1.0000000
 pkgrel=1
 pkgdesc="Rust CLI + GTK4 settings panel and multi-file-manager context-menu integration for PKGBUILD management"
 arch=('x86_64')
@@ -26,7 +26,7 @@ provides=("pkgbuild-manager")
 conflicts=("pkgbuild-manager")
 install=pkgbuild-manager.install
 source=("$_pkgname::git+https://github.com/johnpetersa19/PKGBUILD_Manager.git#tag=v2.1.0")
-sha256sums=('07990dea3fc1414070a1a544f5e61851c50c7e39fb9a26b29b8c3b87c620b136')
+sha256sums=('SKIP')
 
 pkgver() {
   cd "$srcdir/$_pkgname"
