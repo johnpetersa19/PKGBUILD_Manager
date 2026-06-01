@@ -25,7 +25,7 @@ optdepends=(
 provides=("pkgbuild-manager")
 conflicts=("pkgbuild-manager")
 install=pkgbuild-manager.install
-source=("$_pkgname::git+https://github.com/johnpetersa19/PKGBUILD_Manager.git#branch=main")
+source=("$_pkgname::git+https://github.com/johnpetersa19/PKGBUILD_Manager.git#tag=v2.1.0")
 sha256sums=('SKIP')
 
 pkgver() {
