@@ -26,7 +26,7 @@ provides=("pkgbuild-manager")
 conflicts=("pkgbuild-manager")
 install=pkgbuild-manager.install
 source=("$_pkgname::git+https://github.com/johnpetersa19/PKGBUILD_Manager.git#tag=v2.1.0")
-sha256sums=('SKIP')
+sha256sums=('07990dea3fc1414070a1a544f5e61851c50c7e39fb9a26b29b8c3b87c620b136')
 
 pkgver() {
   cd "$srcdir/$_pkgname"
