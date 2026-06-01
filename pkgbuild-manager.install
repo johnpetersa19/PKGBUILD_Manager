@@ -8,7 +8,7 @@ post_install() {
         _user="${SUDO_USER:-$USER}"
         _uid=$(id -u "$_user" 2>/dev/null)
         _env="DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${_uid}/bus"
-        _gset="sudo -u $_user env $_env gsettings"
+        _gset="runuser -u $_user -- env $_env gsettings"
         _binding="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/pkgbuild-manager/"
 
         _current=$(${_gset} get org.gnome.settings-daemon.plugins.media-keys \
@@ -32,7 +32,7 @@ post_install() {
         fi
     fi
 
-    pkill -u "${SUDO_USER:-$USER}" nautilus 2>/dev/null || true
+    echo ">>> To activate the Nautilus extension, run: nautilus -q"
 }
 
 post_upgrade() {
@@ -50,7 +50,7 @@ post_remove() {
         _user="${SUDO_USER:-$USER}"
         _uid=$(id -u "$_user" 2>/dev/null)
         _env="DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${_uid}/bus"
-        _gset="sudo -u $_user env $_env gsettings"
+        _gset="runuser -u $_user -- env $_env gsettings"
         _binding="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/pkgbuild-manager/"
         _current=$(${_gset} get org.gnome.settings-daemon.plugins.media-keys \
             custom-keybindings 2>/dev/null || echo "[]")
