@@ -15,7 +15,7 @@
 mod window;
 
 use adw::prelude::*;
-use adw::{Application, ApplicationWindow};
+use adw::Application;
 use adw::gio::ApplicationFlags;
 use gtk::glib;
 use std::env;
