@@ -47,3 +47,19 @@ cargo_build = custom_target(
     cargo_opt, '&&', 'cp', 'src' / rust_target / meson.project_name(), '@OUTPUT@',
   ]
 )
+
+custom_target(
+  'cargo-build-aur-push',
+  build_by_default: true,
+  build_always_stale: true,
+  output: 'pkgbuild-manager-aur-push',
+  console: true,
+  install: true,
+  install_dir: get_option('bindir'),
+  depends: cargo_build,
+  command: [
+    'cp',
+    meson.project_build_root() / 'src' / rust_target / 'pkgbuild-manager-aur-push',
+    '@OUTPUT@',
+  ]
+)
