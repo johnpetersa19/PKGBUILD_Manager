@@ -11,7 +11,7 @@ Interactive actions (compilation, linting, etc.) open a terminal window. Backgro
 - **Compilation & Installation** — Multiple `makepkg` wrappers: clean builds, forced builds, skip-check, skip-GPG, fetch-only, and custom flags.
 - **Metadata Management** — Update checksums via `updpkgsums`, generate checksums to stdout, and regenerate `.SRCINFO` automatically.
 - **Quality Assurance** — Lint with `namcap` (PKGBUILD + compiled packages) and `shellcheck` (bash-mode).
-- **Git & AUR Integration** — Auto-generates `upgpkg: <name> <version>-<release>` commit messages, stages `.SRCINFO` before committing, and supports annotated version tags.
+- **Git & AUR Integration** — Auto-generates `upgpkg: <name> <version>-<release>` commit messages from `.SRCINFO`, always stages `.SRCINFO` before committing, and supports annotated version tags.
 - **Configurable Context Menu** — A GTK4 + Libadwaita settings panel lets you organise the 21 available actions into named groups, reorder them, rename labels, and toggle items on/off. Changes are saved to `~/.config/pkgbuild-manager/menu.json` and applied to Nautilus without any `sudo`.
 - **Multi-file-manager Support** — Context-menu extensions for **Nautilus**, **Caja**, and **Nemo**. Dolphin/KDE is supported via an auto-generated `.desktop` file written to `~/.local/share/kio/servicemenus/` (no root required).
 - **Full Internationalization (i18n)** — All menu labels, desktop notifications, and CLI strings are translated. Languages supported: **English** (default), **Português (pt_BR)**, **Español (es)**, **Deutsch (de)**, **Français (fr)**, **Italiano (it)**. Locale is detected automatically from `$LANGUAGE` / `$LC_MESSAGES` / `$LANG`.
@@ -148,7 +148,12 @@ PKGBUILD_MANAGER_LOCALEDIR=build/po pkgbuild_manager setup-nautilus
 
 Run `pkgbuild_manager <command> [path] [flags...]`
 
-If no `path` is specified, defaults to the current working directory. If the second argument starts with `-`, it is treated as a flag for the current directory.
+If no `path` is specified, defaults to the current working directory.
+
+You can also use `--` to disambiguate pre-path flags from post-path flags:
+
+- `pkgbuild_manager build -c -f` → acts on `.` with flags `-c -f`
+- `pkgbuild_manager build /path/to/pkg -- -c -f` → acts on `/path/to/pkg` with flags `-c -f`
 
 ### Available Subcommands
 
@@ -174,9 +179,16 @@ If no `path` is specified, defaults to the current working directory. If the sec
 | **Audit** | `namcap` | Audit PKGBUILD + packages | `namcap PKGBUILD *.pkg.tar.*` |
 | | `shellcheck` | Lint PKGBUILD | `shellcheck --shell=bash PKGBUILD` |
 | **Clean** | `clean` | Clean source directory | `makepkg -c` |
-| | `clean-all` | Remove all build outputs | `rm -rf src/ pkg/ *.pkg.tar.*` |
-| **AUR / Git** | `aur-push [msg]` | Stage, commit, push | `git add && git commit && git push` |
+| | `clean-all` | Remove all build outputs | removes `src/`, `pkg/`, any `*.pkg.tar.*`, bare git caches and `_build*` dirs |
+| **AUR / Git** | `aur-push [msg]` | Stage, commit, push (auto message if omitted) | `git add && git commit && git push` |
 | | `aur-push-tag <t>` | Stage, commit, tag, push | `git tag -a <t> && git push --tags` |
+| **Other** | `setup-nautilus` | Clean up old scripts and verify Nautilus extension | `nautilus -q` + extension checks |
+| | `--version` | Print program version | — |
+
+### Notes on `aur-push`
+
+- Commit messages are auto-generated from `.SRCINFO` in the form `upgpkg: <pkgname> <pkgver>-<pkgrel>`.
+- For split packages, the first `pkgname` entry found in `.SRCINFO` is used in the commit message. This is usually the main package; if you maintain multiple split packages, consider overriding the message explicitly via `aur-push "your message"`.
 
 ---
 
