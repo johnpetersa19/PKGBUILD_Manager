@@ -463,3 +463,34 @@ msgstr "Создать символические ссылки на скрипт
 
 msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
 msgstr "Скрипты Nautilus успешно настроены в подменю 'PKGBUILD'."
+
+# CLI: additional errors and status
+msgid "failed to canonicalize path"
+msgstr "Не удалось канонизировать путь"
+
+msgid "failed to spawn command"
+msgstr "Не удалось запустить команду"
+
+msgid "command failed"
+msgstr "Команда завершилась с ошибкой"
+
+msgid "with status"
+msgstr "со статусом"
+
+msgid "makepkg --printsrcinfo failed"
+msgstr "makepkg --printsrcinfo завершился с ошибкой"
+
+msgid ">>> Regenerating .SRCINFO in"
+msgstr ">>> Повторная генерация .SRCINFO в"
+
+msgid "Warning: could not remove stale PKGBUILD dir"
+msgstr "Предупреждение: не удалось удалить устаревший каталог PKGBUILD"
+
+msgid "Nautilus extension not found at /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Please reinstall the package."
+msgstr "Расширение Nautilus не найдено по пути /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Переустановите пакет."
+
+msgid "PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD file to see the PKGBUILD submenu."
+msgstr "PKGBUILD Manager: расширение Nautilus активно. Щёлкните правой кнопкой по любому файлу PKGBUILD, чтобы увидеть подменю PKGBUILD."
+
+msgid "Show program version"
+msgstr "Показать версию программы"
