@@ -4,25 +4,26 @@ use std::process::Command;
 use super::{get_target_dir, run_command};
 
 /// Update checksums in-place using `updpkgsums`.
-pub fn run(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
+pub fn run(path: &Path) -> anyhow::Result<()> {
     let target_dir = get_target_dir(path)?;
-    run_command("updpkgsums", &[], &target_dir)
-        .map_err(|e| {
-            // Downcast to io::Error to check for NotFound reliably
-            if let Some(io_err) = e.downcast_ref::<io::Error>() {
-                if io_err.kind() == io::ErrorKind::NotFound {
-                    return gettextrs::gettext(
+    run_command("updpkgsums", &[], &target_dir).map_err(|e| {
+        // Downcast to io::Error to check for NotFound reliably
+        if let Some(io_err) = e.downcast_ref::<io::Error>() {
+            if io_err.kind() == io::ErrorKind::NotFound {
+                return anyhow::anyhow!(
+                    "{}",
+                    gettextrs::gettext(
                         "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib",
                     )
-                    .into();
-                }
+                );
             }
-            e
-        })
+        }
+        e
+    })
 }
 
 /// Generate checksums and print them to stdout using `makepkg -g`.
-pub fn generate(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
+pub fn generate(path: &Path) -> anyhow::Result<()> {
     let target_dir = get_target_dir(path)?;
     println!(">>> makepkg -g (in {:?})", target_dir);
 
@@ -33,7 +34,11 @@ pub fn generate(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
 
     if !output.status.success() {
         let err = String::from_utf8_lossy(&output.stderr);
-        return Err(format!("{} {}", gettextrs::gettext("makepkg -g failed:"), err).into());
+        return Err(anyhow::anyhow!(
+            "{} {}",
+            gettextrs::gettext("makepkg -g failed:"),
+            err.trim()
+        ));
     }
 
     print!("{}", String::from_utf8_lossy(&output.stdout));
