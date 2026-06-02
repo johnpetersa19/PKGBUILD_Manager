@@ -77,12 +77,26 @@ install_data(
 install_data(
   '../src/settings/app.py',
   '../src/settings/__main__.py',
+  '../src/settings/__init__.py',
+  install_dir: get_option('datadir') / 'pkgbuild-manager/python/settings',
+)
+
+# AUR push dialog Python module
+install_data(
+  '../src/settings/aur_dialog.py',
   install_dir: get_option('datadir') / 'pkgbuild-manager/python/settings',
 )
 
 # Settings launcher binary
 install_data(
   'bin/pkgbuild-manager-settings',
+  install_dir: get_option('bindir'),
+  install_mode: 'rwxr-xr-x',
+)
+
+# AUR push GUI launcher binary
+install_data(
+  'bin/pkgbuild-manager-aur-push',
   install_dir: get_option('bindir'),
   install_mode: 'rwxr-xr-x',
 )

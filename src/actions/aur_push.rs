@@ -2,7 +2,7 @@ use std::path::Path;
 use std::process::Command;
 use super::{get_target_dir, run_command};
 
-/// Stage PKGBUILD + .SRCINFO, commit with conventional AUR message, and push to origin/master.
+/// Stage PKGBUILD + .SRCINFO, commit with conventional AUR message, and push.
 ///
 /// If `message` is None, the commit message is auto-generated from the PKGBUILD:
 ///   "upgpkg: pkgname ver-rel"
@@ -20,25 +20,71 @@ pub fn run_with_tag(path: &Path, tag: &str) -> Result<(), Box<dyn std::error::Er
     run_with_dir(&target_dir, None)?;
 
     // Create annotated tag
+    println!("[STEP] git-tag start");
     println!(">>> git tag -a {:?} -m {:?}", tag, tag);
-    run_command("git", &["tag", "-a", tag, "-m", tag], &target_dir)?;
+    if let Err(e) = run_command("git", &["tag", "-a", tag, "-m", tag], &target_dir) {
+        println!("[STEP] git-tag error: {}", e);
+        return Err(e);
+    }
+    println!("[STEP] git-tag ok");
 
-    // Push tag
+    // Push tags
+    println!("[STEP] git-push-tags start");
     println!(">>> git push --tags");
-    run_command("git", &["push", "--tags"], &target_dir)?;
+    if let Err(e) = run_command("git", &["push", "--tags"], &target_dir) {
+        println!("[STEP] git-push-tags error: {}", e);
+        return Err(e);
+    }
+    println!("[STEP] git-push-tags ok");
 
     Ok(())
 }
 
 // Internal: perform the full stage -> commit -> push flow given an already-resolved dir.
 fn run_with_dir(target_dir: &Path, message: Option<&str>) -> Result<(), Box<dyn std::error::Error>> {
-    // Regenerate .SRCINFO and parse package info from the same output in one pass.
-    let srcinfo_content = regenerate_srcinfo(target_dir)?;
+    // ── Step 1: Regenerate .SRCINFO ──────────────────────────────────────────
+    println!("[STEP] regen-srcinfo start");
+    let srcinfo_content = match regenerate_srcinfo(target_dir) {
+        Ok(c) => {
+            println!("[STEP] regen-srcinfo ok");
+            c
+        }
+        Err(e) => {
+            println!("[STEP] regen-srcinfo error: {}", e);
+            return Err(e);
+        }
+    };
 
-    // Stage
-    run_command("git", &["add", "PKGBUILD", ".SRCINFO"], target_dir)?;
+    // ── Step 2: git status ───────────────────────────────────────────────────
+    println!("[STEP] git-status start");
+    let status_out = Command::new("git")
+        .args(["status", "--short"])
+        .current_dir(target_dir)
+        .output();
+    match status_out {
+        Ok(o) => {
+            let txt = String::from_utf8_lossy(&o.stdout);
+            for line in txt.lines() {
+                println!("  {}", line);
+            }
+            println!("[STEP] git-status ok");
+        }
+        Err(e) => {
+            println!("[STEP] git-status error: {}", e);
+            // Non-fatal — continue anyway
+        }
+    }
 
-    // Build commit message
+    // ── Step 3: git add ──────────────────────────────────────────────────────
+    println!("[STEP] git-add start");
+    if let Err(e) = run_command("git", &["add", "PKGBUILD", ".SRCINFO"], target_dir) {
+        println!("[STEP] git-add error: {}", e);
+        return Err(e);
+    }
+    println!("[STEP] git-add ok");
+
+    // ── Step 4: git commit ───────────────────────────────────────────────────
+    println!("[STEP] git-commit start");
     let auto_msg;
     let commit_msg: &str = if let Some(m) = message {
         m
@@ -57,21 +103,31 @@ fn run_with_dir(target_dir: &Path, message: Option<&str>) -> Result<(), Box<dyn 
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr);
         let stdout = String::from_utf8_lossy(&output.stdout);
-        // git exits 1 with "nothing to commit" message — that is not a real error,
-        // so we detect it explicitly and continue. Any other failure is propagated.
         let combined = format!("{}{}", stdout, stderr);
         if combined.contains("nothing to commit") || combined.contains("nothing added to commit") {
             println!("{}", gettextrs::gettext("Note: nothing to commit — continuing with push."));
+            println!("[STEP] git-commit ok");
         } else {
+            println!("[STEP] git-commit error: {}", stderr.trim());
             return Err(format!(
                 "{}: {}",
                 gettextrs::gettext("git commit failed"),
                 stderr.trim()
             ).into());
         }
+    } else {
+        println!("[STEP] git-commit ok");
     }
 
-    push_to_aur(target_dir)
+    // ── Step 5: git push ─────────────────────────────────────────────────────
+    println!("[STEP] git-push start");
+    if let Err(e) = push_to_aur(target_dir) {
+        println!("[STEP] git-push error: {}", e);
+        return Err(e);
+    }
+    println!("[STEP] git-push ok");
+
+    Ok(())
 }
 
 /// Regenerate .SRCINFO and return its content (avoids a second makepkg call).
@@ -95,10 +151,6 @@ fn regenerate_srcinfo(dir: &Path) -> Result<String, Box<dyn std::error::Error>> 
 }
 
 /// Parse pkgname/pkgver/pkgrel from already-fetched .SRCINFO text.
-/// Stops iterating as soon as all three fields are found (early-exit).
-/// FIX: a condição anterior comparava com os valores default, nunca disparando
-/// o break quando pkgrel=1 (valor inicial igual ao default "1").
-/// Agora usa flags booleanas independentes para rastrear o que foi encontrado.
 fn parse_pkgbuild_info(content: &str) -> (String, String, String) {
     let mut pkgname = String::from("unknown");
     let mut pkgver  = String::from("0");
@@ -138,11 +190,29 @@ fn parse_pkgbuild_info(content: &str) -> (String, String, String) {
     (pkgname, pkgver, pkgrel)
 }
 
+/// Detect the current git branch, then push to origin/<branch>.
+/// Falls back to plain `git push` if branch detection fails.
 fn push_to_aur(dir: &Path) -> Result<(), Box<dyn std::error::Error>> {
-    if let Err(e) = run_command("git", &["push", "origin", "master"], dir) {
+    // Detect current branch
+    let branch = Command::new("git")
+        .args(["rev-parse", "--abbrev-ref", "HEAD"])
+        .current_dir(dir)
+        .output()
+        .ok()
+        .and_then(|o| {
+            if o.status.success() {
+                Some(String::from_utf8_lossy(&o.stdout).trim().to_string())
+            } else {
+                None
+            }
+        })
+        .unwrap_or_else(|| "master".to_string());
+
+    println!(">>> git push origin {}", branch);
+    if let Err(e) = run_command("git", &["push", "origin", &branch], dir) {
         println!(
             "{} ({}) {}",
-            gettextrs::gettext("Note: push to origin/master failed"),
+            gettextrs::gettext("Note: push to origin/<branch> failed"),
             e,
             gettextrs::gettext("Trying plain 'git push'...")
         );

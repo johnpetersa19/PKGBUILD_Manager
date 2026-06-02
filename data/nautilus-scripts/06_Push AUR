@@ -1,14 +1,4 @@
 #!/bin/bash
-# PKGBUILD Manager - Push AUR
+# PKGBUILD Manager - Push AUR (opens GUI dialog)
 TARGET="$(dirname "$(realpath "${1:-.}")")" 
-source "$(dirname "$0")/_i18n"
-notify-send "PKGBUILD Manager" "$MSG_PUSH_AUR"
-
-LOG_PATH="${TARGET}/push_aur.log"
-
-if pkgbuild_manager aur-push "$TARGET" > "$LOG_PATH" 2>&1; then
-    rm -f "$LOG_PATH"
-    notify-send "PKGBUILD Manager" "$MSG_PUSH_AUR_OK"
-else
-    notify-send -u critical "PKGBUILD Manager" "${MSG_PUSH_AUR_FAIL}$(basename "$LOG_PATH")"
-fi
+pkgbuild-manager-aur-push "$TARGET"
