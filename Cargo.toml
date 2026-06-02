@@ -7,6 +7,20 @@ edition = "2021"
 name = "pkgbuild_manager"
 path = "src/main.rs"
 
+[[bin]]
+name = "pkgbuild-manager-aur-push"
+path = "src/aur_push_gui/main.rs"
+
 [dependencies]
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
 anyhow = "1"
+
+[dependencies.gtk]
+package = "gtk4"
+version = "0.9"
+features = ["v4_14"]
+
+[dependencies.adw]
+package = "libadwaita"
+version = "0.7"
+features = ["v1_6"]
