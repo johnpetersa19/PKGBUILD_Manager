@@ -16,6 +16,7 @@ mod window;
 
 use adw::prelude::*;
 use adw::{Application, ApplicationWindow};
+use adw::gio::ApplicationFlags;
 use gtk::glib;
 use std::env;
 
@@ -34,7 +35,14 @@ fn main() -> glib::ExitCode {
 
     let with_tag = args.iter().any(|a| a == "--tag");
 
-    let app = Application::builder().application_id(APP_ID).build();
+    // NON_UNIQUE: every invocation from the Nautilus script must open its
+    // own independent window. Without this flag GLib detects an existing
+    // D-Bus registration for APP_ID and silently re-activates the old
+    // instance instead of showing a new window.
+    let app = Application::builder()
+        .application_id(APP_ID)
+        .flags(ApplicationFlags::NON_UNIQUE)
+        .build();
 
     app.connect_activate(move |app| {
         let win = window::AurPushWindow::new(app, target.clone(), with_tag);

@@ -10,4 +10,7 @@ if [ -f "$TARGET" ]; then
   TARGET="$(dirname "$TARGET")"
 fi
 
-exec pkgbuild-manager-aur-push "$TARGET"
+# setsid detaches the GUI process from the Nautilus process group so it gets
+# its own D-Bus/Wayland context and is not killed when the script exits.
+setsid pkgbuild-manager-aur-push "$TARGET" &
+disown
