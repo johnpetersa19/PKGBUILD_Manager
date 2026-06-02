@@ -463,3 +463,34 @@ msgstr "Lier les scripts au répertoire utilisateur avec la localisation"
 
 msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
 msgstr "Scripts Nautilus configurés avec succès sous le sous-menu 'PKGBUILD'."
+
+# CLI: additional errors and status
+msgid "failed to canonicalize path"
+msgstr "Échec de la normalisation du chemin"
+
+msgid "failed to spawn command"
+msgstr "Échec du lancement de la commande"
+
+msgid "command failed"
+msgstr "Commande échouée"
+
+msgid "with status"
+msgstr "avec le statut"
+
+msgid "makepkg --printsrcinfo failed"
+msgstr "makepkg --printsrcinfo a échoué"
+
+msgid ">>> Regenerating .SRCINFO in"
+msgstr ">>> Régénération de .SRCINFO dans"
+
+msgid "Warning: could not remove stale PKGBUILD dir"
+msgstr "Avertissement : impossible de supprimer le répertoire PKGBUILD obsolète"
+
+msgid "Nautilus extension not found at /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Please reinstall the package."
+msgstr "Extension Nautilus introuvable à l'emplacement /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Veuillez réinstaller le paquet."
+
+msgid "PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD file to see the PKGBUILD submenu."
+msgstr "PKGBUILD Manager : extension Nautilus active. Cliquez avec le bouton droit sur n'importe quel fichier PKGBUILD pour afficher le sous-menu PKGBUILD."
+
+msgid "Show program version"
+msgstr "Afficher la version du programme"

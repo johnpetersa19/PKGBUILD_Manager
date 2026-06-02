@@ -357,6 +357,7 @@ msgid "Download and extract sources only (makepkg -o)"
 msgstr "Solo descargar y extraer fuentes (makepkg -o)"
 
 msgid "Install commands"
+msgid "Install commands"
 msgstr "Comandos de instalación"
 
 msgid "Compile, install and resolve deps (makepkg -si)"
@@ -463,3 +464,34 @@ msgstr "Enlazar scripts al directorio del usuario con localización"
 
 msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
 msgstr "Scripts de Nautilus configurados con éxito bajo el submenú 'PKGBUILD'."
+
+# CLI: additional errors and status
+msgid "failed to canonicalize path"
+msgstr "Error al canonicalizar la ruta"
+
+msgid "failed to spawn command"
+msgstr "Error al iniciar el comando"
+
+msgid "command failed"
+msgstr "El comando falló"
+
+msgid "with status"
+msgstr "con estado"
+
+msgid "makepkg --printsrcinfo failed"
+msgstr "makepkg --printsrcinfo falló"
+
+msgid ">>> Regenerating .SRCINFO in"
+msgstr ">>> Regenerando .SRCINFO en"
+
+msgid "Warning: could not remove stale PKGBUILD dir"
+msgstr "Advertencia: no se pudo eliminar el directorio PKGBUILD obsoleto"
+
+msgid "Nautilus extension not found at /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Please reinstall the package."
+msgstr "Extensión de Nautilus no encontrada en /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Vuelva a instalar el paquete."
+
+msgid "PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD file to see the PKGBUILD submenu."
+msgstr "PKGBUILD Manager: extensión de Nautilus activa. Haga clic con el botón derecho en cualquier archivo PKGBUILD para ver el submenú PKGBUILD."
+
+msgid "Show program version"
+msgstr "Mostrar la versión del programa"
