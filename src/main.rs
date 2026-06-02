@@ -47,10 +47,52 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let command = &args[1];
 
-    let (path_arg, extra_flags): (&str, Vec<&str>) = match args.get(2) {
-        None => (".", vec![]),
-        Some(s) if s.starts_with('-') => (".", args[2..].iter().map(|s| s.as_str()).collect()),
-        Some(s) => (s.as_str(), args[3..].iter().map(|s| s.as_str()).collect()),
+    // Support optional `--` separator between path and flags so that
+    // directories starting with '-' can still be used as path.
+    // Forms aceitas:
+    //   pkgbuild_manager build                # path = ".", flags = []
+    //   pkgbuild_manager build /dir           # path = "/dir", flags = []
+    //   pkgbuild_manager build -- -c -f       # path = ".",   flags = ["-c", "-f"]
+    //   pkgbuild_manager build /dir -- -c -f  # path = "/dir", flags = ["-c", "-f"]
+    //   pkgbuild_manager build -c -f          # path = ".",   flags = ["-c", "-f"]
+    let (path_arg, extra_flags): (&str, Vec<&str>) = {
+        let mut path: &str = ".";
+        let mut flags: Vec<&str> = Vec::new();
+
+        // Nenhum argumento extra: usa diretório atual
+        if args.len() <= 2 {
+            (path, flags)
+        } else {
+            // Procura por `--` a partir do índice 2 (depois do comando)
+            let sep_pos = args[2..].iter().position(|s| s == "--");
+            match sep_pos {
+                Some(rel_idx) => {
+                    let idx = 2 + rel_idx;
+                    // Tudo depois de `--` são flags literais
+                    flags = args[idx + 1..].iter().map(|s| s.as_str()).collect();
+                    // Antes do `--` podemos ter ou não path explícito
+                    if idx > 2 {
+                        path = &args[2];
+                    }
+                    (path, flags)
+                }
+                None => {
+                    // Sem `--`: mantém heurística antiga
+                    match args.get(2) {
+                        None => (".", Vec::new()),
+                        Some(s) if s.starts_with('-') => {
+                            flags = args[2..].iter().map(|s| s.as_str()).collect();
+                            (".", flags)
+                        }
+                        Some(s) => {
+                            path = s;
+                            flags = args[3..].iter().map(|s| s.as_str()).collect();
+                            (path, flags)
+                        }
+                    }
+                }
+            }
+        }
     };
 
     let target_path = Path::new(path_arg);
@@ -142,10 +184,13 @@ fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
     ];
     for name in stale_names {
         let p = scripts_root.join(name);
-        // symlink_metadata() succeeds for both regular files and symlinks
-        // (including broken symlinks), so a single check is sufficient.
-        if p.symlink_metadata().is_ok() {
-            let _ = fs::remove_file(&p);
+        if let Ok(meta) = p.symlink_metadata() {
+            let ft = meta.file_type();
+            if ft.is_symlink() || ft.is_file() {
+                let _ = fs::remove_file(&p);
+            } else if ft.is_dir() {
+                let _ = fs::remove_dir_all(&p);
+            }
         }
     }
     let pkgbuild_dir = scripts_root.join("PKGBUILD");
