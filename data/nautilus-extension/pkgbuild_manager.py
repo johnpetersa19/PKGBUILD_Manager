@@ -29,6 +29,8 @@ DEFAULT_ACTIONS = [
     ("07b_Clean Everything", "07b_Clean Everything"),
 ]
 
+ROOT_GROUP = "PKGBUILD"
+
 
 def _scripts_dir():
     installed = "/usr/share/pkgbuild-manager/scripts"
@@ -50,7 +52,7 @@ def _load_menu():
             return result, len(data)
         except Exception:
             pass
-    return [(sid, _(sid), "PKGBUILD") for sid, default_label in DEFAULT_ACTIONS], 1
+    return [(sid, _(sid), ROOT_GROUP) for sid, default_label in DEFAULT_ACTIONS], 1
 
 
 class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
@@ -88,26 +90,44 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
                                  cwd=os.path.dirname(pkgpath), close_fds=True)
             return cb
 
-        if len(group_order) <= 1:
-            for sid, label in groups.get(group_order[0] if group_order else "", []):
+        def append_items_flat(target_menu, group_name):
+            for sid, label in groups.get(group_name, []):
                 sp = os.path.join(scripts, sid)
-                it = Nautilus.MenuItem(name=f"PkgbuildManager::{sid.replace(' ','_')}",
-                                       label=label, tip=f"Run {sid}")
+                it = Nautilus.MenuItem(
+                    name=f"PkgbuildManager::{sid.replace(' ', '_')}",
+                    label=label,
+                    tip=f"Run {sid}"
+                )
                 it.connect("activate", make_cb(sp, pkgbuild_path))
-                top_submenu.append_item(it)
+                target_menu.append_item(it)
+
+        # Grupos extras são todos exceto o grupo raiz "PKGBUILD"
+        extra_groups = [g for g in group_order if g != ROOT_GROUP]
+
+        if not extra_groups:
+            # Caso simples: só o grupo raiz — itens diretos no top_submenu
+            append_items_flat(top_submenu, group_order[0] if group_order else ROOT_GROUP)
         else:
-            for gname in group_order:
+            # Itens do grupo raiz vão direto no top_submenu (sem criar submenu extra)
+            if ROOT_GROUP in groups:
+                append_items_flat(top_submenu, ROOT_GROUP)
+                # Separador visual entre itens raiz e subgrupos extras
+                sep = Nautilus.MenuItem(
+                    name="PkgbuildManager::Sep",
+                    label="",
+                    tip=""
+                )
+                top_submenu.append_item(sep)
+            # Grupos extras viram submenus aninhados
+            for gname in extra_groups:
                 git = Nautilus.MenuItem(
-                    name=f"PkgbuildManager::G_{gname.replace(' ','_')}",
-                    label=gname, tip=gname)
+                    name=f"PkgbuildManager::G_{gname.replace(' ', '_')}",
+                    label=gname,
+                    tip=gname
+                )
                 gsub = Nautilus.Menu()
                 git.set_submenu(gsub)
-                for sid, label in groups[gname]:
-                    sp = os.path.join(scripts, sid)
-                    it = Nautilus.MenuItem(name=f"PkgbuildManager::{sid.replace(' ','_')}",
-                                           label=label, tip=f"Run {sid}")
-                    it.connect("activate", make_cb(sp, pkgbuild_path))
-                    gsub.append_item(it)
+                append_items_flat(gsub, gname)
                 top_submenu.append_item(git)
 
         return [top]
