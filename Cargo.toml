@@ -14,6 +14,7 @@ path = "src/aur_push_gui/main.rs"
 [dependencies]
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
 anyhow = "1"
+async-channel = "2"
 
 [dependencies.gtk]
 package = "gtk4"
