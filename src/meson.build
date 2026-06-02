@@ -46,8 +46,6 @@ cargo_build = custom_target(
     cargo_bin, 'build',
     cargo_opt,
     '&&', 'cp', 'src' / rust_target / meson.project_name(), '@OUTPUT@',
-    '&&', 'cp', 'src' / rust_target / 'pkgbuild-manager-aur-push',
-    meson.project_build_root() / 'src' / 'pkgbuild-manager-aur-push',
   ]
 )
 
@@ -62,7 +60,7 @@ custom_target(
   depends: cargo_build,
   command: [
     'cp',
-    meson.project_build_root() / 'src' / 'pkgbuild-manager-aur-push',
+    meson.project_build_root() / 'src' / rust_target / 'pkgbuild-manager-aur-push',
     '@OUTPUT@',
   ]
 )
