@@ -1,43 +1,59 @@
 /* window.rs — AurPushWindow
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
- *
- * Layout (Adwaita style):
- *
- *  ┌─ AdwApplicationWindow ─────────────────────────────────────┐
- *  │  AdwHeaderBar  "Push to AUR"                               │
- *  │─────────────────────────────────────────────────────────────│
- *  │  AdwPreferencesGroup  ── Fields ──                         │
- *  │   • Commit message  (EntryRow, placeholder = auto)         │
- *  │   • Tag version     (EntryRow, visible only --tag mode)    │
- *  │─────────────────────────────────────────────────────────────│
- *  │  AdwPreferencesGroup  ── Steps ──                          │
- *  │   • Regen .SRCINFO   [spinner / ✔ / ✖]                    │
- *  │   • git status       [spinner / ✔ / ✖]                    │
- *  │   • git add          [spinner / ✔ / ✖]                    │
- *  │   • git commit       [spinner / ✔ / ✖]                    │
- *  │   • git push         [spinner / ✔ / ✖]                    │
- *  │   • git tag -a       [spinner / ✔ / ✖]  (--tag only)      │
- *  │   • git push --tags  [spinner / ✔ / ✖]  (--tag only)      │
- *  │─────────────────────────────────────────────────────────────│
- *  │  Expander ── Log ──                                        │
- *  │   ScrolledWindow > TextView (monospace, read-only)         │
- *  │─────────────────────────────────────────────────────────────│
- *  │  [  Push to AUR  ]                    (bottom action row)  │
- *  └─────────────────────────────────────────────────────────────┘
  */
 
 use adw::prelude::*;
 use adw::{ApplicationWindow, HeaderBar, StatusPage};
 use gtk::{
-    glib, glib::clone, Align, Box as GBox, Button, Expander, Label,
-    Orientation, PolicyType, ScrolledWindow, Spinner, TextView, WrapMode,
+    glib, glib::clone, Align, Box as GBox, Button, CssProvider, Expander,
+    Label, Orientation, PolicyType, ProgressBar, ScrolledWindow, Spinner,
+    StyleContext, TextView, WrapMode,
 };
 use std::cell::RefCell;
 use std::io::{BufRead, BufReader};
 use std::process::{Command, Stdio};
 use std::rc::Rc;
 use std::thread;
+
+// ── CSS ─────────────────────────────────────────────────────────────────
+
+const CSS: &str = "
+.step-running {
+    background-color: alpha(@accent_bg_color, 0.12);
+    transition: background-color 300ms ease;
+}
+.step-ok {
+    background-color: alpha(@success_bg_color, 0.10);
+    transition: background-color 300ms ease;
+}
+.step-error {
+    background-color: alpha(@error_bg_color, 0.14);
+    transition: background-color 300ms ease;
+}
+.icon-ok {
+    color: @success_color;
+    font-size: 16px;
+    font-weight: bold;
+}
+.icon-error {
+    color: @error_color;
+    font-size: 16px;
+    font-weight: bold;
+}
+.icon-waiting {
+    color: alpha(@window_fg_color, 0.25);
+    font-size: 14px;
+}
+.log-view {
+    font-family: monospace;
+    font-size: 12px;
+}
+.progress-bar-box {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+";
 
 // ── Step descriptor ──────────────────────────────────────────────────────────
 
@@ -53,17 +69,20 @@ impl StepRow {
         let row = adw::ActionRow::builder().title(title).build();
 
         let spinner = Spinner::builder()
-            .width_request(20)
-            .height_request(20)
+            .width_request(22)
+            .height_request(22)
             .halign(Align::Center)
             .valign(Align::Center)
+            .visible(false)
             .build();
 
+        // Waiting bullet — shown before the step runs
         let icon = Label::builder()
-            .label("")
+            .label("○")
             .width_chars(2)
             .halign(Align::Center)
             .valign(Align::Center)
+            .css_classes(vec!["icon-waiting".to_string()])
             .build();
 
         row.add_prefix(&spinner);
@@ -73,49 +92,65 @@ impl StepRow {
     }
 
     fn set_running(&self) {
-        self.spinner.start();
-        self.spinner.set_visible(true);
+        self.row.remove_css_class("step-ok");
+        self.row.remove_css_class("step-error");
+        self.row.add_css_class("step-running");
         self.icon.set_visible(false);
+        self.spinner.set_visible(true);
+        self.spinner.start();
         self.row.set_subtitle("");
     }
 
     fn set_ok(&self) {
         self.spinner.stop();
         self.spinner.set_visible(false);
+        self.row.remove_css_class("step-running");
+        self.row.remove_css_class("step-error");
+        self.row.add_css_class("step-ok");
         self.icon.set_label("✔");
-        self.icon.add_css_class("success");
+        self.icon.remove_css_class("icon-waiting");
+        self.icon.remove_css_class("icon-error");
+        self.icon.add_css_class("icon-ok");
         self.icon.set_visible(true);
     }
 
     fn set_err(&self, detail: &str) {
         self.spinner.stop();
         self.spinner.set_visible(false);
+        self.row.remove_css_class("step-running");
+        self.row.remove_css_class("step-ok");
+        self.row.add_css_class("step-error");
         self.icon.set_label("✖");
-        self.icon.add_css_class("error");
+        self.icon.remove_css_class("icon-waiting");
+        self.icon.remove_css_class("icon-ok");
+        self.icon.add_css_class("icon-error");
         self.icon.set_visible(true);
-        self.row.set_subtitle(detail);
+        if !detail.is_empty() {
+            self.row.set_subtitle(detail);
+        }
     }
 
     fn reset(&self) {
         self.spinner.stop();
         self.spinner.set_visible(false);
-        self.icon.set_label("");
-        self.icon.remove_css_class("success");
-        self.icon.remove_css_class("error");
-        self.icon.set_visible(false);
+        self.row.remove_css_class("step-running");
+        self.row.remove_css_class("step-ok");
+        self.row.remove_css_class("step-error");
+        self.icon.set_label("○");
+        self.icon.remove_css_class("icon-ok");
+        self.icon.remove_css_class("icon-error");
+        self.icon.add_css_class("icon-waiting");
+        self.icon.set_visible(true);
         self.row.set_subtitle("");
     }
 }
 
-// ── Channel messages from worker thread ──────────────────────────────────────
+// ── Channel messages ──────────────────────────────────────────────────────────
 
 #[derive(Debug)]
 enum Msg {
-    /// "[STEP] <key> start|ok|error: <detail>"
     Step { key: String, state: StepState, detail: String },
-    /// Raw log line
     Log(String),
-    /// Final result
     Done(bool),
 }
 
@@ -136,12 +171,20 @@ impl AurPushWindow {
         target: String,
         with_tag: bool,
     ) -> ApplicationWindow {
-        // ── Build UI ─────────────────────────────────────────────────────────
+        // Load CSS
+        let provider = CssProvider::new();
+        provider.load_from_string(CSS);
+        StyleContext::add_provider_for_display(
+            &gtk::gdk::Display::default().unwrap(),
+            &provider,
+            gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+        );
+
         let win = ApplicationWindow::builder()
             .application(app)
             .title("Push to AUR")
-            .default_width(520)
-            .default_height(560)
+            .default_width(540)
+            .default_height(580)
             .build();
 
         let root = GBox::builder()
@@ -149,11 +192,30 @@ impl AurPushWindow {
             .spacing(0)
             .build();
 
-        // Header bar
         let header = HeaderBar::new();
+        // Show target path in subtitle
+        let subtitle = Label::builder()
+            .label(&target)
+            .ellipsize(gtk::pango::EllipsizeMode::Start)
+            .css_classes(vec!["dim-label".to_string()])
+            .build();
+        header.set_title_widget(Some(&{
+            let vbox = GBox::builder().orientation(Orientation::Vertical).valign(Align::Center).build();
+            let title = Label::builder().label("Push to AUR").css_classes(vec!["title".to_string()]).build();
+            vbox.append(&title);
+            vbox.append(&subtitle);
+            vbox
+        }));
         root.append(&header);
 
-        // Scrollable content area
+        // ── Progress bar (hidden until running) ───────────────────────────────
+        let progress = ProgressBar::builder()
+            .fraction(0.0)
+            .visible(false)
+            .css_classes(vec!["progress-bar-box".to_string()])
+            .build();
+        root.append(&progress);
+
         let scroll = ScrolledWindow::builder()
             .hscrollbar_policy(PolicyType::Never)
             .vscrollbar_policy(PolicyType::Automatic)
@@ -173,9 +235,7 @@ impl AurPushWindow {
         root.append(&scroll);
 
         // ── Fields group ──────────────────────────────────────────────────────
-        let fields_group = adw::PreferencesGroup::builder()
-            .title("Commit")
-            .build();
+        let fields_group = adw::PreferencesGroup::builder().title("Commit").build();
 
         let msg_row = adw::EntryRow::builder()
             .title("Message")
@@ -193,9 +253,7 @@ impl AurPushWindow {
         content.append(&fields_group);
 
         // ── Steps group ───────────────────────────────────────────────────────
-        let steps_group = adw::PreferencesGroup::builder()
-            .title("Steps")
-            .build();
+        let steps_group = adw::PreferencesGroup::builder().title("Steps").build();
 
         let step_srcinfo  = StepRow::new("Regen .SRCINFO");
         let step_status   = StepRow::new("git status");
@@ -210,24 +268,19 @@ impl AurPushWindow {
         steps_group.add(&step_add.row);
         steps_group.add(&step_commit.row);
         steps_group.add(&step_push.row);
-
         if with_tag {
             steps_group.add(&step_tag.row);
             steps_group.add(&step_pushtags.row);
         }
-
         content.append(&steps_group);
 
-        // ── Log expander ──────────────────────────────────────────────────────
-        let log_expander = Expander::builder()
-            .label("Log")
-            .expanded(false)
-            .build();
+        // ── Log expander (auto-opens on error) ──────────────────────────────
+        let log_expander = Expander::builder().label("Log").expanded(false).build();
 
         let log_scroll = ScrolledWindow::builder()
             .hscrollbar_policy(PolicyType::Automatic)
             .vscrollbar_policy(PolicyType::Automatic)
-            .height_request(160)
+            .height_request(180)
             .build();
 
         let log_view = TextView::builder()
@@ -235,14 +288,14 @@ impl AurPushWindow {
             .cursor_visible(false)
             .wrap_mode(WrapMode::None)
             .monospace(true)
+            .css_classes(vec!["log-view".to_string()])
             .build();
-        log_view.add_css_class("dim-label");
 
         log_scroll.set_child(Some(&log_view));
         log_expander.set_child(Some(&log_scroll));
         content.append(&log_expander);
 
-        // ── Status page (shown after finish) ──────────────────────────────────
+        // ── Status page ─────────────────────────────────────────────────────────
         let status_page = StatusPage::builder()
             .icon_name("object-select-symbolic")
             .title("")
@@ -250,18 +303,19 @@ impl AurPushWindow {
             .build();
         content.append(&status_page);
 
-        // ── Action row (push button) ───────────────────────────────────────────
+        // ── Bottom button ──────────────────────────────────────────────────────
         let btn_box = GBox::builder()
             .orientation(Orientation::Horizontal)
             .halign(Align::End)
-            .margin_top(4)
-            .margin_bottom(4)
+            .margin_top(6)
+            .margin_bottom(8)
+            .margin_end(12)
             .spacing(8)
             .build();
 
         let push_btn = Button::builder()
             .label(if with_tag { "Push + Tag to AUR" } else { "Push to AUR" })
-            .css_classes(vec!["suggested-action".to_string()])
+            .css_classes(vec!["suggested-action".to_string(), "pill".to_string()])
             .build();
 
         btn_box.append(&push_btn);
@@ -271,6 +325,8 @@ impl AurPushWindow {
 
         // ── Shared state ──────────────────────────────────────────────────────
         let running = Rc::new(RefCell::new(false));
+        let total_steps: f64 = if with_tag { 7.0 } else { 5.0 };
+        let done_steps = Rc::new(RefCell::new(0u32));
 
         let steps: Rc<Vec<(&'static str, StepRow)>> = Rc::new(vec![
             ("regen-srcinfo", step_srcinfo),
@@ -282,7 +338,6 @@ impl AurPushWindow {
             ("git-push-tags", step_pushtags),
         ]);
 
-        // ── Channel (async_channel replaces deprecated glib::MainContext::channel) ──
         let (sender, receiver) = async_channel::unbounded::<Msg>();
 
         push_btn.connect_clicked(clone!(
@@ -293,16 +348,23 @@ impl AurPushWindow {
             #[strong] log_view,
             #[strong] status_page,
             #[strong] push_btn,
+            #[strong] progress,
+            #[strong] log_expander,
+            #[strong] done_steps,
             #[strong] target,
             move |_| {
                 if *running.borrow() { return; }
                 *running.borrow_mut() = true;
+                *done_steps.borrow_mut() = 0;
 
-                // Reset UI
                 for (_, step) in steps.iter() { step.reset(); }
                 log_view.buffer().set_text("");
                 status_page.set_visible(false);
+                log_expander.set_expanded(false);
                 push_btn.set_sensitive(false);
+                progress.set_fraction(0.0);
+                progress.set_visible(true);
+                progress.pulse();
 
                 let msg_text = msg_row.text().to_string();
                 let tag_text = tag_row.text().to_string();
@@ -321,13 +383,15 @@ impl AurPushWindow {
             }
         ));
 
-        // ── Receive messages from worker ──────────────────────────────────────
         glib::spawn_future_local(clone!(
             #[strong] running,
             #[strong] steps,
             #[strong] log_view,
             #[strong] status_page,
             #[strong] push_btn,
+            #[strong] progress,
+            #[strong] log_expander,
+            #[strong] done_steps,
             async move {
                 while let Ok(msg) = receiver.recv().await {
                     match msg {
@@ -342,9 +406,21 @@ impl AurPushWindow {
                             for (k, step) in steps.iter() {
                                 if *k == key {
                                     match state {
-                                        StepState::Start => step.set_running(),
-                                        StepState::Ok    => step.set_ok(),
-                                        StepState::Error => step.set_err(&detail),
+                                        StepState::Start => {
+                                            step.set_running();
+                                            progress.pulse();
+                                        }
+                                        StepState::Ok => {
+                                            step.set_ok();
+                                            *done_steps.borrow_mut() += 1;
+                                            let frac = *done_steps.borrow() as f64 / total_steps;
+                                            progress.set_fraction(frac.min(1.0));
+                                        }
+                                        StepState::Error => {
+                                            step.set_err(&detail);
+                                            // Auto-open log so user sees what went wrong
+                                            log_expander.set_expanded(true);
+                                        }
                                     }
                                     break;
                                 }
@@ -353,16 +429,21 @@ impl AurPushWindow {
                         Msg::Done(ok) => {
                             *running.borrow_mut() = false;
                             push_btn.set_sensitive(true);
-                            push_btn.set_label(if ok { "Push again" } else { "Retry" });
 
                             if ok {
-                                status_page.set_icon_name(Some("object-select-symbolic"));
-                                status_page.set_title("AUR push completed!");
+                                progress.set_fraction(1.0);
+                                push_btn.set_label("Push again");
+                                status_page.set_icon_name(Some("emblem-ok-symbolic"));
+                                status_page.set_title("Enviado para o AUR!");
                                 status_page.remove_css_class("error");
                             } else {
+                                progress.set_fraction(0.0);
+                                progress.set_visible(false);
+                                push_btn.set_label("Tentar novamente");
                                 status_page.set_icon_name(Some("dialog-error-symbolic"));
-                                status_page.set_title("Push failed — see log above");
+                                status_page.set_title("Falha no push — veja o log");
                                 status_page.add_css_class("error");
+                                log_expander.set_expanded(true);
                             }
                             status_page.set_visible(true);
                         }
@@ -383,23 +464,30 @@ fn run_push_worker(
     tag: Option<String>,
     tx: async_channel::Sender<Msg>,
 ) {
+    // Validate target directory
+    if target.is_empty() {
+        let _ = tx.send_blocking(Msg::Log("[ERROR] No target directory provided.".into()));
+        let _ = tx.send_blocking(Msg::Done(false));
+        return;
+    }
+
     let mut cmd = Command::new("pkgbuild_manager");
     cmd.arg(if tag.is_some() { "aur-push-tag" } else { "aur-push" });
     cmd.arg(target);
-
     if let Some(ref t) = tag {
         cmd.arg(t);
     } else if let Some(ref m) = message {
         cmd.arg(m);
     }
-
     cmd.stdout(Stdio::piped());
     cmd.stderr(Stdio::piped());
 
     let mut child = match cmd.spawn() {
         Ok(c) => c,
         Err(e) => {
-            let _ = tx.send_blocking(Msg::Log(format!("[ERROR] failed to spawn pkgbuild_manager: {e}")));
+            let _ = tx.send_blocking(Msg::Log(
+                format!("[ERROR] Falha ao iniciar pkgbuild_manager: {e}\nVerifique se está instalado e no PATH.")
+            ));
             let _ = tx.send_blocking(Msg::Done(false));
             return;
         }
@@ -411,7 +499,6 @@ fn run_push_worker(
             parse_and_send(&line, &tx);
         }
     }
-
     if let Some(stderr) = child.stderr.take() {
         let reader = BufReader::new(stderr);
         for line in reader.lines().map_while(Result::ok) {
@@ -440,10 +527,6 @@ fn parse_and_send(line: &str, tx: &async_channel::Sender<Msg>) {
         } else {
             return;
         };
-        let _ = tx.send_blocking(Msg::Step {
-            key: key.to_string(),
-            state,
-            detail,
-        });
+        let _ = tx.send_blocking(Msg::Step { key: key.to_string(), state, detail });
     }
 }
