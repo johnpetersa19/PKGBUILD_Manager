@@ -1,12 +1,12 @@
 use std::path::Path;
 use std::process::Command;
-use super::{get_target_dir, run_command};
+use super::{get_target_dir, run_command, regenerate_srcinfo};
 
 /// Stage PKGBUILD + .SRCINFO, commit with conventional AUR message, and push to origin/master.
 ///
 /// If `message` is None, the commit message is auto-generated from the PKGBUILD:
 ///   "upgpkg: pkgname ver-rel"
-pub fn run(path: &Path, message: Option<&str>) -> Result<(), Box<dyn std::error::Error>> {
+pub fn run(path: &Path, message: Option<&str>) -> anyhow::Result<()> {
     let target_dir = get_target_dir(path)?;
     run_with_dir(&target_dir, message)
 }
@@ -14,7 +14,7 @@ pub fn run(path: &Path, message: Option<&str>) -> Result<(), Box<dyn std::error:
 /// Same as `run` but also creates an annotated version tag and pushes it.
 ///
 /// `tag`: e.g. "1.2.3-1"
-pub fn run_with_tag(path: &Path, tag: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub fn run_with_tag(path: &Path, tag: &str) -> anyhow::Result<()> {
     let target_dir = get_target_dir(path)?;
 
     run_with_dir(&target_dir, None)?;
@@ -31,7 +31,7 @@ pub fn run_with_tag(path: &Path, tag: &str) -> Result<(), Box<dyn std::error::Er
 }
 
 // Internal: perform the full stage -> commit -> push flow given an already-resolved dir.
-fn run_with_dir(target_dir: &Path, message: Option<&str>) -> Result<(), Box<dyn std::error::Error>> {
+fn run_with_dir(target_dir: &Path, message: Option<&str>) -> anyhow::Result<()> {
     // Regenerate .SRCINFO and parse package info from the same output in one pass.
     let srcinfo_content = regenerate_srcinfo(target_dir)?;
 
@@ -63,35 +63,15 @@ fn run_with_dir(target_dir: &Path, message: Option<&str>) -> Result<(), Box<dyn 
         if combined.contains("nothing to commit") || combined.contains("nothing added to commit") {
             println!("{}", gettextrs::gettext("Note: nothing to commit — continuing with push."));
         } else {
-            return Err(format!(
+            return Err(anyhow::anyhow!(
                 "{}: {}",
                 gettextrs::gettext("git commit failed"),
                 stderr.trim()
-            ).into());
+            ));
         }
     }
 
     push_to_aur(target_dir)
-}
-
-/// Regenerate .SRCINFO and return its content (avoids a second makepkg call).
-fn regenerate_srcinfo(dir: &Path) -> Result<String, Box<dyn std::error::Error>> {
-    println!("{} {:?}", gettextrs::gettext(">>> Regenerating .SRCINFO in"), dir);
-    let output = Command::new("makepkg")
-        .arg("--printsrcinfo")
-        .current_dir(dir)
-        .output()?;
-
-    if !output.status.success() {
-        let err = String::from_utf8_lossy(&output.stderr);
-        return Err(
-            format!("{} {}", gettextrs::gettext("makepkg --printsrcinfo failed:"), err).into(),
-        );
-    }
-
-    let content = String::from_utf8_lossy(&output.stdout).into_owned();
-    std::fs::write(dir.join(".SRCINFO"), output.stdout)?;
-    Ok(content)
 }
 
 /// Parse pkgname/pkgver/pkgrel from already-fetched .SRCINFO text.
@@ -138,7 +118,7 @@ fn parse_pkgbuild_info(content: &str) -> (String, String, String) {
     (pkgname, pkgver, pkgrel)
 }
 
-fn push_to_aur(dir: &Path) -> Result<(), Box<dyn std::error::Error>> {
+fn push_to_aur(dir: &Path) -> anyhow::Result<()> {
     if let Err(e) = run_command("git", &["push", "origin", "master"], dir) {
         println!(
             "{} ({}) {}",
