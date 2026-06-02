@@ -7,27 +7,48 @@ pub mod shellcheck;
 pub mod clean;
 pub mod aur_push;
 
+use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
+
+use anyhow::{anyhow, Context, Result};
 use gettextrs::gettext;
 
 /// Resolve a path to the directory containing PKGBUILD.
 /// Accepts either a directory or a PKGBUILD file path directly.
-pub fn get_target_dir(path: &Path) -> Result<PathBuf, Box<dyn std::error::Error>> {
-    let resolved = path.canonicalize()?;
+pub fn get_target_dir(path: &Path) -> Result<PathBuf> {
+    let resolved = path
+        .canonicalize()
+        .with_context(|| {
+            format!(
+                "PKGBUILD Manager: {} {:?}",
+                gettext("failed to canonicalize path"),
+                path
+            )
+        })?;
+
     let mut target = resolved.clone();
     if resolved.is_file() {
-        target = resolved.parent()
-            .ok_or_else(|| gettext("Failed to resolve parent directory"))?
+        target = resolved
+            .parent()
+            .ok_or_else(|| anyhow!(gettext("Failed to resolve parent directory")))?
             .to_path_buf();
     }
 
     if !target.exists() {
-        return Err(format!("{}: {:?}", gettext("Directory does not exist"), target).into());
+        return Err(anyhow!(
+            "{}: {:?}",
+            gettext("Directory does not exist"),
+            target
+        ));
     }
     let pkgbuild_path = target.join("PKGBUILD");
     if !pkgbuild_path.exists() {
-        return Err(format!("{}: {:?}", gettext("No PKGBUILD found in directory"), target).into());
+        return Err(anyhow!(
+            "{}: {:?}",
+            gettext("No PKGBUILD found in directory"),
+            target
+        ));
     }
 
     Ok(target)
@@ -38,7 +59,7 @@ pub fn get_target_dir(path: &Path) -> Result<PathBuf, Box<dyn std::error::Error>
 /// Usa Stdio::inherit() em stdin/stdout/stderr para que comandos
 /// interativos (como `makepkg -si` que chama `pacman`) possam exibir
 /// prompts e receber respostas do usuário normalmente.
-pub fn run_command(cmd_name: &str, args: &[&str], dir: &Path) -> Result<(), Box<dyn std::error::Error>> {
+pub fn run_command(cmd_name: &str, args: &[&str], dir: &Path) -> Result<()> {
     println!(">>> {} {} (in {:?})", cmd_name, args.join(" "), dir);
 
     let status = Command::new(cmd_name)
@@ -48,30 +69,39 @@ pub fn run_command(cmd_name: &str, args: &[&str], dir: &Path) -> Result<(), Box<
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
         .status()
-        .map_err(|e| -> Box<dyn std::error::Error> {
-            if e.kind() == std::io::ErrorKind::NotFound {
-                format!("{} '{}'", gettext("Command not found"), cmd_name).into()
-            } else {
-                e.into()
-            }
+        .with_context(|| {
+            format!(
+                "PKGBUILD Manager: {} '{}'",
+                gettext("failed to spawn command"),
+                cmd_name
+            )
         })?;
 
     if status.success() {
         Ok(())
     } else {
-        Err(format!(
-            "{} {} {}",
-            gettext("Command failed:"),
+        Err(anyhow!(
+            "PKGBUILD Manager: {} '{}' {} {}",
+            gettext("command failed"),
             cmd_name,
+            gettext("with status"),
             status
-        ).into())
+        ))
     }
+}
+
+/// Helper to run makepkg with a base set of arguments plus extra flags.
+pub fn run_makepkg(path: &Path, base_args: &[&str], extra_flags: &[&str]) -> Result<()> {
+    let target_dir = get_target_dir(path)?;
+    let mut args: Vec<&str> = base_args.to_vec();
+    args.extend_from_slice(extra_flags);
+    run_command("makepkg", &args, &target_dir)
 }
 
 /// Collect all *.pkg.tar.* file names in `dir`.
 /// Shared between namcap and clean to avoid duplicating directory traversal logic.
 pub fn collect_pkg_files(dir: &Path) -> Vec<String> {
-    std::fs::read_dir(dir)
+    fs::read_dir(dir)
         .map(|entries| {
             entries
                 .flatten()
@@ -82,4 +112,30 @@ pub fn collect_pkg_files(dir: &Path) -> Vec<String> {
                 .collect()
         })
         .unwrap_or_default()
+}
+
+/// Regenerate .SRCINFO using `makepkg --printsrcinfo`, write it to disk,
+/// and return the generated content as String.
+pub fn regenerate_srcinfo(dir: &Path) -> Result<String> {
+    println!("{} {:?}", gettextrs::gettext(">>> Regenerating .SRCINFO in"), dir);
+
+    let output = Command::new("makepkg")
+        .arg("--printsrcinfo")
+        .current_dir(dir)
+        .output()
+        .with_context(|| "PKGBUILD Manager: failed to run makepkg --printsrcinfo")?;
+
+    if !output.status.success() {
+        let err_msg = String::from_utf8_lossy(&output.stderr);
+        return Err(anyhow!(
+            "{}: {}",
+            gettextrs::gettext("makepkg --printsrcinfo failed"),
+            err_msg.trim()
+        ));
+    }
+
+    fs::write(dir.join(".SRCINFO"), &output.stdout)
+        .with_context(|| "PKGBUILD Manager: failed to write .SRCINFO")?;
+
+    Ok(String::from_utf8_lossy(&output.stdout).into_owned())
 }
