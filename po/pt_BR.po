@@ -17,67 +17,67 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "00_Full Workflow"
-msgstr "00_Fluxo Completo"
+msgstr "Fluxo Completo"
 
 msgid "01_Build"
-msgstr "01_Compilar"
+msgstr "Compilar"
 
 msgid "02b_Build and Clean"
-msgstr "02b_Compilar e Limpar"
+msgstr "Compilar e Limpar"
 
 msgid "08_Build Force"
-msgstr "08_Compilar Forçado"
+msgstr "Compilar Forçado"
 
 msgid "09_Build NoCheck"
-msgstr "09_Compilar sem Check"
+msgstr "Compilar sem Check"
 
 msgid "10_Build NoGPG"
-msgstr "10_Compilar sem GPG"
+msgstr "Compilar sem GPG"
 
 msgid "11_Fetch Sources"
-msgstr "11_Baixar Fontes"
+msgstr "Baixar Fontes"
 
 msgid "02_Install"
-msgstr "02_Instalar"
+msgstr "Instalar"
 
 msgid "12_Install Force"
-msgstr "12_Instalar Forçado"
+msgstr "Instalar Forçado"
 
 msgid "13_Install RmDeps"
-msgstr "13_Instalar Remover Deps"
+msgstr "Instalar Remover Deps"
 
 msgid "14_Install NoCheck"
-msgstr "14_Instalar sem Check"
+msgstr "Instalar sem Check"
 
 msgid "15_Install NoGPG"
-msgstr "15_Instalar sem GPG"
+msgstr "Instalar sem GPG"
 
 msgid "03_Update Checksums"
-msgstr "03_Atualizar Checksums"
+msgstr "Atualizar Checksums"
 
 msgid "04_Update .SRCINFO"
-msgstr "04_Atualizar .SRCINFO"
+msgstr "Atualizar .SRCINFO"
 
 msgid "16_Gen Checksums"
-msgstr "16_Gerar Checksums"
+msgstr "Gerar Checksums"
 
 msgid "05b_ShellCheck"
-msgstr "05b_ShellCheck"
+msgstr "ShellCheck"
 
 msgid "05_Namcap"
-msgstr "05_Namcap"
+msgstr "Namcap"
 
 msgid "06_Push AUR"
-msgstr "06_Enviar para AUR"
+msgstr "Enviar para AUR"
 
 msgid "17_Push AUR Tag"
-msgstr "17_Enviar Tag AUR"
+msgstr "Enviar Tag AUR"
 
 msgid "07b_Clean Everything"
-msgstr "07b_Limpar Tudo"
+msgstr "Limpar Tudo"
 
 msgid "07_Clean srcdir"
-msgstr "07_Limpar srcdir"
+msgstr "Limpar srcdir"
 
 msgid "PKGBUILD Manager — Menu Settings"
 msgstr "PKGBUILD Manager — Configurações do Menu"
