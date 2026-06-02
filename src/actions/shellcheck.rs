@@ -8,7 +8,7 @@ use super::{get_target_dir, run_command};
 ///   SC2034 – variables "unused" but consumed by makepkg's own scope
 ///   SC2154 – variables referenced before assignment (normal in PKGBUILD)
 ///   SC2164 – `cd` without error check (makepkg wraps everything safely)
-pub fn run(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
+pub fn run(path: &Path) -> anyhow::Result<()> {
     let target_dir = get_target_dir(path)?;
     run_command(
         "shellcheck",
@@ -18,10 +18,12 @@ pub fn run(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     .map_err(|e| {
         if let Some(io_err) = e.downcast_ref::<io::Error>() {
             if io_err.kind() == io::ErrorKind::NotFound {
-                return gettextrs::gettext(
-                    "shellcheck not found. Install it with: sudo pacman -S shellcheck",
-                )
-                .into();
+                return anyhow::anyhow!(
+                    "{}",
+                    gettextrs::gettext(
+                        "shellcheck not found. Install it with: sudo pacman -S shellcheck",
+                    )
+                );
             }
         }
         e
