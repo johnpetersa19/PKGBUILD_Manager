@@ -463,3 +463,34 @@ msgstr "ローカライズ付きでスクリプトをユーザーディレクト
 
 msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
 msgstr "Nautilusスクリプトが'PKGBUILD'サブメニュー下に正常に設定されました。"
+
+# CLI: errors and status
+msgid "failed to canonicalize path"
+msgstr "パスを正規化できませんでした"
+
+msgid "failed to spawn command"
+msgstr "コマンドを起動できませんでした"
+
+msgid "command failed"
+msgstr "コマンドが失敗しました"
+
+msgid "with status"
+msgstr "ステータス："
+
+msgid "makepkg --printsrcinfo failed"
+msgstr "makepkg --printsrcinfo が失敗しました"
+
+msgid ">>> Regenerating .SRCINFO in"
+msgstr ">>> .SRCINFO を再生成中:"
+
+msgid "Warning: could not remove stale PKGBUILD dir"
+msgstr "警告: 古い PKGBUILD ディレクトリを削除できませんでした"
+
+msgid "Nautilus extension not found at /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Please reinstall the package."
+msgstr "/usr/share/nautilus-python/extensions/pkgbuild_manager.py に Nautilus 拡張機能が見つかりません。パッケージを再インストールしてください。"
+
+msgid "PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD file to see the PKGBUILD submenu."
+msgstr "PKGBUILD Manager: Nautilus 拡張機能が有効です。任意の PKGBUILD ファイルを右クリックして PKGBUILD サブメニューを表示してください。"
+
+msgid "Show program version"
+msgstr "プログラムのバージョンを表示"

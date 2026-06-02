@@ -463,3 +463,34 @@ msgstr "将脚本符号链接到用户目录（含本地化）"
 
 msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
 msgstr "Nautilus 脚本已成功配置在 'PKGBUILD' 子菜单下。"
+
+# CLI: errors and status
+msgid "failed to canonicalize path"
+msgstr "无法规范化路径"
+
+msgid "failed to spawn command"
+msgstr "无法启动命令"
+
+msgid "command failed"
+msgstr "命令执行失败"
+
+msgid "with status"
+msgstr "状态："
+
+msgid "makepkg --printsrcinfo failed"
+msgstr "makepkg --printsrcinfo 失败"
+
+msgid ">>> Regenerating .SRCINFO in"
+msgstr ">>> 正在重新生成 .SRCINFO 于"
+
+msgid "Warning: could not remove stale PKGBUILD dir"
+msgstr "警告：无法删除过期的 PKGBUILD 目录"
+
+msgid "Nautilus extension not found at /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Please reinstall the package."
+msgstr "在 /usr/share/nautilus-python/extensions/pkgbuild_manager.py 未找到 Nautilus 扩展。请重新安装该软件包。"
+
+msgid "PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD file to see the PKGBUILD submenu."
+msgstr "PKGBUILD Manager：Nautilus 扩展已启用。右键单击任意 PKGBUILD 文件可查看 PKGBUILD 子菜单。"
+
+msgid "Show program version"
+msgstr "显示程序版本"
