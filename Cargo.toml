@@ -17,10 +17,10 @@ anyhow = "1"
 
 [dependencies.gtk]
 package = "gtk4"
-version = "0.9"
+version = "0.11"
 features = ["v4_14"]
 
 [dependencies.adw]
 package = "libadwaita"
-version = "0.7"
+version = "0.9"
 features = ["v1_6"]
