@@ -200,7 +200,7 @@ msgid "notify_install_nogpg_fail"
 msgstr "✗ ¡Instalación (sin GPG) fallida! Ver: "
 
 msgid "notify_install_nogpg_ok"
-msgstr "✓ ¡Instalación (sin GPG) completada!"
+msgstr "✓ ¡Instalação (sin GPG) completada!"
 
 msgid "notify_install_rmdeps"
 msgstr "Instalando (eliminando deps de compilación)..."
@@ -356,7 +356,6 @@ msgstr "Compilar con flags personalizados pasados después de la ruta"
 msgid "Download and extract sources only (makepkg -o)"
 msgstr "Solo descargar y extraer fuentes (makepkg -o)"
 
-msgid "Install commands"
 msgid "Install commands"
 msgstr "Comandos de instalación"
 
