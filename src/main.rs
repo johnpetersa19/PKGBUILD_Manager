@@ -21,12 +21,13 @@
 mod config;
 mod actions;
 
-use config::{GETTEXT_PACKAGE, LOCALEDIR};
+use anyhow::Result;
+use config::{GETTEXT_PACKAGE, LOCALEDIR, VERSION};
 use gettextrs::{bind_textdomain_codeset, bindtextdomain, textdomain, gettext, LocaleCategory};
 use std::env;
 use std::path::Path;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<()> {
     // setlocale MUST be called before bindtextdomain/textdomain so that
     // the C library initialises the locale from the environment (LANG,
     // LC_ALL, …). Without this call gettextrs silently falls back to the
@@ -46,6 +47,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let command = &args[1];
+
+    if command == "--version" {
+        println!("pkgbuild_manager {}", VERSION);
+        return Ok(());
+    }
 
     // Support optional `--` separator between path and flags so that
     // directories starting with '-' can still be used as path.
@@ -98,46 +104,49 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let target_path = Path::new(path_arg);
 
     match command.as_str() {
-        "build"            => actions::build::run(target_path, &[])?,
-        "build-clean"      => actions::build::run(target_path, &["-c"])?,
-        "build-force"      => actions::build::run(target_path, &["-f"])?,
-        "build-nocheck"    => actions::build::run(target_path, &["--nocheck"])?,
-        "build-nogpg"      => actions::build::run(target_path, &["--skippgpcheck"])?,
-        "build-custom"     => actions::build::run(target_path, &extra_flags)?,
+        "build"            => actions::build::run(target_path, &[]),
+        "build-clean"      => actions::build::run(target_path, &["-c"]),
+        "build-force"      => actions::build::run(target_path, &["-f"]),
+        "build-nocheck"    => actions::build::run(target_path, &["--nocheck"]),
+        "build-nogpg"      => actions::build::run(target_path, &["--skippgpcheck"]),
+        "build-custom"     => actions::build::run(target_path, &extra_flags),
 
-        "install"          => actions::install::run(target_path, &[])?,
-        "install-clean"    => actions::install::run(target_path, &["-c"])?,
-        "install-force"    => actions::install::run(target_path, &["-f"])?,
-        "install-rmdeps"   => actions::install::run(target_path, &["-r"])?,
-        "install-nocheck"  => actions::install::run(target_path, &["--nocheck"])?,
-        "install-nogpg"    => actions::install::run(target_path, &["--skippgpcheck"])?,
-        "install-custom"   => actions::install::run(target_path, &extra_flags)?,
+        "install"          => actions::install::run(target_path, &[]),
+        "install-clean"    => actions::install::run(target_path, &["-c"]),
+        "install-force"    => actions::install::run(target_path, &["-f"]),
+        "install-rmdeps"   => actions::install::run(target_path, &["-r"]),
+        "install-nocheck"  => actions::install::run(target_path, &["--nocheck"]),
+        "install-nogpg"    => actions::install::run(target_path, &["--skippgpcheck"]),
+        "install-custom"   => actions::install::run(target_path, &extra_flags),
 
-        "fetch-sources"    => actions::build::run(target_path, &["-o"])?,
+        "fetch-sources"    => actions::build::run(target_path, &["-o"]),
 
-        "checksums"        => actions::checksums::run(target_path)?,
-        "genchecksums"     => actions::checksums::generate(target_path)?,
-        "srcinfo"          => actions::srcinfo::run(target_path)?,
+        "checksums"        => actions::checksums::run(target_path),
+        "genchecksums"     => actions::checksums::generate(target_path),
+        "srcinfo"          => actions::srcinfo::run(target_path),
 
-        "namcap"           => actions::namcap::run(target_path)?,
-        "shellcheck"       => actions::shellcheck::run(target_path)?,
+        "namcap"           => actions::namcap::run(target_path),
+        "shellcheck"       => actions::shellcheck::run(target_path),
 
-        "clean"            => actions::clean::run(target_path, false)?,
-        "clean-all"        => actions::clean::run(target_path, true)?,
+        "clean"            => actions::clean::run(target_path, false),
+        "clean-all"        => actions::clean::run(target_path, true),
 
         "aur-push"         => {
             let message = extra_flags.first().copied();
-            actions::aur_push::run(target_path, message)?
+            actions::aur_push::run(target_path, message)
         }
         "aur-push-tag"     => {
             let tag = extra_flags.first().copied()
-                .ok_or_else(|| gettext("aur-push-tag requires a version tag argument"))?;
-            actions::aur_push::run_with_tag(target_path, tag)?
+                .ok_or_else(|| anyhow::anyhow!(gettext("aur-push-tag requires a version tag argument")))?;
+            actions::aur_push::run_with_tag(target_path, tag)
         }
 
-        "setup-nautilus"   => setup_nautilus()?,
+        "setup-nautilus"   => setup_nautilus(),
 
-        "help" | "-h" | "--help" => print_usage(),
+        "help" | "-h" | "--help" => {
+            print_usage();
+            Ok(())
+        }
 
         _ => {
             eprintln!("{}: {}", gettext("Unknown command"), command);
@@ -145,8 +154,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             std::process::exit(1);
         }
     }
-
-    Ok(())
 }
 
 /// setup-nautilus
@@ -159,7 +166,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 /// PKGBUILD context-menu. It reads scripts from
 /// /usr/share/pkgbuild-manager/scripts/, translates labels via .mo files,
 /// and filters internal helpers. No user-land symlinks are needed.
-fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
+fn setup_nautilus() -> Result<()> {
     use std::fs;
     use std::path::PathBuf;
     use std::process::Command;
@@ -205,11 +212,11 @@ fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     let ext = PathBuf::from("/usr/share/nautilus-python/extensions/pkgbuild_manager.py");
     if !ext.exists() {
-        return Err(gettext(
-            "Nautilus extension not found at \
-             /usr/share/nautilus-python/extensions/pkgbuild_manager.py. \
-             Please reinstall the package."
-        ).into());
+        let msg = concat!(
+            "Nautilus extension not found at /usr/share/nautilus-python/extensions/pkgbuild_manager.py.",
+            " Please reinstall the package."
+        );
+        return Err(anyhow::anyhow!("{}", gettext(msg)));
     }
 
     // ------------------------------------------------------------------
@@ -217,13 +224,11 @@ fn setup_nautilus() -> Result<(), Box<dyn std::error::Error>> {
     // ------------------------------------------------------------------
     let _ = Command::new("nautilus").arg("-q").status();
 
-    println!(
-        "{}",
-        gettext(
-            "PKGBUILD Manager: Nautilus extension active. \
-             Right-click any PKGBUILD file to see the PKGBUILD submenu."
-        )
+    let info = concat!(
+        "PKGBUILD Manager: Nautilus extension active. ",
+        "Right-click any PKGBUILD file to see the PKGBUILD submenu."
     );
+    println!("{}", gettext(info));
     Ok(())
 }
 
@@ -269,5 +274,6 @@ fn print_usage() {
 
     println!("\n{}:", gettext("Other"));
     println!("  setup-nautilus     {}", gettext("Remove stale symlinks and verify the Nautilus extension"));
+    println!("  --version          {}", gettext("Show program version"));
     println!("  help               {}", gettext("Show this help message"));
 }
