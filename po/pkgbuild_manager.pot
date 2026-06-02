@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 15:30-0300\n"
+"POT-Creation-Date: 2026-06-02 16:15-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -328,13 +328,37 @@ msgstr ""
 msgid "No PKGBUILD found in directory"
 msgstr ""
 
-msgid "Failed to read PKGBUILD info with makepkg --printsrcinfo"
+msgid "failed to canonicalize path"
+msgstr ""
+
+msgid "failed to spawn command"
+msgstr ""
+
+msgid "command failed"
+msgstr ""
+
+msgid "with status"
+msgstr ""
+
+msgid "makepkg --printsrcinfo failed"
+msgstr ""
+
+msgid ">>> Regenerating .SRCINFO in"
 msgstr ""
 
 msgid "aur-push-tag requires a version tag argument"
 msgstr ""
 
 msgid "Unknown command"
+msgstr ""
+
+msgid "Warning: could not remove stale PKGBUILD dir"
+msgstr ""
+
+msgid "Nautilus extension not found at /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Please reinstall the package."
+msgstr ""
+
+msgid "PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD file to see the PKGBUILD submenu."
 msgstr ""
 
 msgid "PKGBUILD Manager - CLI Tool"
@@ -433,6 +457,12 @@ msgstr ""
 msgid "Other"
 msgstr ""
 
+msgid "Remove stale symlinks and verify the Nautilus extension"
+msgstr ""
+
+msgid "Show program version"
+msgstr ""
+
 msgid "Show this help message"
 msgstr ""
 
@@ -458,9 +488,6 @@ msgid "Removed"
 msgstr ""
 
 msgid "Note: nothing to commit or commit failed — continuing with push."
-msgstr ""
-
-msgid "makepkg --printsrcinfo failed:"
 msgstr ""
 
 msgid "Note: push to origin/master failed"

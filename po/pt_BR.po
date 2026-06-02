@@ -1,10 +1,14 @@
+# Brazilian Portuguese translation for pkgbuild_manager
+# Copyright (C) 2026 John Peter Sa
+# This file is distributed under the same license as the pkgbuild_manager package.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 15:30-0300\n"
-"PO-Revision-Date: 2026-05-31 15:30-0300\n"
-"Last-Translator: John <john@example.com>\n"
+"POT-Creation-Date: 2026-06-02 16:15-0300\n"
+"PO-Revision-Date: 2026-06-02 16:15-0300\n"
+"Last-Translator: John Peter Sa\n"
 "Language-Team: Portuguese (Brazil)\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -12,71 +16,69 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-# Menu labels
 msgid "00_Full Workflow"
-msgstr "Fluxo Completo"
+msgstr "00_Fluxo Completo"
 
 msgid "01_Build"
-msgstr "Compilar"
+msgstr "01_Compilar"
 
 msgid "02b_Build and Clean"
-msgstr "Compilar e Limpar"
+msgstr "02b_Compilar e Limpar"
 
 msgid "08_Build Force"
-msgstr "Compilar (Forçar)"
+msgstr "08_Compilar Forçado"
 
 msgid "09_Build NoCheck"
-msgstr "Compilar (Sem Testes)"
+msgstr "09_Compilar sem Check"
 
 msgid "10_Build NoGPG"
-msgstr "Compilar (Sem GPG)"
+msgstr "10_Compilar sem GPG"
 
 msgid "11_Fetch Sources"
-msgstr "Baixar Fontes"
+msgstr "11_Baixar Fontes"
 
 msgid "02_Install"
-msgstr "Instalar"
+msgstr "02_Instalar"
 
 msgid "12_Install Force"
-msgstr "Instalar (Forçar)"
+msgstr "12_Instalar Forçado"
 
 msgid "13_Install RmDeps"
-msgstr "Instalar (Remover Deps)"
+msgstr "13_Instalar Remover Deps"
 
 msgid "14_Install NoCheck"
-msgstr "Instalar (Sem Testes)"
+msgstr "14_Instalar sem Check"
 
 msgid "15_Install NoGPG"
-msgstr "Instalar (Sem GPG)"
+msgstr "15_Instalar sem GPG"
 
 msgid "03_Update Checksums"
-msgstr "Atualizar Checksums"
+msgstr "03_Atualizar Checksums"
 
 msgid "04_Update .SRCINFO"
-msgstr "Atualizar .SRCINFO"
+msgstr "04_Atualizar .SRCINFO"
 
 msgid "16_Gen Checksums"
-msgstr "Gerar Checksums"
+msgstr "16_Gerar Checksums"
 
 msgid "05b_ShellCheck"
-msgstr "Verificar com ShellCheck"
+msgstr "05b_ShellCheck"
 
 msgid "05_Namcap"
-msgstr "Analisar com Namcap"
+msgstr "05_Namcap"
 
 msgid "06_Push AUR"
-msgstr "Enviar para AUR"
+msgstr "06_Enviar para AUR"
 
 msgid "17_Push AUR Tag"
-msgstr "Enviar Tag para AUR"
+msgstr "17_Enviar Tag AUR"
 
 msgid "07b_Clean Everything"
-msgstr "Limpar Tudo"
+msgstr "07b_Limpar Tudo"
 
 msgid "07_Clean srcdir"
-msgstr "Limpar srcdir"
+msgstr "07_Limpar srcdir"
 
-# Settings panel
 msgid "PKGBUILD Manager — Menu Settings"
 msgstr "PKGBUILD Manager — Configurações do Menu"
 
@@ -104,7 +106,6 @@ msgstr "Todas as ações já estão em um grupo."
 msgid "Saved! Restart the file manager to apply."
 msgstr "Salvo! Reinicie o gerenciador de arquivos para aplicar."
 
-# Default group names
 msgid "Actions"
 msgstr "Ações"
 
@@ -118,196 +119,194 @@ msgid "Git / AUR"
 msgstr "Git / AUR"
 
 msgid "Clean"
-msgstr "Limpeza"
+msgstr "Limpar"
 
-# Notification messages
 msgid "notify_building"
-msgstr "Compilando pacote..."
+msgstr "Compilando pacote…"
 
 msgid "notify_build_ok"
-msgstr "✓ Compilação concluída com sucesso!"
+msgstr "Pacote compilado com sucesso!"
 
 msgid "notify_build_fail"
-msgstr "✗ Compilação falhou! Veja: "
+msgstr "Falha ao compilar o pacote."
 
 msgid "notify_build_force"
-msgstr "Forçando recompilação..."
+msgstr "Compilação forçada em andamento…"
 
 msgid "notify_build_force_ok"
-msgstr "✓ Recompilação forçada concluída!"
+msgstr "Compilação forçada concluída!"
 
 msgid "notify_build_force_fail"
-msgstr "✗ Recompilação forçada falhou! Veja: "
+msgstr "Falha na compilação forçada."
 
 msgid "notify_build_nocheck"
-msgstr "Compilando (sem testes)..."
+msgstr "Compilando sem verificações…"
 
 msgid "notify_build_nocheck_ok"
-msgstr "✓ Compilação (sem testes) concluída!"
+msgstr "Compilado sem verificações!"
 
 msgid "notify_build_nocheck_fail"
-msgstr "✗ Compilação (sem testes) falhou! Veja: "
+msgstr "Falha na compilação sem verificações."
 
 msgid "notify_build_nogpg"
-msgstr "Compilando (sem GPG)..."
+msgstr "Compilando sem GPG…"
 
 msgid "notify_build_nogpg_ok"
-msgstr "✓ Compilação (sem GPG) concluída!"
+msgstr "Compilado sem GPG!"
 
 msgid "notify_build_nogpg_fail"
-msgstr "✗ Compilação (sem GPG) falhou! Veja: "
+msgstr "Falha na compilação sem GPG."
 
 msgid "notify_fetch_sources"
-msgstr "Baixando fontes..."
+msgstr "Baixando fontes…"
 
 msgid "notify_fetch_sources_ok"
-msgstr "✓ Fontes baixadas com sucesso!"
+msgstr "Fontes baixadas!"
 
 msgid "notify_fetch_sources_fail"
-msgstr "✗ Falha ao baixar fontes! Veja: "
+msgstr "Falha ao baixar fontes."
 
 msgid "notify_installing"
-msgstr "Instalando pacote..."
+msgstr "Instalando pacote…"
 
 msgid "notify_install_ok"
-msgstr "✓ Instalação concluída!"
+msgstr "Pacote instalado com sucesso!"
 
 msgid "notify_install_fail"
-msgstr "✗ Instalação falhou! Veja: "
+msgstr "Falha ao instalar o pacote."
 
 msgid "notify_install_force"
-msgstr "Forçando instalação..."
+msgstr "Instalação forçada em andamento…"
 
 msgid "notify_install_force_ok"
-msgstr "✓ Instalação forçada concluída!"
+msgstr "Instalação forçada concluída!"
 
 msgid "notify_install_force_fail"
-msgstr "✗ Instalação forçada falhou! Veja: "
+msgstr "Falha na instalação forçada."
 
 msgid "notify_install_rmdeps"
-msgstr "Instalando (removendo deps de compilação)..."
+msgstr "Instalando e removendo dependências…"
 
 msgid "notify_install_rmdeps_ok"
-msgstr "✓ Instalação (rmdeps) concluída!"
+msgstr "Instalado e dependências removidas!"
 
 msgid "notify_install_rmdeps_fail"
-msgstr "✗ Instalação (rmdeps) falhou! Veja: "
+msgstr "Falha ao instalar e remover dependências."
 
 msgid "notify_install_nocheck"
-msgstr "Instalando (sem testes)..."
+msgstr "Instalando sem verificações…"
 
 msgid "notify_install_nocheck_ok"
-msgstr "✓ Instalação (sem testes) concluída!"
+msgstr "Instalado sem verificações!"
 
 msgid "notify_install_nocheck_fail"
-msgstr "✗ Instalação (sem testes) falhou! Veja: "
+msgstr "Falha na instalação sem verificações."
 
 msgid "notify_install_nogpg"
-msgstr "Instalando (sem GPG)..."
+msgstr "Instalando sem GPG…"
 
 msgid "notify_install_nogpg_ok"
-msgstr "✓ Instalação (sem GPG) concluída!"
+msgstr "Instalado sem GPG!"
 
 msgid "notify_install_nogpg_fail"
-msgstr "✗ Instalação (sem GPG) falhou! Veja: "
+msgstr "Falha na instalação sem GPG."
 
 msgid "notify_checksums"
-msgstr "Atualizando checksums..."
+msgstr "Atualizando checksums…"
 
 msgid "notify_checksums_ok"
-msgstr "✓ Checksums atualizados com sucesso!"
+msgstr "Checksums atualizados!"
 
 msgid "notify_checksums_fail"
-msgstr "✗ Falha ao atualizar checksums! Veja: "
+msgstr "Falha ao atualizar checksums."
 
 msgid "notify_genchecksums"
-msgstr "Gerando checksums..."
+msgstr "Gerando checksums…"
 
 msgid "notify_genchecksums_ok"
-msgstr "✓ Checksums gerados com sucesso!"
+msgstr "Checksums gerados!"
 
 msgid "notify_genchecksums_fail"
-msgstr "✗ Falha ao gerar checksums! Veja: "
+msgstr "Falha ao gerar checksums."
 
 msgid "notify_srcinfo"
-msgstr "Atualizando .SRCINFO..."
+msgstr "Regenerando .SRCINFO…"
 
 msgid "notify_srcinfo_ok"
-msgstr "✓ .SRCINFO atualizado com sucesso!"
+msgstr ".SRCINFO regenerado!"
 
 msgid "notify_srcinfo_fail"
-msgstr "✗ Falha ao atualizar .SRCINFO! Veja: "
+msgstr "Falha ao regenerar .SRCINFO."
 
 msgid "notify_namcap"
-msgstr "Executando namcap..."
+msgstr "Executando namcap…"
 
 msgid "notify_namcap_warn"
-msgstr "⚠ Namcap concluído com avisos. Veja: "
+msgstr "Namcap encontrou avisos."
 
 msgid "notify_namcap_ok"
-msgstr "✓ Namcap concluído! Nenhum aviso encontrado."
+msgstr "Namcap: nenhum problema encontrado!"
 
 msgid "notify_namcap_fail"
-msgstr "✗ Namcap falhou! Veja: "
+msgstr "Falha ao executar namcap."
 
 msgid "notify_shellcheck"
-msgstr "Verificando com ShellCheck..."
+msgstr "Executando shellcheck…"
 
 msgid "notify_shellcheck_warn"
-msgstr "⚠ ShellCheck encontrou avisos. Veja: "
+msgstr "ShellCheck encontrou avisos."
 
 msgid "notify_shellcheck_ok"
-msgstr "✓ ShellCheck: nenhum problema encontrado."
+msgstr "ShellCheck: nenhum problema encontrado!"
 
 msgid "notify_shellcheck_fail"
-msgstr "✗ ShellCheck falhou! Veja: "
+msgstr "Falha ao executar shellcheck."
 
 msgid "notify_push_aur"
-msgstr "Enviando para o AUR..."
+msgstr "Enviando para o AUR…"
 
 msgid "notify_push_aur_ok"
-msgstr "✓ Enviado para o AUR com sucesso!"
+msgstr "Enviado para o AUR com sucesso!"
 
 msgid "notify_push_aur_fail"
-msgstr "✗ Falha ao enviar para o AUR! Veja: "
+msgstr "Falha ao enviar para o AUR."
 
 msgid "notify_push_aur_tag"
-msgstr "Criando tag e enviando para o AUR..."
+msgstr "Enviando tag para o AUR…"
 
 msgid "notify_push_aur_tag_ok"
-msgstr "✓ Tag criada e enviada para o AUR!"
+msgstr "Tag enviada para o AUR com sucesso!"
 
 msgid "notify_push_aur_tag_fail"
-msgstr "✗ Falha ao criar tag/enviar para o AUR! Veja: "
+msgstr "Falha ao enviar tag para o AUR."
 
 msgid "notify_clean_src"
-msgstr "Limpando srcdir..."
+msgstr "Limpando srcdir…"
 
 msgid "notify_clean_src_ok"
-msgstr "✓ srcdir limpo com sucesso!"
+msgstr "srcdir limpo!"
 
 msgid "notify_clean_src_fail"
-msgstr "✗ Falha ao limpar srcdir! Veja: "
+msgstr "Falha ao limpar srcdir."
 
 msgid "notify_clean_all"
-msgstr "Limpando tudo..."
+msgstr "Limpando tudo…"
 
 msgid "notify_clean_all_ok"
-msgstr "✓ Tudo limpo com sucesso!"
+msgstr "Tudo limpo!"
 
 msgid "notify_clean_all_fail"
-msgstr "✗ Falha ao limpar! Veja: "
+msgstr "Falha ao limpar tudo."
 
 msgid "notify_full_workflow"
-msgstr "Executando fluxo completo..."
+msgstr "Executando fluxo completo…"
 
 msgid "notify_full_workflow_ok"
-msgstr "✓ Fluxo completo concluído!"
+msgstr "Fluxo completo concluído!"
 
 msgid "notify_full_workflow_fail"
-msgstr "✗ Fluxo completo falhou! Veja: "
+msgstr "Falha no fluxo completo."
 
-# CLI strings
 msgid "Failed to resolve parent directory"
 msgstr "Falha ao resolver o diretório pai"
 
@@ -317,8 +316,23 @@ msgstr "O diretório não existe"
 msgid "No PKGBUILD found in directory"
 msgstr "Nenhum PKGBUILD encontrado no diretório"
 
-msgid "Failed to read PKGBUILD info with makepkg --printsrcinfo"
-msgstr "Falha ao ler informações do PKGBUILD com makepkg --printsrcinfo"
+msgid "failed to canonicalize path"
+msgstr "falha ao canonicalizar o caminho"
+
+msgid "failed to spawn command"
+msgstr "falha ao iniciar o comando"
+
+msgid "command failed"
+msgstr "comando falhou"
+
+msgid "with status"
+msgstr "com status"
+
+msgid "makepkg --printsrcinfo failed"
+msgstr "makepkg --printsrcinfo falhou"
+
+msgid ">>> Regenerating .SRCINFO in"
+msgstr ">>> Regenerando .SRCINFO em"
 
 msgid "aur-push-tag requires a version tag argument"
 msgstr "aur-push-tag requer um argumento de tag de versão"
@@ -326,8 +340,17 @@ msgstr "aur-push-tag requer um argumento de tag de versão"
 msgid "Unknown command"
 msgstr "Comando desconhecido"
 
+msgid "Warning: could not remove stale PKGBUILD dir"
+msgstr "Aviso: não foi possível remover o diretório PKGBUILD obsoleto"
+
+msgid "Nautilus extension not found at /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Please reinstall the package."
+msgstr "Extensão do Nautilus não encontrada em /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Por favor, reinstale o pacote."
+
+msgid "PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD file to see the PKGBUILD submenu."
+msgstr "PKGBUILD Manager: extensão do Nautilus ativa. Clique com o botão direito em qualquer arquivo PKGBUILD para ver o submenu."
+
 msgid "PKGBUILD Manager - CLI Tool"
-msgstr "Gerenciador de PKGBUILD - Ferramenta CLI"
+msgstr "PKGBUILD Manager - Ferramenta CLI"
 
 msgid "Usage:"
 msgstr "Uso:"
@@ -339,7 +362,7 @@ msgid "Compile package (makepkg)"
 msgstr "Compilar pacote (makepkg)"
 
 msgid "Compile and clean srcdir (makepkg -c)"
-msgstr "Compilar e limpar o srcdir (makepkg -c)"
+msgstr "Compilar e limpar srcdir (makepkg -c)"
 
 msgid "Force recompile (makepkg -f)"
 msgstr "Forçar recompilação (makepkg -f)"
@@ -351,10 +374,10 @@ msgid "Skip PGP signature check (makepkg --skippgpcheck)"
 msgstr "Pular verificação de assinatura PGP (makepkg --skippgpcheck)"
 
 msgid "Compile with custom flags passed after path"
-msgstr "Compilar com flags personalizadas passadas após o caminho"
+msgstr "Compilar com flags personalizadas após o caminho"
 
 msgid "Download and extract sources only (makepkg -o)"
-msgstr "Apenas baixar e extrair fontes (makepkg -o)"
+msgstr "Baixar e extrair fontes apenas (makepkg -o)"
 
 msgid "Install commands"
 msgstr "Comandos de instalação"
@@ -363,22 +386,22 @@ msgid "Compile, install and resolve deps (makepkg -si)"
 msgstr "Compilar, instalar e resolver dependências (makepkg -si)"
 
 msgid "Compile, install and clean srcdir (makepkg -sic)"
-msgstr "Compilar, instalar e limpar o srcdir (makepkg -sic)"
+msgstr "Compilar, instalar e limpar srcdir (makepkg -sic)"
 
 msgid "Force compile and install (makepkg -sif)"
 msgstr "Forçar compilação e instalação (makepkg -sif)"
 
 msgid "Install and remove makedeps after (makepkg -sir)"
-msgstr "Instalar e remover dependências de compilação depois (makepkg -sir)"
+msgstr "Instalar e remover makedeps depois (makepkg -sir)"
 
 msgid "Install without running check()"
-msgstr "Instalar sem rodar a função check()"
+msgstr "Instalar sem executar check()"
 
 msgid "Install skipping PGP checks"
 msgstr "Instalar pulando verificações PGP"
 
 msgid "Install with custom flags passed after path"
-msgstr "Instalar com flags personalizadas passadas após o caminho"
+msgstr "Instalar com flags personalizadas após o caminho"
 
 msgid "Package metadata commands"
 msgstr "Comandos de metadados do pacote"
@@ -387,16 +410,16 @@ msgid "Update checksums in PKGBUILD (updpkgsums)"
 msgstr "Atualizar checksums no PKGBUILD (updpkgsums)"
 
 msgid "Generate checksums and print to stdout (makepkg -g)"
-msgstr "Gerar checksums e imprimir no stdout (makepkg -g)"
+msgstr "Gerar checksums e imprimir na saída padrão (makepkg -g)"
 
 msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
-msgstr "Regerar .SRCINFO (makepkg --printsrcinfo)"
+msgstr "Regenerar .SRCINFO (makepkg --printsrcinfo)"
 
 msgid "Audit commands"
 msgstr "Comandos de auditoria"
 
 msgid "Run namcap on PKGBUILD and built packages"
-msgstr "Executar namcap no PKGBUILD e nos pacotes compilados"
+msgstr "Executar namcap no PKGBUILD e pacotes compilados"
 
 msgid "Run shellcheck on PKGBUILD"
 msgstr "Executar shellcheck no PKGBUILD"
@@ -405,25 +428,31 @@ msgid "Clean commands"
 msgstr "Comandos de limpeza"
 
 msgid "Clean srcdir with makepkg (makepkg -c)"
-msgstr "Limpar o srcdir com makepkg (makepkg -c)"
+msgstr "Limpar srcdir com makepkg (makepkg -c)"
 
 msgid "Remove src/, pkg/ and built packages"
 msgstr "Remover src/, pkg/ e pacotes compilados"
 
 msgid "AUR/Git commands"
-msgstr "Comandos do AUR/Git"
+msgstr "Comandos AUR/Git"
 
 msgid "Stage, commit and push to AUR (auto message if not provided)"
-msgstr "Adicionar ao stage, fazer commit e push para o AUR (mensagem automática se não informada)"
+msgstr "Stage, commit e push para o AUR (mensagem automática se não fornecida)"
 
 msgid "Push with version tag (e.g. 1.2.3-1)"
-msgstr "Fazer push com tag de versão (ex: 1.2.3-1)"
+msgstr "Push com tag de versão (ex: 1.2.3-1)"
 
 msgid "Other"
 msgstr "Outros"
 
+msgid "Remove stale symlinks and verify the Nautilus extension"
+msgstr "Remover links simbólicos obsoletos e verificar a extensão do Nautilus"
+
+msgid "Show program version"
+msgstr "Exibir a versão do programa"
+
 msgid "Show this help message"
-msgstr "Mostrar esta mensagem de ajuda"
+msgstr "Exibir esta mensagem de ajuda"
 
 msgid "namcap not found. Install it with: sudo pacman -S namcap"
 msgstr "namcap não encontrado. Instale com: sudo pacman -S namcap"
@@ -441,25 +470,22 @@ msgid "makepkg -g failed:"
 msgstr "makepkg -g falhou:"
 
 msgid "Removing src/ pkg/ and built packages in"
-msgstr "Removendo src/, pkg/ e pacotes compilados em"
+msgstr "Removendo src/ pkg/ e pacotes compilados em"
 
 msgid "Removed"
 msgstr "Removido"
 
 msgid "Note: nothing to commit or commit failed — continuing with push."
-msgstr "Nota: nada para commitar ou o commit falhou — continuando com o push."
-
-msgid "makepkg --printsrcinfo failed:"
-msgstr "makepkg --printsrcinfo falhou:"
+msgstr "Nota: nada para fazer commit ou commit falhou — continuando com push."
 
 msgid "Note: push to origin/master failed"
 msgstr "Nota: push para origin/master falhou"
 
 msgid "Trying plain 'git push'..."
-msgstr "Tentando push simples ('git push')..."
+msgstr "Tentando 'git push' simples…"
 
 msgid "Symlink scripts to user directory with localization"
-msgstr "Criar links simbólicos dos scripts no diretório do usuário com localização"
+msgstr "Criar links simbólicos de scripts no diretório do usuário com localização"
 
 msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
-msgstr "Scripts do Nautilus configurados com sucesso sob o submenu 'PKGBUILD'."
+msgstr "Scripts do Nautilus configurados com sucesso no submenu 'PKGBUILD'."

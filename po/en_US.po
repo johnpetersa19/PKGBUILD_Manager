@@ -1,4 +1,4 @@
-# PKGBUILD Manager — translation template
+# English (US) translation for pkgbuild_manager
 # Copyright (C) 2026 John Peter Sa
 # This file is distributed under the same license as the pkgbuild_manager package.
 #
@@ -6,19 +6,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 15:30-0300\n"
-"PO-Revision-Date: 2026-05-31 20:14-0300\n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2026-06-02 16:15-0300\n"
+"PO-Revision-Date: 2026-06-02 16:15-0300\n"
+"Last-Translator: John Peter Sa\n"
+"Language-Team: English (US)\n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.9\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-# ---------------------------------------------------------------------------
-# Menu labels (Nautilus Python extension + settings app)
-# ---------------------------------------------------------------------------
 msgid "00_Full Workflow"
 msgstr "00_Full Workflow"
 
@@ -82,9 +79,6 @@ msgstr "07b_Clean Everything"
 msgid "07_Clean srcdir"
 msgstr "07_Clean srcdir"
 
-# ---------------------------------------------------------------------------
-# Settings panel (GTK app — src/settings/app.py)
-# ---------------------------------------------------------------------------
 msgid "PKGBUILD Manager — Menu Settings"
 msgstr "PKGBUILD Manager — Menu Settings"
 
@@ -112,7 +106,6 @@ msgstr "All actions are already in a group."
 msgid "Saved! Restart the file manager to apply."
 msgstr "Saved! Restart the file manager to apply."
 
-# Default group names
 msgid "Actions"
 msgstr "Actions"
 
@@ -128,9 +121,6 @@ msgstr "Git / AUR"
 msgid "Clean"
 msgstr "Clean"
 
-# ---------------------------------------------------------------------------
-# Notification messages (bash scripts via _i18n)
-# ---------------------------------------------------------------------------
 msgid "notify_building"
 msgstr "notify_building"
 
@@ -317,9 +307,6 @@ msgstr "notify_full_workflow_ok"
 msgid "notify_full_workflow_fail"
 msgstr "notify_full_workflow_fail"
 
-# ---------------------------------------------------------------------------
-# CLI / Rust binary strings
-# ---------------------------------------------------------------------------
 msgid "Failed to resolve parent directory"
 msgstr "Failed to resolve parent directory"
 
@@ -329,14 +316,38 @@ msgstr "Directory does not exist"
 msgid "No PKGBUILD found in directory"
 msgstr "No PKGBUILD found in directory"
 
-msgid "Failed to read PKGBUILD info with makepkg --printsrcinfo"
-msgstr "Failed to read PKGBUILD info with makepkg --printsrcinfo"
+msgid "failed to canonicalize path"
+msgstr "failed to canonicalize path"
+
+msgid "failed to spawn command"
+msgstr "failed to spawn command"
+
+msgid "command failed"
+msgstr "command failed"
+
+msgid "with status"
+msgstr "with status"
+
+msgid "makepkg --printsrcinfo failed"
+msgstr "makepkg --printsrcinfo failed"
+
+msgid ">>> Regenerating .SRCINFO in"
+msgstr ">>> Regenerating .SRCINFO in"
 
 msgid "aur-push-tag requires a version tag argument"
 msgstr "aur-push-tag requires a version tag argument"
 
 msgid "Unknown command"
 msgstr "Unknown command"
+
+msgid "Warning: could not remove stale PKGBUILD dir"
+msgstr "Warning: could not remove stale PKGBUILD dir"
+
+msgid "Nautilus extension not found at /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Please reinstall the package."
+msgstr "Nautilus extension not found at /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Please reinstall the package."
+
+msgid "PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD file to see the PKGBUILD submenu."
+msgstr "PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD file to see the PKGBUILD submenu."
 
 msgid "PKGBUILD Manager - CLI Tool"
 msgstr "PKGBUILD Manager - CLI Tool"
@@ -434,6 +445,12 @@ msgstr "Push with version tag (e.g. 1.2.3-1)"
 msgid "Other"
 msgstr "Other"
 
+msgid "Remove stale symlinks and verify the Nautilus extension"
+msgstr "Remove stale symlinks and verify the Nautilus extension"
+
+msgid "Show program version"
+msgstr "Show program version"
+
 msgid "Show this help message"
 msgstr "Show this help message"
 
@@ -460,9 +477,6 @@ msgstr "Removed"
 
 msgid "Note: nothing to commit or commit failed — continuing with push."
 msgstr "Note: nothing to commit or commit failed — continuing with push."
-
-msgid "makepkg --printsrcinfo failed:"
-msgstr "makepkg --printsrcinfo failed:"
 
 msgid "Note: push to origin/master failed"
 msgstr "Note: push to origin/master failed"
