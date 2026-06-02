@@ -1,14 +1,18 @@
 use std::path::Path;
-use super::{get_target_dir, run_command};
+use super::{get_target_dir, run_command, collect_pkg_files};
 
 /// Clean the srcdir using `makepkg -c` (soft clean, preserves pkg/).
 /// Use `full = true` for a complete wipe: removes src/, pkg/, built packages,
 /// bare-repo cache dirs and any _build* directories (cmake/meson/autotools out-of-tree builds).
-pub fn run(path: &Path, full: bool) -> Result<(), Box<dyn std::error::Error>> {
+pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
     let target_dir = get_target_dir(path)?;
 
     if full {
-        println!("{} {:?}", gettextrs::gettext("Removing src/ pkg/ and built packages in"), target_dir);
+        println!(
+            "{} {:?}",
+            gettextrs::gettext("Removing src/ pkg/ and built packages in"),
+            target_dir
+        );
 
         // Remove src/ and pkg/ directories
         for dir in &["src", "pkg"] {
@@ -19,10 +23,14 @@ pub fn run(path: &Path, full: bool) -> Result<(), Box<dyn std::error::Error>> {
             }
         }
 
-        // Single directory traversal: removes *.pkg.tar.* files, bare git repo
-        // cache dirs (dirs with HEAD + objects/) and _build* dirs.
-        // Uses entry.file_type() instead of p.is_dir()/p.is_file() to avoid
-        // canonicalization issues with relative paths.
+        // Remove built package files using shared helper
+        for pkg in collect_pkg_files(&target_dir) {
+            let p = target_dir.join(&pkg);
+            std::fs::remove_file(&p)?;
+            println!("  {} {:?}", gettextrs::gettext("Removed"), p);
+        }
+
+        // Single directory traversal: removes bare git repo cache dirs and _build* dirs.
         if let Ok(entries) = std::fs::read_dir(&target_dir) {
             for entry in entries.flatten() {
                 let Ok(ft) = entry.file_type() else { continue };
@@ -30,16 +38,21 @@ pub fn run(path: &Path, full: bool) -> Result<(), Box<dyn std::error::Error>> {
                 let name = entry.file_name();
                 let name = name.to_string_lossy();
 
-                if ft.is_file() && name.contains(".pkg.tar.") {
-                    std::fs::remove_file(&p)?;
-                    println!("  {} {:?}", gettextrs::gettext("Removed"), p);
-                } else if ft.is_dir() {
+                if ft.is_dir() {
                     if p.join("HEAD").exists() && p.join("objects").exists() {
                         std::fs::remove_dir_all(&p)?;
-                        println!("  {} {:?}", gettextrs::gettext("Removed bare repo cache"), p);
+                        println!(
+                            "  {} {:?}",
+                            gettextrs::gettext("Removed bare repo cache"),
+                            p
+                        );
                     } else if name.starts_with("_build") {
                         std::fs::remove_dir_all(&p)?;
-                        println!("  {} {:?}", gettextrs::gettext("Removed build dir"), p);
+                        println!(
+                            "  {} {:?}",
+                            gettextrs::gettext("Removed build dir"),
+                            p
+                        );
                     }
                 }
             }
