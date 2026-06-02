@@ -29,17 +29,14 @@
 
 use adw::prelude::*;
 use adw::{ApplicationWindow, HeaderBar, StatusPage};
-use gtk::prelude::*;
 use gtk::{
-    glib, glib::clone, Align, Box as GBox, Button, Entry, Expander, Label,
+    glib, glib::clone, Align, Box as GBox, Button, Expander, Label,
     Orientation, PolicyType, ScrolledWindow, Spinner, TextView, WrapMode,
 };
 use std::cell::RefCell;
 use std::io::{BufRead, BufReader};
-use std::path::PathBuf;
 use std::process::{Command, Stdio};
 use std::rc::Rc;
-use std::sync::{Arc, Mutex};
 use std::thread;
 
 // ── Step descriptor ──────────────────────────────────────────────────────────
@@ -184,7 +181,6 @@ impl AurPushWindow {
             .title("Message")
             .show_apply_button(false)
             .build();
-        msg_row.set_placeholder_text(Some("auto: upgpkg: <name> <ver>-<rel>"));
         fields_group.add(&msg_row);
 
         let tag_row = adw::EntryRow::builder()
@@ -286,8 +282,8 @@ impl AurPushWindow {
             ("git-push-tags", step_pushtags),
         ]);
 
-        // ── Button clicked ────────────────────────────────────────────────────
-        let (sender, receiver) = glib::MainContext::channel::<Msg>(glib::Priority::DEFAULT);
+        // ── Channel (async_channel replaces deprecated glib::MainContext::channel) ──
+        let (sender, receiver) = async_channel::unbounded::<Msg>();
 
         push_btn.connect_clicked(clone!(
             #[strong] running,
@@ -326,53 +322,52 @@ impl AurPushWindow {
         ));
 
         // ── Receive messages from worker ──────────────────────────────────────
-        receiver.attach(None, clone!(
+        glib::spawn_future_local(clone!(
             #[strong] running,
             #[strong] steps,
             #[strong] log_view,
             #[strong] status_page,
             #[strong] push_btn,
-            #[strong] with_tag,
-            move |msg| {
-                match msg {
-                    Msg::Log(line) => {
-                        let buf = log_view.buffer();
-                        let mut end = buf.end_iter();
-                        buf.insert(&mut end, &format!("{line}\n"));
-                        // auto-scroll
-                        let mark = buf.create_mark(None, &buf.end_iter(), false);
-                        log_view.scroll_to_mark(&mark, 0.0, false, 0.0, 0.0);
-                    }
-                    Msg::Step { key, state, detail } => {
-                        for (k, step) in steps.iter() {
-                            if *k == key {
-                                match state {
-                                    StepState::Start => step.set_running(),
-                                    StepState::Ok    => step.set_ok(),
-                                    StepState::Error => step.set_err(&detail),
+            async move {
+                while let Ok(msg) = receiver.recv().await {
+                    match msg {
+                        Msg::Log(line) => {
+                            let buf = log_view.buffer();
+                            let mut end = buf.end_iter();
+                            buf.insert(&mut end, &format!("{line}\n"));
+                            let mark = buf.create_mark(None, &buf.end_iter(), false);
+                            log_view.scroll_to_mark(&mark, 0.0, false, 0.0, 0.0);
+                        }
+                        Msg::Step { key, state, detail } => {
+                            for (k, step) in steps.iter() {
+                                if *k == key {
+                                    match state {
+                                        StepState::Start => step.set_running(),
+                                        StepState::Ok    => step.set_ok(),
+                                        StepState::Error => step.set_err(&detail),
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
-                    }
-                    Msg::Done(ok) => {
-                        *running.borrow_mut() = false;
-                        push_btn.set_sensitive(true);
-                        push_btn.set_label(if ok { "Push again" } else { "Retry" });
+                        Msg::Done(ok) => {
+                            *running.borrow_mut() = false;
+                            push_btn.set_sensitive(true);
+                            push_btn.set_label(if ok { "Push again" } else { "Retry" });
 
-                        if ok {
-                            status_page.set_icon_name(Some("object-select-symbolic"));
-                            status_page.set_title("AUR push completed!");
-                            status_page.remove_css_class("error");
-                        } else {
-                            status_page.set_icon_name(Some("dialog-error-symbolic"));
-                            status_page.set_title("Push failed — see log above");
-                            status_page.add_css_class("error");
+                            if ok {
+                                status_page.set_icon_name(Some("object-select-symbolic"));
+                                status_page.set_title("AUR push completed!");
+                                status_page.remove_css_class("error");
+                            } else {
+                                status_page.set_icon_name(Some("dialog-error-symbolic"));
+                                status_page.set_title("Push failed — see log above");
+                                status_page.add_css_class("error");
+                            }
+                            status_page.set_visible(true);
                         }
-                        status_page.set_visible(true);
                     }
                 }
-                glib::ControlFlow::Continue
             }
         ));
 
@@ -380,15 +375,14 @@ impl AurPushWindow {
     }
 }
 
-// ── Worker thread: runs pkgbuild_manager aur-push[--tag] and streams output ──
+// ── Worker thread ─────────────────────────────────────────────────────────────
 
 fn run_push_worker(
     target: &str,
     message: Option<String>,
     tag: Option<String>,
-    tx: glib::Sender<Msg>,
+    tx: async_channel::Sender<Msg>,
 ) {
-    // Build argv for `pkgbuild_manager`
     let mut cmd = Command::new("pkgbuild_manager");
     cmd.arg(if tag.is_some() { "aur-push-tag" } else { "aur-push" });
     cmd.arg(target);
@@ -405,13 +399,12 @@ fn run_push_worker(
     let mut child = match cmd.spawn() {
         Ok(c) => c,
         Err(e) => {
-            let _ = tx.send(Msg::Log(format!("[ERROR] failed to spawn pkgbuild_manager: {e}")));
-            let _ = tx.send(Msg::Done(false));
+            let _ = tx.send_blocking(Msg::Log(format!("[ERROR] failed to spawn pkgbuild_manager: {e}")));
+            let _ = tx.send_blocking(Msg::Done(false));
             return;
         }
     };
 
-    // Read stdout line-by-line
     if let Some(stdout) = child.stdout.take() {
         let reader = BufReader::new(stdout);
         for line in reader.lines().map_while(Result::ok) {
@@ -419,25 +412,21 @@ fn run_push_worker(
         }
     }
 
-    // Also capture stderr
     if let Some(stderr) = child.stderr.take() {
         let reader = BufReader::new(stderr);
         for line in reader.lines().map_while(Result::ok) {
-            let _ = tx.send(Msg::Log(format!("[stderr] {line}")));
+            let _ = tx.send_blocking(Msg::Log(format!("[stderr] {line}")));
         }
     }
 
     let success = child.wait().map(|s| s.success()).unwrap_or(false);
-    let _ = tx.send(Msg::Done(success));
+    let _ = tx.send_blocking(Msg::Done(success));
 }
 
-/// Parse `[STEP] <key> start|ok|error: <detail>` lines emitted by aur_push.rs.
-/// Everything else is forwarded to the log.
-fn parse_and_send(line: &str, tx: &glib::Sender<Msg>) {
-    let _ = tx.send(Msg::Log(line.to_string()));
+fn parse_and_send(line: &str, tx: &async_channel::Sender<Msg>) {
+    let _ = tx.send_blocking(Msg::Log(line.to_string()));
 
     if let Some(rest) = line.strip_prefix("[STEP] ") {
-        // rest = "<key> <state>" or "<key> error: <detail>"
         let (key, tail) = match rest.split_once(' ') {
             Some(p) => p,
             None => return,
@@ -451,7 +440,7 @@ fn parse_and_send(line: &str, tx: &glib::Sender<Msg>) {
         } else {
             return;
         };
-        let _ = tx.send(Msg::Step {
+        let _ = tx.send_blocking(Msg::Step {
             key: key.to_string(),
             state,
             detail,
