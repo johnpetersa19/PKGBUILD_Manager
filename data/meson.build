@@ -14,6 +14,7 @@ nautilus_scripts = [
   'nautilus-scripts/06_Push AUR',
   'nautilus-scripts/07_Clean srcdir',
   'nautilus-scripts/07b_Clean Everything',
+  'nautilus-scripts/17_Push AUR Tag',
 ]
 
 install_data(

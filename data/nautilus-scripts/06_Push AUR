@@ -1,14 +1,13 @@
-#!/bin/bash
-# PKGBUILD Manager - Push AUR
-TARGET="$(dirname "$(realpath "${1:-.}")")" 
-source "$(dirname "$0")/_i18n"
-notify-send "PKGBUILD Manager" "$MSG_PUSH_AUR"
+#!/usr/bin/env bash
+# 06_Push AUR — Stage PKGBUILD/.SRCINFO, commit (upgpkg: …) and push to AUR.
+# Runs the full logic via pkgbuild_manager aur-push, streaming progress to the
+# dedicated gtk4-rs/libadwaita GUI window (pkgbuild-manager-aur-push).
+set -euo pipefail
 
-LOG_PATH="${TARGET}/push_aur.log"
-
-if pkgbuild_manager aur-push "$TARGET" > "$LOG_PATH" 2>&1; then
-    rm -f "$LOG_PATH"
-    notify-send "PKGBUILD Manager" "$MSG_PUSH_AUR_OK"
-else
-    notify-send -u critical "PKGBUILD Manager" "${MSG_PUSH_AUR_FAIL}$(basename "$LOG_PATH")"
+TARGET="${NAUTILUS_SCRIPT_SELECTED_FILE_PATHS%%$'\n'*}"
+# If a file was selected, use its directory; if a dir was selected, use it directly.
+if [ -f "$TARGET" ]; then
+  TARGET="$(dirname "$TARGET")"
 fi
+
+exec pkgbuild-manager-aur-push "$TARGET"

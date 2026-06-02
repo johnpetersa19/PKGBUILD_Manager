@@ -1,21 +1,12 @@
-#!/bin/bash
-# PKGBUILD Manager - Push AUR Tag
-TARGET="$(dirname "$(realpath "${1:-.}")")" 
-source "$(dirname "$0")/_i18n"
+#!/usr/bin/env bash
+# 17_Push AUR Tag — Create an annotated version tag and push commits + tags.
+# Opens the same pkgbuild-manager-aur-push GUI with --tag flag so the user
+# can type the version before confirming.
+set -euo pipefail
 
-# Prompt for tag name
-TAG=$(zenity --entry --title="PKGBUILD Manager" --text="Tag name (e.g. 1.0.0-1):" 2>/dev/null)
-if [[ -z "$TAG" ]]; then
-    exit 0
+TARGET="${NAUTILUS_SCRIPT_SELECTED_FILE_PATHS%%$'\n'*}"
+if [ -f "$TARGET" ]; then
+  TARGET="$(dirname "$TARGET")"
 fi
 
-notify-send "PKGBUILD Manager" "$MSG_PUSH_AUR_TAG"
-
-LOG_PATH="${TARGET}/push-aur-tag.log"
-
-if pkgbuild_manager aur-push-tag "$TAG" "$TARGET" > "$LOG_PATH" 2>&1; then
-    rm -f "$LOG_PATH"
-    notify-send "PKGBUILD Manager" "$MSG_PUSH_AUR_TAG_OK"
-else
-    notify-send -u critical "PKGBUILD Manager" "${MSG_PUSH_AUR_TAG_FAIL}$(basename "$LOG_PATH")"
-fi
+exec pkgbuild-manager-aur-push "$TARGET" --tag
