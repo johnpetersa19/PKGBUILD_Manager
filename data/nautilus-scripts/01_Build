@@ -2,13 +2,6 @@
 # PKGBUILD Manager - Build
 TARGET="$(dirname "$(realpath "${1:-.}")")" 
 source "$(dirname "$0")/_i18n"
-notify-send "PKGBUILD Manager" "$MSG_BUILDING"
+source "$(dirname "$0")/_run_in_terminal"
 
-LOG_PATH="${TARGET}/build.log"
-
-if pkgbuild_manager build "$TARGET" > "$LOG_PATH" 2>&1; then
-    rm -f "$LOG_PATH"
-    notify-send "PKGBUILD Manager" "$MSG_BUILD_OK"
-else
-    notify-send -u critical "PKGBUILD Manager" "${MSG_BUILD_FAIL}$(basename "$LOG_PATH")"
-fi
+run_in_terminal "pkgbuild_manager build '$TARGET'"
