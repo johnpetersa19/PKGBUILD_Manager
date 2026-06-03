@@ -11,15 +11,25 @@ path = "main.rs"
 name = "pkgbuild-manager-aur-push"
 path = "aur_push_gui/main.rs"
 
+[[bin]]
+name = "pkgbuild-manager-settings"
+path = "settings_gui/main.rs"
+
 [dependencies]
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
+serde      = { version = "1",   features = ["derive"] }
+serde_json = "1"
+dirs       = "5"
 
 [dependencies.gtk]
-package = "gtk4"
-version = "0.9"
+package  = "gtk4"
+version  = "0.9"
 features = ["v4_14"]
 
 [dependencies.adw]
-package = "libadwaita"
-version = "0.7"
+package  = "libadwaita"
+version  = "0.7"
 features = ["v1_6"]
+
+[dependencies.async-channel]
+version = "2"

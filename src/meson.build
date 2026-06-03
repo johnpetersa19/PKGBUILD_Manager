@@ -64,3 +64,19 @@ custom_target(
     '@OUTPUT@',
   ]
 )
+
+custom_target(
+  'cargo-build-settings',
+  build_by_default: true,
+  build_always_stale: true,
+  output: 'pkgbuild-manager-settings',
+  console: true,
+  install: true,
+  install_dir: get_option('bindir'),
+  depends: cargo_build,
+  command: [
+    'cp',
+    meson.project_build_root() / 'src' / rust_target / 'pkgbuild-manager-settings',
+    '@OUTPUT@',
+  ]
+)
