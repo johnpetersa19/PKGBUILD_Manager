@@ -2,7 +2,7 @@ use std::path::Path;
 use std::process::Command;
 use super::{get_target_dir, run_command, regenerate_srcinfo};
 
-/// Stage PKGBUILD + .SRCINFO, commit with conventional AUR message, and push to origin/master.
+/// Stage PKGBUILD + .SRCINFO, commit with conventional AUR message, and push to origin.
 ///
 /// If `message` is None, the commit message is auto-generated from the PKGBUILD:
 ///   "upgpkg: pkgname ver-rel"
@@ -57,7 +57,7 @@ fn run_with_dir(target_dir: &Path, message: Option<&str>) -> anyhow::Result<()> 
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr);
         let stdout = String::from_utf8_lossy(&output.stdout);
-        // git exits 1 with "nothing to commit" message — that is not a real error,
+        // git exits 1 with "nothing to commit" -- that is not a real error,
         // so we detect it explicitly and continue. Any other failure is propagated.
         let combined = format!("{}{}", stdout, stderr);
         if combined.contains("nothing to commit") || combined.contains("nothing added to commit") {
@@ -76,9 +76,9 @@ fn run_with_dir(target_dir: &Path, message: Option<&str>) -> anyhow::Result<()> 
 
 /// Parse pkgname/pkgver/pkgrel from already-fetched .SRCINFO text.
 /// Stops iterating as soon as all three fields are found (early-exit).
-/// FIX: a condição anterior comparava com os valores default, nunca disparando
-/// o break quando pkgrel=1 (valor inicial igual ao default "1").
-/// Agora usa flags booleanas independentes para rastrear o que foi encontrado.
+/// FIX: the previous condition compared against default values, so the loop
+/// never broke early when pkgrel=1 (initial value equal to the default "1").
+/// Now uses independent boolean flags to track what has been found.
 fn parse_pkgbuild_info(content: &str) -> (String, String, String) {
     let mut pkgname = String::from("unknown");
     let mut pkgver  = String::from("0");
@@ -118,15 +118,13 @@ fn parse_pkgbuild_info(content: &str) -> (String, String, String) {
     (pkgname, pkgver, pkgrel)
 }
 
-/// FIX: detecta a branch padrão do remote (main ou master) antes de fazer push,
-/// em vez de forçar hardcoded "origin/master" que falha em repos com branch 'main'.
+/// FIX: detect the remote default branch (main or master) before pushing,
+/// instead of hardcoding "origin/master" which fails on repos using 'main'.
 fn push_to_aur(dir: &Path) -> anyhow::Result<()> {
-    // Tenta detectar a branch remota padrão (HEAD do remote 'origin')
     let default_branch = detect_remote_default_branch(dir);
-
     let branch = default_branch.as_deref().unwrap_or("master");
-    println!(">>> git push origin {}", branch);
 
+    println!(">>> git push origin {}", branch);
     if let Err(e) = run_command("git", &["push", "origin", branch], dir) {
         println!(
             "{} ({}) {}",
@@ -140,7 +138,7 @@ fn push_to_aur(dir: &Path) -> anyhow::Result<()> {
 }
 
 /// Detects the default branch name on origin (main, master, or custom).
-/// Returns None if detection fails — caller should fall back to "master".
+/// Returns None if detection fails -- caller should fall back to "master".
 fn detect_remote_default_branch(dir: &Path) -> Option<String> {
     // Try: git remote show origin | grep 'HEAD branch'
     let output = Command::new("git")
@@ -160,7 +158,7 @@ fn detect_remote_default_branch(dir: &Path) -> Option<String> {
         }
     }
 
-    // Fallback: check if 'main' exists on remote
+    // Fallback: check if 'main' exists on the remote
     let check = Command::new("git")
         .args(["ls-remote", "--heads", "origin", "main"])
         .current_dir(dir)

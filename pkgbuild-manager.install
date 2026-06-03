@@ -37,7 +37,7 @@ post_install() {
     if command -v nautilus &>/dev/null; then
         _detected=1
         if ! pacman -Q python-nautilus &>/dev/null 2>&1; then
-            echo ">>> Nautilus detected — install python-nautilus for right-click support:"
+            echo ">>> Nautilus detected -- install python-nautilus for right-click support:"
             echo ">>>   sudo pacman -S python-nautilus"
             echo ">>> Then run: nautilus -q"
         else
@@ -47,7 +47,7 @@ post_install() {
     if command -v nemo &>/dev/null; then
         _detected=1
         if ! pacman -Q nemo-python &>/dev/null 2>&1; then
-            echo ">>> Nemo detected — install nemo-python for right-click support:"
+            echo ">>> Nemo detected -- install nemo-python for right-click support:"
             echo ">>>   sudo pacman -S nemo-python"
         else
             echo ">>> Nemo extension ready."
@@ -56,7 +56,7 @@ post_install() {
     if command -v caja &>/dev/null; then
         _detected=1
         if ! pacman -Q python-caja &>/dev/null 2>&1; then
-            echo ">>> Caja detected — install python-caja for right-click support:"
+            echo ">>> Caja detected -- install python-caja for right-click support:"
             echo ">>>   sudo pacman -S python-caja"
         else
             echo ">>> Caja extension ready."
@@ -64,7 +64,7 @@ post_install() {
     fi
     if command -v dolphin &>/dev/null; then
         _detected=1
-        echo ">>> Dolphin detected — right-click service menu installed automatically."
+        echo ">>> Dolphin detected -- right-click service menu installed automatically."
     fi
     if [ "$_detected" -eq 0 ]; then
         echo ">>> No supported file manager detected."
@@ -75,9 +75,10 @@ post_install() {
 post_upgrade() {
     _user="${SUDO_USER:-$USER}"
 
-    # FIX: limpa stale de versões anteriores para TODOS os file managers suportados,
-    # não apenas Nautilus. Versões antigas podiam deixar diretórios/symlinks em Nemo,
-    # Caja e Dolphin que não eram removidos no upgrade.
+    # FIX: clean up stale entries from previous versions for ALL supported
+    # file managers, not just Nautilus. Older versions could leave behind
+    # directories/symlinks in Nemo, Caja, and Dolphin that were never removed
+    # on upgrade.
 
     # Nautilus
     _nautilus_scripts="$(eval echo ~$_user)/.local/share/nautilus/scripts"
@@ -100,7 +101,7 @@ post_upgrade() {
         echo ">>> Removed stale PKGBUILD dir from Caja scripts."
     fi
 
-    # Dolphin service menus (versões antigas usavam ~/.local/share/kservices5)
+    # Dolphin service menus (old versions used ~/.local/share/kservices5)
     _dolphin_old="$(eval echo ~$_user)/.local/share/kservices5/pkgbuild-manager.desktop"
     if [ -f "$_dolphin_old" ]; then
         rm -f "$_dolphin_old"
@@ -120,9 +121,9 @@ post_remove() {
         _current=$(${_gset} get org.gnome.settings-daemon.plugins.media-keys \
             custom-keybindings 2>/dev/null || echo "[]")
 
-        # FIX: a lógica anterior com múltiplos sed deixava a lista corrompida
-        # quando o binding era o único elemento (resultava em '[, ]' ou '[]' inválido).
-        # Agora usa Python para manipular a lista de forma segura.
+        # FIX: the previous multi-sed approach left the list corrupted when the
+        # binding was the only element (resulting in '[, ]' or an invalid '[]').
+        # Now uses Python to safely parse and filter the GSettings list.
         _new=$(python3 - "$_current" "$_binding" <<'PYEOF'
 import sys, ast
 current_str = sys.argv[1].strip()
@@ -132,7 +133,6 @@ try:
 except Exception:
     lst = []
 lst = [x for x in lst if x != binding]
-# Formata como GSettings espera: "['item1', 'item2']"
 print(repr(lst).replace('"', "'"))
 PYEOF
         )

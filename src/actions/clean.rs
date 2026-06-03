@@ -31,8 +31,8 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
         }
 
         // Single directory traversal: removes bare git repo cache dirs and _build* dirs.
-        // FIX: o .git/ de um clone normal também possui HEAD + objects/, então
-        // precisamos excluí-lo explicitamente para não destruir o repositório do pacote.
+        // FIX: a normal git clone also has HEAD + objects/ inside .git/, so we must
+        // explicitly skip .git/ to avoid destroying the package repository itself.
         if let Ok(entries) = std::fs::read_dir(&target_dir) {
             for entry in entries.flatten() {
                 let Ok(ft) = entry.file_type() else { continue };
@@ -41,7 +41,7 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
                 let name = name.to_string_lossy();
 
                 if ft.is_dir() {
-                    // FIX: nunca remover o .git/ do próprio projeto
+                    // FIX: never remove the project's own .git/ directory
                     if name == ".git" {
                         continue;
                     }

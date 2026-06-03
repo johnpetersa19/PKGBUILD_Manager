@@ -30,7 +30,7 @@ use std::path::Path;
 fn main() -> Result<()> {
     // setlocale MUST be called before bindtextdomain/textdomain so that
     // the C library initialises the locale from the environment (LANG,
-    // LC_ALL, …). Without this call gettextrs silently falls back to the
+    // LC_ALL, ...). Without this call gettextrs silently falls back to the
     // "C" locale and never loads any .mo file.
     gettextrs::setlocale(LocaleCategory::LcAll, "");
 
@@ -53,9 +53,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    // Support optional `--` separator between path and flags so that
-    // directories starting with '-' can still be used as path.
-    // Forms aceitas:
+    // Supported forms:
     //   pkgbuild_manager build                # path = ".", flags = []
     //   pkgbuild_manager build /dir           # path = "/dir", flags = []
     //   pkgbuild_manager build -- -c -f       # path = ".",   flags = ["-c", "-f"]
@@ -65,25 +63,25 @@ fn main() -> Result<()> {
         let mut path: &str = ".";
         let mut flags: Vec<&str> = Vec::new();
 
-        // Nenhum argumento extra: usa diretório atual
+        // No extra argument: use current directory
         if args.len() <= 2 {
             (path, flags)
         } else {
-            // Procura por `--` a partir do índice 2 (depois do comando)
+            // Look for `--` separator starting from index 2 (after the command)
             let sep_pos = args[2..].iter().position(|s| s == "--");
             match sep_pos {
                 Some(rel_idx) => {
                     let idx = 2 + rel_idx;
-                    // Tudo depois de `--` são flags literais
+                    // Everything after `--` are literal flags
                     flags = args[idx + 1..].iter().map(|s| s.as_str()).collect();
-                    // Antes do `--` podemos ter ou não path explícito
+                    // Before `--` we may or may not have an explicit path
                     if idx > 2 {
                         path = &args[2];
                     }
                     (path, flags)
                 }
                 None => {
-                    // Sem `--`: mantém heurística antiga
+                    // No `--`: keep legacy heuristic
                     match args.get(2) {
                         None => (".", Vec::new()),
                         Some(s) if s.starts_with('-') => {
@@ -103,9 +101,9 @@ fn main() -> Result<()> {
 
     let target_path = Path::new(path_arg);
 
-    // FIX: extra_flags agora é passado para TODOS os comandos build/install,
-    // não apenas para os variantes *-custom. Isso permite que o usuário
-    // passe flags adicionais em qualquer comando sem precisar usar -custom.
+    // FIX: extra_flags is now forwarded to ALL build/install commands,
+    // not only the *-custom variants. This lets the user append extra makepkg
+    // flags to any command without having to use -custom explicitly.
     match command.as_str() {
         "build"            => actions::build::run(target_path, &extra_flags),
         "build-clean"      => {
