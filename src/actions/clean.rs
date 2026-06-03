@@ -10,7 +10,7 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
     if full {
         println!(
             "{} {:?}",
-            gettextrs::gettext("Removing src/ pkg/ and built packages in"),
+            gettextrs::gettext("Removing src/ pkg/ and compiled packages in"),
             target_dir
         );
 
