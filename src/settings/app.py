@@ -20,7 +20,49 @@ _ = gettext.gettext
 
 CONFIG_DIR  = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "pkgbuild-manager"
 CONFIG_FILE = CONFIG_DIR / "menu.json"
+STATE_FILE  = CONFIG_DIR / "window-state.json"
 
+
+# ── Window geometry persistence ───────────────────────────────────────────────
+
+def _load_win_state(key: str, defaults: dict) -> dict:
+    """Load saved geometry for *key* from STATE_FILE, falling back to *defaults*."""
+    try:
+        data = json.loads(STATE_FILE.read_text())
+        state = data.get(key, {})
+        return {
+            "width":  int(state.get("width",  defaults["width"])),
+            "height": int(state.get("height", defaults["height"])),
+        }
+    except Exception:
+        return defaults.copy()
+
+
+def _save_win_state(key: str, width: int, height: int) -> None:
+    """Persist geometry for *key* into STATE_FILE."""
+    try:
+        CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+        try:
+            data = json.loads(STATE_FILE.read_text())
+        except Exception:
+            data = {}
+        data[key] = {"width": width, "height": height}
+        STATE_FILE.write_text(json.dumps(data, indent=2))
+    except Exception:
+        pass
+
+
+def _connect_geometry_save(win: Adw.ApplicationWindow, key: str) -> None:
+    """Connect the close-request signal so geometry is saved when the window closes."""
+    def on_close(w):
+        w_size = w.get_default_size()
+        _save_win_state(key, w_size.width, w_size.height)
+        return False  # don't block the close
+
+    win.connect("close-request", on_close)
+
+
+# ── Menu defaults ─────────────────────────────────────────────────────────────
 
 def _default_menu():
     return [
@@ -223,7 +265,14 @@ class SettingsApp(Adw.Application):
     def _build_window(self):
         self.win = Adw.ApplicationWindow(application=self)
         self.win.set_title(_("PKGBUILD Manager \u2014 Menu Settings"))
-        self.win.set_default_size(700, 600)
+
+        # Restore saved size, default 700×600
+        state = _load_win_state("settings", {"width": 700, "height": 600})
+        self.win.set_default_size(state["width"], state["height"])
+
+        # Save size on close
+        _connect_geometry_save(self.win, "settings")
+
         self.win.connect("destroy", self._on_window_destroy)
 
         toolbar_view = Adw.ToolbarView()
@@ -248,7 +297,7 @@ class SettingsApp(Adw.Application):
             margin_top=12, margin_bottom=12,
             margin_start=16, margin_end=16,
         )
-        self._scroll = scroll  # referência salva para controle de posição
+        self._scroll = scroll
         scroll.set_child(self.main_box)
         toolbar_view.set_content(scroll)
         self.win.set_content(toolbar_view)
@@ -260,9 +309,6 @@ class SettingsApp(Adw.Application):
 
     def _render_groups(self, scroll_to_end=False):
         self._rebuilding = True
-        # Salva posição atual do scroll antes de reconstruir os widgets.
-        # Quando scroll_to_end=True (novo grupo), ignoramos a posição salva
-        # e rolamos até o fim após a reconstrução.
         adj = self._scroll.get_vadjustment()
         saved_pos = adj.get_value() if not scroll_to_end else None
         try:
@@ -283,8 +329,6 @@ class SettingsApp(Adw.Application):
         finally:
             self._rebuilding = False
 
-        # Usa GLib.idle_add para restaurar/definir a posição do scroll após
-        # o GTK terminar de calcular o layout dos novos widgets.
         if scroll_to_end:
             GLib.idle_add(lambda: adj.set_value(adj.get_upper()) or False)
         elif saved_pos is not None:

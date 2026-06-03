@@ -12,9 +12,58 @@ use gtk::{
 };
 use std::cell::RefCell;
 use std::io::{BufRead, BufReader};
+use std::path::PathBuf;
 use std::process::{Command, Stdio};
 use std::rc::Rc;
 use std::thread;
+
+// ── Window-state persistence ───────────────────────────────────────────────────────
+
+/// Path to `~/.config/pkgbuild-manager/window-state.json`
+fn state_path() -> PathBuf {
+    let base = std::env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut h = dirs::home_dir().unwrap_or_else(|| PathBuf::from("/tmp"));
+            h.push(".config");
+            h
+        });
+    base.join("pkgbuild-manager").join("window-state.json")
+}
+
+/// Load saved (width, height) for `key`; fall back to `(default_w, default_h)`.
+fn load_win_size(key: &str, default_w: i32, default_h: i32) -> (i32, i32) {
+    (|| -> Option<(i32, i32)> {
+        let text = std::fs::read_to_string(state_path()).ok()?;
+        let val: serde_json::Value = serde_json::from_str(&text).ok()?;
+        let obj = val.get(key)?;
+        let w = obj.get("width")?.as_i64()? as i32;
+        let h = obj.get("height")?.as_i64()? as i32;
+        Some((w, h))
+    })()
+    .unwrap_or((default_w, default_h))
+}
+
+/// Save (width, height) for `key` into the shared state file.
+fn save_win_size(key: &str, width: i32, height: i32) {
+    let path = state_path();
+    let mut obj: serde_json::Map<String, serde_json::Value> = (|| -> Option<_> {
+        let text = std::fs::read_to_string(&path).ok()?;
+        let val: serde_json::Value = serde_json::from_str(&text).ok()?;
+        val.as_object().cloned()
+    })()
+    .unwrap_or_default();
+
+    obj.insert(
+        key.to_string(),
+        serde_json::json!({"width": width, "height": height}),
+    );
+
+    if let Some(parent) = path.parent() {
+        let _ = std::fs::create_dir_all(parent);
+    }
+    let _ = std::fs::write(&path, serde_json::to_string_pretty(&obj).unwrap_or_default());
+}
 
 // ── CSS ─────────────────────────────────────────────────────────────────
 
@@ -76,7 +125,6 @@ impl StepRow {
             .visible(false)
             .build();
 
-        // Waiting bullet — shown before the step runs
         let icon = Label::builder()
             .label("○")
             .width_chars(2)
@@ -180,12 +228,22 @@ impl AurPushWindow {
             gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
         );
 
+        // Restore saved window size
+        let (saved_w, saved_h) = load_win_size("aur-push", 540, 580);
+
         let win = ApplicationWindow::builder()
             .application(app)
             .title("Push to AUR")
-            .default_width(540)
-            .default_height(580)
+            .default_width(saved_w)
+            .default_height(saved_h)
             .build();
+
+        // Save size when the window is closed
+        win.connect_close_request(|w| {
+            let (cw, ch) = w.default_size();
+            save_win_size("aur-push", cw, ch);
+            glib::Propagation::Proceed
+        });
 
         let root = GBox::builder()
             .orientation(Orientation::Vertical)
@@ -193,7 +251,6 @@ impl AurPushWindow {
             .build();
 
         let header = HeaderBar::new();
-        // Show target path in subtitle
         let subtitle = Label::builder()
             .label(&target)
             .ellipsize(gtk::pango::EllipsizeMode::Start)
@@ -208,7 +265,7 @@ impl AurPushWindow {
         }));
         root.append(&header);
 
-        // ── Progress bar (hidden until running) ───────────────────────────────
+        // Progress bar
         let progress = ProgressBar::builder()
             .fraction(0.0)
             .visible(false)
@@ -234,7 +291,7 @@ impl AurPushWindow {
         scroll.set_child(Some(&content));
         root.append(&scroll);
 
-        // ── Fields group ──────────────────────────────────────────────────────
+        // Fields group
         let fields_group = adw::PreferencesGroup::builder().title("Commit").build();
 
         let msg_row = adw::EntryRow::builder()
@@ -252,7 +309,7 @@ impl AurPushWindow {
 
         content.append(&fields_group);
 
-        // ── Steps group ───────────────────────────────────────────────────────
+        // Steps group
         let steps_group = adw::PreferencesGroup::builder().title("Steps").build();
 
         let step_srcinfo  = StepRow::new("Regen .SRCINFO");
@@ -274,7 +331,7 @@ impl AurPushWindow {
         }
         content.append(&steps_group);
 
-        // ── Log expander (auto-opens on error) ──────────────────────────────
+        // Log expander
         let log_expander = Expander::builder().label("Log").expanded(false).build();
 
         let log_scroll = ScrolledWindow::builder()
@@ -295,7 +352,7 @@ impl AurPushWindow {
         log_expander.set_child(Some(&log_scroll));
         content.append(&log_expander);
 
-        // ── Status page ─────────────────────────────────────────────────────────
+        // Status page
         let status_page = StatusPage::builder()
             .icon_name("object-select-symbolic")
             .title("")
@@ -303,7 +360,7 @@ impl AurPushWindow {
             .build();
         content.append(&status_page);
 
-        // ── Bottom button ──────────────────────────────────────────────────────
+        // Bottom button
         let btn_box = GBox::builder()
             .orientation(Orientation::Horizontal)
             .halign(Align::End)
@@ -323,7 +380,7 @@ impl AurPushWindow {
 
         win.set_content(Some(&root));
 
-        // ── Shared state ──────────────────────────────────────────────────────
+        // Shared state
         let running = Rc::new(RefCell::new(false));
         let total_steps: f64 = if with_tag { 7.0 } else { 5.0 };
         let done_steps = Rc::new(RefCell::new(0u32));
@@ -418,7 +475,6 @@ impl AurPushWindow {
                                         }
                                         StepState::Error => {
                                             step.set_err(&detail);
-                                            // Auto-open log so user sees what went wrong
                                             log_expander.set_expanded(true);
                                         }
                                     }
@@ -464,7 +520,6 @@ fn run_push_worker(
     tag: Option<String>,
     tx: async_channel::Sender<Msg>,
 ) {
-    // Validate target directory
     if target.is_empty() {
         let _ = tx.send_blocking(Msg::Log("[ERROR] No target directory provided.".into()));
         let _ = tx.send_blocking(Msg::Done(false));
