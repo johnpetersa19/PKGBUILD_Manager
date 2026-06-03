@@ -8,7 +8,7 @@ use adw::{ApplicationWindow, HeaderBar, StatusPage};
 use gtk::{
     glib, glib::clone, Align, Box as GBox, Button, CssProvider, Expander,
     Label, Orientation, PolicyType, ProgressBar, ScrolledWindow, Spinner,
-    StyleContext, TextView, WrapMode,
+    TextView, WrapMode,
 };
 use std::cell::RefCell;
 use std::io::{BufRead, BufReader};
@@ -216,10 +216,10 @@ impl AurPushWindow {
         target: String,
         with_tag: bool,
     ) -> ApplicationWindow {
-        // Load CSS
+        // Load CSS — use the non-deprecated free function (GTK 4.10+)
         let provider = CssProvider::new();
         provider.load_from_string(CSS);
-        StyleContext::add_provider_for_display(
+        gtk::style_context_add_provider_for_display(
             &gtk::gdk::Display::default().unwrap(),
             &provider,
             gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
@@ -236,8 +236,6 @@ impl AurPushWindow {
             .build();
 
         // Save the ACTUAL rendered size when the user closes the window.
-        // width() / height() reflect the real size after any user resize;
-        // default_size() would only return what we passed to set_default_size().
         win.connect_close_request(|w| {
             let cw = w.width();
             let ch = w.height();
