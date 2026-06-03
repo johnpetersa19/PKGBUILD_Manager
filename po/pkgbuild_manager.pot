@@ -84,7 +84,7 @@ msgstr ""
 # ---------------------------------------------------------------------------
 # Settings panel (GTK app — src/settings/app.py)
 # ---------------------------------------------------------------------------
-msgid "PKGBUILD Manager — Menu Settings"
+msgid "PKGBUILD Manager \u2014 Menu Settings"
 msgstr ""
 
 msgid "Reset"
@@ -108,7 +108,7 @@ msgstr ""
 msgid "All actions are already in a group."
 msgstr ""
 
-msgid "Save! Restart the file manager for application."
+msgid "Saved! Restarting file manager\u2026"
 msgstr ""
 
 # Default group names
@@ -118,10 +118,10 @@ msgstr ""
 msgid "Metadata"
 msgstr ""
 
-msgid "Auditors"
+msgid "Audit"
 msgstr ""
 
-msgid "Git/AUR"
+msgid "Git / AUR"
 msgstr ""
 
 msgid "Clean"
