@@ -117,6 +117,15 @@ pub fn collect_pkg_files(dir: &Path) -> Vec<String> {
 /// Regenerate .SRCINFO using `makepkg --printsrcinfo`, write it to disk,
 /// and return the generated content as String.
 pub fn regenerate_srcinfo(dir: &Path) -> Result<String> {
+    // FIX: verify PKGBUILD exists before calling makepkg to produce a clear error
+    if !dir.join("PKGBUILD").exists() {
+        return Err(anyhow!(
+            "{}: {:?}",
+            gettext("No PKGBUILD found in directory"),
+            dir
+        ));
+    }
+
     println!("{} {:?}", gettextrs::gettext(">>> Regenerating .SRCINFO in"), dir);
 
     let output = Command::new("makepkg")
