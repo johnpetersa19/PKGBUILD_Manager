@@ -74,30 +74,50 @@ const CSS: &str = "
     transition: background-color 300ms ease;
 }
 .step-error {
-    background-color: alpha(@error_bg_color, 0.14);
+    background-color: alpha(@error_bg_color, 0.18);
     transition: background-color 300ms ease;
 }
 .icon-ok {
     color: @success_color;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: bold;
 }
 .icon-error {
     color: @error_color;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: bold;
 }
 .icon-waiting {
     color: alpha(@window_fg_color, 0.25);
-    font-size: 14px;
+    font-size: 15px;
 }
-.log-view {
+/* Log text — comfortable reading size */
+.log-view text {
     font-family: monospace;
-    font-size: 12px;
+    font-size: 13px;
+    line-height: 1.55;
+}
+/* Error section shown at the bottom */
+.error-box {
+    border-radius: 10px;
+    background-color: alpha(@error_bg_color, 0.12);
+    border: 1px solid alpha(@error_color, 0.30);
+    padding: 10px 14px;
+}
+.error-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: @error_color;
+    margin-bottom: 4px;
+}
+.error-body text {
+    font-family: monospace;
+    font-size: 13px;
+    color: @error_color;
 }
 .progress-bar-box {
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 ";
 
@@ -224,7 +244,7 @@ impl AurPushWindow {
             gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
         );
 
-        let (saved_w, saved_h) = load_win_size("aur-push", 540, 580);
+        let (saved_w, saved_h) = load_win_size("aur-push", 580, 640);
 
         let win = ApplicationWindow::builder()
             .application(app)
@@ -242,11 +262,13 @@ impl AurPushWindow {
             glib::Propagation::Proceed
         });
 
+        // ── Root layout ─────────────────────────────────────────────────────────
         let root = GBox::builder()
             .orientation(Orientation::Vertical)
             .spacing(0)
             .build();
 
+        // Header
         let header = HeaderBar::new();
         let subtitle = Label::builder()
             .label(&target)
@@ -254,14 +276,21 @@ impl AurPushWindow {
             .css_classes(vec!["dim-label".to_string()])
             .build();
         header.set_title_widget(Some(&{
-            let vbox = GBox::builder().orientation(Orientation::Vertical).valign(Align::Center).build();
-            let title = Label::builder().label("Push to AUR").css_classes(vec!["title".to_string()]).build();
+            let vbox = GBox::builder()
+                .orientation(Orientation::Vertical)
+                .valign(Align::Center)
+                .build();
+            let title = Label::builder()
+                .label("Push to AUR")
+                .css_classes(vec!["title".to_string()])
+                .build();
             vbox.append(&title);
             vbox.append(&subtitle);
             vbox
         }));
         root.append(&header);
 
+        // Progress bar — anchored right below the header
         let progress = ProgressBar::builder()
             .fraction(0.0)
             .visible(false)
@@ -269,6 +298,7 @@ impl AurPushWindow {
             .build();
         root.append(&progress);
 
+        // Scrollable content area
         let scroll = ScrolledWindow::builder()
             .hscrollbar_policy(PolicyType::Never)
             .vscrollbar_policy(PolicyType::Automatic)
@@ -277,16 +307,19 @@ impl AurPushWindow {
 
         let content = GBox::builder()
             .orientation(Orientation::Vertical)
-            .spacing(12)
-            .margin_top(12)
-            .margin_bottom(12)
-            .margin_start(12)
-            .margin_end(12)
+            .spacing(14)
+            .margin_top(16)
+            .margin_bottom(16)
+            .margin_start(14)
+            .margin_end(14)
             .build();
 
         scroll.set_child(Some(&content));
         root.append(&scroll);
 
+        // ──────────────────────────────────────────────────────────────
+        // SECTION 1: Commit message + optional tag
+        // ──────────────────────────────────────────────────────────────
         let fields_group = adw::PreferencesGroup::builder().title("Commit").build();
 
         let msg_row = adw::EntryRow::builder()
@@ -304,6 +337,9 @@ impl AurPushWindow {
 
         content.append(&fields_group);
 
+        // ──────────────────────────────────────────────────────────────
+        // SECTION 2: Steps with spinner feedback
+        // ──────────────────────────────────────────────────────────────
         let steps_group = adw::PreferencesGroup::builder().title("Steps").build();
 
         let step_srcinfo  = StepRow::new("Regen .SRCINFO");
@@ -325,12 +361,19 @@ impl AurPushWindow {
         }
         content.append(&steps_group);
 
-        let log_expander = Expander::builder().label("Log").expanded(false).build();
+        // ──────────────────────────────────────────────────────────────
+        // SECTION 3: Full log (collapsible, hidden until first output)
+        // ──────────────────────────────────────────────────────────────
+        let log_expander = Expander::builder()
+            .label("Log")
+            .expanded(false)
+            .visible(false)   // hidden until we receive the first line
+            .build();
 
         let log_scroll = ScrolledWindow::builder()
             .hscrollbar_policy(PolicyType::Automatic)
             .vscrollbar_policy(PolicyType::Automatic)
-            .height_request(180)
+            .height_request(200)
             .build();
 
         let log_view = TextView::builder()
@@ -338,6 +381,10 @@ impl AurPushWindow {
             .cursor_visible(false)
             .wrap_mode(WrapMode::None)
             .monospace(true)
+            .left_margin(8)
+            .right_margin(8)
+            .top_margin(6)
+            .bottom_margin(6)
             .css_classes(vec!["log-view".to_string()])
             .build();
 
@@ -345,6 +392,40 @@ impl AurPushWindow {
         log_expander.set_child(Some(&log_scroll));
         content.append(&log_expander);
 
+        // ──────────────────────────────────────────────────────────────
+        // SECTION 4: Error summary box — visible only when errors occur
+        // ──────────────────────────────────────────────────────────────
+        let error_box = GBox::builder()
+            .orientation(Orientation::Vertical)
+            .spacing(6)
+            .visible(false)
+            .css_classes(vec!["error-box".to_string()])
+            .build();
+
+        let error_title = Label::builder()
+            .label("⚠️ Errors found")
+            .halign(Align::Start)
+            .css_classes(vec!["error-title".to_string()])
+            .build();
+
+        let error_view = TextView::builder()
+            .editable(false)
+            .cursor_visible(false)
+            .wrap_mode(WrapMode::WordChar)
+            .monospace(true)
+            .left_margin(4)
+            .top_margin(4)
+            .bottom_margin(4)
+            .css_classes(vec!["error-body".to_string()])
+            .build();
+
+        error_box.append(&error_title);
+        error_box.append(&error_view);
+        content.append(&error_box);
+
+        // ──────────────────────────────────────────────────────────────
+        // SECTION 5: Final status page
+        // ──────────────────────────────────────────────────────────────
         let status_page = StatusPage::builder()
             .icon_name("object-select-symbolic")
             .title("")
@@ -352,12 +433,13 @@ impl AurPushWindow {
             .build();
         content.append(&status_page);
 
+        // ── Bottom action button ────────────────────────────────────────────────────
         let btn_box = GBox::builder()
             .orientation(Orientation::Horizontal)
             .halign(Align::End)
-            .margin_top(6)
-            .margin_bottom(8)
-            .margin_end(12)
+            .margin_top(4)
+            .margin_bottom(10)
+            .margin_end(14)
             .spacing(8)
             .build();
 
@@ -371,9 +453,10 @@ impl AurPushWindow {
 
         win.set_content(Some(&root));
 
-        let running = Rc::new(RefCell::new(false));
+        // ── Shared state ───────────────────────────────────────────────────────────
+        let running     = Rc::new(RefCell::new(false));
         let total_steps: f64 = if with_tag { 7.0 } else { 5.0 };
-        let done_steps = Rc::new(RefCell::new(0u32));
+        let done_steps  = Rc::new(RefCell::new(0u32));
 
         let steps: Rc<Vec<(&'static str, StepRow)>> = Rc::new(vec![
             ("regen-srcinfo", step_srcinfo),
@@ -387,16 +470,19 @@ impl AurPushWindow {
 
         let (sender, receiver) = async_channel::unbounded::<Msg>();
 
+        // ── Push button ─────────────────────────────────────────────────────────────
         push_btn.connect_clicked(clone!(
             #[strong] running,
             #[strong] steps,
             #[strong] msg_row,
             #[strong] tag_row,
             #[strong] log_view,
+            #[strong] log_expander,
+            #[strong] error_view,
+            #[strong] error_box,
             #[strong] status_page,
             #[strong] push_btn,
             #[strong] progress,
-            #[strong] log_expander,
             #[strong] done_steps,
             #[strong] target,
             move |_| {
@@ -406,7 +492,10 @@ impl AurPushWindow {
 
                 for (_, step) in steps.iter() { step.reset(); }
                 log_view.buffer().set_text("");
+                error_view.buffer().set_text("");
+                error_box.set_visible(false);
                 status_page.set_visible(false);
+                log_expander.set_visible(false);
                 log_expander.set_expanded(false);
                 push_btn.set_sensitive(false);
                 progress.set_fraction(0.0);
@@ -430,24 +519,45 @@ impl AurPushWindow {
             }
         ));
 
+        // ── Message receiver ───────────────────────────────────────────────────────
         glib::spawn_future_local(clone!(
             #[strong] running,
             #[strong] steps,
             #[strong] log_view,
+            #[strong] log_expander,
+            #[strong] error_view,
+            #[strong] error_box,
             #[strong] status_page,
             #[strong] push_btn,
             #[strong] progress,
-            #[strong] log_expander,
             #[strong] done_steps,
             async move {
                 while let Ok(msg) = receiver.recv().await {
                     match msg {
                         Msg::Log(line) => {
+                            // Append to full log
                             let buf = log_view.buffer();
                             let mut end = buf.end_iter();
                             buf.insert(&mut end, &format!("{line}\n"));
                             let mark = buf.create_mark(None, &buf.end_iter(), false);
                             log_view.scroll_to_mark(&mark, 0.0, false, 0.0, 0.0);
+                            // Show log expander as soon as output arrives
+                            if !log_expander.is_visible() {
+                                log_expander.set_visible(true);
+                            }
+                            // Mirror stderr/ERROR lines into the error summary box
+                            if line.starts_with("[stderr]") || line.starts_with("[ERROR]") {
+                                let ebuf = error_view.buffer();
+                                let mut eend = ebuf.end_iter();
+                                let clean = line
+                                    .trim_start_matches("[stderr]")
+                                    .trim_start_matches("[ERROR]")
+                                    .trim();
+                                if !clean.is_empty() {
+                                    ebuf.insert(&mut eend, &format!("{clean}\n"));
+                                    error_box.set_visible(true);
+                                }
+                            }
                         }
                         Msg::Step { key, state, detail } => {
                             for (k, step) in steps.iter() {
@@ -465,7 +575,6 @@ impl AurPushWindow {
                                         }
                                         StepState::Error => {
                                             step.set_err(&detail);
-                                            log_expander.set_expanded(true);
                                         }
                                     }
                                     break;
@@ -482,6 +591,7 @@ impl AurPushWindow {
                                 status_page.set_icon_name(Some("emblem-ok-symbolic"));
                                 status_page.set_title("Pushed to AUR!");
                                 status_page.remove_css_class("error");
+                                status_page.set_visible(true);
                             } else {
                                 progress.set_fraction(0.0);
                                 progress.set_visible(false);
@@ -489,9 +599,9 @@ impl AurPushWindow {
                                 status_page.set_icon_name(Some("dialog-error-symbolic"));
                                 status_page.set_title("Push failed — check the log");
                                 status_page.add_css_class("error");
+                                // Expand full log automatically on failure
                                 log_expander.set_expanded(true);
                             }
-                            status_page.set_visible(true);
                         }
                     }
                 }
