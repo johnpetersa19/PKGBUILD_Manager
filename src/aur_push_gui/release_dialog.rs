@@ -18,9 +18,9 @@ use adw::prelude::*;
 use adw::{ApplicationWindow, HeaderBar, StatusPage};
 use gtk::{
     glib, glib::clone,
-    Align, Box as GBox, Button, CssProvider, Label, ListBox, ListBoxRow,
+    Align, Box as GBox, Button, CssProvider, Label,
     Orientation, PolicyType, Popover, ProgressBar, ScrolledWindow,
-    SelectionMode, Separator, Spinner, Stack, StackSidebar,
+    Separator, Spinner, Stack,
     StackTransitionType, TextView, WrapMode,
 };
 use std::cell::RefCell;
@@ -28,7 +28,6 @@ use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
 use std::process::{Command, Stdio};
 use std::rc::Rc;
-use std::thread;
 
 // ── Platform ──────────────────────────────────────────────────────────────────
 
@@ -619,12 +618,14 @@ impl ReleaseWindow {
             move |_| { push_outer.set_visible_child_name("push-prog"); }
         ));
 
-        // Wire: back
-        push_panel.back_btn.connect_clicked(clone!(
+        // Wire: back — extract fields before clone! to avoid field-expr capture
+        let push_run_btn  = push_panel.run_btn.clone();
+        let push_back_btn = push_panel.back_btn.clone();
+        push_back_btn.connect_clicked(clone!(
             #[strong] push_outer,
-            #[strong] push_panel.run_btn as run_btn,
+            #[strong] push_run_btn,
             move |_| {
-                if run_btn.is_sensitive() {
+                if push_run_btn.is_sensitive() {
                     push_outer.set_visible_child_name("push-form");
                 }
             }
@@ -637,26 +638,33 @@ impl ReleaseWindow {
         let (push_tx, push_rx) = async_channel::unbounded::<Msg>();
         {
             let total = 4.0_f64;
-            push_panel.run_btn.connect_clicked(clone!(
-                #[strong] push_running, #[strong] push_steps_rc, #[strong] push_panel.run_btn as run_btn,
-                #[strong] push_panel.back_btn as back_btn, #[strong] push_panel.bar as pbar,
-                #[strong] push_panel.error_view as ev, #[strong] push_panel.error_box as ebox,
-                #[strong] push_panel.status_page as sp, #[strong] push_done_st,
-                #[strong] push_msg, #[strong] push_branch, #[strong] target,
+            let push_run_btn2  = push_panel.run_btn.clone();
+            let push_back_btn2 = push_panel.back_btn.clone();
+            let push_pbar      = push_panel.bar.clone();
+            let push_ev        = push_panel.error_view.clone();
+            let push_ebox      = push_panel.error_box.clone();
+            let push_sp        = push_panel.status_page.clone();
+
+            push_run_btn2.connect_clicked(clone!(
+                #[strong] push_running, #[strong] push_steps_rc,
+                #[strong] push_run_btn2, #[strong] push_back_btn2,
+                #[strong] push_pbar, #[strong] push_ev, #[strong] push_ebox, #[strong] push_sp,
+                #[strong] push_done_st, #[strong] push_msg, #[strong] push_branch,
+                #[strong] target,
                 move |_| {
                     if *push_running.borrow() { return; }
                     *push_running.borrow_mut() = true;
                     *push_done_st.borrow_mut() = 0;
                     for (_, s) in push_steps_rc.iter() { s.reset(); }
-                    ev.buffer().set_text(""); ebox.set_visible(false);
-                    sp.set_visible(false); pbar.set_fraction(0.0); pbar.pulse();
-                    run_btn.set_sensitive(false); back_btn.set_sensitive(false);
+                    push_ev.buffer().set_text(""); push_ebox.set_visible(false);
+                    push_sp.set_visible(false); push_pbar.set_fraction(0.0); push_pbar.pulse();
+                    push_run_btn2.set_sensitive(false); push_back_btn2.set_sensitive(false);
 
                     let msg  = push_msg.text().to_string();
                     let br   = push_branch.text().to_string();
                     let path = target.clone();
                     let tx   = push_tx.clone();
-                    thread::spawn(move || {
+                    glib::spawn_blocking(move || {
                         run_push_worker(&path,
                             if msg.is_empty() { None } else { Some(msg) },
                             if br.is_empty()  { None } else { Some(br)  },
@@ -665,16 +673,24 @@ impl ReleaseWindow {
                 }
             ));
 
+            let push_run_btn3  = push_panel.run_btn.clone();
+            let push_back_btn3 = push_panel.back_btn.clone();
+            let push_pbar2     = push_panel.bar.clone();
+            let push_ev2       = push_panel.error_view.clone();
+            let push_ebox2     = push_panel.error_box.clone();
+            let push_sp2       = push_panel.status_page.clone();
+
             glib::spawn_future_local(clone!(
                 #[strong] push_running, #[strong] push_steps_rc,
-                #[strong] push_panel.run_btn as run_btn, #[strong] push_panel.back_btn as back_btn,
-                #[strong] push_panel.bar as pbar, #[strong] push_panel.error_view as ev,
-                #[strong] push_panel.error_box as ebox, #[strong] push_panel.status_page as sp,
+                #[strong] push_run_btn3, #[strong] push_back_btn3,
+                #[strong] push_pbar2, #[strong] push_ev2,
+                #[strong] push_ebox2, #[strong] push_sp2,
                 #[strong] push_done_st,
                 async move {
                     while let Ok(msg) = push_rx.recv().await {
                         handle_msg(msg, &push_steps_rc, &push_running, &push_done_st,
-                            total, &pbar, &ev, &ebox, &sp, &run_btn, &back_btn,
+                            total, &push_pbar2, &push_ev2, &push_ebox2, &push_sp2,
+                            &push_run_btn3, &push_back_btn3,
                             "Pushed successfully!");
                     }
                 }
@@ -786,10 +802,13 @@ impl ReleaseWindow {
             #[strong] tags_outer,
             move |_| { tags_outer.set_visible_child_name("tags-prog"); }
         ));
-        tags_panel.back_btn.connect_clicked(clone!(
+
+        let tags_run_btn  = tags_panel.run_btn.clone();
+        let tags_back_btn = tags_panel.back_btn.clone();
+        tags_back_btn.connect_clicked(clone!(
             #[strong] tags_outer,
-            #[strong] tags_panel.run_btn as run_btn,
-            move |_| { if run_btn.is_sensitive() { tags_outer.set_visible_child_name("tags-form"); } }
+            #[strong] tags_run_btn,
+            move |_| { if tags_run_btn.is_sensitive() { tags_outer.set_visible_child_name("tags-form"); } }
         ));
 
         let tags_running  = Rc::new(RefCell::new(false));
@@ -798,11 +817,17 @@ impl ReleaseWindow {
         let (tags_tx, tags_rx) = async_channel::unbounded::<Msg>();
         {
             let total = 2.0_f64;
-            tags_panel.run_btn.connect_clicked(clone!(
+            let tags_run_btn2  = tags_panel.run_btn.clone();
+            let tags_back_btn2 = tags_panel.back_btn.clone();
+            let tags_pbar      = tags_panel.bar.clone();
+            let tags_ev        = tags_panel.error_view.clone();
+            let tags_ebox      = tags_panel.error_box.clone();
+            let tags_sp        = tags_panel.status_page.clone();
+
+            tags_run_btn2.connect_clicked(clone!(
                 #[strong] tags_running, #[strong] tag_steps_rc,
-                #[strong] tags_panel.run_btn as run_btn, #[strong] tags_panel.back_btn as back_btn,
-                #[strong] tags_panel.bar as pbar, #[strong] tags_panel.error_view as ev,
-                #[strong] tags_panel.error_box as ebox, #[strong] tags_panel.status_page as sp,
+                #[strong] tags_run_btn2, #[strong] tags_back_btn2,
+                #[strong] tags_pbar, #[strong] tags_ev, #[strong] tags_ebox, #[strong] tags_sp,
                 #[strong] tags_done_st, #[strong] tag_name_row, #[strong] tag_msg_row,
                 #[strong] push_style_row, #[strong] target,
                 move |_| {
@@ -810,31 +835,39 @@ impl ReleaseWindow {
                     *tags_running.borrow_mut() = true;
                     *tags_done_st.borrow_mut() = 0;
                     for (_, s) in tag_steps_rc.iter() { s.reset(); }
-                    ev.buffer().set_text(""); ebox.set_visible(false);
-                    sp.set_visible(false); pbar.set_fraction(0.0); pbar.pulse();
-                    run_btn.set_sensitive(false); back_btn.set_sensitive(false);
+                    tags_ev.buffer().set_text(""); tags_ebox.set_visible(false);
+                    tags_sp.set_visible(false); tags_pbar.set_fraction(0.0); tags_pbar.pulse();
+                    tags_run_btn2.set_sensitive(false); tags_back_btn2.set_sensitive(false);
 
                     let name  = tag_name_row.text().to_string();
                     let tmsg  = tag_msg_row.text().to_string();
-                    let style = push_style_row.selected(); // 0 = single, 1 = all
+                    let style = push_style_row.selected();
                     let path  = target.clone();
                     let tx    = tags_tx.clone();
-                    thread::spawn(move || {
+                    glib::spawn_blocking(move || {
                         run_tag_worker(&path, name, tmsg, style == 1, tx);
                     });
                 }
             ));
 
+            let tags_run_btn3  = tags_panel.run_btn.clone();
+            let tags_back_btn3 = tags_panel.back_btn.clone();
+            let tags_pbar2     = tags_panel.bar.clone();
+            let tags_ev2       = tags_panel.error_view.clone();
+            let tags_ebox2     = tags_panel.error_box.clone();
+            let tags_sp2       = tags_panel.status_page.clone();
+
             glib::spawn_future_local(clone!(
                 #[strong] tags_running, #[strong] tag_steps_rc,
-                #[strong] tags_panel.run_btn as run_btn, #[strong] tags_panel.back_btn as back_btn,
-                #[strong] tags_panel.bar as pbar, #[strong] tags_panel.error_view as ev,
-                #[strong] tags_panel.error_box as ebox, #[strong] tags_panel.status_page as sp,
+                #[strong] tags_run_btn3, #[strong] tags_back_btn3,
+                #[strong] tags_pbar2, #[strong] tags_ev2,
+                #[strong] tags_ebox2, #[strong] tags_sp2,
                 #[strong] tags_done_st,
                 async move {
                     while let Ok(msg) = tags_rx.recv().await {
                         handle_msg(msg, &tag_steps_rc, &tags_running, &tags_done_st,
-                            total, &pbar, &ev, &ebox, &sp, &run_btn, &back_btn,
+                            total, &tags_pbar2, &tags_ev2, &tags_ebox2, &tags_sp2,
+                            &tags_run_btn3, &tags_back_btn3,
                             "Tag created and pushed!");
                     }
                 }
@@ -869,10 +902,8 @@ impl ReleaseWindow {
                 .build();
             rel_form.append(&rel_cap);
 
-            // Release fields
             let rel_group = adw::PreferencesGroup::builder().title("Release").build();
 
-            // Tag selector (ComboRow from existing tags)
             let rel_tag_row = adw::ComboRow::builder()
                 .title("Tag")
                 .subtitle("Select an existing tag or type below")
@@ -884,14 +915,12 @@ impl ReleaseWindow {
             if !all_tags.is_empty() { rel_tag_row.set_selected(0); }
             rel_group.add(&rel_tag_row);
 
-            // Manual tag entry (in case user wants to type a new tag)
             let rel_tag_entry = adw::EntryRow::builder()
                 .title("Or type a new tag  (e.g. v1.0.0)")
                 .show_apply_button(false)
                 .build();
             rel_group.add(&rel_tag_entry);
 
-            // Target branch
             let rel_branch_entry: Rc<adw::EntryRow> = Rc::new(
                 adw::EntryRow::builder().title("Target branch").show_apply_button(false).build()
             );
@@ -926,7 +955,6 @@ impl ReleaseWindow {
                 rel_group.add(&*rel_branch_entry);
             }
 
-            // Release title
             let rel_title_row = adw::EntryRow::builder()
                 .title("Release title  (e.g. PKGBUILD Manager 1.0.0)")
                 .show_apply_button(false)
@@ -934,7 +962,6 @@ impl ReleaseWindow {
             rel_group.add(&rel_title_row);
             rel_form.append(&rel_group);
 
-            // Release notes textarea
             let notes_group = adw::PreferencesGroup::builder().title("Release Notes (Markdown)").build();
             let notes_frame = gtk::Frame::builder()
                 .css_classes(vec!["notes-frame".to_string()])
@@ -957,7 +984,6 @@ impl ReleaseWindow {
             );
             notes_scroll.set_child(Some(&notes_view));
             notes_frame.set_child(Some(&notes_scroll));
-            // Wrap the frame in an ActionRow-like box so it fits the group
             let notes_wrap = GBox::builder()
                 .orientation(Orientation::Vertical)
                 .margin_top(4).margin_bottom(4)
@@ -967,13 +993,11 @@ impl ReleaseWindow {
             notes_group.add(&notes_wrap);
             rel_form.append(&notes_group);
 
-            // Attachments
             let attach_group = adw::PreferencesGroup::builder()
                 .title("Attachments (optional)")
                 .build();
             let attachments: Rc<RefCell<Vec<String>>> = Rc::new(RefCell::new(Vec::new()));
 
-            // "Add file" button inside the group header
             let add_file_btn = Button::builder()
                 .icon_name("list-add-symbolic")
                 .tooltip_text("Add attachment")
@@ -982,13 +1006,11 @@ impl ReleaseWindow {
                 .build();
             attach_group.set_header_suffix(Some(&add_file_btn));
 
-            // Container for attachment rows
             let attach_list_box = GBox::builder()
                 .orientation(Orientation::Vertical).spacing(4).build();
             attach_group.add(&attach_list_box);
             rel_form.append(&attach_group);
 
-            // Wire file chooser
             add_file_btn.connect_clicked(clone!(
                 #[strong] attachments, #[strong] attach_list_box, #[strong] win,
                 move |_| {
@@ -1001,7 +1023,6 @@ impl ReleaseWindow {
                                     if let Some(path) = file.path() {
                                         let path_str = path.to_string_lossy().to_string();
                                         attachments.borrow_mut().push(path_str.clone());
-                                        // Add row
                                         let row_box = GBox::builder()
                                             .orientation(Orientation::Horizontal)
                                             .spacing(8).css_classes(vec!["attach-row".to_string()])
@@ -1039,7 +1060,6 @@ impl ReleaseWindow {
                 }
             ));
 
-            // Continue button
             let rel_form_btns = GBox::builder()
                 .orientation(Orientation::Horizontal).halign(Align::End)
                 .margin_top(4).spacing(8).build();
@@ -1096,23 +1116,35 @@ impl ReleaseWindow {
                 #[strong] rel_outer,
                 move |_| { rel_outer.set_visible_child_name("rel-prog"); }
             ));
-            rel_panel.back_btn.connect_clicked(clone!(
+
+            let rel_run_btn  = rel_panel.run_btn.clone();
+            let rel_back_btn = rel_panel.back_btn.clone();
+            rel_back_btn.connect_clicked(clone!(
                 #[strong] rel_outer,
-                #[strong] rel_panel.run_btn as run_btn,
-                move |_| { if run_btn.is_sensitive() { rel_outer.set_visible_child_name("rel-form"); } }
+                #[strong] rel_run_btn,
+                move |_| { if rel_run_btn.is_sensitive() { rel_outer.set_visible_child_name("rel-form"); } }
             ));
 
             let rel_running  = Rc::new(RefCell::new(false));
             let rel_done_st  = Rc::new(RefCell::new(0u32));
             let rel_steps_rc = Rc::new(rel_steps);
             let (rel_tx, rel_rx) = async_channel::unbounded::<Msg>();
-            let total_rel = match platform { Platform::GitHub | Platform::GitLab | Platform::Codeberg => 2.0, _ => 0.0 };
+            let total_rel = match platform {
+                Platform::GitHub | Platform::GitLab | Platform::Codeberg => 2.0,
+                _ => 0.0
+            };
 
-            rel_panel.run_btn.connect_clicked(clone!(
+            let rel_run_btn2  = rel_panel.run_btn.clone();
+            let rel_back_btn2 = rel_panel.back_btn.clone();
+            let rel_pbar      = rel_panel.bar.clone();
+            let rel_ev        = rel_panel.error_view.clone();
+            let rel_ebox      = rel_panel.error_box.clone();
+            let rel_sp        = rel_panel.status_page.clone();
+
+            rel_run_btn2.connect_clicked(clone!(
                 #[strong] rel_running, #[strong] rel_steps_rc,
-                #[strong] rel_panel.run_btn as run_btn, #[strong] rel_panel.back_btn as back_btn,
-                #[strong] rel_panel.bar as pbar, #[strong] rel_panel.error_view as ev,
-                #[strong] rel_panel.error_box as ebox, #[strong] rel_panel.status_page as sp,
+                #[strong] rel_run_btn2, #[strong] rel_back_btn2,
+                #[strong] rel_pbar, #[strong] rel_ev, #[strong] rel_ebox, #[strong] rel_sp,
                 #[strong] rel_done_st,
                 #[strong] rel_tag_row, #[strong] rel_tag_entry, #[strong] rel_title_row,
                 #[strong] notes_view, #[strong] attachments, #[strong] rel_branch_entry,
@@ -1122,11 +1154,10 @@ impl ReleaseWindow {
                     *rel_running.borrow_mut() = true;
                     *rel_done_st.borrow_mut() = 0;
                     for (_, s) in rel_steps_rc.iter() { s.reset(); }
-                    ev.buffer().set_text(""); ebox.set_visible(false);
-                    sp.set_visible(false); pbar.set_fraction(0.0); pbar.pulse();
-                    run_btn.set_sensitive(false); back_btn.set_sensitive(false);
+                    rel_ev.buffer().set_text(""); rel_ebox.set_visible(false);
+                    rel_sp.set_visible(false); rel_pbar.set_fraction(0.0); rel_pbar.pulse();
+                    rel_run_btn2.set_sensitive(false); rel_back_btn2.set_sensitive(false);
 
-                    // Resolve tag: manual entry takes priority over ComboRow
                     let tag_manual = rel_tag_entry.text().to_string();
                     let tag = if !tag_manual.is_empty() {
                         tag_manual
@@ -1142,22 +1173,30 @@ impl ReleaseWindow {
                     let path   = target.clone();
                     let tx     = rel_tx.clone();
 
-                    thread::spawn(move || {
+                    glib::spawn_blocking(move || {
                         run_release_worker(platform, &path, tag, title, notes, branch, files, tx);
                     });
                 }
             ));
 
+            let rel_run_btn3  = rel_panel.run_btn.clone();
+            let rel_back_btn3 = rel_panel.back_btn.clone();
+            let rel_pbar2     = rel_panel.bar.clone();
+            let rel_ev2       = rel_panel.error_view.clone();
+            let rel_ebox2     = rel_panel.error_box.clone();
+            let rel_sp2       = rel_panel.status_page.clone();
+
             glib::spawn_future_local(clone!(
                 #[strong] rel_running, #[strong] rel_steps_rc,
-                #[strong] rel_panel.run_btn as run_btn, #[strong] rel_panel.back_btn as back_btn,
-                #[strong] rel_panel.bar as pbar, #[strong] rel_panel.error_view as ev,
-                #[strong] rel_panel.error_box as ebox, #[strong] rel_panel.status_page as sp,
+                #[strong] rel_run_btn3, #[strong] rel_back_btn3,
+                #[strong] rel_pbar2, #[strong] rel_ev2,
+                #[strong] rel_ebox2, #[strong] rel_sp2,
                 #[strong] rel_done_st,
                 async move {
                     while let Ok(msg) = rel_rx.recv().await {
                         handle_msg(msg, &rel_steps_rc, &rel_running, &rel_done_st,
-                            total_rel, &pbar, &ev, &ebox, &sp, &run_btn, &back_btn,
+                            total_rel, &rel_pbar2, &rel_ev2, &rel_ebox2, &rel_sp2,
+                            &rel_run_btn3, &rel_back_btn3,
                             "Release published!");
                     }
                 }
@@ -1176,7 +1215,7 @@ impl ReleaseWindow {
 
 fn handle_msg(
     msg: Msg,
-    steps: &[(& 'static str, StepRow)],
+    steps: &[(&'static str, StepRow)],
     running: &Rc<RefCell<bool>>,
     done_count: &Rc<RefCell<u32>>,
     total: f64,
@@ -1304,7 +1343,6 @@ macro_rules! step {
     };
 }
 
-/// Worker: commit + push
 fn run_push_worker(
     target: &str,
     message: Option<String>,
@@ -1341,7 +1379,6 @@ fn run_push_worker(
     let _ = tx.send_blocking(Msg::Done(true));
 }
 
-/// Worker: create annotated tag + push
 fn run_tag_worker(
     target: &str,
     name: String,
@@ -1373,7 +1410,6 @@ fn run_tag_worker(
     let _ = tx.send_blocking(Msg::Done(true));
 }
 
-/// Worker: publish release via platform CLI or API
 fn run_release_worker(
     platform: Platform,
     target: &str,
@@ -1396,7 +1432,6 @@ fn run_release_worker(
 
     let ok = match platform {
         Platform::GitHub => {
-            // gh release create v1.0.0 --title "..." --notes "..." --target main [files...]
             let mut args: Vec<String> = vec![
                 "release".into(), "create".into(), tag_name.clone(),
                 "--title".into(), rel_title.clone(),
@@ -1408,7 +1443,6 @@ fn run_release_worker(
             run_cli("gh", &args_ref, target, &tx)
         }
         Platform::GitLab => {
-            // glab release create v1.0.0 --name "..." --notes "..."
             let mut args: Vec<String> = vec![
                 "release".into(), "create".into(), tag_name.clone(),
                 "--name".into(), rel_title.clone(),
@@ -1420,10 +1454,7 @@ fn run_release_worker(
             run_cli("glab", &args_ref, target, &tx)
         }
         Platform::Codeberg => {
-            // Codeberg = Gitea-compatible REST API
-            // POST https://codeberg.org/api/v1/repos/{owner}/{repo}/releases
             let remote = detect_remote(target);
-            // Parse owner/repo from remote URL
             let (owner, repo) = parse_owner_repo(&remote);
             if owner.is_empty() || repo.is_empty() {
                 let _ = tx.send_blocking(Msg::Log(
@@ -1445,7 +1476,6 @@ fn run_release_worker(
                 "prerelease":       false,
             })
             .to_string();
-            // Use curl so we don't need reqwest at compile time
             let curl_args = [
                 "-s", "-o", "/dev/null", "-w", "%{http_code}",
                 "-X", "POST",
@@ -1466,12 +1496,8 @@ fn run_release_worker(
     }
     step!(ok tx, "create-release");
 
-    // Upload assets (GitHub/GitLab handle it in the create command;
-    // for Codeberg we'd need a second call — skip for now and mark ok)
     if !attachments.is_empty() && matches!(platform, Platform::Codeberg) {
         step!(start tx, "upload-assets");
-        // Codeberg asset upload requires the release ID from the create response.
-        // For now we log a notice and succeed (full impl needs response parsing).
         let _ = tx.send_blocking(Msg::Log(
             "Note: asset upload for Codeberg requires CODEBERG_TOKEN env var and release ID.\n\
              Assets must be uploaded manually via the web UI or a dedicated upload step.".into()
@@ -1485,7 +1511,6 @@ fn run_release_worker(
     let _ = tx.send_blocking(Msg::Done(true));
 }
 
-/// Run an arbitrary CLI tool, forwarding stderr to the log channel.
 fn run_cli(cmd: &str, args: &[&str], cwd: &str, tx: &async_channel::Sender<Msg>) -> bool {
     let mut child = match Command::new(cmd)
         .args(args).current_dir(cwd)
@@ -1512,14 +1537,10 @@ fn run_cli(cmd: &str, args: &[&str], cwd: &str, tx: &async_channel::Sender<Msg>)
     child.wait().map(|s| s.success()).unwrap_or(false)
 }
 
-/// Parse "owner" and "repo" from a git remote URL.
-/// Handles both HTTPS (https://host/owner/repo.git) and SSH (git@host:owner/repo.git).
 fn parse_owner_repo(url: &str) -> (String, String) {
-    // SSH: git@codeberg.org:owner/repo.git
     let path = if let Some(rest) = url.strip_prefix("git@") {
         rest.splitn(2, ':').nth(1).unwrap_or("").to_string()
     } else {
-        // HTTPS: https://codeberg.org/owner/repo.git
         url.trim_start_matches("https://")
            .trim_start_matches("http://")
            .splitn(2, '/')
