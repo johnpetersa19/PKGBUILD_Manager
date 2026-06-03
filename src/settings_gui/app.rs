@@ -2,7 +2,7 @@
 //! Feature-parity with the former src/settings/app.py.
 
 use adw::prelude::*;
-use adw::{Application, ApplicationWindow, HeaderBar, Toast};
+use adw::{Application, ApplicationWindow, HeaderBar, Toast, ToastOverlay};
 use gtk::{
     glib::{self, clone},
     Align, Box as GBox, Button, Label, ListBox, ListBoxRow, Orientation,
@@ -17,7 +17,7 @@ use std::thread;
 use crate::config::{self, MenuGroup, MenuItem};
 use crate::win_state;
 
-const APP_ID: &str = "io.github.johnpetersa19.PkgbuildManager";
+const APP_ID: &str = "io.github.johnpetersa19.PkgbuildManager.Settings";
 
 // ── Application ───────────────────────────────────────────────────────────────
 
@@ -27,7 +27,7 @@ impl SettingsApp {
     pub fn new() -> Self {
         let app = Application::builder()
             .application_id(APP_ID)
-            .flags(gtk::gio::ApplicationFlags::FLAGS_NONE)
+            .flags(gtk::gio::ApplicationFlags::NON_UNIQUE)
             .build();
 
         app.connect_activate(|app| {
@@ -54,7 +54,6 @@ fn build_window(app: &Application) {
         .default_height(h)
         .build();
 
-    // Save actual size on close
     win.connect_close_request(|ww| {
         let cw = ww.width();
         let ch = ww.height();
@@ -64,7 +63,6 @@ fn build_window(app: &Application) {
         glib::Propagation::Proceed
     });
 
-    // Shared mutable data
     let menu_data: Rc<RefCell<Vec<MenuGroup>>> = Rc::new(RefCell::new(config::load()));
 
     // ── Layout ────────────────────────────────────────────────────────────────
@@ -91,10 +89,13 @@ fn build_window(app: &Application) {
         .margin_end(16)
         .build();
     scroll.set_child(Some(&main_box));
-    toolbar_view.set_content(Some(&scroll));
+
+    // ToastOverlay wraps the scroll so toasts appear over the content
+    let toast_overlay = ToastOverlay::new();
+    toast_overlay.set_child(Some(&scroll));
+    toolbar_view.set_content(Some(&toast_overlay));
     win.set_content(Some(&toolbar_view));
 
-    // ── Render groups helper (re-renders everything) ───────────────────────────
     render_groups(&main_box, &menu_data, &win);
 
     // ── Buttons ───────────────────────────────────────────────────────────────
@@ -110,16 +111,20 @@ fn build_window(app: &Application) {
 
     save_btn.connect_clicked(clone!(
         #[strong] menu_data,
-        #[strong] win,
+        #[strong] toast_overlay,
         move |_| {
             let data = menu_data.borrow().clone();
             match config::save(&data) {
                 Ok(()) => {
                     notify_file_managers();
-                    win.add_toast(Toast::builder().title("Saved! Restarting file manager…").build());
+                    toast_overlay.add_toast(
+                        Toast::builder().title("Saved! Restarting file manager…").build(),
+                    );
                 }
                 Err(e) => {
-                    win.add_toast(Toast::builder().title(&format!("Error saving: {e}")).build());
+                    toast_overlay.add_toast(
+                        Toast::builder().title(&format!("Error saving: {e}")).build(),
+                    );
                 }
             }
         }
@@ -128,14 +133,13 @@ fn build_window(app: &Application) {
     win.present();
 }
 
-// ── Render all groups into main_box ───────────────────────────────────────────
+// ── Render all groups ─────────────────────────────────────────────────────────
 
 fn render_groups(
     main_box: &GBox,
     menu_data: &Rc<RefCell<Vec<MenuGroup>>>,
     win: &ApplicationWindow,
 ) {
-    // Clear existing children
     while let Some(child) = main_box.first_child() {
         main_box.remove(&child);
     }
@@ -146,7 +150,6 @@ fn render_groups(
         main_box.append(&frame);
     }
 
-    // "+ Add Group" button
     let add_btn = Button::builder().label("+ Add Group").build();
     add_btn.add_css_class("pill");
     add_btn.set_halign(Align::Center);
@@ -180,7 +183,6 @@ fn build_group_widget(
     let vbox = GBox::builder().orientation(Orientation::Vertical).spacing(0).build();
     frame.set_child(Some(&vbox));
 
-    // Header row: ↑ ↓ [name entry] [trash]
     let header_row = GBox::builder()
         .orientation(Orientation::Horizontal)
         .spacing(8)
@@ -250,7 +252,6 @@ fn build_group_widget(
     vbox.append(&header_row);
     vbox.append(&Separator::new(Orientation::Horizontal));
 
-    // Items
     let items_box = GBox::builder()
         .orientation(Orientation::Vertical).spacing(0)
         .margin_top(4).margin_bottom(8)
@@ -264,7 +265,6 @@ fn build_group_widget(
         items_box.append(&row);
     }
 
-    // "+ Add Item"
     let add_item_btn = Button::builder().label("+ Add Item").build();
     add_item_btn.add_css_class("flat");
     add_item_btn.set_halign(Align::Start);
@@ -414,7 +414,6 @@ fn show_add_item_dialog(
             .build();
         let row = ListBoxRow::new();
         row.set_child(Some(&lbl));
-        // stash id in widget name — simple & allocation-free
         row.set_widget_name(id);
         list_box.append(&row);
     }
@@ -426,7 +425,6 @@ fn show_add_item_dialog(
         #[strong] dialog,
         move |_, row| {
             let id = row.widget_name().to_string();
-            // find canonical label
             let label = config::all_actions()
                 .into_iter()
                 .find(|(aid, _)| *aid == id)
@@ -455,7 +453,6 @@ fn show_add_item_dialog(
 
 fn notify_file_managers() {
     thread::spawn(|| {
-        // Restart Nautilus
         if let Ok(status) = Command::new("nautilus")
             .args(["-q"])
             .stdout(Stdio::null())
@@ -469,7 +466,6 @@ fn notify_file_managers() {
                     .spawn();
             }
         }
-        // Regen Dolphin desktop file if present
         let regen = "/usr/share/pkgbuild-manager/regen-dolphin-desktop";
         if std::path::Path::new(regen).is_file() {
             let _ = Command::new(regen).spawn();
