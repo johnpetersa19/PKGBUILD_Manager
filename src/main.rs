@@ -86,7 +86,6 @@ fn main() -> Result<()> {
 
     let target_path = Path::new(path_arg);
 
-    // Opt #7: centralised helper — avoids repeating the Vec construction 10 times.
     fn merge_flags<'a>(base: &[&'a str], extra: &[&'a str]) -> Vec<&'a str> {
         let mut v = base.to_vec();
         v.extend_from_slice(extra);
@@ -109,8 +108,6 @@ fn main() -> Result<()> {
         "install-nogpg"    => actions::install::run(target_path, &merge_flags(&["--skippgpcheck"], &extra_flags)),
         "install-custom"   => actions::install::run(target_path, &extra_flags),
 
-        // Bug #8 fix: extra_flags are now forwarded to fetch-sources, consistent
-        // with every other command.
         "fetch-sources"    => actions::build::run(target_path, &merge_flags(&["-o"], &extra_flags)),
 
         "checksums"        => actions::checksums::run(target_path),
@@ -128,8 +125,6 @@ fn main() -> Result<()> {
             actions::aur_push::run(target_path, message)
         }
         "aur-push-tag"     => {
-            // Bug #4 fix: validate tag format (non-empty, no whitespace) before
-            // forwarding to aur_push::run_with_tag.
             let tag = extra_flags.first().copied()
                 .ok_or_else(|| anyhow::anyhow!(gettext("aur-push-tag requires a version tag argument")))?;
             if tag.trim().is_empty() {
@@ -210,7 +205,7 @@ fn setup_nautilus() -> Result<()> {
         println!("{}: {}", gettext("Extension found"), ext_path.display());
     }
 
-    println!("{}", gettext("Restarting Nautilus…"));
+    println!("{}", gettext("Restarting Nautilus\u2026"));
     let _ = Command::new("nautilus").arg("-q").status();
     std::thread::sleep(std::time::Duration::from_millis(800));
     let _ = Command::new("nautilus").spawn();
@@ -220,38 +215,47 @@ fn setup_nautilus() -> Result<()> {
 }
 
 fn print_usage() {
-    println!(
-        "{}",
-        gettext(
-            "Usage: pkgbuild_manager <command> [path] [-- extra-flags]\n\
-             \n\
-             Commands:\n\
-               build              Build package (makepkg)\n\
-               build-clean        Build and clean srcdir (-c)\n\
-               build-force        Force rebuild (-f)\n\
-               build-nocheck      Build skipping check() (--nocheck)\n\
-               build-nogpg        Build skipping GPG check (--skippgpcheck)\n\
-               build-custom       Build with only your extra flags\n\
-               install            Build and install (makepkg -si)\n\
-               install-clean      Install and clean srcdir\n\
-               install-force      Force reinstall\n\
-               install-rmdeps     Install, remove makedeps after (-r)\n\
-               install-nocheck    Install skipping check()\n\
-               install-nogpg      Install skipping GPG check\n\
-               install-custom     Install with only your extra flags\n\
-               fetch-sources      Download sources only (makepkg -o)\n\
-               checksums          Update checksums (updpkgsums)\n\
-               genchecksums       Print generated checksums (makepkg -g)\n\
-               srcinfo            Regenerate .SRCINFO\n\
-               namcap             Run namcap on PKGBUILD and built package\n\
-               shellcheck         Run shellcheck on PKGBUILD\n\
-               clean              Clean srcdir (makepkg -c)\n\
-               clean-all          Remove src/, pkg/, built packages\n\
-               aur-push [msg]     Commit and push to AUR\n\
-               aur-push-tag <tag> Commit, push and create annotated tag\n\
-               setup-nautilus     Install/refresh Nautilus integration\n\
-               --version          Print version\n\
-               help               Show this message"
-        )
-    );
+    println!("pkgbuild_manager — PKGBUILD Manager CLI\n");
+    println!("Usage: pkgbuild_manager <command> [path] [-- extra-makepkg-flags]\n");
+    println!("Build commands:");
+    println!("  build              {}", gettext("Build the package (makepkg)"));
+    println!("  build-clean        {}", gettext("Build and clean srcdir (-c)"));
+    println!("  build-force        {}", gettext("Force rebuild even if package exists (-f)"));
+    println!("  build-nocheck      {}", gettext("Build without running check() (--nocheck)"));
+    println!("  build-nogpg        {}", gettext("Build skipping PGP checks (--skippgpcheck)"));
+    println!("  build-custom       {}", gettext("Build with custom flags (pass after --)"));
+    println!();
+    println!("Install commands:");
+    println!("  install            {}", gettext("Build and install (makepkg -si)"));
+    println!("  install-clean      {}", gettext("Build, install and clean srcdir"));
+    println!("  install-force      {}", gettext("Force build and install"));
+    println!("  install-rmdeps     {}", gettext("Install and remove makedeps after (-r)"));
+    println!("  install-nocheck    {}", gettext("Install without check()"));
+    println!("  install-nogpg      {}", gettext("Install skipping PGP checks"));
+    println!("  install-custom     {}", gettext("Install with custom flags (pass after --)"));
+    println!();
+    println!("Source / metadata:");
+    println!("  fetch-sources      {}", gettext("Download and extract sources only (makepkg -o)"));
+    println!("  checksums          {}", gettext("Update checksums in PKGBUILD (updpkgsums)"));
+    println!("  genchecksums       {}", gettext("Generate checksums and print to stdout (makepkg -g)"));
+    println!("  srcinfo            {}", gettext("Regenerate .SRCINFO (makepkg --printsrcinfo)"));
+    println!();
+    println!("Audit:");
+    println!("  namcap             {}", gettext("Run namcap on PKGBUILD and built packages"));
+    println!("  shellcheck         {}", gettext("Run shellcheck on PKGBUILD"));
+    println!();
+    println!("Clean:");
+    println!("  clean              {}", gettext("Remove srcdir (makepkg -c)"));
+    println!("  clean-all          {}", gettext("Remove srcdir, pkgdir, built packages and cache dirs"));
+    println!();
+    println!("AUR / Git:");
+    println!("  aur-push [msg]     {}", gettext("Stage, commit (upgpkg: \u2026) and push to AUR"));
+    println!("  aur-push-tag <tag> {}", gettext("Same as aur-push plus creates an annotated tag"));
+    println!();
+    println!("Setup:");
+    println!("  setup-nautilus     {}", gettext("Clean up stale scripts and restart Nautilus"));
+    println!();
+    println!("Other:");
+    println!("  --version          {}", gettext("Print version and exit"));
+    println!("  help, -h, --help   {}", gettext("Show this help"));
 }
