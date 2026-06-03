@@ -63,9 +63,7 @@ fn build_window(app: &Application) {
         glib::Propagation::Proceed
     });
 
-    let load_result = config::load_with_diagnostics();
-    let unknown_ids = load_result.unknown_ids.clone();
-    let menu_data: Rc<RefCell<Vec<MenuGroup>>> = Rc::new(RefCell::new(load_result.groups));
+    let menu_data: Rc<RefCell<Vec<MenuGroup>>> = Rc::new(RefCell::new(config::load()));
 
     // ── Layout ────────────────────────────────────────────────────────────────
     let toolbar_view = adw::ToolbarView::new();
@@ -99,19 +97,6 @@ fn build_window(app: &Application) {
     win.set_content(Some(&toolbar_view));
 
     render_groups(&main_box, &menu_data, &win);
-
-    if !unknown_ids.is_empty() {
-        let mut unknown_ids = unknown_ids;
-        unknown_ids.sort();
-        unknown_ids.dedup();
-        let details = unknown_ids.join(", ");
-        toast_overlay.add_toast(
-            Toast::builder()
-                .title(&format!("Ignored unknown custom menu items: {details}"))
-                .timeout(8)
-                .build(),
-        );
-    }
 
     // ── Buttons ───────────────────────────────────────────────────────────────
     reset_btn.connect_clicked(clone!(
@@ -184,6 +169,8 @@ fn render_groups(
     ));
     main_box.append(&add_btn);
 }
+
+// ── Build one group frame ─────────────────────────────────────────────────────
 
 fn build_group_widget(
     g_idx: usize,
@@ -295,6 +282,8 @@ fn build_group_widget(
     frame
 }
 
+// ── Build one item row ────────────────────────────────────────────────────────
+
 fn build_item_row(
     g_idx: usize,
     i_idx: usize,
@@ -396,6 +385,8 @@ fn build_item_row(
     row
 }
 
+// ── Add-item dialog ───────────────────────────────────────────────────────────
+
 fn show_add_item_dialog(
     g_idx: usize,
     menu_data: &Rc<RefCell<Vec<MenuGroup>>>,
@@ -466,6 +457,7 @@ fn show_add_item_dialog(
 // ── Notify file managers (spawned on background thread — Bug #6 fix) ──────────
 
 fn notify_file_managers() {
+    // Nautilus
     let _ = Command::new("nautilus")
         .arg("-q")
         .stdout(Stdio::null())
@@ -477,6 +469,7 @@ fn notify_file_managers() {
         .stderr(Stdio::null())
         .spawn();
 
+    // Nemo
     let _ = Command::new("nemo")
         .arg("--quit")
         .stdout(Stdio::null())

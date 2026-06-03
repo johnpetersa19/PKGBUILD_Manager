@@ -8,7 +8,6 @@
 run_in_terminal() {
     local cmd="$1"
     local wait_key='echo; read -n1 -rsp "Press any key to exit..." && echo'
-    local shell_payload="${cmd}; ${wait_key}; exec bash"
 
     # setsid cria uma nova sessão de processo, isolando completamente do
     # Nautilus. Sem isso, gnome-terminal/kgx perdem a sessão D-Bus antes
@@ -17,52 +16,43 @@ run_in_terminal() {
         setsid "$@" &>/dev/null &
     }
 
-    # 0. Fast-path common terminal selectors first
-    if [ -n "${TERMINAL:-}" ] && command -v "${TERMINAL}" &>/dev/null; then
-        _launch "${TERMINAL}" -- bash -lc "$shell_payload"
-        return 0
-    elif command -v x-terminal-emulator &>/dev/null; then
-        _launch x-terminal-emulator -e bash -lc "$shell_payload"
-        return 0
-    fi
-
     # 1. Official terminal emulators for Desktop Environments
     if command -v gnome-terminal &>/dev/null; then
-        _launch gnome-terminal -- bash -lc "$shell_payload"
+        _launch gnome-terminal -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v kgx &>/dev/null; then
-        _launch kgx -- bash -lc "$shell_payload"
+        _launch kgx -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v konsole &>/dev/null; then
-        _launch konsole -e bash -lc "$shell_payload"
+        _launch konsole -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v xfce4-terminal &>/dev/null; then
-        _launch xfce4-terminal -x bash -lc "$shell_payload"
+        _launch xfce4-terminal -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v mate-terminal &>/dev/null; then
-        _launch mate-terminal -- bash -lc "$shell_payload"
+        _launch mate-terminal -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v lxterminal &>/dev/null; then
-        _launch lxterminal -e bash -lc "$shell_payload"
+        _launch lxterminal -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v qterminal &>/dev/null; then
-        _launch qterminal -e bash -lc "$shell_payload"
+        _launch qterminal -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v deepin-terminal &>/dev/null; then
-        _launch deepin-terminal -x bash -lc "$shell_payload"
+        _launch deepin-terminal -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v terminology &>/dev/null; then
-        _launch terminology -e bash -lc "$shell_payload"
+        _launch terminology -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v ukui-terminal &>/dev/null; then
-        _launch ukui-terminal -e bash -lc "$shell_payload"
+        _launch ukui-terminal -- bash -c "$cmd; $wait_key; exec bash"
 
     # 2. Other popular terminal emulators
     elif command -v tilix &>/dev/null; then
-        _launch tilix -- bash -lc "$shell_payload"
+        _launch tilix -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v alacritty &>/dev/null; then
-        _launch alacritty -e bash -lc "$shell_payload"
+        _launch alacritty -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v kitty &>/dev/null; then
-        _launch kitty bash -lc "$shell_payload"
+        _launch kitty -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v wezterm &>/dev/null; then
-        _launch wezterm start -- bash -lc "$shell_payload"
+        _launch wezterm start -- bash -c "$cmd; $wait_key; exec bash"
     elif command -v foot &>/dev/null; then
-        _launch foot bash -lc "$shell_payload"
+        _launch foot -- bash -c "$cmd; $wait_key; exec bash"
 
     # 3. Universal fallback
     elif command -v xterm &>/dev/null; then
-        _launch xterm -e bash -lc "$shell_payload"
+        _launch xterm -e "bash -c '$cmd; $wait_key; exec bash'"
     else
         notify-send -u critical "PKGBUILD Manager" \
             "No compatible terminal emulator found."
