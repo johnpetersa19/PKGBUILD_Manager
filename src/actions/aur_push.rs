@@ -61,7 +61,7 @@ fn run_with_dir(target_dir: &Path, message: Option<&str>) -> anyhow::Result<()> 
         // so we detect it explicitly and continue. Any other failure is propagated.
         let combined = format!("{}{}", stdout, stderr);
         if combined.contains("nothing to commit") || combined.contains("nothing added to commit") {
-            println!("{}", gettextrs::gettext("Note: nothing to commit — continuing with push."));
+            println!("{}", gettextrs::gettext("Note: nothing to commit or commit failed \u2014 continuing with push."));
         } else {
             return Err(anyhow::anyhow!(
                 "{}: {}",
@@ -124,9 +124,9 @@ fn push_to_aur(dir: &Path) -> anyhow::Result<()> {
     if let Err(e) = run_command("git", &["push", "origin", branch], dir) {
         println!(
             "{} ({}) {}",
-            gettextrs::gettext("Note: push to origin failed"),
+            gettextrs::gettext("Note: push to origin/master failed"),
             e,
-            gettextrs::gettext("Trying plain 'git push'...")
+            gettextrs::gettext("Attempting simple 'git push'...")
         );
         run_command("git", &["push"], dir)?;
     }

@@ -192,7 +192,7 @@ fn setup_nautilus() -> Result<()> {
     let pkgbuild_dir = scripts_root.join("PKGBUILD");
     if pkgbuild_dir.symlink_metadata().is_ok() {
         if let Err(e) = fs::remove_dir_all(&pkgbuild_dir) {
-            eprintln!("{}: {e}", gettext("Warning: could not remove stale PKGBUILD dir"));
+            eprintln!("{}: {e}", gettext("Warning: Could not remove obsolete PKGBUILD directory"));
         }
     }
 
@@ -218,47 +218,45 @@ fn setup_nautilus() -> Result<()> {
 }
 
 fn print_usage() {
-    println!("pkgbuild_manager \u2014 PKGBUILD Manager CLI\n");
-    println!("Usage: pkgbuild_manager <command> [path] [-- extra-makepkg-flags]\n");
-    println!("Build commands:");
-    println!("  build              {}", gettext("Build the package (makepkg)"));
-    println!("  build-clean        {}", gettext("Build and clean srcdir (-c)"));
-    println!("  build-force        {}", gettext("Force rebuild even if package exists (-f)"));
-    println!("  build-nocheck      {}", gettext("Build without running check() (--nocheck)"));
-    println!("  build-nogpg        {}", gettext("Build skipping PGP checks (--skippgpcheck)"));
-    println!("  build-custom       {}", gettext("Build with custom flags (pass after --)"));
+    println!("PKGBUILD Manager - CLI Tool\n");
+    println!("Usages:\n");
+    println!("Compilation Commands:");
+    println!("  build              {}", gettext("Compiled package (makepkg)"));
+    println!("  build-clean        {}", gettext("Compile and clean srcdir (makepkg -c)"));
+    println!("  build-force        {}", gettext("Force recompilation (makepkg -f)"));
+    println!("  build-nocheck      {}", gettext("Basic check() function (makepkg --nocheck)"));
+    println!("  build-nogpg        {}", gettext("Popular PGP signature check (makepkg --skippgpcheck)"));
+    println!("  build-custom       {}", gettext("Compile with custom flags after the path"));
     println!();
-    println!("Install commands:");
-    println!("  install            {}", gettext("Build and install (makepkg -si)"));
-    println!("  install-clean      {}", gettext("Build, install and clean srcdir"));
-    println!("  install-force      {}", gettext("Force build and install"));
-    println!("  install-rmdeps     {}", gettext("Install and remove makedeps after (-r)"));
-    println!("  install-nocheck    {}", gettext("Install without check()"));
+    println!("Installation Commands:");
+    println!("  install            {}", gettext("Compile, install and resolve dependencies (makepkg -si)"));
+    println!("  install-clean      {}", gettext("Compile, install and clean srcdir (makepkg -sic)"));
+    println!("  install-force      {}", gettext("Force compilation and installation (makepkg -sif)"));
+    println!("  install-rmdeps     {}", gettext("Install and remove makedeps afterwards (makepkg -sir)"));
+    println!("  install-nocheck    {}", gettext("Install without running check()"));
     println!("  install-nogpg      {}", gettext("Install skipping PGP checks"));
-    println!("  install-custom     {}", gettext("Install with custom flags (pass after --)"));
+    println!("  install-custom     {}", gettext("Install with custom flags after the path"));
     println!();
-    println!("Source / metadata:");
+    println!("Package metadata commands:");
     println!("  fetch-sources      {}", gettext("Download and extract sources only (makepkg -o)"));
-    println!("  checksums          {}", gettext("Update checksums in PKGBUILD (updpkgsums)"));
-    println!("  genchecksums       {}", gettext("Generate checksums and print to stdout (makepkg -g)"));
+    println!("  checksums          {}", gettext("Update checksums without PKGBUILD (updpkgsums)"));
+    println!("  genchecksums       {}", gettext("Generate checksums and print to standard output (makepkg -g)"));
     println!("  srcinfo            {}", gettext("Regenerate .SRCINFO (makepkg --printsrcinfo)"));
     println!();
-    println!("Audit:");
-    println!("  namcap             {}", gettext("Run namcap on PKGBUILD and built packages"));
-    println!("  shellcheck         {}", gettext("Run shellcheck on PKGBUILD"));
+    println!("Auditing commands:");
+    println!("  namcap             {}", gettext("Run namcap on PKGBUILD and compiled packages"));
+    println!("  shellcheck         {}", gettext("Run ShellCheck on PKGBUILD"));
     println!();
-    println!("Clean:");
-    println!("  clean              {}", gettext("Remove srcdir (makepkg -c)"));
-    println!("  clean-all          {}", gettext("Remove srcdir, pkgdir, built packages and cache dirs"));
+    println!("Cleanup commands:");
+    println!("  clean              {}", gettext("Clean srcdir with makepkg (makepkg -c)"));
+    println!("  clean-all          {}", gettext("Remove src/, packages/ and compiled packages"));
     println!();
-    println!("AUR / Git:");
-    println!("  aur-push [msg]     {}", gettext("Stage, commit (upgpkg: \u2026) and push to AUR"));
-    println!("  aur-push-tag <tag> {}", gettext("Same as aur-push plus creates an annotated tag"));
-    println!();
-    println!("Setup:");
-    println!("  setup-nautilus     {}", gettext("Clean up stale scripts and restart Nautilus"));
+    println!("AUR/Git commands:");
+    println!("  aur-push [msg]     {}", gettext("Stage, commit and push to the AUR (automatic message if not provided)"));
+    println!("  aur-push-tag <tag> {}", gettext("Push with version tag (e.g., 1.2.3-1)"));
     println!();
     println!("Other:");
-    println!("  --version          {}", gettext("Print version and exit"));
-    println!("  help, -h, --help   {}", gettext("Show this help"));
+    println!("  setup-nautilus     {}", gettext("Remove obsolete symbolic links and check the Nautilus extension"));
+    println!("  --version          {}", gettext("Display program version"));
+    println!("  help, -h, --help   {}", gettext("Display this help message"));
 }
