@@ -17,6 +17,22 @@ pub fn run(path: &Path, message: Option<&str>) -> anyhow::Result<()> {
 pub fn run_with_tag(path: &Path, tag: &str) -> anyhow::Result<()> {
     let target_dir = get_target_dir(path)?;
 
+    // FIX: validate tag format — must be non-empty and contain no whitespace
+    let tag = tag.trim();
+    if tag.is_empty() {
+        return Err(anyhow::anyhow!(
+            "{}",
+            gettextrs::gettext("Tag cannot be empty")
+        ));
+    }
+    if tag.contains(char::is_whitespace) {
+        return Err(anyhow::anyhow!(
+            "{}: {:?}",
+            gettextrs::gettext("Tag must not contain whitespace"),
+            tag
+        ));
+    }
+
     run_with_dir(&target_dir, None)?;
 
     // Create annotated tag
@@ -76,9 +92,6 @@ fn run_with_dir(target_dir: &Path, message: Option<&str>) -> anyhow::Result<()> 
 
 /// Parse pkgname/pkgver/pkgrel from already-fetched .SRCINFO text.
 /// Stops iterating as soon as all three fields are found (early-exit).
-/// FIX: the previous condition compared against default values, so the loop
-/// never broke early when pkgrel=1 (initial value equal to the default "1").
-/// Now uses independent boolean flags to track what has been found.
 fn parse_pkgbuild_info(content: &str) -> (String, String, String) {
     let mut pkgname = String::from("unknown");
     let mut pkgver  = String::from("0");
@@ -118,8 +131,7 @@ fn parse_pkgbuild_info(content: &str) -> (String, String, String) {
     (pkgname, pkgver, pkgrel)
 }
 
-/// FIX: detect the remote default branch (main or master) before pushing,
-/// instead of hardcoding "origin/master" which fails on repos using 'main'.
+/// Pushes to AUR, detecting the default remote branch.
 fn push_to_aur(dir: &Path) -> anyhow::Result<()> {
     let default_branch = detect_remote_default_branch(dir);
     let branch = default_branch.as_deref().unwrap_or("master");
@@ -138,9 +150,30 @@ fn push_to_aur(dir: &Path) -> anyhow::Result<()> {
 }
 
 /// Detects the default branch name on origin (main, master, or custom).
-/// Returns None if detection fails -- caller should fall back to "master".
+/// Returns None if detection fails — caller should fall back to "master".
+///
+/// OPT: First checks the local symbolic ref refs/remotes/origin/HEAD (no network).
+/// Only falls back to `git remote show origin` (network) if the local ref is absent.
 fn detect_remote_default_branch(dir: &Path) -> Option<String> {
-    // Try: git remote show origin | grep 'HEAD branch'
+    // Fast path: read local tracking ref — no network required
+    let local = Command::new("git")
+        .args(["symbolic-ref", "--short", "refs/remotes/origin/HEAD"])
+        .current_dir(dir)
+        .output()
+        .ok()?;
+
+    if local.status.success() {
+        let s = String::from_utf8_lossy(&local.stdout);
+        // Output is "origin/<branch>" — strip the "origin/" prefix
+        if let Some(branch) = s.trim().strip_prefix("origin/") {
+            let b = branch.trim().to_string();
+            if !b.is_empty() {
+                return Some(b);
+            }
+        }
+    }
+
+    // Slow path: network call via `git remote show origin`
     let output = Command::new("git")
         .args(["remote", "show", "origin"])
         .current_dir(dir)
@@ -149,24 +182,12 @@ fn detect_remote_default_branch(dir: &Path) -> Option<String> {
 
     let stdout = String::from_utf8_lossy(&output.stdout);
     for line in stdout.lines() {
-        let trimmed = line.trim();
-        if let Some(branch) = trimmed.strip_prefix("HEAD branch: ") {
+        if let Some(branch) = line.trim().strip_prefix("HEAD branch: ") {
             let b = branch.trim().to_string();
             if !b.is_empty() && b != "(unknown)" {
                 return Some(b);
             }
         }
-    }
-
-    // Fallback: check if 'main' exists on the remote
-    let check = Command::new("git")
-        .args(["ls-remote", "--heads", "origin", "main"])
-        .current_dir(dir)
-        .output()
-        .ok()?;
-
-    if !check.stdout.is_empty() {
-        return Some("main".to_string());
     }
 
     None
