@@ -125,16 +125,19 @@ fn main() -> Result<()> {
             actions::aur_push::run(target_path, message)
         }
         "aur-push-tag"     => {
+            // Bug #4 fix: valida que a tag não está vazia e não contém espaços.
+            // Formato esperado pelo AUR: "pkgver-pkgrel" (ex: "1.2.3-1").
             let tag = extra_flags.first().copied()
                 .ok_or_else(|| anyhow::anyhow!(gettext("aur-push-tag requires a version tag argument")))?;
-            if tag.trim().is_empty() {
-                return Err(anyhow::anyhow!(gettext("aur-push-tag: tag argument must not be empty")));
+            if tag.is_empty() {
+                return Err(anyhow::anyhow!(gettext("aur-push-tag: tag cannot be empty")));
             }
-            if tag.contains(char::is_whitespace) {
+            if tag.contains(' ') {
                 return Err(anyhow::anyhow!(
-                    "{}: {:?}",
-                    gettext("aur-push-tag: tag must not contain whitespace"),
-                    tag
+                    "{}: '{}' — {}",
+                    gettext("aur-push-tag: invalid tag"),
+                    tag,
+                    gettext("tags cannot contain spaces (expected format: pkgver-pkgrel, e.g. 1.2.3-1)")
                 ));
             }
             actions::aur_push::run_with_tag(target_path, tag)
@@ -215,7 +218,7 @@ fn setup_nautilus() -> Result<()> {
 }
 
 fn print_usage() {
-    println!("pkgbuild_manager — PKGBUILD Manager CLI\n");
+    println!("pkgbuild_manager \u2014 PKGBUILD Manager CLI\n");
     println!("Usage: pkgbuild_manager <command> [path] [-- extra-makepkg-flags]\n");
     println!("Build commands:");
     println!("  build              {}", gettext("Build the package (makepkg)"));
