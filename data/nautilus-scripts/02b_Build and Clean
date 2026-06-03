@@ -1,6 +1,12 @@
 #!/bin/bash
 # PKGBUILD Manager - Build and Clean
-TARGET="$(dirname "$(realpath "${1:-.}")")" 
+set -euo pipefail
+
+TARGET="${NAUTILUS_SCRIPT_SELECTED_FILE_PATHS:-}"
+TARGET="${TARGET%%$'\n'*}"
+if [ -z "$TARGET" ]; then TARGET="$PWD"; fi
+if [ -f "$TARGET" ]; then TARGET="$(dirname "$TARGET")"; fi
+
 source "$(dirname "$0")/_i18n"
 source "$(dirname "$0")/_run_in_terminal"
 
