@@ -103,20 +103,59 @@ fn main() -> Result<()> {
 
     let target_path = Path::new(path_arg);
 
+    // FIX: extra_flags agora é passado para TODOS os comandos build/install,
+    // não apenas para os variantes *-custom. Isso permite que o usuário
+    // passe flags adicionais em qualquer comando sem precisar usar -custom.
     match command.as_str() {
-        "build"            => actions::build::run(target_path, &[]),
-        "build-clean"      => actions::build::run(target_path, &["-c"]),
-        "build-force"      => actions::build::run(target_path, &["-f"]),
-        "build-nocheck"    => actions::build::run(target_path, &["--nocheck"]),
-        "build-nogpg"      => actions::build::run(target_path, &["--skippgpcheck"]),
+        "build"            => actions::build::run(target_path, &extra_flags),
+        "build-clean"      => {
+            let mut flags = vec!["-c"];
+            flags.extend_from_slice(&extra_flags);
+            actions::build::run(target_path, &flags)
+        }
+        "build-force"      => {
+            let mut flags = vec!["-f"];
+            flags.extend_from_slice(&extra_flags);
+            actions::build::run(target_path, &flags)
+        }
+        "build-nocheck"    => {
+            let mut flags = vec!["--nocheck"];
+            flags.extend_from_slice(&extra_flags);
+            actions::build::run(target_path, &flags)
+        }
+        "build-nogpg"      => {
+            let mut flags = vec!["--skippgpcheck"];
+            flags.extend_from_slice(&extra_flags);
+            actions::build::run(target_path, &flags)
+        }
         "build-custom"     => actions::build::run(target_path, &extra_flags),
 
-        "install"          => actions::install::run(target_path, &[]),
-        "install-clean"    => actions::install::run(target_path, &["-c"]),
-        "install-force"    => actions::install::run(target_path, &["-f"]),
-        "install-rmdeps"   => actions::install::run(target_path, &["-r"]),
-        "install-nocheck"  => actions::install::run(target_path, &["--nocheck"]),
-        "install-nogpg"    => actions::install::run(target_path, &["--skippgpcheck"]),
+        "install"          => actions::install::run(target_path, &extra_flags),
+        "install-clean"    => {
+            let mut flags = vec!["-c"];
+            flags.extend_from_slice(&extra_flags);
+            actions::install::run(target_path, &flags)
+        }
+        "install-force"    => {
+            let mut flags = vec!["-f"];
+            flags.extend_from_slice(&extra_flags);
+            actions::install::run(target_path, &flags)
+        }
+        "install-rmdeps"   => {
+            let mut flags = vec!["-r"];
+            flags.extend_from_slice(&extra_flags);
+            actions::install::run(target_path, &flags)
+        }
+        "install-nocheck"  => {
+            let mut flags = vec!["--nocheck"];
+            flags.extend_from_slice(&extra_flags);
+            actions::install::run(target_path, &flags)
+        }
+        "install-nogpg"    => {
+            let mut flags = vec!["--skippgpcheck"];
+            flags.extend_from_slice(&extra_flags);
+            actions::install::run(target_path, &flags)
+        }
         "install-custom"   => actions::install::run(target_path, &extra_flags),
 
         "fetch-sources"    => actions::build::run(target_path, &["-o"]),

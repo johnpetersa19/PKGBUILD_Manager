@@ -118,15 +118,58 @@ fn parse_pkgbuild_info(content: &str) -> (String, String, String) {
     (pkgname, pkgver, pkgrel)
 }
 
+/// FIX: detecta a branch padrão do remote (main ou master) antes de fazer push,
+/// em vez de forçar hardcoded "origin/master" que falha em repos com branch 'main'.
 fn push_to_aur(dir: &Path) -> anyhow::Result<()> {
-    if let Err(e) = run_command("git", &["push", "origin", "master"], dir) {
+    // Tenta detectar a branch remota padrão (HEAD do remote 'origin')
+    let default_branch = detect_remote_default_branch(dir);
+
+    let branch = default_branch.as_deref().unwrap_or("master");
+    println!(">>> git push origin {}", branch);
+
+    if let Err(e) = run_command("git", &["push", "origin", branch], dir) {
         println!(
             "{} ({}) {}",
-            gettextrs::gettext("Note: push to origin/master failed"),
+            gettextrs::gettext("Note: push to origin failed"),
             e,
             gettextrs::gettext("Trying plain 'git push'...")
         );
         run_command("git", &["push"], dir)?;
     }
     Ok(())
+}
+
+/// Detects the default branch name on origin (main, master, or custom).
+/// Returns None if detection fails — caller should fall back to "master".
+fn detect_remote_default_branch(dir: &Path) -> Option<String> {
+    // Try: git remote show origin | grep 'HEAD branch'
+    let output = Command::new("git")
+        .args(["remote", "show", "origin"])
+        .current_dir(dir)
+        .output()
+        .ok()?;
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    for line in stdout.lines() {
+        let trimmed = line.trim();
+        if let Some(branch) = trimmed.strip_prefix("HEAD branch: ") {
+            let b = branch.trim().to_string();
+            if !b.is_empty() && b != "(unknown)" {
+                return Some(b);
+            }
+        }
+    }
+
+    // Fallback: check if 'main' exists on remote
+    let check = Command::new("git")
+        .args(["ls-remote", "--heads", "origin", "main"])
+        .current_dir(dir)
+        .output()
+        .ok()?;
+
+    if !check.stdout.is_empty() {
+        return Some("main".to_string());
+    }
+
+    None
 }

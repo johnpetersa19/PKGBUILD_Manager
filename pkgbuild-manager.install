@@ -74,11 +74,39 @@ post_install() {
 
 post_upgrade() {
     _user="${SUDO_USER:-$USER}"
-    _scripts="$(eval echo ~$_user)/.local/share/nautilus/scripts"
-    if [ -d "$_scripts/PKGBUILD" ]; then
-        rm -rf "$_scripts/PKGBUILD"
-        echo ">>> Removed stale PKGBUILD symlink directory from previous version."
+
+    # FIX: limpa stale de versões anteriores para TODOS os file managers suportados,
+    # não apenas Nautilus. Versões antigas podiam deixar diretórios/symlinks em Nemo,
+    # Caja e Dolphin que não eram removidos no upgrade.
+
+    # Nautilus
+    _nautilus_scripts="$(eval echo ~$_user)/.local/share/nautilus/scripts"
+    if [ -d "$_nautilus_scripts/PKGBUILD" ]; then
+        rm -rf "$_nautilus_scripts/PKGBUILD"
+        echo ">>> Removed stale PKGBUILD dir from Nautilus scripts."
     fi
+
+    # Nemo
+    _nemo_scripts="$(eval echo ~$_user)/.local/share/nemo/scripts"
+    if [ -d "$_nemo_scripts/PKGBUILD" ]; then
+        rm -rf "$_nemo_scripts/PKGBUILD"
+        echo ">>> Removed stale PKGBUILD dir from Nemo scripts."
+    fi
+
+    # Caja
+    _caja_scripts="$(eval echo ~$_user)/.local/share/caja/scripts"
+    if [ -d "$_caja_scripts/PKGBUILD" ]; then
+        rm -rf "$_caja_scripts/PKGBUILD"
+        echo ">>> Removed stale PKGBUILD dir from Caja scripts."
+    fi
+
+    # Dolphin service menus (versões antigas usavam ~/.local/share/kservices5)
+    _dolphin_old="$(eval echo ~$_user)/.local/share/kservices5/pkgbuild-manager.desktop"
+    if [ -f "$_dolphin_old" ]; then
+        rm -f "$_dolphin_old"
+        echo ">>> Removed stale Dolphin service menu entry."
+    fi
+
     post_install
 }
 
@@ -91,7 +119,23 @@ post_remove() {
         _binding="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/pkgbuild-manager/"
         _current=$(${_gset} get org.gnome.settings-daemon.plugins.media-keys \
             custom-keybindings 2>/dev/null || echo "[]")
-        _new=$(echo "$_current" | sed "s|, '$_binding'||" | sed "s|'$_binding', ||" | sed "s|'$_binding'||")
+
+        # FIX: a lógica anterior com múltiplos sed deixava a lista corrompida
+        # quando o binding era o único elemento (resultava em '[, ]' ou '[]' inválido).
+        # Agora usa Python para manipular a lista de forma segura.
+        _new=$(python3 - "$_current" "$_binding" <<'PYEOF'
+import sys, ast
+current_str = sys.argv[1].strip()
+binding = sys.argv[2]
+try:
+    lst = ast.literal_eval(current_str)
+except Exception:
+    lst = []
+lst = [x for x in lst if x != binding]
+# Formata como GSettings espera: "['item1', 'item2']"
+print(repr(lst).replace('"', "'"))
+PYEOF
+        )
         ${_gset} set org.gnome.settings-daemon.plugins.media-keys \
             custom-keybindings "$_new" 2>/dev/null || true
     fi
