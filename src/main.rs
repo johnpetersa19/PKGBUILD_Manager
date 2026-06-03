@@ -28,10 +28,6 @@ use std::env;
 use std::path::Path;
 
 fn main() -> Result<()> {
-    // setlocale MUST be called before bindtextdomain/textdomain so that
-    // the C library initialises the locale from the environment (LANG,
-    // LC_ALL, ...). Without this call gettextrs silently falls back to the
-    // "C" locale and never loads any .mo file.
     gettextrs::setlocale(LocaleCategory::LcAll, "");
 
     let locale_dir = std::env::var("PKGBUILD_MANAGER_LOCALEDIR")
@@ -53,35 +49,24 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    // Supported forms:
-    //   pkgbuild_manager build                # path = ".", flags = []
-    //   pkgbuild_manager build /dir           # path = "/dir", flags = []
-    //   pkgbuild_manager build -- -c -f       # path = ".",   flags = ["-c", "-f"]
-    //   pkgbuild_manager build /dir -- -c -f  # path = "/dir", flags = ["-c", "-f"]
-    //   pkgbuild_manager build -c -f          # path = ".",   flags = ["-c", "-f"]
     let (path_arg, extra_flags): (&str, Vec<&str>) = {
         let mut path: &str = ".";
         let mut flags: Vec<&str> = Vec::new();
 
-        // No extra argument: use current directory
         if args.len() <= 2 {
             (path, flags)
         } else {
-            // Look for `--` separator starting from index 2 (after the command)
             let sep_pos = args[2..].iter().position(|s| s == "--");
             match sep_pos {
                 Some(rel_idx) => {
                     let idx = 2 + rel_idx;
-                    // Everything after `--` are literal flags
                     flags = args[idx + 1..].iter().map(|s| s.as_str()).collect();
-                    // Before `--` we may or may not have an explicit path
                     if idx > 2 {
                         path = &args[2];
                     }
                     (path, flags)
                 }
                 None => {
-                    // No `--`: keep legacy heuristic
                     match args.get(2) {
                         None => (".", Vec::new()),
                         Some(s) if s.starts_with('-') => {
@@ -101,33 +86,32 @@ fn main() -> Result<()> {
 
     let target_path = Path::new(path_arg);
 
-    // Opt #7: helper to merge a static base flag with user extra_flags,
-    // avoiding the repetitive Vec::new() + extend pattern in every match arm.
-    let merge_flags = |base: &[&'static str]| -> Vec<&str> {
-        let mut v: Vec<&str> = base.to_vec();
-        v.extend_from_slice(&extra_flags);
+    // Opt #7: centralised helper — avoids repeating the Vec construction 10 times.
+    fn merge_flags<'a>(base: &[&'a str], extra: &[&'a str]) -> Vec<&'a str> {
+        let mut v = base.to_vec();
+        v.extend_from_slice(extra);
         v
-    };
+    }
 
     match command.as_str() {
         "build"            => actions::build::run(target_path, &extra_flags),
-        "build-clean"      => actions::build::run(target_path, &merge_flags(&["-c"])),
-        "build-force"      => actions::build::run(target_path, &merge_flags(&["-f"])),
-        "build-nocheck"    => actions::build::run(target_path, &merge_flags(&["--nocheck"])),
-        "build-nogpg"      => actions::build::run(target_path, &merge_flags(&["--skippgpcheck"])),
+        "build-clean"      => actions::build::run(target_path, &merge_flags(&["-c"], &extra_flags)),
+        "build-force"      => actions::build::run(target_path, &merge_flags(&["-f"], &extra_flags)),
+        "build-nocheck"    => actions::build::run(target_path, &merge_flags(&["--nocheck"], &extra_flags)),
+        "build-nogpg"      => actions::build::run(target_path, &merge_flags(&["--skippgpcheck"], &extra_flags)),
         "build-custom"     => actions::build::run(target_path, &extra_flags),
 
         "install"          => actions::install::run(target_path, &extra_flags),
-        "install-clean"    => actions::install::run(target_path, &merge_flags(&["-c"])),
-        "install-force"    => actions::install::run(target_path, &merge_flags(&["-f"])),
-        "install-rmdeps"   => actions::install::run(target_path, &merge_flags(&["-r"])),
-        "install-nocheck"  => actions::install::run(target_path, &merge_flags(&["--nocheck"])),
-        "install-nogpg"    => actions::install::run(target_path, &merge_flags(&["--skippgpcheck"])),
+        "install-clean"    => actions::install::run(target_path, &merge_flags(&["-c"], &extra_flags)),
+        "install-force"    => actions::install::run(target_path, &merge_flags(&["-f"], &extra_flags)),
+        "install-rmdeps"   => actions::install::run(target_path, &merge_flags(&["-r"], &extra_flags)),
+        "install-nocheck"  => actions::install::run(target_path, &merge_flags(&["--nocheck"], &extra_flags)),
+        "install-nogpg"    => actions::install::run(target_path, &merge_flags(&["--skippgpcheck"], &extra_flags)),
         "install-custom"   => actions::install::run(target_path, &extra_flags),
 
-        // Bug #8 fix: extra_flags agora é passado junto com "-o" para fetch-sources.
-        // Antes, os flags do usuário eram silenciosamente descartados.
-        "fetch-sources"    => actions::build::run(target_path, &merge_flags(&["-o"])),
+        // Bug #8 fix: extra_flags are now forwarded to fetch-sources, consistent
+        // with every other command.
+        "fetch-sources"    => actions::build::run(target_path, &merge_flags(&["-o"], &extra_flags)),
 
         "checksums"        => actions::checksums::run(target_path),
         "genchecksums"     => actions::checksums::generate(target_path),
@@ -144,19 +128,18 @@ fn main() -> Result<()> {
             actions::aur_push::run(target_path, message)
         }
         "aur-push-tag"     => {
-            // Bug #4 fix: valida que a tag não está vazia e não contém espaços.
-            // Formato esperado pelo AUR: "pkgver-pkgrel" (ex: "1.2.3-1").
+            // Bug #4 fix: validate tag format (non-empty, no whitespace) before
+            // forwarding to aur_push::run_with_tag.
             let tag = extra_flags.first().copied()
                 .ok_or_else(|| anyhow::anyhow!(gettext("aur-push-tag requires a version tag argument")))?;
-            if tag.is_empty() {
-                return Err(anyhow::anyhow!(gettext("aur-push-tag: tag cannot be empty")));
+            if tag.trim().is_empty() {
+                return Err(anyhow::anyhow!(gettext("aur-push-tag: tag argument must not be empty")));
             }
-            if tag.contains(' ') {
+            if tag.contains(char::is_whitespace) {
                 return Err(anyhow::anyhow!(
-                    "{}: '{}' — {}",
-                    gettext("aur-push-tag: invalid tag"),
-                    tag,
-                    gettext("tags cannot contain spaces (expected format: pkgver-pkgrel, e.g. 1.2.3-1)")
+                    "{}: {:?}",
+                    gettext("aur-push-tag: tag must not contain whitespace"),
+                    tag
                 ));
             }
             actions::aur_push::run_with_tag(target_path, tag)
@@ -177,16 +160,6 @@ fn main() -> Result<()> {
     }
 }
 
-/// setup-nautilus
-///
-/// Removes any stale user-land symlinks/dirs created by older versions,
-/// verifies the Nautilus Python extension is installed, then restarts
-/// Nautilus so the extension loads cleanly.
-///
-/// The Python extension (pkgbuild_manager.py) is the ONLY source of the
-/// PKGBUILD context-menu. It reads scripts from
-/// /usr/share/pkgbuild-manager/scripts/, translates labels via .mo files,
-/// and filters internal helpers. No user-land symlinks are needed.
 fn setup_nautilus() -> Result<()> {
     use std::fs;
     use std::path::PathBuf;
@@ -195,9 +168,6 @@ fn setup_nautilus() -> Result<()> {
     let home = std::env::var("HOME")?;
     let scripts_root = PathBuf::from(&home).join(".local/share/nautilus/scripts");
 
-    // ------------------------------------------------------------------
-    // 1. Remove stale symlinks / dirs left by previous versions
-    // ------------------------------------------------------------------
     let stale_names: &[&str] = &[
         "00_Full Workflow", "01_Build", "02_Install", "02b_Build and Clean",
         "03_Update Checksums", "04_Update .SRCINFO", "05_Namcap", "05b_ShellCheck",
@@ -228,62 +198,60 @@ fn setup_nautilus() -> Result<()> {
         }
     }
 
-    // ------------------------------------------------------------------
-    // 2. Verify the Python extension is installed
-    // ------------------------------------------------------------------
-    let ext_paths = [
-        "/usr/share/nautilus-python/extensions/pkgbuild_manager.py",
-        "/usr/lib/nautilus/extensions-4/pkgbuild_manager.py",
-    ];
-    let ext_found = ext_paths.iter().any(|p| Path::new(p).exists());
-    if !ext_found {
+    let ext_path = PathBuf::from("/usr/share/nautilus-python/extensions/pkgbuild_manager.py");
+    if !ext_path.exists() {
         eprintln!(
-            "{}",
-            gettext("Warning: Nautilus Python extension not found. Is pkgbuild-manager installed correctly?")
+            "{}\n  {}",
+            gettext("Warning: Nautilus Python extension not found at"),
+            ext_path.display()
         );
+        eprintln!("{}", gettext("Install the pkgbuild-manager package to get the extension."));
     } else {
-        println!("{}", gettext("Nautilus extension found."));
+        println!("{}: {}", gettext("Extension found"), ext_path.display());
     }
 
-    // ------------------------------------------------------------------
-    // 3. Restart Nautilus
-    // ------------------------------------------------------------------
     println!("{}", gettext("Restarting Nautilus…"));
     let _ = Command::new("nautilus").arg("-q").status();
-    std::thread::sleep(std::time::Duration::from_millis(600));
+    std::thread::sleep(std::time::Duration::from_millis(800));
     let _ = Command::new("nautilus").spawn();
 
-    println!("{}", gettext("Done. Right-click a PKGBUILD directory to use the menu."));
+    println!("{}", gettext("Done. Right-click a PKGBUILD directory to see the menu."));
     Ok(())
 }
 
 fn print_usage() {
-    println!("Usage: pkgbuild_manager <command> [path] [-- extra-makepkg-flags]");
-    println!();
-    println!("Commands:");
-    println!("  build             Run makepkg");
-    println!("  build-clean       Run makepkg -c");
-    println!("  build-force       Run makepkg -f");
-    println!("  build-nocheck     Run makepkg --nocheck");
-    println!("  build-nogpg       Run makepkg --skippgpcheck");
-    println!("  build-custom      Run makepkg with only your extra flags");
-    println!("  install           Run makepkg -si");
-    println!("  install-clean     Run makepkg -si -c");
-    println!("  install-force     Run makepkg -si -f");
-    println!("  install-rmdeps    Run makepkg -si -r");
-    println!("  install-nocheck   Run makepkg -si --nocheck");
-    println!("  install-nogpg     Run makepkg -si --skippgpcheck");
-    println!("  install-custom    Run makepkg -si with only your extra flags");
-    println!("  fetch-sources     Run makepkg -o (download sources only)");
-    println!("  checksums         Update checksums with updpkgsums");
-    println!("  genchecksums      Print checksums with makepkg -g");
-    println!("  srcinfo           Regenerate .SRCINFO");
-    println!("  namcap            Run namcap on PKGBUILD and built packages");
-    println!("  shellcheck        Run shellcheck on PKGBUILD");
-    println!("  clean             Remove src/ (soft clean)");
-    println!("  clean-all         Remove src/, pkg/, built packages");
-    println!("  aur-push [msg]    Commit and push to AUR");
-    println!("  aur-push-tag ver  Commit, tag, and push to AUR");
-    println!("  setup-nautilus    Install/refresh Nautilus integration");
-    println!("  --version         Show version");
+    println!(
+        "{}",
+        gettext(
+            "Usage: pkgbuild_manager <command> [path] [-- extra-flags]\n\
+             \n\
+             Commands:\n\
+               build              Build package (makepkg)\n\
+               build-clean        Build and clean srcdir (-c)\n\
+               build-force        Force rebuild (-f)\n\
+               build-nocheck      Build skipping check() (--nocheck)\n\
+               build-nogpg        Build skipping GPG check (--skippgpcheck)\n\
+               build-custom       Build with only your extra flags\n\
+               install            Build and install (makepkg -si)\n\
+               install-clean      Install and clean srcdir\n\
+               install-force      Force reinstall\n\
+               install-rmdeps     Install, remove makedeps after (-r)\n\
+               install-nocheck    Install skipping check()\n\
+               install-nogpg      Install skipping GPG check\n\
+               install-custom     Install with only your extra flags\n\
+               fetch-sources      Download sources only (makepkg -o)\n\
+               checksums          Update checksums (updpkgsums)\n\
+               genchecksums       Print generated checksums (makepkg -g)\n\
+               srcinfo            Regenerate .SRCINFO\n\
+               namcap             Run namcap on PKGBUILD and built package\n\
+               shellcheck         Run shellcheck on PKGBUILD\n\
+               clean              Clean srcdir (makepkg -c)\n\
+               clean-all          Remove src/, pkg/, built packages\n\
+               aur-push [msg]     Commit and push to AUR\n\
+               aur-push-tag <tag> Commit, push and create annotated tag\n\
+               setup-nautilus     Install/refresh Nautilus integration\n\
+               --version          Print version\n\
+               help               Show this message"
+        )
+    );
 }
