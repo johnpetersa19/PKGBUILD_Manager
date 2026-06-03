@@ -13,25 +13,9 @@ pub fn run(path: &Path, message: Option<&str>) -> anyhow::Result<()> {
 
 /// Same as `run` but also creates an annotated version tag and pushes it.
 ///
-/// `tag`: e.g. "1.2.3-1"
+/// `tag`: e.g. "1.2.3-1" — validated in main.rs before reaching here.
 pub fn run_with_tag(path: &Path, tag: &str) -> anyhow::Result<()> {
     let target_dir = get_target_dir(path)?;
-
-    // FIX: validate tag format — must be non-empty and contain no whitespace
-    let tag = tag.trim();
-    if tag.is_empty() {
-        return Err(anyhow::anyhow!(
-            "{}",
-            gettextrs::gettext("Tag cannot be empty")
-        ));
-    }
-    if tag.contains(char::is_whitespace) {
-        return Err(anyhow::anyhow!(
-            "{}: {:?}",
-            gettextrs::gettext("Tag must not contain whitespace"),
-            tag
-        ));
-    }
 
     run_with_dir(&target_dir, None)?;
 
@@ -131,7 +115,7 @@ fn parse_pkgbuild_info(content: &str) -> (String, String, String) {
     (pkgname, pkgver, pkgrel)
 }
 
-/// Pushes to AUR, detecting the default remote branch.
+/// Push to the AUR remote, auto-detecting the default branch.
 fn push_to_aur(dir: &Path) -> anyhow::Result<()> {
     let default_branch = detect_remote_default_branch(dir);
     let branch = default_branch.as_deref().unwrap_or("master");
@@ -149,46 +133,58 @@ fn push_to_aur(dir: &Path) -> anyhow::Result<()> {
     Ok(())
 }
 
-/// Detects the default branch name on origin (main, master, or custom).
-/// Returns None if detection fails — caller should fall back to "master".
+/// Bug #11 fix + Opt #6: detecta o branch padrão do remote sem nenhuma
+/// chamada de rede. Usa apenas referências locais do git, que são
+/// instantâneas e nunca bloqueiam a thread chamadora.
 ///
-/// OPT: First checks the local symbolic ref refs/remotes/origin/HEAD (no network).
-/// Only falls back to `git remote show origin` (network) if the local ref is absent.
+/// Estratégia (sem rede, em ordem de preferência):
+///   1. git symbolic-ref refs/remotes/origin/HEAD
+///      → resolve o tracking branch que o `git clone`/`git fetch` define.
+///      Exemplo de saída: "refs/remotes/origin/main" → extrai "main".
+///   2. Verifica se refs/remotes/origin/main existe localmente.
+///   3. Verifica se refs/remotes/origin/master existe localmente.
+///   4. Retorna None → caller usa "master" como fallback.
 fn detect_remote_default_branch(dir: &Path) -> Option<String> {
-    // Fast path: read local tracking ref — no network required
-    let local = Command::new("git")
-        .args(["symbolic-ref", "--short", "refs/remotes/origin/HEAD"])
-        .current_dir(dir)
-        .output()
-        .ok()?;
-
-    if local.status.success() {
-        let s = String::from_utf8_lossy(&local.stdout);
-        // Output is "origin/<branch>" — strip the "origin/" prefix
-        if let Some(branch) = s.trim().strip_prefix("origin/") {
-            let b = branch.trim().to_string();
-            if !b.is_empty() {
-                return Some(b);
-            }
-        }
-    }
-
-    // Slow path: network call via `git remote show origin`
+    // 1. Tenta symbolic-ref (disponivel após clone ou fetch --all)
     let output = Command::new("git")
-        .args(["remote", "show", "origin"])
+        .args(["symbolic-ref", "refs/remotes/origin/HEAD"])
         .current_dir(dir)
         .output()
         .ok()?;
 
-    let stdout = String::from_utf8_lossy(&output.stdout);
-    for line in stdout.lines() {
-        if let Some(branch) = line.trim().strip_prefix("HEAD branch: ") {
+    if output.status.success() {
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        // Output: "refs/remotes/origin/main\n"
+        let ref_str = stdout.trim();
+        // Extract the branch name after the last '/'
+        if let Some(branch) = ref_str.rsplit('/').next() {
             let b = branch.trim().to_string();
-            if !b.is_empty() && b != "(unknown)" {
+            if !b.is_empty() && b != "HEAD" {
                 return Some(b);
             }
         }
     }
 
+    // 2. Verifica se origin/main existe como ref local
+    let check_ref = |refname: &str| -> bool {
+        Command::new("git")
+            .args(["rev-parse", "--verify", refname])
+            .current_dir(dir)
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .status()
+            .map(|s| s.success())
+            .unwrap_or(false)
+    };
+
+    if check_ref("refs/remotes/origin/main") {
+        return Some("main".to_string());
+    }
+
+    if check_ref("refs/remotes/origin/master") {
+        return Some("master".to_string());
+    }
+
+    // 3. Sem informação local — caller faz fallback para "master"
     None
 }
