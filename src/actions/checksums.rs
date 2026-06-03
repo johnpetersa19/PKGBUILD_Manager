@@ -22,8 +22,8 @@ pub fn run(path: &Path) -> anyhow::Result<()> {
 }
 
 /// Generate checksums and print them to stdout using `makepkg -g`.
-/// Bug #9 fix: adicionado handler para NotFound (makepkg não instalado),
-/// produzindo mensagem amigável ao invés de panic de IO genérico.
+/// Bug #9 fix: map NotFound to a user-friendly error message instead of
+/// propagating a raw IO error.
 pub fn generate(path: &Path) -> anyhow::Result<()> {
     let target_dir = get_target_dir(path)?;
     println!(">>> makepkg -g (in {:?})", target_dir);
@@ -37,11 +37,15 @@ pub fn generate(path: &Path) -> anyhow::Result<()> {
                 anyhow::anyhow!(
                     "{}",
                     gettextrs::gettext(
-                        "makepkg not found. Install it with: sudo pacman -S pacman"
+                        "makepkg not found. Install it with: sudo pacman -S pacman",
                     )
                 )
             } else {
-                anyhow::anyhow!(e)
+                anyhow::anyhow!(
+                    "{}: {}",
+                    gettextrs::gettext("failed to spawn makepkg"),
+                    e
+                )
             }
         })?;
 
