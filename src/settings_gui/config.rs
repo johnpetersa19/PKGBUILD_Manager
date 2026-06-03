@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
-// ── Path helpers ──────────────────────────────────────────────────────────────
+// ── Path helpers ────────────────────────────────────────────────────────────────
 
 fn config_dir() -> PathBuf {
     let base = std::env::var("XDG_CONFIG_HOME")
@@ -35,7 +35,7 @@ pub struct MenuGroup {
     pub items: Vec<MenuItem>,
 }
 
-// ── All known actions ─────────────────────────────────────────────────────────
+// ── All known actions ───────────────────────────────────────────────────────────────
 
 pub fn all_actions() -> Vec<(&'static str, &'static str)> {
     vec![
@@ -63,7 +63,7 @@ pub fn all_actions() -> Vec<(&'static str, &'static str)> {
     ]
 }
 
-// ── Default menu ──────────────────────────────────────────────────────────────
+// ── Default menu ────────────────────────────────────────────────────────────────
 
 pub fn default_menu() -> Vec<MenuGroup> {
     vec![
@@ -106,21 +106,47 @@ pub fn default_menu() -> Vec<MenuGroup> {
     ]
 }
 
-// ── Load / save ───────────────────────────────────────────────────────────────
+// ── Load / save ────────────────────────────────────────────────────────────────
+
+/// Result of loading menu.json.
+/// Bug #10 fix: reports unknown item IDs that were stripped so the caller
+/// (settings GUI) can surface a warning toast instead of silently dropping them.
+pub struct LoadResult {
+    pub groups: Vec<MenuGroup>,
+    /// IDs that were present in menu.json but are not in all_actions().
+    /// Non-empty only when the file was written by a future/different version.
+    pub unknown_ids: Vec<String>,
+}
 
 pub fn load() -> Vec<MenuGroup> {
+    load_with_diagnostics().groups
+}
+
+pub fn load_with_diagnostics() -> LoadResult {
     let known: std::collections::HashSet<&str> =
         all_actions().iter().map(|(id, _)| *id).collect();
 
-    (|| -> Option<Vec<MenuGroup>> {
+    let result = (|| -> Option<Vec<MenuGroup>> {
         let text = std::fs::read_to_string(config_file()).ok()?;
-        let mut groups: Vec<MenuGroup> = serde_json::from_str(&text).ok()?;
-        for g in &mut groups {
-            g.items.retain(|i| known.contains(i.id.as_str()));
+        serde_json::from_str(&text).ok()
+    })();
+
+    match result {
+        None => LoadResult { groups: default_menu(), unknown_ids: vec![] },
+        Some(mut groups) => {
+            let mut unknown_ids: Vec<String> = Vec::new();
+            for g in &mut groups {
+                // Collect unknown IDs before retaining
+                for item in &g.items {
+                    if !known.contains(item.id.as_str()) {
+                        unknown_ids.push(item.id.clone());
+                    }
+                }
+                g.items.retain(|i| known.contains(i.id.as_str()));
+            }
+            LoadResult { groups, unknown_ids }
         }
-        Some(groups)
-    })()
-    .unwrap_or_else(default_menu)
+    }
 }
 
 pub fn save(data: &[MenuGroup]) -> std::io::Result<()> {
