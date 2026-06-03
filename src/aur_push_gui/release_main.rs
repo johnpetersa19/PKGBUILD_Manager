@@ -11,6 +11,7 @@
  *   pkgbuild-manager-release-gui <path>
  */
 
+mod win_state;
 mod release_dialog;
 
 use release_dialog::ReleaseWindow;

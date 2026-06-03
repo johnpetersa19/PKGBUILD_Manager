@@ -23,6 +23,7 @@
  *   pkgbuild-manager-aur-push <path> --mode=generic
  */
 
+mod win_state;
 mod aur_dialog;
 
 use aur_dialog::{RepoMode, UnifiedPushWindow};
