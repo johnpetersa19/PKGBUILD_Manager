@@ -91,7 +91,6 @@ const CSS: &str = "
     color: alpha(@window_fg_color, 0.25);
     font-size: 15px;
 }
-/* Error section shown at the bottom */
 .error-box {
     border-radius: 10px;
     background-color: alpha(@error_bg_color, 0.12);
@@ -210,8 +209,6 @@ impl StepRow {
 #[derive(Debug)]
 enum Msg {
     Step { key: String, state: StepState, detail: String },
-    // stdout lines — only errors/stderr are surfaced in the UI
-    StdoutLine(String),
     StderrLine(String),
     Done(bool),
 }
@@ -259,13 +256,11 @@ impl AurPushWindow {
             glib::Propagation::Proceed
         });
 
-        // ── Root layout ─────────────────────────────────────────────────────────
         let root = GBox::builder()
             .orientation(Orientation::Vertical)
             .spacing(0)
             .build();
 
-        // Header
         let header = HeaderBar::new();
         let subtitle = Label::builder()
             .label(&target)
@@ -287,7 +282,6 @@ impl AurPushWindow {
         }));
         root.append(&header);
 
-        // Progress bar
         let progress = ProgressBar::builder()
             .fraction(0.0)
             .visible(false)
@@ -295,7 +289,6 @@ impl AurPushWindow {
             .build();
         root.append(&progress);
 
-        // Scrollable content
         let scroll = ScrolledWindow::builder()
             .hscrollbar_policy(PolicyType::Never)
             .vscrollbar_policy(PolicyType::Automatic)
@@ -314,9 +307,7 @@ impl AurPushWindow {
         scroll.set_child(Some(&content));
         root.append(&scroll);
 
-        // ──────────────────────────────────────────────────────────────
-        // SECTION 1: Commit message + optional tag
-        // ──────────────────────────────────────────────────────────────
+        // ── SECTION 1: Commit ────────────────────────────────────────────────────────
         let fields_group = adw::PreferencesGroup::builder().title("Commit").build();
 
         let msg_row = adw::EntryRow::builder()
@@ -334,9 +325,7 @@ impl AurPushWindow {
 
         content.append(&fields_group);
 
-        // ──────────────────────────────────────────────────────────────
-        // SECTION 2: Steps
-        // ──────────────────────────────────────────────────────────────
+        // ── SECTION 2: Steps ────────────────────────────────────────────────────────
         let steps_group = adw::PreferencesGroup::builder().title("Steps").build();
 
         let step_srcinfo  = StepRow::new("Regen .SRCINFO");
@@ -358,9 +347,7 @@ impl AurPushWindow {
         }
         content.append(&steps_group);
 
-        // ──────────────────────────────────────────────────────────────
-        // SECTION 3: Error summary box — visible only on stderr/ERROR output
-        // ──────────────────────────────────────────────────────────────
+        // ── SECTION 3: Error box ───────────────────────────────────────────────────────
         let error_box = GBox::builder()
             .orientation(Orientation::Vertical)
             .spacing(6)
@@ -398,9 +385,7 @@ impl AurPushWindow {
         error_box.append(&error_scroll);
         content.append(&error_box);
 
-        // ──────────────────────────────────────────────────────────────
-        // SECTION 4: Final status page
-        // ──────────────────────────────────────────────────────────────
+        // ── SECTION 4: Status page (success only) ────────────────────────────────
         let status_page = StatusPage::builder()
             .icon_name("object-select-symbolic")
             .title("")
@@ -408,7 +393,7 @@ impl AurPushWindow {
             .build();
         content.append(&status_page);
 
-        // ── Bottom action button ────────────────────────────────────────────────────
+        // ── Bottom button ────────────────────────────────────────────────────────────
         let btn_box = GBox::builder()
             .orientation(Orientation::Horizontal)
             .halign(Align::End)
@@ -502,11 +487,7 @@ impl AurPushWindow {
             async move {
                 while let Ok(msg) = receiver.recv().await {
                     match msg {
-                        Msg::StdoutLine(_) => {
-                            // stdout is only used internally by parse_and_send — no UI display
-                        }
                         Msg::StderrLine(line) => {
-                            // Only stderr lines go into the error box
                             let clean = line.trim();
                             if !clean.is_empty() {
                                 let ebuf = error_view.buffer();
@@ -552,7 +533,6 @@ impl AurPushWindow {
                                 progress.set_fraction(0.0);
                                 progress.set_visible(false);
                                 push_btn.set_label("Try again");
-                                // error_box already visible with details — no status_page on failure
                             }
                         }
                     }
@@ -617,9 +597,9 @@ fn run_push_worker(
     let _ = tx.send_blocking(Msg::Done(success));
 }
 
+// Parses [STEP] lines from stdout and sends Step messages.
+// Non-step stdout lines are silently discarded — only stderr is shown in the UI.
 fn parse_and_send(line: &str, tx: &async_channel::Sender<Msg>) {
-    let _ = tx.send_blocking(Msg::StdoutLine(line.to_string()));
-
     if let Some(rest) = line.strip_prefix("[STEP] ") {
         let (key, tail) = match rest.split_once(' ') {
             Some(p) => p,
