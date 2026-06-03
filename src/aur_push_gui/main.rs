@@ -12,7 +12,7 @@
  *   pkgbuild-manager-aur-push <path> --tag    # push + annotated tag
  */
 
-mod window;
+mod aur_dialog;
 
 use adw::prelude::*;
 use adw::Application;
@@ -45,7 +45,7 @@ fn main() -> glib::ExitCode {
         .build();
 
     app.connect_activate(move |app| {
-        let win = window::AurPushWindow::new(app, target.clone(), with_tag);
+        let win = aur_dialog::AurPushWindow::new(app, target.clone(), with_tag);
         win.present();
     });
 
