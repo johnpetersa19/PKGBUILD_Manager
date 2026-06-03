@@ -259,6 +259,7 @@ struct ProgressPanel {
     back_btn: Button,
 }
 
+#[allow(dead_code)]
 impl ProgressPanel {
     fn new(run_label: &str) -> Self {
         let root = GBox::builder()
@@ -478,7 +479,7 @@ impl ReleaseWindow {
         nav_box.append(&tags_nav);
 
         // Release tab only for platforms that support it
-        let release_nav_opt = if platform.supports_releases() {
+        let _release_nav_opt = if platform.supports_releases() {
             let rb = make_nav_btn(
                 "software-update-available-symbolic", "Release", "release", content_stack.clone()
             );
