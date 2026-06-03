@@ -4,19 +4,23 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
- * A standalone gtk4-rs + libadwaita window launched by the Nautilus scripts
- * "06_Push AUR", "17_Push AUR Tag", "Push Git" and "Push Git Tag".
+ * A standalone gtk4-rs + libadwaita window launched by the Nautilus scripts.
  *
  * The window auto-detects the repository type from the selected folder:
- *   - AUR repo  (PKGBUILD + remote = aur.archlinux.org) → AUR push mode
- *   - Git repo  (.git present, not AUR)                 → Git push mode
- *   - Other                                              → informational page
+ *   - AUR repo      (PKGBUILD + remote = aur.archlinux.org)  → AUR push mode
+ *   - GitLab repo   (remote contains gitlab.com)             → GitLab push mode
+ *   - Codeberg repo (remote contains codeberg.org)           → Codeberg push mode
+ *   - Other Git     (.git present, not matched above)        → Generic Git mode
+ *   - Other                                                  → informational page
  *
  * Usage:
- *   pkgbuild-manager-aur-push <path>          # auto-detect, push only
- *   pkgbuild-manager-aur-push <path> --tag    # auto-detect, push + annotated tag
- *   pkgbuild-manager-aur-push <path> --mode=aur   # force AUR mode
- *   pkgbuild-manager-aur-push <path> --mode=git   # force Git mode
+ *   pkgbuild-manager-aur-push <path>               # auto-detect
+ *   pkgbuild-manager-aur-push <path> --tag          # auto-detect + annotated tag
+ *   pkgbuild-manager-aur-push <path> --mode=aur
+ *   pkgbuild-manager-aur-push <path> --mode=git
+ *   pkgbuild-manager-aur-push <path> --mode=gitlab
+ *   pkgbuild-manager-aur-push <path> --mode=codeberg
+ *   pkgbuild-manager-aur-push <path> --mode=generic
  */
 
 mod aur_dialog;
@@ -33,7 +37,6 @@ const APP_ID: &str = "io.github.john.PkgbuildManager.AurPush";
 fn main() -> glib::ExitCode {
     let args: Vec<String> = env::args().collect();
 
-    // Path to project directory (first non-flag arg after argv[0])
     let target = args
         .iter()
         .skip(1)
@@ -43,18 +46,18 @@ fn main() -> glib::ExitCode {
 
     let with_tag = args.iter().any(|a| a == "--tag");
 
-    // Optional forced mode via --mode=aur or --mode=git
-    let forced_mode: Option<RepoMode> = args.iter().find_map(|a| {
-        if a == "--mode=aur" { Some(RepoMode::Aur) }
-        else if a == "--mode=git" { Some(RepoMode::Git) }
-        else { None }
+    // Optional forced mode
+    let forced_mode: Option<RepoMode> = args.iter().find_map(|a| match a.as_str() {
+        "--mode=aur"      => Some(RepoMode::Aur),
+        "--mode=git"      => Some(RepoMode::Git),
+        "--mode=gitlab"   => Some(RepoMode::GitLab),
+        "--mode=codeberg" => Some(RepoMode::Codeberg),
+        "--mode=generic"  => Some(RepoMode::Generic),
+        _                 => None,
     });
 
-    // Auto-detect unless caller forced a mode
     let mode = forced_mode.unwrap_or_else(|| RepoMode::detect(&target));
 
-    // NON_UNIQUE: every invocation from the Nautilus script must open its
-    // own independent window.
     let app = Application::builder()
         .application_id(APP_ID)
         .flags(ApplicationFlags::NON_UNIQUE)

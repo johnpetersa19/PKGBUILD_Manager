@@ -2,15 +2,8 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
- * Single reusable window that handles both AUR push and plain-Git push.
- * The caller passes a RepoMode; the window adapts titles, step labels and
- * the backend worker accordingly.  Layout and visual style are identical
- * for both modes.
- *
- * Git-mode additions (this file):
- *   - Editable branch EntryRow pre-filled with HEAD branch.
- *   - "⎇" button that opens a popover listing all local branches.
- *   - The chosen branch is forwarded to run_git_worker().
+ * Handles push for: AUR, GitHub (Git), GitLab, Codeberg, Generic Git.
+ * All Git-based modes share the same worker; only cosmetics differ.
  */
 
 use adw::prelude::*;
@@ -27,37 +20,61 @@ use std::process::{Command, Stdio};
 use std::rc::Rc;
 use std::thread;
 
-// ── Repo-mode ────────────────────────────────────────────────────────────────
+// ── RepoMode ──────────────────────────────────────────────────────────────────
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum RepoMode {
+    /// AUR repository (PKGBUILD + remote = aur.archlinux.org)
     Aur,
+    /// GitHub repository
     Git,
+    /// GitLab repository (remote contains gitlab.com)
+    GitLab,
+    /// Codeberg repository (remote contains codeberg.org)
+    Codeberg,
+    /// Any other Git remote (self-hosted, Gitea, Forgejo, etc.)
+    Generic,
+    /// Not a recognised repository
     Unknown,
 }
 
 impl RepoMode {
+    /// Inspect `path` and return the detected mode.
     pub fn detect(path: &str) -> Self {
         let p = std::path::Path::new(path);
-        let has_git = p.join(".git").exists();
-        if !has_git {
+        if !p.join(".git").exists() {
             return RepoMode::Unknown;
         }
-        let has_pkgbuild = p.join("PKGBUILD").exists();
-        if has_pkgbuild {
-            let config_path = p.join(".git").join("config");
-            if let Ok(text) = std::fs::read_to_string(&config_path) {
-                if text.contains("aur.archlinux.org") {
-                    return RepoMode::Aur;
-                }
-            }
+
+        // Read .git/config to identify the remote URL
+        let config_text = p
+            .join(".git")
+            .join("config")
+            .pipe(|cp| std::fs::read_to_string(cp).unwrap_or_default());
+
+        // AUR must also have PKGBUILD
+        if p.join("PKGBUILD").exists() && config_text.contains("aur.archlinux.org") {
+            return RepoMode::Aur;
         }
-        if has_git {
+        if config_text.contains("gitlab.com") {
+            return RepoMode::GitLab;
+        }
+        if config_text.contains("codeberg.org") {
+            return RepoMode::Codeberg;
+        }
+        if config_text.contains("github.com") {
             return RepoMode::Git;
         }
-        RepoMode::Unknown
+        // Has .git but no known host → generic
+        RepoMode::Generic
     }
 }
+
+// Small extension trait so we can call .pipe() on PathBuf inline
+trait Pipe: Sized {
+    fn pipe<F, R>(self, f: F) -> R where F: FnOnce(Self) -> R { f(self) }
+}
+impl Pipe for std::path::PathBuf {}
 
 // ── Persistence helpers ───────────────────────────────────────────────────────
 
@@ -77,9 +94,7 @@ fn load_win_size(key: &str, default_w: i32, default_h: i32) -> (i32, i32) {
         let text = std::fs::read_to_string(state_path()).ok()?;
         let val: serde_json::Value = serde_json::from_str(&text).ok()?;
         let obj = val.get(key)?;
-        let w = obj.get("width")?.as_i64()? as i32;
-        let h = obj.get("height")?.as_i64()? as i32;
-        Some((w, h))
+        Some((obj.get("width")?.as_i64()? as i32, obj.get("height")?.as_i64()? as i32))
     })()
     .unwrap_or((default_w, default_h))
 }
@@ -92,13 +107,8 @@ fn save_win_size(key: &str, width: i32, height: i32) {
         val.as_object().cloned()
     })()
     .unwrap_or_default();
-    obj.insert(
-        key.to_string(),
-        serde_json::json!({"width": width, "height": height}),
-    );
-    if let Some(parent) = path.parent() {
-        let _ = std::fs::create_dir_all(parent);
-    }
+    obj.insert(key.to_string(), serde_json::json!({"width": width, "height": height}));
+    if let Some(parent) = path.parent() { let _ = std::fs::create_dir_all(parent); }
     let _ = std::fs::write(&path, serde_json::to_string_pretty(&obj).unwrap_or_default());
 }
 
@@ -117,75 +127,34 @@ const CSS: &str = "
     background-color: alpha(@error_bg_color, 0.18);
     transition: background-color 300ms ease;
 }
-.icon-ok {
-    color: @success_color;
-    font-size: 17px;
-    font-weight: bold;
-}
-.icon-error {
-    color: @error_color;
-    font-size: 17px;
-    font-weight: bold;
-}
-.icon-waiting {
-    color: alpha(@window_fg_color, 0.25);
-    font-size: 15px;
-}
+.icon-ok   { color: @success_color; font-size: 17px; font-weight: bold; }
+.icon-error { color: @error_color;   font-size: 17px; font-weight: bold; }
+.icon-waiting { color: alpha(@window_fg_color, 0.25); font-size: 15px; }
 .error-box {
     border-radius: 10px;
     background-color: alpha(@error_bg_color, 0.12);
     border: 1px solid alpha(@error_color, 0.30);
     padding: 10px 14px;
 }
-.error-title {
-    font-size: 13px;
-    font-weight: bold;
-    color: @error_color;
-    margin-bottom: 4px;
-}
-.error-body text {
-    font-family: monospace;
-    font-size: 13px;
-    line-height: 1.55;
-    color: @error_color;
-}
-.progress-bar-box {
-    margin-top: 0;
-    margin-bottom: 0;
-}
-.stage-caption {
-    color: alpha(@window_fg_color, 0.65);
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 6px;
-}
-.mode-badge-aur {
-    background-color: alpha(@accent_bg_color, 0.15);
-    color: @accent_color;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-}
-.mode-badge-git {
-    background-color: alpha(@warning_bg_color, 0.15);
-    color: @warning_color;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-}
-.branch-item {
-    padding: 6px 12px;
-    border-radius: 6px;
-}
-.branch-item:hover {
-    background-color: alpha(@accent_bg_color, 0.12);
-}
-.branch-item-current {
-    font-weight: 700;
-    color: @accent_color;
-}
+.error-title  { font-size: 13px; font-weight: bold; color: @error_color; margin-bottom: 4px; }
+.error-body text { font-family: monospace; font-size: 13px; line-height: 1.55; color: @error_color; }
+.progress-bar-box { margin-top: 0; margin-bottom: 0; }
+.stage-caption { color: alpha(@window_fg_color, 0.65); font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+
+/* ── Badges ── */
+.mode-badge-aur      { background-color: alpha(@accent_bg_color,   0.15); color: @accent_color;   border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
+.mode-badge-git      { background-color: alpha(@warning_bg_color,  0.15); color: @warning_color;  border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
+.mode-badge-gitlab   { background-color: alpha(@orange_5,          0.18); color: #fc6d26;          border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
+.mode-badge-codeberg { background-color: alpha(@blue_5,            0.15); color: #2185d0;          border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
+.mode-badge-generic  { background-color: alpha(@window_fg_color,   0.08); color: @window_fg_color; border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
+
+/* ── Branch picker ── */
+.branch-item { padding: 6px 12px; border-radius: 6px; }
+.branch-item:hover { background-color: alpha(@accent_bg_color, 0.12); }
+.branch-item-current { font-weight: 700; color: @accent_color; }
+
+/* ── Remote URL hint ── */
+.remote-hint { font-size: 11px; color: alpha(@window_fg_color, 0.50); font-family: monospace; }
 ";
 
 // ── StepRow widget ────────────────────────────────────────────────────────────
@@ -223,50 +192,35 @@ impl StepRow {
         self.spinner.start();
         self.row.set_subtitle("");
     }
-
     fn set_ok(&self) {
-        self.spinner.stop();
-        self.spinner.set_visible(false);
-        self.row.remove_css_class("step-running");
-        self.row.remove_css_class("step-error");
+        self.spinner.stop(); self.spinner.set_visible(false);
+        self.row.remove_css_class("step-running"); self.row.remove_css_class("step-error");
         self.row.add_css_class("step-ok");
         self.icon.set_label("✔");
-        self.icon.remove_css_class("icon-waiting");
-        self.icon.remove_css_class("icon-error");
-        self.icon.add_css_class("icon-ok");
-        self.icon.set_visible(true);
+        self.icon.remove_css_class("icon-waiting"); self.icon.remove_css_class("icon-error");
+        self.icon.add_css_class("icon-ok"); self.icon.set_visible(true);
     }
-
     fn set_err(&self, detail: &str) {
-        self.spinner.stop();
-        self.spinner.set_visible(false);
-        self.row.remove_css_class("step-running");
-        self.row.remove_css_class("step-ok");
+        self.spinner.stop(); self.spinner.set_visible(false);
+        self.row.remove_css_class("step-running"); self.row.remove_css_class("step-ok");
         self.row.add_css_class("step-error");
         self.icon.set_label("✖");
-        self.icon.remove_css_class("icon-waiting");
-        self.icon.remove_css_class("icon-ok");
-        self.icon.add_css_class("icon-error");
-        self.icon.set_visible(true);
+        self.icon.remove_css_class("icon-waiting"); self.icon.remove_css_class("icon-ok");
+        self.icon.add_css_class("icon-error"); self.icon.set_visible(true);
         if !detail.is_empty() { self.row.set_subtitle(detail); }
     }
-
     fn reset(&self) {
-        self.spinner.stop();
-        self.spinner.set_visible(false);
-        self.row.remove_css_class("step-running");
-        self.row.remove_css_class("step-ok");
+        self.spinner.stop(); self.spinner.set_visible(false);
+        self.row.remove_css_class("step-running"); self.row.remove_css_class("step-ok");
         self.row.remove_css_class("step-error");
         self.icon.set_label("○");
-        self.icon.remove_css_class("icon-ok");
-        self.icon.remove_css_class("icon-error");
-        self.icon.add_css_class("icon-waiting");
-        self.icon.set_visible(true);
+        self.icon.remove_css_class("icon-ok"); self.icon.remove_css_class("icon-error");
+        self.icon.add_css_class("icon-waiting"); self.icon.set_visible(true);
         self.row.set_subtitle("");
     }
 }
 
-// ── Messages from the worker thread ──────────────────────────────────────────
+// ── Worker messages ───────────────────────────────────────────────────────────
 
 #[derive(Debug)]
 enum Msg {
@@ -278,7 +232,7 @@ enum Msg {
 #[derive(Debug, PartialEq)]
 enum StepState { Start, Ok, Error }
 
-// ── Public window constructor ─────────────────────────────────────────────────
+// ── Public window ─────────────────────────────────────────────────────────────
 
 pub struct UnifiedPushWindow;
 
@@ -298,42 +252,67 @@ impl UnifiedPushWindow {
             gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
         );
 
-        // Mode-dependent strings
+        // ── Mode-dependent strings ────────────────────────────────────────────
         let win_title = match mode {
-            RepoMode::Aur     => "Push to AUR",
-            RepoMode::Git     => "Push to Git Remote",
-            RepoMode::Unknown => "Push — Unknown Repository",
+            RepoMode::Aur      => "Push to AUR",
+            RepoMode::Git      => "Push to GitHub",
+            RepoMode::GitLab   => "Push to GitLab",
+            RepoMode::Codeberg => "Push to Codeberg",
+            RepoMode::Generic  => "Push to Git Remote",
+            RepoMode::Unknown  => "Push — Unknown Repository",
         };
         let badge_label = match mode {
-            RepoMode::Aur => "AUR", RepoMode::Git => "Git", RepoMode::Unknown => "?",
+            RepoMode::Aur      => "AUR",
+            RepoMode::Git      => "GitHub",
+            RepoMode::GitLab   => "GitLab",
+            RepoMode::Codeberg => "Codeberg",
+            RepoMode::Generic  => "Git",
+            RepoMode::Unknown  => "?",
         };
         let badge_class = match mode {
-            RepoMode::Aur => "mode-badge-aur", _ => "mode-badge-git",
+            RepoMode::Aur      => "mode-badge-aur",
+            RepoMode::Git      => "mode-badge-git",
+            RepoMode::GitLab   => "mode-badge-gitlab",
+            RepoMode::Codeberg => "mode-badge-codeberg",
+            RepoMode::Generic  => "mode-badge-generic",
+            RepoMode::Unknown  => "mode-badge-generic",
         };
         let form_caption = match mode {
-            RepoMode::Aur | RepoMode::Git => "Step 1 of 2 — Review commit information",
             RepoMode::Unknown => "",
+            _                 => "Step 1 of 2 — Review commit information",
         };
         let progress_caption = match mode {
-            RepoMode::Aur     => "Step 2 of 2 — Sending changes to AUR",
-            RepoMode::Git     => "Step 2 of 2 — Sending changes to remote",
-            RepoMode::Unknown => "",
+            RepoMode::Aur      => "Step 2 of 2 — Sending changes to AUR",
+            RepoMode::Git      => "Step 2 of 2 — Sending changes to GitHub",
+            RepoMode::GitLab   => "Step 2 of 2 — Sending changes to GitLab",
+            RepoMode::Codeberg => "Step 2 of 2 — Sending changes to Codeberg",
+            RepoMode::Generic  => "Step 2 of 2 — Sending changes to remote",
+            RepoMode::Unknown  => "",
         };
         let run_label = match (mode, with_tag) {
-            (RepoMode::Aur, true)  => "Push + Tag to AUR",
-            (RepoMode::Aur, false) => "Push to AUR",
-            (RepoMode::Git, true)  => "Commit + Tag + Push",
-            (RepoMode::Git, false) => "Commit & Push",
-            (RepoMode::Unknown, _) => "Push",
+            (RepoMode::Aur,      true)  => "Push + Tag to AUR",
+            (RepoMode::Aur,      false) => "Push to AUR",
+            (RepoMode::Git,      true)  => "Commit + Tag → GitHub",
+            (RepoMode::Git,      false) => "Commit & Push → GitHub",
+            (RepoMode::GitLab,   true)  => "Commit + Tag → GitLab",
+            (RepoMode::GitLab,   false) => "Commit & Push → GitLab",
+            (RepoMode::Codeberg, true)  => "Commit + Tag → Codeberg",
+            (RepoMode::Codeberg, false) => "Commit & Push → Codeberg",
+            (RepoMode::Generic,  true)  => "Commit + Tag + Push",
+            (RepoMode::Generic,  false) => "Commit & Push",
+            (RepoMode::Unknown,  _)     => "Push",
         };
         let done_label = match mode {
-            RepoMode::Aur => "Pushed to AUR!",
-            RepoMode::Git => "Pushed to remote!",
-            RepoMode::Unknown => "",
+            RepoMode::Aur      => "Pushed to AUR!",
+            RepoMode::Git      => "Pushed to GitHub!",
+            RepoMode::GitLab   => "Pushed to GitLab!",
+            RepoMode::Codeberg => "Pushed to Codeberg!",
+            RepoMode::Generic  => "Pushed to remote!",
+            RepoMode::Unknown  => "",
         };
 
-        // Window
-        let (saved_w, saved_h) = load_win_size("push-window", 560, 620);
+        // ── Window ────────────────────────────────────────────────────────────
+        let (saved_w, saved_h) = load_win_size("push-window", 560, 640);
         let win = ApplicationWindow::builder()
             .application(app).title(win_title)
             .default_width(saved_w).default_height(saved_h)
@@ -383,7 +362,7 @@ impl UnifiedPushWindow {
                 .icon_name("dialog-question-symbolic")
                 .title("Not a recognised repository")
                 .description(
-                    "The selected folder does not appear to be an AUR or Git repository.\n\
+                    "The selected folder does not appear to be a Git repository.\n\
                      Make sure you select a folder that contains a .git directory."
                 )
                 .build();
@@ -417,21 +396,21 @@ impl UnifiedPushWindow {
             .title("Message").show_apply_button(false).build();
         fields_group.add(&msg_row);
 
-        // Tag version (both modes)
+        // Tag version
         let tag_row = adw::EntryRow::builder()
             .title("Tag version  (e.g. 1.2.3-1)").show_apply_button(false).build();
         tag_row.set_visible(with_tag);
         fields_group.add(&tag_row);
 
-        // ── Git-only: editable branch row with popover picker ─────────────────
+        // ── Git-based modes: editable branch + remote hint ────────────────────
         //
-        // Layout inside the EntryRow suffix:
-        //   [ EntryRow: "Branch" | current-branch text ]  [ ⎇ button ]
-        //
-        // The ⎇ button opens a Popover that lists all local branches.
-        // Clicking a branch name writes it back into the EntryRow.
+        // All non-AUR modes show:
+        //   • Branch EntryRow  — editable, pre-filled with HEAD branch,
+        //                        with a ⎇ button that pops up all local branches.
+        //   • Remote URL row   — read-only, shows the active remote URL.
 
-        // We store the EntryRow in an Rc so the popover callbacks can update it.
+        let is_git_based = mode != RepoMode::Aur;
+
         let branch_entry: Rc<adw::EntryRow> = Rc::new(
             adw::EntryRow::builder()
                 .title("Branch")
@@ -439,60 +418,69 @@ impl UnifiedPushWindow {
                 .build()
         );
 
-        if mode == RepoMode::Git {
-            // Pre-fill with current HEAD branch
+        if is_git_based {
             let current_branch = detect_branch(&target);
             branch_entry.set_text(&current_branch);
 
-            // Build popover with all local branches
+            // Popover with all local branches
             let branches = list_branches(&target);
-
             let popover_box = GBox::builder()
-                .orientation(Orientation::Vertical)
-                .spacing(2)
-                .margin_top(6).margin_bottom(6)
-                .margin_start(6).margin_end(6)
+                .orientation(Orientation::Vertical).spacing(2)
+                .margin_top(6).margin_bottom(6).margin_start(6).margin_end(6)
                 .build();
-
             for b in &branches {
                 let is_current = b == &current_branch;
                 let btn = Button::builder()
-                    .label(b)
-                    .has_frame(false)
+                    .label(b).has_frame(false)
                     .css_classes(if is_current {
                         vec!["branch-item".to_string(), "branch-item-current".to_string()]
                     } else {
                         vec!["branch-item".to_string()]
                     })
                     .build();
-
-                let branch_name = b.clone();
-                let entry_clone = branch_entry.clone();
-                btn.connect_clicked(move |_| {
-                    entry_clone.set_text(&branch_name);
-                });
+                let name = b.clone();
+                let entry_c = branch_entry.clone();
+                btn.connect_clicked(move |_| { entry_c.set_text(&name); });
                 popover_box.append(&btn);
             }
-
             let popover = Popover::builder().child(&popover_box).build();
-
-            // The trigger button shown inside the EntryRow suffix
             let pick_btn = Button::builder()
                 .icon_name("vcs-branch-symbolic")
                 .tooltip_text("Choose branch")
                 .valign(Align::Center)
                 .css_classes(vec!["flat".to_string()])
                 .build();
-
-            // Attach popover to the button
             popover.set_parent(&pick_btn);
             pick_btn.connect_clicked(clone!(
                 #[strong] popover,
                 move |_| { popover.popup(); }
             ));
-
             branch_entry.add_suffix(&pick_btn);
             fields_group.add(&*branch_entry);
+
+            // Remote URL hint row
+            let remote_url = detect_remote(&target);
+            if !remote_url.is_empty() {
+                let remote_row = adw::ActionRow::builder()
+                    .title("Remote")
+                    .subtitle(&remote_url)
+                    .activatable(false)
+                    .build();
+                // Add a small icon matching the platform
+                let remote_icon_name = match mode {
+                    RepoMode::GitLab   => "application-x-addon-symbolic",
+                    RepoMode::Codeberg => "globe-symbolic",
+                    _                  => "network-server-symbolic",
+                };
+                let remote_icon = gtk::Image::builder()
+                    .icon_name(remote_icon_name)
+                    .pixel_size(16)
+                    .valign(Align::Center)
+                    .css_classes(vec!["dim-label".to_string()])
+                    .build();
+                remote_row.add_prefix(&remote_icon);
+                fields_group.add(&remote_row);
+            }
         }
 
         form_content.append(&fields_group);
@@ -542,34 +530,28 @@ impl UnifiedPushWindow {
                 let push     = StepRow::new("git push");
                 let tag      = StepRow::new("git tag -a");
                 let pushtags = StepRow::new("git push --tags");
-                steps_group.add(&srcinfo.row);
-                steps_group.add(&status.row);
-                steps_group.add(&add.row);
-                steps_group.add(&commit.row);
+                steps_group.add(&srcinfo.row); steps_group.add(&status.row);
+                steps_group.add(&add.row);     steps_group.add(&commit.row);
                 steps_group.add(&push.row);
                 if with_tag { steps_group.add(&tag.row); steps_group.add(&pushtags.row); }
                 let n = if with_tag { 7.0 } else { 5.0 };
                 (vec![
-                    ("regen-srcinfo", srcinfo),
-                    ("git-status",    status),
-                    ("git-add",       add),
-                    ("git-commit",    commit),
-                    ("git-push",      push),
-                    ("git-tag",       tag),
+                    ("regen-srcinfo", srcinfo), ("git-status", status),
+                    ("git-add",       add),     ("git-commit", commit),
+                    ("git-push",      push),    ("git-tag",    tag),
                     ("git-push-tags", pushtags),
                 ], n)
             }
-            RepoMode::Git => {
+            // All Git-based modes share identical steps
+            _ => {
                 let status   = StepRow::new("git status");
                 let add      = StepRow::new("git add .");
                 let commit   = StepRow::new("git commit");
                 let push     = StepRow::new("git push");
                 let tag      = StepRow::new("git tag -a");
                 let pushtags = StepRow::new("git push --tags");
-                steps_group.add(&status.row);
-                steps_group.add(&add.row);
-                steps_group.add(&commit.row);
-                steps_group.add(&push.row);
+                steps_group.add(&status.row); steps_group.add(&add.row);
+                steps_group.add(&commit.row); steps_group.add(&push.row);
                 if with_tag { steps_group.add(&tag.row); steps_group.add(&pushtags.row); }
                 let n = if with_tag { 6.0 } else { 4.0 };
                 (vec![
@@ -581,7 +563,6 @@ impl UnifiedPushWindow {
                     ("git-push-tags", pushtags),
                 ], n)
             }
-            RepoMode::Unknown => unreachable!(),
         };
         progress_content.append(&steps_group);
 
@@ -630,7 +611,7 @@ impl UnifiedPushWindow {
         stack.add_titled(&progress_scroll, Some("progress"), "Progress");
         stack.set_visible_child_name("form");
 
-        // State
+        // ── State ─────────────────────────────────────────────────────────────
         let running    = Rc::new(RefCell::new(false));
         let done_steps = Rc::new(RefCell::new(0u32));
         let steps      = Rc::new(step_rows);
@@ -640,35 +621,23 @@ impl UnifiedPushWindow {
             #[strong] stack,
             move |_| { stack.set_visible_child_name("progress"); }
         ));
-
         back_btn.connect_clicked(clone!(
             #[strong] running, #[strong] stack,
-            move |_| {
-                if *running.borrow() { return; }
-                stack.set_visible_child_name("form");
-            }
+            move |_| { if *running.borrow() { return; } stack.set_visible_child_name("form"); }
         ));
 
         run_btn.connect_clicked(clone!(
-            #[strong] running,
-            #[strong] steps,
-            #[strong] msg_row,
-            #[strong] tag_row,
-            #[strong] branch_entry,
-            #[strong] error_view,
-            #[strong] error_box,
-            #[strong] status_page,
-            #[strong] run_btn,
-            #[strong] back_btn,
-            #[strong] progress,
-            #[strong] done_steps,
-            #[strong] target,
+            #[strong] running, #[strong] steps,
+            #[strong] msg_row, #[strong] tag_row, #[strong] branch_entry,
+            #[strong] error_view, #[strong] error_box, #[strong] status_page,
+            #[strong] run_btn, #[strong] back_btn, #[strong] progress,
+            #[strong] done_steps, #[strong] target,
             move |_| {
                 if *running.borrow() { return; }
                 *running.borrow_mut() = true;
                 *done_steps.borrow_mut() = 0;
 
-                for (_, step) in steps.iter() { step.reset(); }
+                for (_, s) in steps.iter() { s.reset(); }
                 error_view.buffer().set_text("");
                 error_box.set_visible(false);
                 status_page.set_visible(false);
@@ -679,29 +648,24 @@ impl UnifiedPushWindow {
 
                 let msg_text    = msg_row.text().to_string();
                 let tag_text    = tag_row.text().to_string();
-                // Read the chosen branch (Git mode) or empty string (AUR mode)
                 let branch_text = branch_entry.text().to_string();
                 let path        = target.clone();
                 let tx          = sender.clone();
 
-                thread::spawn(move || {
-                    match mode {
-                        RepoMode::Aur => run_aur_worker(
-                            &path,
-                            if msg_text.is_empty() { None } else { Some(msg_text) },
-                            if with_tag && !tag_text.is_empty() { Some(tag_text) } else { None },
-                            tx,
-                        ),
-                        RepoMode::Git => run_git_worker(
-                            &path,
-                            if msg_text.is_empty() { None } else { Some(msg_text) },
-                            if with_tag && !tag_text.is_empty() { Some(tag_text) } else { None },
-                            // Use what's in the entry; fall back to HEAD branch
-                            if branch_text.is_empty() { None } else { Some(branch_text) },
-                            tx,
-                        ),
-                        RepoMode::Unknown => unreachable!(),
-                    }
+                thread::spawn(move || match mode {
+                    RepoMode::Aur => run_aur_worker(
+                        &path,
+                        if msg_text.is_empty() { None } else { Some(msg_text) },
+                        if with_tag && !tag_text.is_empty() { Some(tag_text) } else { None },
+                        tx,
+                    ),
+                    _ => run_git_worker(
+                        &path,
+                        if msg_text.is_empty() { None } else { Some(msg_text) },
+                        if with_tag && !tag_text.is_empty() { Some(tag_text) } else { None },
+                        if branch_text.is_empty() { None } else { Some(branch_text) },
+                        tx,
+                    ),
                 });
             }
         ));
@@ -709,15 +673,9 @@ impl UnifiedPushWindow {
         // Message loop
         let done_label_owned = done_label.to_string();
         glib::spawn_future_local(clone!(
-            #[strong] running,
-            #[strong] steps,
-            #[strong] error_view,
-            #[strong] error_box,
-            #[strong] status_page,
-            #[strong] run_btn,
-            #[strong] back_btn,
-            #[strong] progress,
-            #[strong] done_steps,
+            #[strong] running, #[strong] steps,
+            #[strong] error_view, #[strong] error_box, #[strong] status_page,
+            #[strong] run_btn, #[strong] back_btn, #[strong] progress, #[strong] done_steps,
             async move {
                 while let Ok(msg) = receiver.recv().await {
                     match msg {
@@ -773,7 +731,7 @@ impl UnifiedPushWindow {
     }
 }
 
-// ── Helper: current branch ────────────────────────────────────────────────────
+// ── detect_branch ─────────────────────────────────────────────────────────────
 
 fn detect_branch(path: &str) -> String {
     Command::new("git")
@@ -786,7 +744,7 @@ fn detect_branch(path: &str) -> String {
         .unwrap_or_else(|| "main".to_string())
 }
 
-// ── Helper: list all local branches ──────────────────────────────────────────
+// ── list_branches ─────────────────────────────────────────────────────────────
 
 fn list_branches(path: &str) -> Vec<String> {
     Command::new("git")
@@ -794,17 +752,43 @@ fn list_branches(path: &str) -> Vec<String> {
         .current_dir(path)
         .output().ok()
         .and_then(|o| String::from_utf8(o.stdout).ok())
-        .map(|s| {
+        .map(|s| s.lines().map(str::trim).filter(|l| !l.is_empty()).map(str::to_string).collect())
+        .unwrap_or_default()
+}
+
+// ── detect_remote ─────────────────────────────────────────────────────────────
+/// Returns the URL of the `origin` remote (or the first remote found).
+
+fn detect_remote(path: &str) -> String {
+    // Try `git remote get-url origin` first
+    let origin = Command::new("git")
+        .args(["remote", "get-url", "origin"])
+        .current_dir(path)
+        .output().ok()
+        .and_then(|o| String::from_utf8(o.stdout).ok())
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty());
+
+    if let Some(url) = origin {
+        return url;
+    }
+
+    // Fallback: first remote listed by `git remote -v`
+    Command::new("git")
+        .args(["remote", "-v"])
+        .current_dir(path)
+        .output().ok()
+        .and_then(|o| String::from_utf8(o.stdout).ok())
+        .and_then(|s| {
             s.lines()
-                .map(str::trim)
-                .filter(|l| !l.is_empty())
+                .next()
+                .and_then(|l| l.split_whitespace().nth(1))
                 .map(str::to_string)
-                .collect()
         })
         .unwrap_or_default()
 }
 
-// ── AUR push worker ───────────────────────────────────────────────────────────
+// ── run_aur_worker ────────────────────────────────────────────────────────────
 
 fn run_aur_worker(
     target: &str,
@@ -820,10 +804,9 @@ fn run_aur_worker(
     let mut cmd = Command::new("pkgbuild_manager");
     cmd.arg(if tag.is_some() { "aur-push-tag" } else { "aur-push" });
     cmd.arg(target);
-    if let Some(ref t) = tag { cmd.arg(t); }
+    if let Some(ref t) = tag      { cmd.arg(t); }
     else if let Some(ref m) = message { cmd.arg(m); }
-    cmd.stdout(Stdio::piped());
-    cmd.stderr(Stdio::piped());
+    cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
 
     let mut child = match cmd.spawn() {
         Ok(c) => c,
@@ -849,31 +832,20 @@ fn run_aur_worker(
     let _ = tx.send_blocking(Msg::Done(success));
 }
 
-// ── Git push worker ───────────────────────────────────────────────────────────
+// ── run_git_worker ────────────────────────────────────────────────────────────
+/// Shared worker for GitHub, GitLab, Codeberg and Generic Git remotes.
 
 fn run_git_worker(
     target: &str,
     message: Option<String>,
     tag: Option<String>,
-    branch: Option<String>,   // <── chosen by the user in the Branch EntryRow
+    branch: Option<String>,
     tx: async_channel::Sender<Msg>,
 ) {
     macro_rules! step {
-        (start $key:expr) => {
-            let _ = tx.send_blocking(Msg::Step {
-                key: $key.to_string(), state: StepState::Start, detail: String::new(),
-            });
-        };
-        (ok $key:expr) => {
-            let _ = tx.send_blocking(Msg::Step {
-                key: $key.to_string(), state: StepState::Ok, detail: String::new(),
-            });
-        };
-        (err $key:expr, $detail:expr) => {
-            let _ = tx.send_blocking(Msg::Step {
-                key: $key.to_string(), state: StepState::Error, detail: $detail.to_string(),
-            });
-        };
+        (start $k:expr) => { let _ = tx.send_blocking(Msg::Step { key: $k.to_string(), state: StepState::Start, detail: String::new() }); };
+        (ok    $k:expr) => { let _ = tx.send_blocking(Msg::Step { key: $k.to_string(), state: StepState::Ok,    detail: String::new() }); };
+        (err   $k:expr, $d:expr) => { let _ = tx.send_blocking(Msg::Step { key: $k.to_string(), state: StepState::Error, detail: $d.to_string() }); };
     }
 
     fn git_run(target: &str, args: &[&str], tx: &async_channel::Sender<Msg>) -> bool {
@@ -898,7 +870,6 @@ fn run_git_worker(
         child.wait().map(|s| s.success()).unwrap_or(false)
     }
 
-    // Resolve the branch name we'll push to
     let target_branch = branch.unwrap_or_else(|| detect_branch(target));
 
     // 1. git status
@@ -910,8 +881,7 @@ fn run_git_worker(
     step!(start "git-add");
     if !git_run(target, &["add", "."], &tx) {
         step!(err "git-add", "git add failed");
-        let _ = tx.send_blocking(Msg::Done(false));
-        return;
+        let _ = tx.send_blocking(Msg::Done(false)); return;
     }
     step!(ok "git-add");
 
@@ -920,8 +890,7 @@ fn run_git_worker(
     step!(start "git-commit");
     if !git_run(target, &["commit", "-m", commit_msg], &tx) {
         step!(err "git-commit", "git commit failed (nothing to commit?)");
-        let _ = tx.send_blocking(Msg::Done(false));
-        return;
+        let _ = tx.send_blocking(Msg::Done(false)); return;
     }
     step!(ok "git-commit");
 
@@ -929,12 +898,11 @@ fn run_git_worker(
     step!(start "git-push");
     if !git_run(target, &["push", "origin", &target_branch], &tx) {
         step!(err "git-push", format!("git push origin {} failed", target_branch).as_str());
-        let _ = tx.send_blocking(Msg::Done(false));
-        return;
+        let _ = tx.send_blocking(Msg::Done(false)); return;
     }
     step!(ok "git-push");
 
-    // 5. Optional tag
+    // 5. Optional annotated tag
     if let Some(ref ver) = tag {
         let tag_name = if ver.starts_with('v') { ver.clone() } else { format!("v{ver}") };
         let tag_msg  = format!("Version {ver}");
@@ -942,16 +910,14 @@ fn run_git_worker(
         step!(start "git-tag");
         if !git_run(target, &["tag", "-a", &tag_name, "-m", &tag_msg], &tx) {
             step!(err "git-tag", "git tag failed");
-            let _ = tx.send_blocking(Msg::Done(false));
-            return;
+            let _ = tx.send_blocking(Msg::Done(false)); return;
         }
         step!(ok "git-tag");
 
         step!(start "git-push-tags");
         if !git_run(target, &["push", "--tags"], &tx) {
             step!(err "git-push-tags", "git push --tags failed");
-            let _ = tx.send_blocking(Msg::Done(false));
-            return;
+            let _ = tx.send_blocking(Msg::Done(false)); return;
         }
         step!(ok "git-push-tags");
     }
@@ -959,7 +925,7 @@ fn run_git_worker(
     let _ = tx.send_blocking(Msg::Done(true));
 }
 
-// ── [STEP] protocol parser (AUR worker) ──────────────────────────────────────
+// ── [STEP] protocol parser (AUR worker stdout) ────────────────────────────────
 
 fn parse_and_send(line: &str, tx: &async_channel::Sender<Msg>) {
     if let Some(rest) = line.strip_prefix("[STEP] ") {
