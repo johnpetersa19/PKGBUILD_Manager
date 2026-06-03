@@ -15,16 +15,27 @@ _ = gettext.gettext
 
 CONFIG_FILE = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "pkgbuild-manager" / "menu.json"
 
+# Mantém paridade com all_actions() em src/settings_gui/config.rs
 DEFAULT_ACTIONS = [
     ("00_Full Workflow",     "00_Full Workflow"),
     ("01_Build",             "01_Build"),
     ("02b_Build and Clean",  "02b_Build and Clean"),
+    ("08_Build Force",       "08_Build Force"),
+    ("09_Build NoCheck",     "09_Build NoCheck"),
+    ("10_Build NoGPG",       "10_Build NoGPG"),
+    ("11_Fetch Sources",     "11_Fetch Sources"),
     ("02_Install",           "02_Install"),
+    ("12_Install Force",     "12_Install Force"),
+    ("13_Install RmDeps",    "13_Install RmDeps"),
+    ("14_Install NoCheck",   "14_Install NoCheck"),
+    ("15_Install NoGPG",     "15_Install NoGPG"),
     ("03_Update Checksums",  "03_Update Checksums"),
     ("04_Update .SRCINFO",   "04_Update .SRCINFO"),
+    ("16_Gen Checksums",     "16_Gen Checksums"),
     ("05_Namcap",            "05_Namcap"),
     ("05b_ShellCheck",       "05b_ShellCheck"),
     ("06_Push AUR",          "06_Push AUR"),
+    ("17_Push AUR Tag",      "17_Push AUR Tag"),
     ("07_Clean srcdir",      "07_Clean srcdir"),
     ("07b_Clean Everything", "07b_Clean Everything"),
 ]
