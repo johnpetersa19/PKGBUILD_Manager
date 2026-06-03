@@ -116,7 +116,9 @@ fn build_window(app: &Application) {
             let data = menu_data.borrow().clone();
             match config::save(&data) {
                 Ok(()) => {
-                    notify_file_managers();
+                    // Bug #6 fix: run notify_file_managers on a background thread so
+                    // the GTK main thread is never blocked by process-spawn + sleep.
+                    thread::spawn(notify_file_managers);
                     toast_overlay.add_toast(
                         Toast::builder().title("Saved! Restarting file manager…").build(),
                     );
@@ -285,45 +287,21 @@ fn build_group_widget(
 fn build_item_row(
     g_idx: usize,
     i_idx: usize,
-    total: usize,
+    n_items: usize,
     menu_data: &Rc<RefCell<Vec<MenuGroup>>>,
     main_box: &GBox,
     win: &ApplicationWindow,
-) -> GBox {
-    let row = GBox::builder()
-        .orientation(Orientation::Horizontal).spacing(8)
-        .margin_top(2).margin_bottom(2)
+) -> ListBoxRow {
+    let row = ListBoxRow::new();
+    row.set_selectable(false);
+
+    let hbox = GBox::builder()
+        .orientation(Orientation::Horizontal)
+        .spacing(6)
+        .margin_top(4).margin_bottom(4)
         .margin_start(4).margin_end(4)
         .build();
-
-    let enabled = menu_data.borrow()[g_idx].items[i_idx].enabled;
-    let toggle = Switch::builder().valign(Align::Center).active(enabled).build();
-    toggle.connect_state_set(clone!(
-        #[strong] menu_data,
-        move |_, state| {
-            if let Ok(mut data) = menu_data.try_borrow_mut() {
-                if g_idx < data.len() && i_idx < data[g_idx].items.len() {
-                    data[g_idx].items[i_idx].enabled = state;
-                }
-            }
-            glib::Propagation::Proceed
-        }
-    ));
-
-    let label_text = menu_data.borrow()[g_idx].items[i_idx].label.clone();
-    let label_entry = gtk::Entry::new();
-    label_entry.set_text(&label_text);
-    label_entry.set_hexpand(true);
-    label_entry.connect_changed(clone!(
-        #[strong] menu_data,
-        move |e| {
-            if let Ok(mut data) = menu_data.try_borrow_mut() {
-                if g_idx < data.len() && i_idx < data[g_idx].items.len() {
-                    data[g_idx].items[i_idx].label = e.text().to_string();
-                }
-            }
-        }
-    ));
+    row.set_child(Some(&hbox));
 
     let up_btn = Button::builder().icon_name("go-up-symbolic").build();
     up_btn.add_css_class("flat");
@@ -341,7 +319,7 @@ fn build_item_row(
 
     let down_btn = Button::builder().icon_name("go-down-symbolic").build();
     down_btn.add_css_class("flat");
-    down_btn.set_sensitive(i_idx < total - 1);
+    down_btn.set_sensitive(i_idx < n_items - 1);
     down_btn.connect_clicked(clone!(
         #[strong] menu_data, #[strong] main_box, #[strong] win,
         move |_| {
@@ -353,25 +331,57 @@ fn build_item_row(
         }
     ));
 
-    let del_btn = Button::builder().icon_name("list-remove-symbolic").build();
+    let label_text = menu_data.borrow()[g_idx].items[i_idx].label.clone();
+    let id_text    = menu_data.borrow()[g_idx].items[i_idx].id.clone();
+
+    let lbl = Label::builder()
+        .label(&label_text)
+        .hexpand(true)
+        .halign(Align::Start)
+        .ellipsize(pango::EllipsizeMode::End)
+        .build();
+
+    let id_lbl = Label::builder()
+        .label(&id_text)
+        .halign(Align::End)
+        .build();
+    id_lbl.add_css_class("dim-label");
+    id_lbl.add_css_class("caption");
+
+    let enabled = menu_data.borrow()[g_idx].items[i_idx].enabled;
+    let sw = Switch::builder().active(enabled).valign(Align::Center).build();
+    sw.connect_state_set(clone!(
+        #[strong] menu_data,
+        move |_, state| {
+            if let Ok(mut data) = menu_data.try_borrow_mut() {
+                if g_idx < data.len() && i_idx < data[g_idx].items.len() {
+                    data[g_idx].items[i_idx].enabled = state;
+                }
+            }
+            glib::Propagation::Proceed
+        }
+    ));
+
+    let del_btn = Button::builder().icon_name("user-trash-symbolic").build();
     del_btn.add_css_class("flat");
+    del_btn.add_css_class("error");
     del_btn.connect_clicked(clone!(
         #[strong] menu_data, #[strong] main_box, #[strong] win,
         move |_| {
-            if g_idx < menu_data.borrow().len()
-                && i_idx < menu_data.borrow()[g_idx].items.len()
-            {
+            let len = menu_data.borrow()[g_idx].items.len();
+            if i_idx < len {
                 menu_data.borrow_mut()[g_idx].items.remove(i_idx);
                 render_groups(&main_box, &menu_data, &win);
             }
         }
     ));
 
-    row.append(&toggle);
-    row.append(&label_entry);
-    row.append(&up_btn);
-    row.append(&down_btn);
-    row.append(&del_btn);
+    hbox.append(&up_btn);
+    hbox.append(&down_btn);
+    hbox.append(&lbl);
+    hbox.append(&id_lbl);
+    hbox.append(&sw);
+    hbox.append(&del_btn);
     row
 }
 
@@ -383,92 +393,91 @@ fn show_add_item_dialog(
     main_box: &GBox,
     win: &ApplicationWindow,
 ) {
-    let dialog = adw::Dialog::builder()
-        .title("Add Action")
-        .content_width(360)
-        .content_height(480)
+    use adw::prelude::*;
+
+    let dialog = adw::AlertDialog::builder()
+        .heading("Add Menu Item")
+        .body("Choose an action to add to this group.")
         .build();
 
-    let toolbar = adw::ToolbarView::new();
-    toolbar.add_top_bar(&HeaderBar::new());
+    dialog.add_response("cancel", "Cancel");
+    dialog.add_response("add",    "Add");
+    dialog.set_response_appearance("add", adw::ResponseAppearance::Suggested);
+    dialog.set_default_response(Some("add"));
+    dialog.set_close_response("cancel");
 
-    let scroll = ScrolledWindow::builder()
-        .hscrollbar_policy(gtk::PolicyType::Never)
-        .vscrollbar_policy(gtk::PolicyType::Automatic)
-        .vexpand(true)
-        .build();
-
-    let list_box = ListBox::builder()
+    let list = ListBox::builder()
         .selection_mode(SelectionMode::Single)
-        .margin_top(12).margin_bottom(12)
-        .margin_start(12).margin_end(12)
         .build();
-    list_box.add_css_class("boxed-list");
+    list.add_css_class("boxed-list");
 
-    for (id, label) in config::all_actions() {
-        let lbl = Label::builder()
-            .label(label)
-            .xalign(0.0)
-            .margin_top(8).margin_bottom(8).margin_start(8)
-            .ellipsize(pango::EllipsizeMode::End)
-            .build();
-        let row = ListBoxRow::new();
-        row.set_child(Some(&lbl));
-        row.set_widget_name(id);
-        list_box.append(&row);
+    let all = config::all_actions();
+    for (id, label) in &all {
+        let r = adw::ActionRow::builder().title(*label).subtitle(*id).build();
+        list.append(&r);
     }
 
-    list_box.connect_row_activated(clone!(
-        #[strong] menu_data,
-        #[strong] main_box,
-        #[strong] win,
-        #[strong] dialog,
-        move |_, row| {
-            let id = row.widget_name().to_string();
-            let label = config::all_actions()
-                .into_iter()
-                .find(|(aid, _)| *aid == id)
-                .map(|(_, l)| l.to_string())
-                .unwrap_or_else(|| id.clone());
+    let scroll = ScrolledWindow::builder()
+        .child(&list)
+        .min_content_height(200)
+        .max_content_height(400)
+        .build();
 
-            if g_idx < menu_data.borrow().len() {
-                menu_data.borrow_mut()[g_idx].items.push(MenuItem {
-                    id,
-                    label,
-                    enabled: true,
-                });
+    dialog.set_extra_child(Some(&scroll));
+
+    dialog.connect_response(
+        None,
+        clone!(
+            #[strong] menu_data,
+            #[strong] main_box,
+            #[strong] win,
+            #[strong] list,
+            move |_, response| {
+                if response != "add" {
+                    return;
+                }
+                if let Some(row) = list.selected_row() {
+                    let idx = row.index() as usize;
+                    if let Some(&(id, label)) = all.get(idx) {
+                        menu_data.borrow_mut()[g_idx].items.push(MenuItem {
+                            id: id.into(),
+                            label: label.into(),
+                            enabled: true,
+                        });
+                        render_groups(&main_box, &menu_data, &win);
+                    }
+                }
             }
-            dialog.close();
-            render_groups(&main_box, &menu_data, &win);
-        }
-    ));
+        ),
+    );
 
-    scroll.set_child(Some(&list_box));
-    toolbar.set_content(Some(&scroll));
-    dialog.set_child(Some(&toolbar));
     dialog.present(Some(win));
 }
 
-// ── Notify file managers ──────────────────────────────────────────────────────
+// ── Notify file managers (spawned on background thread — Bug #6 fix) ──────────
 
 fn notify_file_managers() {
-    thread::spawn(|| {
-        if let Ok(status) = Command::new("nautilus")
-            .args(["-q"])
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .status()
-        {
-            if status.success() {
-                thread::sleep(Duration::from_millis(800));
-                let _ = Command::new("nautilus")
-                    .stdout(Stdio::null()).stderr(Stdio::null())
-                    .spawn();
-            }
-        }
-        let regen = "/usr/share/pkgbuild-manager/regen-dolphin-desktop";
-        if std::path::Path::new(regen).is_file() {
-            let _ = Command::new(regen).spawn();
-        }
-    });
+    // Nautilus
+    let _ = Command::new("nautilus")
+        .arg("-q")
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status();
+    thread::sleep(Duration::from_millis(600));
+    let _ = Command::new("nautilus")
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn();
+
+    // Nemo
+    let _ = Command::new("nemo")
+        .arg("--quit")
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status();
+    thread::sleep(Duration::from_millis(400));
+    let _ = Command::new("nemo")
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn();
 }
