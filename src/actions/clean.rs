@@ -23,11 +23,21 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
             }
         }
 
-        // Remove built package files using shared helper
+        // Remove built package files — only those matching the current PKGBUILD pkgname.
+        // FIX: filter by pkgname so we never delete packages built from other PKGBUILDs
+        //      that happen to live in the same directory (e.g. workspace setups).
+        let pkgname_filter = read_pkgname(&target_dir);
         for pkg in collect_pkg_files(&target_dir) {
-            let p = target_dir.join(&pkg);
-            std::fs::remove_file(&p)?;
-            println!("  {} {:?}", gettextrs::gettext("Removed"), p);
+            // If we couldn't read pkgname, fall back to removing all pkg.tar.* files
+            // (same behaviour as before the fix, safe for single-PKGBUILD directories).
+            let matches = pkgname_filter
+                .as_deref()
+                .map_or(true, |n| pkg.starts_with(n));
+            if matches {
+                let p = target_dir.join(&pkg);
+                std::fs::remove_file(&p)?;
+                println!("  {} {:?}", gettextrs::gettext("Removed"), p);
+            }
         }
 
         // Single directory traversal: removes bare git repo cache dirs and _build* dirs.
@@ -50,24 +60,40 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
                         std::fs::remove_dir_all(&p)?;
                         println!(
                             "  {} {:?}",
-                            gettextrs::gettext("Removed bare repo cache"),
+                            gettextrs::gettext("Removed bare-repo cache"),
                             p
                         );
                     } else if name.starts_with("_build") {
                         std::fs::remove_dir_all(&p)?;
                         println!(
                             "  {} {:?}",
-                            gettextrs::gettext("Removed build dir"),
+                            gettextrs::gettext("Removed build directory"),
                             p
                         );
                     }
                 }
             }
         }
-
-        Ok(())
     } else {
-        // Soft clean via makepkg -c (removes srcdir only)
-        run_command("makepkg", &["-c"], &target_dir)
+        run_command("makepkg", &["-c"], &target_dir)?;
     }
+
+    Ok(())
+}
+
+/// Read `pkgname` from the PKGBUILD in `dir` using a simple line scan.
+/// Returns None if the file cannot be read or no `pkgname=` line is found.
+fn read_pkgname(dir: &std::path::Path) -> Option<String> {
+    let text = std::fs::read_to_string(dir.join("PKGBUILD")).ok()?;
+    for line in text.lines() {
+        let line = line.trim();
+        if let Some(val) = line.strip_prefix("pkgname=") {
+            // Strip surrounding quotes if present
+            let val = val.trim_matches(|c| c == '\'' || c == '"');
+            if !val.is_empty() {
+                return Some(val.to_string());
+            }
+        }
+    }
+    None
 }
