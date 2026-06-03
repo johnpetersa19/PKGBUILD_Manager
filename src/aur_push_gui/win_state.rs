@@ -11,6 +11,7 @@
 
 use std::path::PathBuf;
 
+#[allow(dead_code)]
 pub fn state_path() -> PathBuf {
     let base = std::env::var("XDG_CONFIG_HOME")
         .map(PathBuf::from)
@@ -22,6 +23,7 @@ pub fn state_path() -> PathBuf {
     base.join("pkgbuild-manager").join("window-state.json")
 }
 
+#[allow(dead_code)]
 pub fn load(key: &str, default_w: i32, default_h: i32) -> (i32, i32) {
     (|| -> Option<(i32, i32)> {
         let text = std::fs::read_to_string(state_path()).ok()?;
@@ -32,6 +34,7 @@ pub fn load(key: &str, default_w: i32, default_h: i32) -> (i32, i32) {
     .unwrap_or((default_w, default_h))
 }
 
+#[allow(dead_code)]
 pub fn save(key: &str, width: i32, height: i32) {
     let path = state_path();
     let mut obj: serde_json::Map<String, serde_json::Value> = (|| -> Option<_> {

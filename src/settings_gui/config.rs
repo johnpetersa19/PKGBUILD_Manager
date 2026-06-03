@@ -115,6 +115,7 @@ pub struct LoadResult {
     pub groups: Vec<MenuGroup>,
     /// IDs that were present in menu.json but are not in all_actions().
     /// Non-empty only when the file was written by a future/different version.
+    #[allow(dead_code)]
     pub unknown_ids: Vec<String>,
 }
 
