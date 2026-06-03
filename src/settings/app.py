@@ -23,10 +23,9 @@ CONFIG_FILE = CONFIG_DIR / "menu.json"
 STATE_FILE  = CONFIG_DIR / "window-state.json"
 
 
-# ── Window geometry persistence ───────────────────────────────────────────────
+# ── Window size persistence ─────────────────────────────────────────────────
 
 def _load_win_state(key: str, defaults: dict) -> dict:
-    """Load saved geometry for *key* from STATE_FILE, falling back to *defaults*."""
     try:
         data = json.loads(STATE_FILE.read_text())
         state = data.get(key, {})
@@ -39,7 +38,6 @@ def _load_win_state(key: str, defaults: dict) -> dict:
 
 
 def _save_win_state(key: str, width: int, height: int) -> None:
-    """Persist geometry for *key* into STATE_FILE."""
     try:
         CONFIG_DIR.mkdir(parents=True, exist_ok=True)
         try:
@@ -52,17 +50,22 @@ def _save_win_state(key: str, width: int, height: int) -> None:
         pass
 
 
-def _connect_geometry_save(win: Adw.ApplicationWindow, key: str) -> None:
-    """Connect the close-request signal so geometry is saved when the window closes."""
+def _connect_size_save(win: Adw.ApplicationWindow, key: str) -> None:
+    """Save the ACTUAL rendered size (get_width/get_height) when the window closes."""
     def on_close(w):
-        w_size = w.get_default_size()
-        _save_win_state(key, w_size.width, w_size.height)
-        return False  # don't block the close
+        # get_width() / get_height() return the real size after the user resizes.
+        # get_default_size() would return the value we passed to set_default_size(),
+        # which does NOT update when the user drags the window edge.
+        w_px = w.get_width()
+        h_px = w.get_height()
+        if w_px > 0 and h_px > 0:
+            _save_win_state(key, w_px, h_px)
+        return False  # do not block the close
 
     win.connect("close-request", on_close)
 
 
-# ── Menu defaults ─────────────────────────────────────────────────────────────
+# ── Menu defaults ──────────────────────────────────────────────────────────
 
 def _default_menu():
     return [
@@ -266,12 +269,12 @@ class SettingsApp(Adw.Application):
         self.win = Adw.ApplicationWindow(application=self)
         self.win.set_title(_("PKGBUILD Manager \u2014 Menu Settings"))
 
-        # Restore saved size, default 700×600
+        # Restore the last size the user left the window at (default 700×600)
         state = _load_win_state("settings", {"width": 700, "height": 600})
         self.win.set_default_size(state["width"], state["height"])
 
-        # Save size on close
-        _connect_geometry_save(self.win, "settings")
+        # Save ACTUAL size (post-resize) when user closes the window
+        _connect_size_save(self.win, "settings")
 
         self.win.connect("destroy", self._on_window_destroy)
 

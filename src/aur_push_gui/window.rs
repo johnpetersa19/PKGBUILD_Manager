@@ -17,9 +17,8 @@ use std::process::{Command, Stdio};
 use std::rc::Rc;
 use std::thread;
 
-// ── Window-state persistence ───────────────────────────────────────────────────────
+// ── Window size persistence ─────────────────────────────────────────────────────
 
-/// Path to `~/.config/pkgbuild-manager/window-state.json`
 fn state_path() -> PathBuf {
     let base = std::env::var("XDG_CONFIG_HOME")
         .map(PathBuf::from)
@@ -31,7 +30,6 @@ fn state_path() -> PathBuf {
     base.join("pkgbuild-manager").join("window-state.json")
 }
 
-/// Load saved (width, height) for `key`; fall back to `(default_w, default_h)`.
 fn load_win_size(key: &str, default_w: i32, default_h: i32) -> (i32, i32) {
     (|| -> Option<(i32, i32)> {
         let text = std::fs::read_to_string(state_path()).ok()?;
@@ -44,7 +42,6 @@ fn load_win_size(key: &str, default_w: i32, default_h: i32) -> (i32, i32) {
     .unwrap_or((default_w, default_h))
 }
 
-/// Save (width, height) for `key` into the shared state file.
 fn save_win_size(key: &str, width: i32, height: i32) {
     let path = state_path();
     let mut obj: serde_json::Map<String, serde_json::Value> = (|| -> Option<_> {
@@ -228,7 +225,7 @@ impl AurPushWindow {
             gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
         );
 
-        // Restore saved window size
+        // Restore the last size the user left the window at (default 540×580)
         let (saved_w, saved_h) = load_win_size("aur-push", 540, 580);
 
         let win = ApplicationWindow::builder()
@@ -238,10 +235,15 @@ impl AurPushWindow {
             .default_height(saved_h)
             .build();
 
-        // Save size when the window is closed
+        // Save the ACTUAL rendered size when the user closes the window.
+        // width() / height() reflect the real size after any user resize;
+        // default_size() would only return what we passed to set_default_size().
         win.connect_close_request(|w| {
-            let (cw, ch) = w.default_size();
-            save_win_size("aur-push", cw, ch);
+            let cw = w.width();
+            let ch = w.height();
+            if cw > 0 && ch > 0 {
+                save_win_size("aur-push", cw, ch);
+            }
             glib::Propagation::Proceed
         });
 
