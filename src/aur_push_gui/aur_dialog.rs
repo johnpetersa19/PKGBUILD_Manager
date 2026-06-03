@@ -6,9 +6,9 @@
 use adw::prelude::*;
 use adw::{ApplicationWindow, HeaderBar, StatusPage};
 use gtk::{
-    glib, glib::clone, Align, Box as GBox, Button, CssProvider,
-    Label, Orientation, PolicyType, ProgressBar, ScrolledWindow, Spinner,
-    TextView, WrapMode,
+    glib, glib::clone, Align, Box as GBox, Button, CssProvider, Label,
+    Orientation, PolicyType, ProgressBar, ScrolledWindow, Spinner, Stack,
+    StackTransitionType, TextView, WrapMode,
 };
 use std::cell::RefCell;
 use std::io::{BufRead, BufReader};
@@ -16,8 +16,6 @@ use std::path::PathBuf;
 use std::process::{Command, Stdio};
 use std::rc::Rc;
 use std::thread;
-
-// ── Window size persistence ─────────────────────────────────────────────────────
 
 fn state_path() -> PathBuf {
     let base = std::env::var("XDG_CONFIG_HOME")
@@ -61,8 +59,6 @@ fn save_win_size(key: &str, width: i32, height: i32) {
     }
     let _ = std::fs::write(&path, serde_json::to_string_pretty(&obj).unwrap_or_default());
 }
-
-// ── CSS ─────────────────────────────────────────────────────────────────
 
 const CSS: &str = "
 .step-running {
@@ -113,9 +109,13 @@ const CSS: &str = "
     margin-top: 0;
     margin-bottom: 0;
 }
+.stage-caption {
+    color: alpha(@window_fg_color, 0.65);
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
 ";
-
-// ── Step descriptor ──────────────────────────────────────────────────────────
 
 #[derive(Clone)]
 struct StepRow {
@@ -204,8 +204,6 @@ impl StepRow {
     }
 }
 
-// ── Channel messages ──────────────────────────────────────────────────────────
-
 #[derive(Debug)]
 enum Msg {
     Step { key: String, state: StepState, detail: String },
@@ -219,8 +217,6 @@ enum StepState {
     Ok,
     Error,
 }
-
-// ── Window ───────────────────────────────────────────────────────────────────
 
 pub struct AurPushWindow;
 
@@ -282,20 +278,22 @@ impl AurPushWindow {
         }));
         root.append(&header);
 
-        let progress = ProgressBar::builder()
-            .fraction(0.0)
-            .visible(false)
-            .css_classes(vec!["progress-bar-box".to_string()])
+        let stack = Stack::builder()
+            .transition_type(StackTransitionType::SlideLeftRight)
+            .transition_duration(220)
+            .vexpand(true)
+            .hexpand(true)
             .build();
-        root.append(&progress);
+        root.append(&stack);
 
-        let scroll = ScrolledWindow::builder()
+        // ── PAGE 1: Form ──────────────────────────────────────────────────────────
+        let form_scroll = ScrolledWindow::builder()
             .hscrollbar_policy(PolicyType::Never)
             .vscrollbar_policy(PolicyType::Automatic)
             .vexpand(true)
             .build();
 
-        let content = GBox::builder()
+        let form_content = GBox::builder()
             .orientation(Orientation::Vertical)
             .spacing(14)
             .margin_top(16)
@@ -303,11 +301,15 @@ impl AurPushWindow {
             .margin_start(14)
             .margin_end(14)
             .build();
+        form_scroll.set_child(Some(&form_content));
 
-        scroll.set_child(Some(&content));
-        root.append(&scroll);
+        let form_caption = Label::builder()
+            .label("Step 1 of 2 — Review commit information")
+            .halign(Align::Start)
+            .css_classes(vec!["stage-caption".to_string()])
+            .build();
+        form_content.append(&form_caption);
 
-        // ── SECTION 1: Commit ────────────────────────────────────────────────────────
         let fields_group = adw::PreferencesGroup::builder().title("Commit").build();
 
         let msg_row = adw::EntryRow::builder()
@@ -322,10 +324,55 @@ impl AurPushWindow {
             .build();
         tag_row.set_visible(with_tag);
         fields_group.add(&tag_row);
+        form_content.append(&fields_group);
 
-        content.append(&fields_group);
+        let form_btn_box = GBox::builder()
+            .orientation(Orientation::Horizontal)
+            .halign(Align::End)
+            .margin_top(4)
+            .spacing(8)
+            .build();
 
-        // ── SECTION 2: Steps ────────────────────────────────────────────────────────
+        let push_btn = Button::builder()
+            .label(if with_tag { "Continue to Push" } else { "Continue to Push" })
+            .css_classes(vec!["suggested-action".to_string(), "pill".to_string()])
+            .build();
+        form_btn_box.append(&push_btn);
+        form_content.append(&form_btn_box);
+
+        stack.add_titled(&form_scroll, Some("form"), "Form");
+
+        // ── PAGE 2: Progress ──────────────────────────────────────────────────────
+        let progress_scroll = ScrolledWindow::builder()
+            .hscrollbar_policy(PolicyType::Never)
+            .vscrollbar_policy(PolicyType::Automatic)
+            .vexpand(true)
+            .build();
+
+        let progress_content = GBox::builder()
+            .orientation(Orientation::Vertical)
+            .spacing(14)
+            .margin_top(16)
+            .margin_bottom(16)
+            .margin_start(14)
+            .margin_end(14)
+            .build();
+        progress_scroll.set_child(Some(&progress_content));
+
+        let progress_caption = Label::builder()
+            .label("Step 2 of 2 — Sending changes to AUR")
+            .halign(Align::Start)
+            .css_classes(vec!["stage-caption".to_string()])
+            .build();
+        progress_content.append(&progress_caption);
+
+        let progress = ProgressBar::builder()
+            .fraction(0.0)
+            .visible(true)
+            .css_classes(vec!["progress-bar-box".to_string()])
+            .build();
+        progress_content.append(&progress);
+
         let steps_group = adw::PreferencesGroup::builder().title("Steps").build();
 
         let step_srcinfo  = StepRow::new("Regen .SRCINFO");
@@ -345,9 +392,8 @@ impl AurPushWindow {
             steps_group.add(&step_tag.row);
             steps_group.add(&step_pushtags.row);
         }
-        content.append(&steps_group);
+        progress_content.append(&steps_group);
 
-        // ── SECTION 3: Error box ───────────────────────────────────────────────────────
         let error_box = GBox::builder()
             .orientation(Orientation::Vertical)
             .spacing(6)
@@ -383,55 +429,74 @@ impl AurPushWindow {
         error_scroll.set_child(Some(&error_view));
         error_box.append(&error_title);
         error_box.append(&error_scroll);
-        content.append(&error_box);
+        progress_content.append(&error_box);
 
-        // ── SECTION 4: Status page (success only) ────────────────────────────────
         let status_page = StatusPage::builder()
             .icon_name("object-select-symbolic")
             .title("")
             .visible(false)
             .build();
-        content.append(&status_page);
+        progress_content.append(&status_page);
 
-        // ── Bottom button ────────────────────────────────────────────────────────────
-        let btn_box = GBox::builder()
+        let progress_btn_box = GBox::builder()
             .orientation(Orientation::Horizontal)
             .halign(Align::End)
             .margin_top(4)
-            .margin_bottom(10)
-            .margin_end(14)
             .spacing(8)
             .build();
 
-        let push_btn = Button::builder()
+        let back_btn = Button::builder()
+            .label("Back")
+            .css_classes(vec!["pill".to_string()])
+            .build();
+
+        let run_btn = Button::builder()
             .label(if with_tag { "Push + Tag to AUR" } else { "Push to AUR" })
             .css_classes(vec!["suggested-action".to_string(), "pill".to_string()])
             .build();
 
-        btn_box.append(&push_btn);
-        root.append(&btn_box);
+        progress_btn_box.append(&back_btn);
+        progress_btn_box.append(&run_btn);
+        progress_content.append(&progress_btn_box);
 
-        win.set_content(Some(&root));
+        stack.add_titled(&progress_scroll, Some("progress"), "Progress");
+        stack.set_visible_child_name("form");
 
-        // ── Shared state ───────────────────────────────────────────────────────────
-        let running     = Rc::new(RefCell::new(false));
+        let running = Rc::new(RefCell::new(false));
         let total_steps: f64 = if with_tag { 7.0 } else { 5.0 };
-        let done_steps  = Rc::new(RefCell::new(0u32));
+        let done_steps = Rc::new(RefCell::new(0u32));
 
         let steps: Rc<Vec<(&'static str, StepRow)>> = Rc::new(vec![
             ("regen-srcinfo", step_srcinfo),
-            ("git-status",    step_status),
-            ("git-add",       step_add),
-            ("git-commit",    step_commit),
-            ("git-push",      step_push),
-            ("git-tag",       step_tag),
+            ("git-status", step_status),
+            ("git-add", step_add),
+            ("git-commit", step_commit),
+            ("git-push", step_push),
+            ("git-tag", step_tag),
             ("git-push-tags", step_pushtags),
         ]);
 
         let (sender, receiver) = async_channel::unbounded::<Msg>();
 
-        // ── Push button ─────────────────────────────────────────────────────────────
         push_btn.connect_clicked(clone!(
+            #[strong] stack,
+            move |_| {
+                stack.set_visible_child_name("progress");
+            }
+        ));
+
+        back_btn.connect_clicked(clone!(
+            #[strong] running,
+            #[strong] stack,
+            move |_| {
+                if *running.borrow() {
+                    return;
+                }
+                stack.set_visible_child_name("form");
+            }
+        ));
+
+        run_btn.connect_clicked(clone!(
             #[strong] running,
             #[strong] steps,
             #[strong] msg_row,
@@ -439,22 +504,27 @@ impl AurPushWindow {
             #[strong] error_view,
             #[strong] error_box,
             #[strong] status_page,
-            #[strong] push_btn,
+            #[strong] run_btn,
+            #[strong] back_btn,
             #[strong] progress,
             #[strong] done_steps,
             #[strong] target,
             move |_| {
-                if *running.borrow() { return; }
+                if *running.borrow() {
+                    return;
+                }
                 *running.borrow_mut() = true;
                 *done_steps.borrow_mut() = 0;
 
-                for (_, step) in steps.iter() { step.reset(); }
+                for (_, step) in steps.iter() {
+                    step.reset();
+                }
                 error_view.buffer().set_text("");
                 error_box.set_visible(false);
                 status_page.set_visible(false);
-                push_btn.set_sensitive(false);
+                run_btn.set_sensitive(false);
+                back_btn.set_sensitive(false);
                 progress.set_fraction(0.0);
-                progress.set_visible(true);
                 progress.pulse();
 
                 let msg_text = msg_row.text().to_string();
@@ -467,21 +537,25 @@ impl AurPushWindow {
                     run_push_worker(
                         &target_path,
                         if msg_text.is_empty() { None } else { Some(msg_text) },
-                        if with_tag_local && !tag_text.is_empty() { Some(tag_text) } else { None },
+                        if with_tag_local && !tag_text.is_empty() {
+                            Some(tag_text)
+                        } else {
+                            None
+                        },
                         tx,
                     );
                 });
             }
         ));
 
-        // ── Message receiver ───────────────────────────────────────────────────────
         glib::spawn_future_local(clone!(
             #[strong] running,
             #[strong] steps,
             #[strong] error_view,
             #[strong] error_box,
             #[strong] status_page,
-            #[strong] push_btn,
+            #[strong] run_btn,
+            #[strong] back_btn,
             #[strong] progress,
             #[strong] done_steps,
             async move {
@@ -520,19 +594,19 @@ impl AurPushWindow {
                         }
                         Msg::Done(ok) => {
                             *running.borrow_mut() = false;
-                            push_btn.set_sensitive(true);
+                            run_btn.set_sensitive(true);
+                            back_btn.set_sensitive(true);
 
                             if ok {
                                 progress.set_fraction(1.0);
-                                push_btn.set_label("Push again");
+                                run_btn.set_label("Push again");
                                 status_page.set_icon_name(Some("emblem-ok-symbolic"));
                                 status_page.set_title("Pushed to AUR!");
                                 status_page.remove_css_class("error");
                                 status_page.set_visible(true);
                             } else {
                                 progress.set_fraction(0.0);
-                                progress.set_visible(false);
-                                push_btn.set_label("Try again");
+                                run_btn.set_label("Try again");
                             }
                         }
                     }
@@ -540,11 +614,10 @@ impl AurPushWindow {
             }
         ));
 
+        win.set_content(Some(&root));
         win
     }
 }
-
-// ── Worker thread ─────────────────────────────────────────────────────────────
 
 fn run_push_worker(
     target: &str,
@@ -572,9 +645,9 @@ fn run_push_worker(
     let mut child = match cmd.spawn() {
         Ok(c) => c,
         Err(e) => {
-            let _ = tx.send_blocking(Msg::StderrLine(
-                format!("Failed to start pkgbuild_manager: {e}\nMake sure it is installed and in PATH.")
-            ));
+            let _ = tx.send_blocking(Msg::StderrLine(format!(
+                "Failed to start pkgbuild_manager: {e}\nMake sure it is installed and in PATH."
+            )));
             let _ = tx.send_blocking(Msg::Done(false));
             return;
         }
@@ -597,8 +670,6 @@ fn run_push_worker(
     let _ = tx.send_blocking(Msg::Done(success));
 }
 
-// Parses [STEP] lines from stdout and sends Step messages.
-// Non-step stdout lines are silently discarded — only stderr is shown in the UI.
 fn parse_and_send(line: &str, tx: &async_channel::Sender<Msg>) {
     if let Some(rest) = line.strip_prefix("[STEP] ") {
         let (key, tail) = match rest.split_once(' ') {
@@ -614,6 +685,10 @@ fn parse_and_send(line: &str, tx: &async_channel::Sender<Msg>) {
         } else {
             return;
         };
-        let _ = tx.send_blocking(Msg::Step { key: key.to_string(), state, detail });
+        let _ = tx.send_blocking(Msg::Step {
+            key: key.to_string(),
+            state,
+            detail,
+        });
     }
 }
