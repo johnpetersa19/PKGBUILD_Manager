@@ -664,7 +664,7 @@ impl ReleaseWindow {
                     let br   = push_branch.text().to_string();
                     let path = target.clone();
                     let tx   = push_tx.clone();
-                    glib::spawn_blocking(move || {
+                    std::thread::spawn(move || {
                         run_push_worker(&path,
                             if msg.is_empty() { None } else { Some(msg) },
                             if br.is_empty()  { None } else { Some(br)  },
@@ -808,7 +808,7 @@ impl ReleaseWindow {
         tags_back_btn.connect_clicked(clone!(
             #[strong] tags_outer,
             #[strong] tags_run_btn,
-            move |_| { if tags_run_btn.is_sensitive() { tags_outer.set_visible_child_name("tags-form"); } }
+            move |_| if tags_run_btn.is_sensitive() { tags_outer.set_visible_child_name("tags-form"); }
         ));
 
         let tags_running  = Rc::new(RefCell::new(false));
@@ -844,7 +844,7 @@ impl ReleaseWindow {
                     let style = push_style_row.selected();
                     let path  = target.clone();
                     let tx    = tags_tx.clone();
-                    glib::spawn_blocking(move || {
+                    std::thread::spawn(move || {
                         run_tag_worker(&path, name, tmsg, style == 1, tx);
                     });
                 }
@@ -1122,7 +1122,7 @@ impl ReleaseWindow {
             rel_back_btn.connect_clicked(clone!(
                 #[strong] rel_outer,
                 #[strong] rel_run_btn,
-                move |_| { if rel_run_btn.is_sensitive() { rel_outer.set_visible_child_name("rel-form"); } }
+                move |_| if rel_run_btn.is_sensitive() { rel_outer.set_visible_child_name("rel-form"); }
             ));
 
             let rel_running  = Rc::new(RefCell::new(false));
@@ -1173,7 +1173,7 @@ impl ReleaseWindow {
                     let path   = target.clone();
                     let tx     = rel_tx.clone();
 
-                    glib::spawn_blocking(move || {
+                    std::thread::spawn(move || {
                         run_release_worker(platform, &path, tag, title, notes, branch, files, tx);
                     });
                 }
