@@ -128,193 +128,193 @@ msgid "Clean"
 msgstr "Clean"
 
 # ---------------------------------------------------------------------------
-# Notification keys
+# Notification keys — msgstr = visible display text
 # ---------------------------------------------------------------------------
 msgid "notify_building"
-msgstr "notify_building"
+msgstr "Compiling package…"
 
 msgid "notify_build_ok"
-msgstr "notify_build_ok"
+msgstr "✓ Package compiled successfully!"
 
 msgid "notify_build_fail"
-msgstr "notify_build_fail"
+msgstr "✗ Package compilation failed! View:"
 
 msgid "notify_build_force"
-msgstr "notify_build_force"
+msgstr "Compilation in progress…"
 
 msgid "notify_build_force_ok"
-msgstr "notify_build_force_ok"
+msgstr "✓ Compilation completed!"
 
 msgid "notify_build_force_fail"
-msgstr "notify_build_force_fail"
+msgstr "✗ Compilation based on data failed! View:"
 
 msgid "notify_build_nocheck"
-msgstr "notify_build_nocheck"
+msgstr "Compiling without checks…"
 
 msgid "notify_build_nocheck_ok"
-msgstr "notify_build_nocheck_ok"
+msgstr "✓ Compiled without checks!"
 
 msgid "notify_build_nocheck_fail"
-msgstr "notify_build_nocheck_fail"
+msgstr "✗ Compilation without checks failed! View:"
 
 msgid "notify_build_nogpg"
-msgstr "notify_build_nogpg"
+msgstr "Compiling without GPG…"
 
 msgid "notify_build_nogpg_ok"
-msgstr "notify_build_nogpg_ok"
+msgstr "✓ Compiled without GPG!"
 
 msgid "notify_build_nogpg_fail"
-msgstr "notify_build_nogpg_fail"
+msgstr "✗ Compilation without GPG failed! View:"
 
 msgid "notify_fetch_sources"
-msgstr "notify_fetch_sources"
+msgstr "Downloading sources…"
 
 msgid "notify_fetch_sources_ok"
-msgstr "notify_fetch_sources_ok"
+msgstr "✓ Sources downloaded successfully!"
 
 msgid "notify_fetch_sources_fail"
-msgstr "notify_fetch_sources_fail"
+msgstr "✗ Sources downloaded failed! View:"
 
 msgid "notify_installing"
-msgstr "notify_installing"
+msgstr "Installing package…"
 
 msgid "notify_install_ok"
-msgstr "notify_install_ok"
+msgstr "✓ Package installed successfully!"
 
 msgid "notify_install_fail"
-msgstr "notify_install_fail"
+msgstr "✗ Package installation failed! View:"
 
 msgid "notify_install_force"
-msgstr "notify_install_force"
+msgstr "Planned installation in progress…"
 
 msgid "notify_install_force_ok"
-msgstr "notify_install_force_ok"
+msgstr "✓ Installation completed!"
 
 msgid "notify_install_force_fail"
-msgstr "notify_install_force_fail"
+msgstr "✗ Forced installation failed! View:"
 
 msgid "notify_install_rmdeps"
-msgstr "notify_install_rmdeps"
+msgstr "Installing and removing compilation dependencies…"
 
 msgid "notify_install_rmdeps_ok"
-msgstr "notify_install_rmdeps_ok"
+msgstr "✓ Installed and compilation dependencies removed!"
 
 msgid "notify_install_rmdeps_fail"
-msgstr "notify_install_rmdeps_fail"
+msgstr "✗ Failed to install and remove build dependencies! See:"
 
 msgid "notify_install_nocheck"
-msgstr "notify_install_nocheck"
+msgstr "Installing without checks…"
 
 msgid "notify_install_nocheck_ok"
-msgstr "notify_install_nocheck_ok"
+msgstr "✓ Installed without checks!"
 
 msgid "notify_install_nocheck_fail"
-msgstr "notify_install_nocheck_fail"
+msgstr "✗ Installation failed without checks! See:"
 
 msgid "notify_install_nogpg"
-msgstr "notify_install_nogpg"
+msgstr "Installing without GPG…"
 
 msgid "notify_install_nogpg_ok"
-msgstr "notify_install_nogpg_ok"
+msgstr "✓ Installed without GPG!"
 
 msgid "notify_install_nogpg_fail"
-msgstr "notify_install_nogpg_fail"
+msgstr "✗ Installation failed without GPG! See:"
 
 msgid "notify_checksums"
-msgstr "notify_checksums"
+msgstr "Updating checksums…"
 
 msgid "notify_checksums_ok"
-msgstr "notify_checksums_ok"
+msgstr "✓ Checksums updated successfully!"
 
 msgid "notify_checksums_fail"
-msgstr "notify_checksums_fail"
+msgstr "✗ Failed to update checksums! See:"
 
 msgid "notify_genchecksums"
-msgstr "notify_genchecksums"
+msgstr "Generating checksums…"
 
 msgid "notify_genchecksums_ok"
-msgstr "notify_genchecksums_ok"
+msgstr "✓ Checksums generated successfully!"
 
 msgid "notify_genchecksums_fail"
-msgstr "notify_genchecksums_fail"
+msgstr "✗ Failed to generate checksums! See:"
 
 msgid "notify_srcinfo"
-msgstr "notify_srcinfo"
+msgstr "Regenerating .SRCINFO…"
 
 msgid "notify_srcinfo_ok"
-msgstr "notify_srcinfo_ok"
+msgstr "✓ .SRCINFO regenerated successfully!"
 
 msgid "notify_srcinfo_fail"
-msgstr "notify_srcinfo_fail"
+msgstr "✗ Failed to regenerate .SRCINFO! See:"
 
 msgid "notify_namcap"
-msgstr "notify_namcap"
+msgstr "Running namcap…"
 
 msgid "notify_namcap_warn"
-msgstr "notify_namcap_warn"
+msgstr "⚠ Namcap encountered warnings. See:"
 
 msgid "notify_namcap_ok"
-msgstr "notify_namcap_ok"
+msgstr "✓ Namcap: no problems found!"
 
 msgid "notify_namcap_fail"
-msgstr "notify_namcap_fail"
+msgstr "✗ Failed to execute namcap! See:"
 
 msgid "notify_shellcheck"
-msgstr "notify_shellcheck"
+msgstr "Running ShellCheck…"
 
 msgid "notify_shellcheck_warn"
-msgstr "notify_shellcheck_warn"
+msgstr "⚠ ShellCheck encountered warnings. See:"
 
 msgid "notify_shellcheck_ok"
-msgstr "notify_shellcheck_ok"
+msgstr "✓ ShellCheck: no problems found!"
 
 msgid "notify_shellcheck_fail"
-msgstr "notify_shellcheck_fail"
+msgstr "✗ Failed to execute ShellCheck! See:"
 
 msgid "notify_push_aur"
-msgstr "notify_push_aur"
+msgstr "Sending to AUR…"
 
 msgid "notify_push_aur_ok"
-msgstr "notify_push_aur_ok"
+msgstr "✓ Sent to AUR successfully!"
 
 msgid "notify_push_aur_fail"
-msgstr "notify_push_aur_fail"
+msgstr "✗ Failed to send to AUR! See:"
 
 msgid "notify_push_aur_tag"
-msgstr "notify_push_aur_tag"
+msgstr "Creating tag and sending to AUR…"
 
 msgid "notify_push_aur_tag_ok"
-msgstr "notify_push_aur_tag_ok"
+msgstr "✓ Tag created and sent to AUR!"
 
 msgid "notify_push_aur_tag_fail"
-msgstr "notify_push_aur_tag_fail"
+msgstr "✗ Failed to create tag/send to AUR! See:"
 
 msgid "notify_clean_src"
-msgstr "notify_clean_src"
+msgstr "Cleaning srcdir…"
 
 msgid "notify_clean_src_ok"
-msgstr "notify_clean_src_ok"
+msgstr "✓ srcdir cleaned successfully!"
 
 msgid "notify_clean_src_fail"
-msgstr "notify_clean_src_fail"
+msgstr "✗ Failed to clean srcdir! See:"
 
 msgid "notify_clean_all"
-msgstr "notify_clean_all"
+msgstr "Cleaning everything…"
 
 msgid "notify_clean_all_ok"
-msgstr "notify_clean_all_ok"
+msgstr "✓ Everything cleaned successfully!"
 
 msgid "notify_clean_all_fail"
-msgstr "notify_clean_all_fail"
+msgstr "✗ Failed to clean everything! See:"
 
 msgid "notify_full_workflow"
-msgstr "notify_full_workflow"
+msgstr "Executing complete flow…"
 
 msgid "notify_full_workflow_ok"
-msgstr "notify_full_workflow_ok"
+msgstr "✓ Complete flow completed successfully!"
 
 msgid "notify_full_workflow_fail"
-msgstr "notify_full_workflow_fail"
+msgstr "✗ Complete flow failed! See:"
 
 # ---------------------------------------------------------------------------
 # CLI / Rust binary strings
