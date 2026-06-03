@@ -16,6 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+# ---------------------------------------------------------------------------
+# Menu labels
+# ---------------------------------------------------------------------------
 msgid "00_Full Workflow"
 msgstr "00_Full Workflow"
 
@@ -79,6 +82,9 @@ msgstr "07b_Clean Everything"
 msgid "07_Clean srcdir"
 msgstr "07_Clean srcdir"
 
+# ---------------------------------------------------------------------------
+# Settings panel
+# ---------------------------------------------------------------------------
 msgid "PKGBUILD Manager — Menu Settings"
 msgstr "PKGBUILD Manager — Menu Settings"
 
@@ -103,8 +109,8 @@ msgstr "Add Action"
 msgid "All actions are already in a group."
 msgstr "All actions are already in a group."
 
-msgid "Saved! Restart the file manager to apply."
-msgstr "Saved! Restart the file manager to apply."
+msgid "Save! Restart the file manager for application."
+msgstr "Save! Restart the file manager for application."
 
 msgid "Actions"
 msgstr "Actions"
@@ -112,15 +118,18 @@ msgstr "Actions"
 msgid "Metadata"
 msgstr "Metadata"
 
-msgid "Audit"
-msgstr "Audit"
+msgid "Auditors"
+msgstr "Auditors"
 
-msgid "Git / AUR"
-msgstr "Git / AUR"
+msgid "Git/AUR"
+msgstr "Git/AUR"
 
 msgid "Clean"
 msgstr "Clean"
 
+# ---------------------------------------------------------------------------
+# Notification keys
+# ---------------------------------------------------------------------------
 msgid "notify_building"
 msgstr "notify_building"
 
@@ -307,26 +316,29 @@ msgstr "notify_full_workflow_ok"
 msgid "notify_full_workflow_fail"
 msgstr "notify_full_workflow_fail"
 
+# ---------------------------------------------------------------------------
+# CLI / Rust binary strings
+# ---------------------------------------------------------------------------
 msgid "Failed to resolve parent directory"
 msgstr "Failed to resolve parent directory"
 
-msgid "Directory does not exist"
-msgstr "Directory does not exist"
+msgid "The directory does not exist"
+msgstr "The directory does not exist"
 
-msgid "No PKGBUILD found in directory"
-msgstr "No PKGBUILD found in directory"
+msgid "No PKGBUILD found in the directory"
+msgstr "No PKGBUILD found in the directory"
 
-msgid "failed to canonicalize path"
-msgstr "failed to canonicalize path"
+msgid "Failed to canonicalize path"
+msgstr "Failed to canonicalize path"
 
-msgid "failed to spawn command"
-msgstr "failed to spawn command"
+msgid "Failed to start command"
+msgstr "Failed to start command"
 
-msgid "command failed"
-msgstr "command failed"
+msgid "Command failed"
+msgstr "Command failed"
 
-msgid "with status"
-msgstr "with status"
+msgid "Communication status"
+msgstr "Communication status"
 
 msgid "makepkg --printsrcinfo failed"
 msgstr "makepkg --printsrcinfo failed"
@@ -340,11 +352,11 @@ msgstr "aur-push-tag requires a version tag argument"
 msgid "Unknown command"
 msgstr "Unknown command"
 
-msgid "Warning: could not remove stale PKGBUILD dir"
-msgstr "Warning: could not remove stale PKGBUILD dir"
+msgid "Warning: Could not remove obsolete PKGBUILD directory"
+msgstr "Warning: Could not remove obsolete PKGBUILD directory"
 
-msgid "Nautilus extension not found at /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Please reinstall the package."
-msgstr "Nautilus extension not found at /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Please reinstall the package."
+msgid "Nautilus extension not found in /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Please reinstall the package."
+msgstr "Nautilus extension not found in /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Please reinstall the package."
 
 msgid "PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD file to see the PKGBUILD submenu."
 msgstr "PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD file to see the PKGBUILD submenu."
@@ -352,47 +364,47 @@ msgstr "PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD fi
 msgid "PKGBUILD Manager - CLI Tool"
 msgstr "PKGBUILD Manager - CLI Tool"
 
-msgid "Usage:"
-msgstr "Usage:"
+msgid "Usages:"
+msgstr "Usages:"
 
-msgid "Build commands"
-msgstr "Build commands"
+msgid "Compilation Commands"
+msgstr "Compilation Commands"
 
-msgid "Compile package (makepkg)"
-msgstr "Compile package (makepkg)"
+msgid "Compiled package (makepkg)"
+msgstr "Compiled package (makepkg)"
 
 msgid "Compile and clean srcdir (makepkg -c)"
 msgstr "Compile and clean srcdir (makepkg -c)"
 
-msgid "Force recompile (makepkg -f)"
-msgstr "Force recompile (makepkg -f)"
+msgid "Force recompilation (makepkg -f)"
+msgstr "Force recompilation (makepkg -f)"
 
-msgid "Skip check() function (makepkg --nocheck)"
-msgstr "Skip check() function (makepkg --nocheck)"
+msgid "Basic check() function (makepkg --nocheck)"
+msgstr "Basic check() function (makepkg --nocheck)"
 
-msgid "Skip PGP signature check (makepkg --skippgpcheck)"
-msgstr "Skip PGP signature check (makepkg --skippgpcheck)"
+msgid "Popular PGP signature check (makepkg --skippgpcheck)"
+msgstr "Popular PGP signature check (makepkg --skippgpcheck)"
 
-msgid "Compile with custom flags passed after path"
-msgstr "Compile with custom flags passed after path"
+msgid "Compile with custom flags after the path"
+msgstr "Compile with custom flags after the path"
 
 msgid "Download and extract sources only (makepkg -o)"
 msgstr "Download and extract sources only (makepkg -o)"
 
-msgid "Install commands"
-msgstr "Install commands"
+msgid "Installation Commands"
+msgstr "Installation Commands"
 
-msgid "Compile, install and resolve deps (makepkg -si)"
-msgstr "Compile, install and resolve deps (makepkg -si)"
+msgid "Compile, install and resolve dependencies (makepkg -si)"
+msgstr "Compile, install and resolve dependencies (makepkg -si)"
 
 msgid "Compile, install and clean srcdir (makepkg -sic)"
 msgstr "Compile, install and clean srcdir (makepkg -sic)"
 
-msgid "Force compile and install (makepkg -sif)"
-msgstr "Force compile and install (makepkg -sif)"
+msgid "Force compilation and installation (makepkg -sif)"
+msgstr "Force compilation and installation (makepkg -sif)"
 
-msgid "Install and remove makedeps after (makepkg -sir)"
-msgstr "Install and remove makedeps after (makepkg -sir)"
+msgid "Install and remove makedeps afterwards (makepkg -sir)"
+msgstr "Install and remove makedeps afterwards (makepkg -sir)"
 
 msgid "Install without running check()"
 msgstr "Install without running check()"
@@ -400,68 +412,68 @@ msgstr "Install without running check()"
 msgid "Install skipping PGP checks"
 msgstr "Install skipping PGP checks"
 
-msgid "Install with custom flags passed after path"
-msgstr "Install with custom flags passed after path"
+msgid "Install with custom flags after the path"
+msgstr "Install with custom flags after the path"
 
 msgid "Package metadata commands"
 msgstr "Package metadata commands"
 
-msgid "Update checksums in PKGBUILD (updpkgsums)"
-msgstr "Update checksums in PKGBUILD (updpkgsums)"
+msgid "Update checksums without PKGBUILD (updpkgsums)"
+msgstr "Update checksums without PKGBUILD (updpkgsums)"
 
-msgid "Generate checksums and print to stdout (makepkg -g)"
-msgstr "Generate checksums and print to stdout (makepkg -g)"
+msgid "Generate checksums and print to standard output (makepkg -g)"
+msgstr "Generate checksums and print to standard output (makepkg -g)"
 
 msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
 msgstr "Regenerate .SRCINFO (makepkg --printsrcinfo)"
 
-msgid "Audit commands"
-msgstr "Audit commands"
+msgid "Auditing commands"
+msgstr "Auditing commands"
 
-msgid "Run namcap on PKGBUILD and built packages"
-msgstr "Run namcap on PKGBUILD and built packages"
+msgid "Run namcap on PKGBUILD and compiled packages"
+msgstr "Run namcap on PKGBUILD and compiled packages"
 
-msgid "Run shellcheck on PKGBUILD"
-msgstr "Run shellcheck on PKGBUILD"
+msgid "Run ShellCheck on PKGBUILD"
+msgstr "Run ShellCheck on PKGBUILD"
 
-msgid "Clean commands"
-msgstr "Clean commands"
+msgid "Cleanup commands"
+msgstr "Cleanup commands"
 
 msgid "Clean srcdir with makepkg (makepkg -c)"
 msgstr "Clean srcdir with makepkg (makepkg -c)"
 
-msgid "Remove src/, pkg/ and built packages"
-msgstr "Remove src/, pkg/ and built packages"
+msgid "Remove src/, packages/ and compiled packages"
+msgstr "Remove src/, packages/ and compiled packages"
 
 msgid "AUR/Git commands"
 msgstr "AUR/Git commands"
 
-msgid "Stage, commit and push to AUR (auto message if not provided)"
-msgstr "Stage, commit and push to AUR (auto message if not provided)"
+msgid "Stage, commit and push to the AUR (automatic message if not provided)"
+msgstr "Stage, commit and push to the AUR (automatic message if not provided)"
 
-msgid "Push with version tag (e.g. 1.2.3-1)"
-msgstr "Push with version tag (e.g. 1.2.3-1)"
+msgid "Push with version tag (e.g., 1.2.3-1)"
+msgstr "Push with version tag (e.g., 1.2.3-1)"
 
 msgid "Other"
 msgstr "Other"
 
-msgid "Remove stale symlinks and verify the Nautilus extension"
-msgstr "Remove stale symlinks and verify the Nautilus extension"
+msgid "Remove obsolete symbolic links and check the Nautilus extension"
+msgstr "Remove obsolete symbolic links and check the Nautilus extension"
 
-msgid "Show program version"
-msgstr "Show program version"
+msgid "Display program version"
+msgstr "Display program version"
 
-msgid "Show this help message"
-msgstr "Show this help message"
+msgid "Display this help message"
+msgstr "Display this help message"
 
-msgid "namcap not found. Install it with: sudo pacman -S namcap"
-msgstr "namcap not found. Install it with: sudo pacman -S namcap"
+msgid "namcap not found. Install with: sudo pacman -S namcap"
+msgstr "namcap not found. Install with: sudo pacman -S namcap"
 
 msgid "namcap failed with status"
 msgstr "namcap failed with status"
 
-msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
-msgstr "shellcheck not found. Install it with: sudo pacman -S shellcheck"
+msgid "shellcheck not found. Install with: sudo pacman -S shellcheck"
+msgstr "shellcheck not found. Install with: sudo pacman -S shellcheck"
 
 msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
 msgstr "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
@@ -469,8 +481,8 @@ msgstr "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
 msgid "makepkg -g failed:"
 msgstr "makepkg -g failed:"
 
-msgid "Removing src/ pkg/ and built packages in"
-msgstr "Removing src/ pkg/ and built packages in"
+msgid "Removing src/ pkg/ and compiled packages in"
+msgstr "Removing src/ pkg/ and compiled packages in"
 
 msgid "Removed"
 msgstr "Removed"
@@ -481,11 +493,11 @@ msgstr "Note: nothing to commit or commit failed — continuing with push."
 msgid "Note: push to origin/master failed"
 msgstr "Note: push to origin/master failed"
 
-msgid "Trying plain 'git push'..."
-msgstr "Trying plain 'git push'..."
+msgid "Attempting simple 'git push'..."
+msgstr "Attempting simple 'git push'..."
 
-msgid "Symlink scripts to user directory with localization"
-msgstr "Symlink scripts to user directory with localization"
+msgid "Creating symbolic links to scripts in the user directory with location"
+msgstr "Creating symbolic links to scripts in the user directory with location"
 
-msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
-msgstr "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
+msgid "Nautilus scripts successfully configured in the 'PKGBUILD' submenu."
+msgstr "Nautilus scripts successfully configured in the 'PKGBUILD' submenu."
