@@ -1,23 +1,4 @@
-#!/usr/bin/env bash
-# 06_Push AUR — Stage PKGBUILD/.SRCINFO, commit (upgpkg: …) and push to AUR.
-# Runs the full logic via pkgbuild_manager aur-push, streaming progress to the
-# dedicated gtk4-rs/libadwaita GUI window (pkgbuild-manager-aur-push).
-set -euo pipefail
-
-TARGET="${NAUTILUS_SCRIPT_SELECTED_FILE_PATHS:-}"
-TARGET="${TARGET%%$'\n'*}"
-
-# If nothing was selected, use the current working directory.
-if [ -z "$TARGET" ]; then
-  TARGET="$PWD"
-fi
-
-# If a file was selected, use its directory; if a dir was selected, use it directly.
-if [ -f "$TARGET" ]; then
-  TARGET="$(dirname "$TARGET")"
-fi
-
-# setsid detaches the GUI process from the Nautilus process group so it gets
-# its own D-Bus/Wayland context and is not killed when the script exits.
-setsid pkgbuild-manager-aur-push "$TARGET" &
-disown
+#!/bin/bash
+# PKGBUILD Manager - Push AUR (opens GUI dialog)
+TARGET="$(dirname "$(realpath "${1:-.}")")" 
+pkgbuild-manager-aur-push "$TARGET"
