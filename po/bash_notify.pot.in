@@ -1,8 +1,7 @@
 # PKGBUILD Manager — bash script notification keys
 # These are symbolic keys resolved at runtime by data/nautilus-scripts/_i18n.
 #
-# !! ADD new entries here when adding a new bash script operation !!
-# Each new operation needs:
+# !! ADD new entries here when adding a new bash script operation !!\n# Each new operation needs:
 #   1. A notify_<name>       entry ("operation started")
 #   2. A notify_<name>_ok    entry ("operation succeeded")
 #   3. A notify_<name>_fail  entry ("operation failed")
@@ -106,4 +105,94 @@ msgid "notify_full_workflow_ok"
 msgstr ""
 
 msgid "notify_full_workflow_fail"
+msgstr ""
+
+msgid "notify_build_force"
+msgstr ""
+
+msgid "notify_build_force_ok"
+msgstr ""
+
+msgid "notify_build_force_fail"
+msgstr ""
+
+msgid "notify_build_nocheck"
+msgstr ""
+
+msgid "notify_build_nocheck_ok"
+msgstr ""
+
+msgid "notify_build_nocheck_fail"
+msgstr ""
+
+msgid "notify_build_nogpg"
+msgstr ""
+
+msgid "notify_build_nogpg_ok"
+msgstr ""
+
+msgid "notify_build_nogpg_fail"
+msgstr ""
+
+msgid "notify_fetch_sources"
+msgstr ""
+
+msgid "notify_fetch_sources_ok"
+msgstr ""
+
+msgid "notify_fetch_sources_fail"
+msgstr ""
+
+msgid "notify_install_force"
+msgstr ""
+
+msgid "notify_install_force_ok"
+msgstr ""
+
+msgid "notify_install_force_fail"
+msgstr ""
+
+msgid "notify_install_rmdeps"
+msgstr ""
+
+msgid "notify_install_rmdeps_ok"
+msgstr ""
+
+msgid "notify_install_rmdeps_fail"
+msgstr ""
+
+msgid "notify_install_nocheck"
+msgstr ""
+
+msgid "notify_install_nocheck_ok"
+msgstr ""
+
+msgid "notify_install_nocheck_fail"
+msgstr ""
+
+msgid "notify_install_nogpg"
+msgstr ""
+
+msgid "notify_install_nogpg_ok"
+msgstr ""
+
+msgid "notify_install_nogpg_fail"
+msgstr ""
+
+msgid "notify_genchecksums"
+msgstr ""
+
+msgid "notify_genchecksums_ok"
+msgstr ""
+
+msgid "notify_genchecksums_fail"
+msgstr ""
+
+msgid "notify_push_aur_tag"
+msgstr ""
+
+msgid "notify_push_aur_tag_ok"
+msgstr ""
+
+msgid "notify_push_aur_tag_fail"
 msgstr ""
