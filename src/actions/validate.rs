@@ -52,10 +52,10 @@ pub fn syntax(path: &Path) -> Result<()> {
     }
 
     if output.status.success() {
-        println!("\u2714 {}", gettext("PKGBUILD syntax OK"));
+        println!("\u{2714} {}", gettext("PKGBUILD syntax OK"));
         Ok(())
     } else {
-        Err(anyhow!("\u2716 {} — {}", gettext("PKGBUILD has syntax errors"), stderr.trim()))
+        Err(anyhow!("\u{2716} {} — {}", gettext("PKGBUILD has syntax errors"), stderr.trim()))
     }
 }
 
@@ -112,12 +112,12 @@ pub fn all_offline(path: &Path) -> Result<()> {
     if let Err(e) = super::shellcheck::run(path) { errors.push(format!("[shellcheck] {e}")); }
 
     if errors.is_empty() {
-        println!("\n\u2714 {}", gettext("All offline checks passed."));
+        println!("\n\u{2714} {}", gettext("All offline checks passed."));
         return Ok(());
     }
 
     // Print a compact summary to the terminal for immediate feedback.
-    eprintln!("\n\u2716 {} {}:", errors.len(), gettext("check(s) failed"));
+    eprintln!("\n\u{2716} {} {}:", errors.len(), gettext("check(s) failed"));
     for e in &errors {
         eprintln!("  {e}");
     }
