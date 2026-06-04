@@ -49,33 +49,70 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
+    // Argument parsing rules (conventional POSIX/GNU style):
+    //
+    //   pkgbuild_manager <command> [path] [flags…]
+    //   pkgbuild_manager <command> [path] -- [extra-flags…]
+    //
+    // The optional '--' separator splits the path/flags region from any
+    // extra flags that should be forwarded verbatim to the underlying tool
+    // (makepkg, git, …).  Everything after '--' is treated as an extra flag
+    // regardless of its form.
+    //
+    // When '--' is absent:
+    //   • If args[2] starts with '-' it is treated as a flag, NOT a path,
+    //     and the path defaults to ".".  This is the standard Unix convention
+    //     (options begin with '-'; positional arguments do not).
+    //   • Otherwise args[2] is the path and args[3..] are flags.
+    //
+    // NOTE: a path that genuinely begins with '-' (extremely rare on real
+    // filesystems) must be disambiguated with the '--' separator:
+    //   pkgbuild_manager build -- -my-weird-dir      # NOT supported: '-my-weird-dir' after '--' is a flag
+    //   pkgbuild_manager build ./-my-weird-dir       # CORRECT: prefix with './'
+    // This matches the behaviour of every standard Unix tool (ls, cp, rm, …).
+
     let (path_arg, extra_flags): (&str, Vec<&str>) = {
         let mut path: &str = ".";
         let mut flags: Vec<&str> = Vec::new();
 
         if args.len() <= 2 {
+            // No path/flags provided — use defaults.
             (path, flags)
         } else {
+            // Search for a '--' separator anywhere in args[2..].
             let sep_pos = args[2..].iter().position(|s| s == "--");
+
             match sep_pos {
                 Some(rel_idx) => {
+                    // '--' found at absolute index `idx`.
                     let idx = 2 + rel_idx;
+
+                    // Everything after '--' are extra flags forwarded verbatim.
                     flags = args[idx + 1..].iter().map(|s| s.as_str()).collect();
-                    // Use args[2] as path only when the separator is not at args[2] itself
-                    // (i.e. the user actually provided a path before "--")
-                    if idx > 2 && args[2] != "--" {
+
+                    // args[2] is the path only when the separator is NOT at
+                    // args[2] itself (i.e. the user supplied a path before '--').
+                    // Example:  build /some/path -- -f   →  path="/some/path", flags=["-f"]
+                    // Example:  build -- -f              →  path=".",           flags=["-f"]
+                    if idx > 2 {
                         path = &args[2];
                     }
                     (path, flags)
                 }
                 None => {
+                    // No '--' separator.  Use the starts_with('-') heuristic:
+                    // if args[2] looks like a flag, treat the entire tail as flags.
+                    // This is the standard Unix convention — options start with '-',
+                    // paths do not (use './' prefix if your path starts with '-').
                     match args.get(2) {
                         None => (".", Vec::new()),
                         Some(s) if s.starts_with('-') => {
+                            // args[2] is a flag — no path argument provided.
                             flags = args[2..].iter().map(|s| s.as_str()).collect();
                             (".", flags)
                         }
                         Some(s) => {
+                            // args[2] is the path; the rest are flags.
                             path = s;
                             flags = args[3..].iter().map(|s| s.as_str()).collect();
                             (path, flags)
