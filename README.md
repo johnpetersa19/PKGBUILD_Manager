@@ -66,6 +66,55 @@ All 21 actions are available to assign to any group in the settings panel. The n
 
 ---
 
+## Push AUR & Push AUR Tag
+
+These two actions cover the complete AUR publishing workflow and are available both in the context-menu (**Git / AUR** group) and as CLI subcommands.
+
+### Push AUR (`06_Push AUR` / `aur-push`)
+
+Publishes the current state of the package to the AUR in a single step:
+
+1. **Stages** `.SRCINFO` and any other modified/untracked files with `git add -A`.
+2. **Commits** with an auto-generated message read directly from `.SRCINFO`:
+   ```
+   upgpkg: <pkgname> <pkgver>-<pkgrel>
+   ```
+   You can override the message by passing it explicitly:
+   ```bash
+   pkgbuild_manager aur-push "my custom commit message"
+   ```
+3. **Pushes** to the AUR remote with `git push`.
+
+> **Split packages:** the first `pkgname` entry found in `.SRCINFO` is used in the auto-generated message. Override explicitly if your repo contains multiple split packages.
+
+**When to use:** after bumping `pkgver`/`pkgrel` and running `Update Checksums` + `Update .SRCINFO`. This action commits and ships everything in one click.
+
+---
+
+### Push AUR Tag (`17_Push AUR Tag` / `aur-push-tag`)
+
+Same as **Push AUR**, but also creates an **annotated Git tag** for the release:
+
+1. **Stages** `.SRCINFO` and all pending changes with `git add -A`.
+2. **Commits** with the same auto-generated `upgpkg: <pkgname> <pkgver>-<pkgrel>` message.
+3. **Creates an annotated tag** pointing to the new commit:
+   ```bash
+   git tag -a <tag> -m "upgpkg: <pkgname> <pkgver>-<pkgrel>"
+   ```
+4. **Pushes** both the commit and the tag:
+   ```bash
+   git push && git push --tags
+   ```
+
+From the CLI, pass the tag name as the first argument:
+```bash
+pkgbuild_manager aur-push-tag v1.2.3-1
+```
+
+> **When to use:** on stable/release versions where you want a permanent, browsable tag in the AUR git history (e.g. `v2.0.0-1`). Annotated tags are preferred over lightweight tags because they carry a message and a tagger identity, which is the AUR convention.
+
+---
+
 ## Dependencies
 
 ### Build Dependencies
