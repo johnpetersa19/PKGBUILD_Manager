@@ -284,6 +284,7 @@ fn build_group_widget(
 }
 
 // ── Build one item row ────────────────────────────────────────────────────────
+// Designer from stable app.py: switch → label_entry (editable) → up → down → del
 
 fn build_item_row(
     g_idx: usize,
@@ -298,11 +299,42 @@ fn build_item_row(
 
     let hbox = GBox::builder()
         .orientation(Orientation::Horizontal)
-        .spacing(6)
-        .margin_top(4).margin_bottom(4)
+        .spacing(8)
+        .margin_top(2).margin_bottom(2)
         .margin_start(4).margin_end(4)
         .build();
     row.set_child(Some(&hbox));
+
+    // Switch first (left) — matches app.py
+    let enabled = menu_data.borrow()[g_idx].items[i_idx].enabled;
+    let sw = Switch::builder().active(enabled).valign(Align::Center).build();
+    sw.connect_state_set(clone!(
+        #[strong] menu_data,
+        move |_, state| {
+            if let Ok(mut data) = menu_data.try_borrow_mut() {
+                if g_idx < data.len() && i_idx < data[g_idx].items.len() {
+                    data[g_idx].items[i_idx].enabled = state;
+                }
+            }
+            glib::Propagation::Proceed
+        }
+    ));
+
+    // Editable Entry for label — matches app.py label_entry
+    let label_text = menu_data.borrow()[g_idx].items[i_idx].label.clone();
+    let label_entry = gtk::Entry::new();
+    label_entry.set_text(&label_text);
+    label_entry.set_hexpand(true);
+    label_entry.connect_changed(clone!(
+        #[strong] menu_data,
+        move |e| {
+            if let Ok(mut data) = menu_data.try_borrow_mut() {
+                if g_idx < data.len() && i_idx < data[g_idx].items.len() {
+                    data[g_idx].items[i_idx].label = e.text().to_string();
+                }
+            }
+        }
+    ));
 
     let up_btn = Button::builder().icon_name("go-up-symbolic").build();
     up_btn.add_css_class("flat");
@@ -332,40 +364,9 @@ fn build_item_row(
         }
     ));
 
-    let label_text = menu_data.borrow()[g_idx].items[i_idx].label.clone();
-    let id_text    = menu_data.borrow()[g_idx].items[i_idx].id.clone();
-
-    let lbl = Label::builder()
-        .label(&label_text)
-        .hexpand(true)
-        .halign(Align::Start)
-        .ellipsize(pango::EllipsizeMode::End)
-        .build();
-
-    let id_lbl = Label::builder()
-        .label(&id_text)
-        .halign(Align::End)
-        .build();
-    id_lbl.add_css_class("dim-label");
-    id_lbl.add_css_class("caption");
-
-    let enabled = menu_data.borrow()[g_idx].items[i_idx].enabled;
-    let sw = Switch::builder().active(enabled).valign(Align::Center).build();
-    sw.connect_state_set(clone!(
-        #[strong] menu_data,
-        move |_, state| {
-            if let Ok(mut data) = menu_data.try_borrow_mut() {
-                if g_idx < data.len() && i_idx < data[g_idx].items.len() {
-                    data[g_idx].items[i_idx].enabled = state;
-                }
-            }
-            glib::Propagation::Proceed
-        }
-    ));
-
-    let del_btn = Button::builder().icon_name("user-trash-symbolic").build();
+    // list-remove-symbolic, no .error class — matches app.py
+    let del_btn = Button::builder().icon_name("list-remove-symbolic").build();
     del_btn.add_css_class("flat");
-    del_btn.add_css_class("error");
     del_btn.connect_clicked(clone!(
         #[strong] menu_data, #[strong] main_box, #[strong] win,
         move |_| {
@@ -377,11 +378,10 @@ fn build_item_row(
         }
     ));
 
+    hbox.append(&sw);
+    hbox.append(&label_entry);
     hbox.append(&up_btn);
     hbox.append(&down_btn);
-    hbox.append(&lbl);
-    hbox.append(&id_lbl);
-    hbox.append(&sw);
     hbox.append(&del_btn);
     row
 }
