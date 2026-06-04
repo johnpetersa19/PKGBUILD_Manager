@@ -1,7 +1,6 @@
-use std::io::Write;
 use std::path::Path;
 use std::process::{Command, Stdio};
-use super::{get_target_dir, collect_pkg_files};
+use super::{get_target_dir, collect_pkg_files, write_error_log};
 
 pub fn run(path: &Path) -> anyhow::Result<()> {
     let target_dir = get_target_dir(path)?;
@@ -53,7 +52,7 @@ pub fn run(path: &Path) -> anyhow::Result<()> {
     let exit_failed = !output.status.success();
 
     if !error_lines.is_empty() || exit_failed {
-        // Write error log
+        // write_error_log is defined in mod.rs (shared with shellcheck)
         let log_path = write_error_log("namcap", &target_dir, &combined);
         match log_path {
             Ok(p) => eprintln!(
@@ -91,75 +90,4 @@ pub fn run(path: &Path) -> anyhow::Result<()> {
     }
 
     Ok(())
-}
-
-/// Write a timestamped error log to ~/.local/share/pkgbuild_manager/logs/.
-/// Returns the path of the written file.
-fn write_error_log(
-    tool: &str,
-    pkgbuild_dir: &Path,
-    content: &str,
-) -> anyhow::Result<std::path::PathBuf> {
-    let home = std::env::var("HOME")
-        .map_err(|_| anyhow::anyhow!("{}", gettextrs::gettext("HOME env var not set")))?;
-
-    let log_dir = std::path::PathBuf::from(home)
-        .join(".local/share/pkgbuild_manager/logs");
-    std::fs::create_dir_all(&log_dir)?;
-
-    // Timestamp: YYYYMMDD-HHMMSS
-    let now = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .unwrap_or_default()
-        .as_secs();
-    // Simple deterministic timestamp from unix epoch (no chrono dependency)
-    let (date, time) = unix_to_datetime(now);
-    let filename = format!("{}-{}-{}.log", tool, date, time);
-    let log_path = log_dir.join(&filename);
-
-    let mut file = std::fs::File::create(&log_path)?;
-    writeln!(file, "=== {} error log ===", tool.to_uppercase())?;
-    writeln!(file, "PKGBUILD directory : {}", pkgbuild_dir.display())?;
-    writeln!(file, "Timestamp (UTC)    : {}-{}", date, time)?;
-    writeln!(file, "")?;
-    writeln!(file, "--- output ---")?;
-    write!(file, "{}", content)?;
-
-    Ok(log_path)
-}
-
-/// Minimal unix-epoch → (YYYYMMDD, HHMMSS) without external crates.
-fn unix_to_datetime(secs: u64) -> (String, String) {
-    // Days since epoch
-    let days = secs / 86400;
-    let rem  = secs % 86400;
-    let hh   = rem / 3600;
-    let mm   = (rem % 3600) / 60;
-    let ss   = rem % 60;
-
-    // Gregorian calendar calculation (valid for 1970-2100)
-    let mut y: u64 = 1970;
-    let mut d = days;
-    loop {
-        let dy = if (y % 4 == 0 && y % 100 != 0) || y % 400 == 0 { 366 } else { 365 };
-        if d < dy { break; }
-        d -= dy;
-        y += 1;
-    }
-    let leap = (y % 4 == 0 && y % 100 != 0) || y % 400 == 0;
-    let months = if leap {
-        [31u64,29,31,30,31,30,31,31,30,31,30,31]
-    } else {
-        [31u64,28,31,30,31,30,31,31,30,31,30,31]
-    };
-    let mut mo: u64 = 1;
-    for &mdays in &months {
-        if d < mdays { break; }
-        d -= mdays;
-        mo += 1;
-    }
-    let day = d + 1;
-
-    (format!("{:04}{:02}{:02}", y, mo, day),
-     format!("{:02}{:02}{:02}", hh, mm, ss))
 }
