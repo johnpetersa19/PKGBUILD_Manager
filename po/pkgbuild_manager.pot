@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-02 16:15-0300\n"
+"POT-Creation-Date: 2026-06-04 00:00-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -82,7 +82,7 @@ msgid "07_Clean srcdir"
 msgstr ""
 
 # ---------------------------------------------------------------------------
-# Settings panel (GTK app — src/settings/app.py)
+# Settings panel
 # ---------------------------------------------------------------------------
 msgid "PKGBUILD Manager \u2014 Menu Settings"
 msgstr ""
@@ -111,6 +111,21 @@ msgstr ""
 msgid "Saved! Restarting file manager\u2026"
 msgstr ""
 
+msgid "Error saving"
+msgstr ""
+
+msgid "Add Menu Item"
+msgstr ""
+
+msgid "Choose an action to add to this group."
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
 # Default group names
 msgid "Actions"
 msgstr ""
@@ -125,6 +140,226 @@ msgid "Git / AUR"
 msgstr ""
 
 msgid "Clean"
+msgstr ""
+
+# ---------------------------------------------------------------------------
+# aur_push_gui — UnifiedPushWindow (aur_dialog.rs)
+# ---------------------------------------------------------------------------
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push to AUR"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push to GitHub"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push to GitLab"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push to Codeberg"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push to Git Remote"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push \u2014 Unknown Repository"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Step 1 of 2 \u2014 Review commit information"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Step 2 of 2 \u2014 Sending changes to AUR"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Step 2 of 2 \u2014 Sending changes to GitHub"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Step 2 of 2 \u2014 Sending changes to GitLab"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Step 2 of 2 \u2014 Sending changes to Codeberg"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Step 2 of 2 \u2014 Sending changes to remote"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Message"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Tag version  (e.g. 1.2.3-1)"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Branch"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Choose branch"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Remote"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Continue to Push"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Form"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Steps"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Progress"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Back"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push + Tag to AUR"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push to AUR"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit + Tag \u2192 GitHub"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit & Push \u2192 GitHub"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit + Tag \u2192 GitLab"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit & Push \u2192 GitLab"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit + Tag \u2192 Codeberg"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit & Push \u2192 Codeberg"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit + Tag + Push"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit & Push"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Pushed to AUR!"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Pushed to GitHub!"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Pushed to GitLab!"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Pushed to Codeberg!"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Pushed to remote!"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Not a recognised repository"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "The selected folder does not appear to be a Git repository.\nMake sure you select a folder that contains a .git directory."
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "\u26a0\ufe0f Errors found"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Regen .SRCINFO"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push again"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Try again"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "No target directory provided."
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Failed to start pkgbuild_manager"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Make sure it is installed and in PATH."
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "git add failed"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "git commit failed (nothing to commit?)"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "failed"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "failed to start"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "git tag failed"
+msgstr ""
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "git push --tags failed"
 msgstr ""
 
 # ---------------------------------------------------------------------------
@@ -322,22 +557,22 @@ msgstr ""
 msgid "Failed to resolve parent directory"
 msgstr ""
 
-msgid "The directory does not exist"
+msgid "Directory does not exist"
 msgstr ""
 
-msgid "No PKGBUILD found in the directory"
+msgid "No PKGBUILD found in directory"
 msgstr ""
 
-msgid "Failed to canonicalize path"
+msgid "failed to canonicalize path"
 msgstr ""
 
-msgid "Failed to start command"
+msgid "failed to spawn command"
 msgstr ""
 
-msgid "Command failed"
+msgid "command failed"
 msgstr ""
 
-msgid "Communication status"
+msgid "with status"
 msgstr ""
 
 msgid "makepkg --printsrcinfo failed"
@@ -349,25 +584,34 @@ msgstr ""
 msgid "aur-push-tag requires a version tag argument"
 msgstr ""
 
+msgid "aur-push-tag: tag cannot be empty"
+msgstr ""
+
+msgid "aur-push-tag: invalid tag"
+msgstr ""
+
+msgid "tags cannot contain spaces (expected format: pkgver-pkgrel, e.g. 1.2.3-1)"
+msgstr ""
+
 msgid "Unknown command"
 msgstr ""
 
 msgid "Warning: Could not remove obsolete PKGBUILD directory"
 msgstr ""
 
-msgid "Nautilus extension not found in /usr/share/nautilus-python/extensions/pkgbuild_manager.py. Please reinstall the package."
+msgid "Warning: Nautilus Python extension not found at"
 msgstr ""
 
-msgid "PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD file to see the PKGBUILD submenu."
+msgid "Install the pkgbuild-manager package to get the extension."
 msgstr ""
 
-msgid "PKGBUILD Manager - CLI Tool"
+msgid "Extension found"
 msgstr ""
 
-msgid "Usages:"
+msgid "Restarting Nautilus\u2026"
 msgstr ""
 
-msgid "Compilation Commands"
+msgid "Done. Right-click a PKGBUILD directory to see the menu."
 msgstr ""
 
 msgid "Compiled package (makepkg)"
@@ -386,12 +630,6 @@ msgid "Popular PGP signature check (makepkg --skippgpcheck)"
 msgstr ""
 
 msgid "Compile with custom flags after the path"
-msgstr ""
-
-msgid "Download and extract sources only (makepkg -o)"
-msgstr ""
-
-msgid "Installation Commands"
 msgstr ""
 
 msgid "Compile, install and resolve dependencies (makepkg -si)"
@@ -415,7 +653,7 @@ msgstr ""
 msgid "Install with custom flags after the path"
 msgstr ""
 
-msgid "Package metadata commands"
+msgid "Download and extract sources only (makepkg -o)"
 msgstr ""
 
 msgid "Update checksums without PKGBUILD (updpkgsums)"
@@ -427,16 +665,10 @@ msgstr ""
 msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
 msgstr ""
 
-msgid "Auditing commands"
-msgstr ""
-
 msgid "Run namcap on PKGBUILD and compiled packages"
 msgstr ""
 
 msgid "Run ShellCheck on PKGBUILD"
-msgstr ""
-
-msgid "Cleanup commands"
 msgstr ""
 
 msgid "Clean srcdir with makepkg (makepkg -c)"
@@ -445,16 +677,10 @@ msgstr ""
 msgid "Remove src/, packages/ and compiled packages"
 msgstr ""
 
-msgid "AUR/Git commands"
-msgstr ""
-
 msgid "Stage, commit and push to the AUR (automatic message if not provided)"
 msgstr ""
 
 msgid "Push with version tag (e.g., 1.2.3-1)"
-msgstr ""
-
-msgid "Other"
 msgstr ""
 
 msgid "Remove obsolete symbolic links and check the Nautilus extension"
@@ -466,16 +692,19 @@ msgstr ""
 msgid "Display this help message"
 msgstr ""
 
-msgid "namcap not found. Install with: sudo pacman -S namcap"
-msgstr ""
-
 msgid "namcap failed with status"
 msgstr ""
 
-msgid "shellcheck not found. Install with: sudo pacman -S shellcheck"
+msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
 msgstr ""
 
 msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
+msgstr ""
+
+msgid "makepkg not found. Install it with: sudo pacman -S pacman"
+msgstr ""
+
+msgid "failed to spawn makepkg"
 msgstr ""
 
 msgid "makepkg -g failed:"
@@ -487,17 +716,20 @@ msgstr ""
 msgid "Removed"
 msgstr ""
 
-msgid "Note: nothing to commit or commit failed — continuing with push."
+msgid "Removed bare-repo cache"
+msgstr ""
+
+msgid "Removed build directory"
+msgstr ""
+
+msgid "Note: nothing to commit or commit failed \u2014 continuing with push."
+msgstr ""
+
+msgid "git commit failed"
 msgstr ""
 
 msgid "Note: push to origin/master failed"
 msgstr ""
 
 msgid "Attempting simple 'git push'..."
-msgstr ""
-
-msgid "Creating symbolic links to scripts in the user directory with location"
-msgstr ""
-
-msgid "Nautilus scripts successfully configured in the 'PKGBUILD' submenu."
 msgstr ""

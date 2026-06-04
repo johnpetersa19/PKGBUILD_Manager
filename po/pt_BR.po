@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-03 23:23-0300\n"
-"PO-Revision-Date: 2026-06-04 00:00-0300\n"
+"POT-Creation-Date: 2026-06-04 00:00-0300\n"
+"PO-Revision-Date: 2026-06-04 00:18-0300\n"
 "Last-Translator: John Peter Sa\n"
 "Language-Team: Portuguese (Brazil)\n"
 "Language: pt_BR\n"
@@ -420,6 +420,222 @@ msgstr "Git / AUR"
 #: src/settings_gui/config.rs:101
 msgid "Clean"
 msgstr "Limpar"
+
+# ---------------------------------------------------------------------------
+# aur_push_gui — UnifiedPushWindow (aur_dialog.rs)
+# ---------------------------------------------------------------------------
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push to AUR"
+msgstr "Enviar para o AUR"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push to GitHub"
+msgstr "Enviar para o GitHub"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push to GitLab"
+msgstr "Enviar para o GitLab"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push to Codeberg"
+msgstr "Enviar para o Codeberg"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push to Git Remote"
+msgstr "Enviar para o repositório Git"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push \u2014 Unknown Repository"
+msgstr "Enviar — Repositório desconhecido"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Step 1 of 2 \u2014 Review commit information"
+msgstr "Passo 1 de 2 — Revise as informações do commit"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Step 2 of 2 \u2014 Sending changes to AUR"
+msgstr "Passo 2 de 2 — Enviando alterações para o AUR"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Step 2 of 2 \u2014 Sending changes to GitHub"
+msgstr "Passo 2 de 2 — Enviando alterações para o GitHub"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Step 2 of 2 \u2014 Sending changes to GitLab"
+msgstr "Passo 2 de 2 — Enviando alterações para o GitLab"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Step 2 of 2 \u2014 Sending changes to Codeberg"
+msgstr "Passo 2 de 2 — Enviando alterações para o Codeberg"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Step 2 of 2 \u2014 Sending changes to remote"
+msgstr "Passo 2 de 2 — Enviando alterações para o repositório remoto"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit"
+msgstr "Commit"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Message"
+msgstr "Mensagem"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Tag version  (e.g. 1.2.3-1)"
+msgstr "Versão da tag  (ex: 1.2.3-1)"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Branch"
+msgstr "Branch"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Choose branch"
+msgstr "Escolher branch"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Remote"
+msgstr "Remoto"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Continue to Push"
+msgstr "Continuar para envio"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Form"
+msgstr "Formulário"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Steps"
+msgstr "Etapas"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Progress"
+msgstr "Progresso"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Back"
+msgstr "Voltar"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push + Tag to AUR"
+msgstr "Enviar + Tag para o AUR"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit + Tag \u2192 GitHub"
+msgstr "Commit + Tag → GitHub"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit & Push \u2192 GitHub"
+msgstr "Commit e Enviar → GitHub"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit + Tag \u2192 GitLab"
+msgstr "Commit + Tag → GitLab"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit & Push \u2192 GitLab"
+msgstr "Commit e Enviar → GitLab"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit + Tag \u2192 Codeberg"
+msgstr "Commit + Tag → Codeberg"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit & Push \u2192 Codeberg"
+msgstr "Commit e Enviar → Codeberg"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit + Tag + Push"
+msgstr "Commit + Tag + Enviar"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Commit & Push"
+msgstr "Commit e Enviar"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push"
+msgstr "Enviar"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Pushed to AUR!"
+msgstr "Enviado para o AUR com sucesso!"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Pushed to GitHub!"
+msgstr "Enviado para o GitHub com sucesso!"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Pushed to GitLab!"
+msgstr "Enviado para o GitLab com sucesso!"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Pushed to Codeberg!"
+msgstr "Enviado para o Codeberg com sucesso!"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Pushed to remote!"
+msgstr "Enviado para o repositório remoto com sucesso!"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Not a recognised repository"
+msgstr "Repositório não reconhecido"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "The selected folder does not appear to be a Git repository.\nMake sure you select a folder that contains a .git directory."
+msgstr "A pasta selecionada não parece ser um repositório Git.\nVerifique se a pasta contém um diretório .git."
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "\u26a0\ufe0f Errors found"
+msgstr "⚠️ Erros encontrados"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Regen .SRCINFO"
+msgstr "Regenerar .SRCINFO"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Push again"
+msgstr "Enviar novamente"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Try again"
+msgstr "Tentar novamente"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "No target directory provided."
+msgstr "Nenhum diretório de destino fornecido."
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Failed to start pkgbuild_manager"
+msgstr "Falha ao iniciar o pkgbuild_manager"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Make sure it is installed and in PATH."
+msgstr "Verifique se está instalado e no PATH."
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "git add failed"
+msgstr "git add falhou"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "git commit failed (nothing to commit?)"
+msgstr "git commit falhou (nada para fazer commit?)"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "failed"
+msgstr "falhou"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "failed to start"
+msgstr "falha ao iniciar"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "git tag failed"
+msgstr "git tag falhou"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "git push --tags failed"
+msgstr "git push --tags falhou"
 
 #. used dynamically via gettext key lookup in Rust
 msgid "notify_building"
