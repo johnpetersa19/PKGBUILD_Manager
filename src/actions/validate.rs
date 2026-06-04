@@ -8,7 +8,7 @@ use anyhow::{anyhow, Result};
 use gettextrs::gettext;
 use super::get_target_dir;
 
-// ── helpers ───────────────────────────────────────────────────────────────────
+// ── helpers ────────────────────────────────────────────────────────────────────────────────
 
 fn makepkg(dir: &Path, args: &[&str]) -> Result<()> {
     println!(">>> makepkg {} (in {:?})", args.join(" "), dir);
@@ -28,12 +28,14 @@ fn makepkg(dir: &Path, args: &[&str]) -> Result<()> {
     }
 }
 
-// ── public actions ────────────────────────────────────────────────────────────
+// ── public actions ───────────────────────────────────────────────────────────────────
 
-/// `makepkg --printsrcinfo > /dev/null`
+/// `makepkg --printsrcinfo`
 /// Fastest offline check: validates syntax, mandatory variables and all
 /// package() / prepare() / build() function signatures without touching
-/// any source file.
+/// any source file. This is the only makepkg invocation that is
+/// guaranteed to be truly offline for ALL PKGBUILD types, including
+/// VCS packages with a dynamic pkgver() function.
 pub fn syntax(path: &Path) -> Result<()> {
     let dir = get_target_dir(path)?;
     println!(">>> {}", gettext("Validating PKGBUILD syntax (makepkg --printsrcinfo)…"));
@@ -50,16 +52,22 @@ pub fn syntax(path: &Path) -> Result<()> {
     }
 
     if output.status.success() {
-        println!("✔ {}", gettext("PKGBUILD syntax OK"));
+        println!("\u2714 {}", gettext("PKGBUILD syntax OK"));
         Ok(())
     } else {
-        Err(anyhow!("✖ {} — {}", gettext("PKGBUILD has syntax errors"), stderr.trim()))
+        Err(anyhow!("\u2716 {} — {}", gettext("PKGBUILD has syntax errors"), stderr.trim()))
     }
 }
 
 /// `makepkg --nobuild --noextract`
 /// Parses all variables and function bodies, resolves architecture arrays
-/// and pkgver(), without downloading or extracting anything.
+/// and pkgver() without downloading or extracting anything.
+///
+/// **Caveat:** PKGBUILDs with a dynamic `pkgver()` function may trigger
+/// network access even with `--noextract`, because makepkg can invoke
+/// pkgver() to resolve the version during this step. Use `validate-parse`
+/// only when you accept that possibility. For a guaranteed offline check,
+/// use `validate-syntax` (or `validate`, which uses --printsrcinfo only).
 pub fn parse(path: &Path) -> Result<()> {
     let dir = get_target_dir(path)?;
     println!(">>> {}", gettext("Parsing PKGBUILD variables (makepkg --nobuild --noextract)…"));
@@ -84,23 +92,30 @@ pub fn check_deps(path: &Path) -> Result<()> {
     makepkg(&dir, &["--syncdeps", "--nobuild"])
 }
 
-/// Full offline validation suite: syntax → parse → namcap → shellcheck.
-/// Does NOT download sources or install deps.
+/// Full offline validation suite: syntax \u2192 namcap \u2192 shellcheck.
+/// Does NOT download sources, install deps, or invoke pkgver().
+///
+/// FIX: the previous implementation called parse() here, which runs
+/// `makepkg --nobuild --noextract` and can trigger network access on VCS
+/// packages with a dynamic pkgver() function — contrary to the
+/// "all_offline" contract. The parse step is removed from this suite;
+/// users who want it can run `validate-parse` explicitly.
 pub fn all_offline(path: &Path) -> Result<()> {
     println!("\n=== {} ===", gettext("validate-offline: PKGBUILD full offline check"));
 
     let mut errors: Vec<String> = Vec::new();
 
-    if let Err(e) = syntax(path)       { errors.push(format!("[syntax]    {e}")); }
-    if let Err(e) = parse(path)        { errors.push(format!("[parse]     {e}")); }
-    if let Err(e) = super::namcap::run(path)     { errors.push(format!("[namcap]    {e}")); }
-    if let Err(e) = super::shellcheck::run(path) { errors.push(format!("[shellcheck]{e}")); }
+    // syntax() uses --printsrcinfo: guaranteed offline for all PKGBUILD types.
+    // parse() is intentionally omitted here — see doc-comment above.
+    if let Err(e) = syntax(path)                  { errors.push(format!("[syntax]    {e}")); }
+    if let Err(e) = super::namcap::run(path)       { errors.push(format!("[namcap]    {e}")); }
+    if let Err(e) = super::shellcheck::run(path)   { errors.push(format!("[shellcheck]{e}")); }
 
     if errors.is_empty() {
-        println!("\n✔ {}", gettext("All offline checks passed."));
+        println!("\n\u2714 {}", gettext("All offline checks passed."));
         Ok(())
     } else {
-        eprintln!("\n✖ {} {}:", errors.len(), gettext("check(s) failed"));
+        eprintln!("\n\u2716 {} {}:", errors.len(), gettext("check(s) failed"));
         for e in &errors { eprintln!("  {e}"); }
         Err(anyhow!("{} {}", errors.len(), gettext("validate check(s) failed")))
     }
