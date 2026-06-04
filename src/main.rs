@@ -117,6 +117,13 @@ fn main() -> Result<()> {
         "namcap"           => actions::namcap::run(target_path),
         "shellcheck"       => actions::shellcheck::run(target_path),
 
+        // ── Validate commands (no compilation) ──────────────────────────────
+        "validate"         => actions::validate::all_offline(target_path),
+        "validate-syntax"  => actions::validate::syntax(target_path),
+        "validate-parse"   => actions::validate::parse(target_path),
+        "validate-sources" => actions::validate::verify_sources(target_path),
+        "validate-deps"    => actions::validate::check_deps(target_path),
+
         "clean"            => actions::clean::run(target_path, false),
         "clean-all"        => actions::clean::run(target_path, true),
 
@@ -125,8 +132,6 @@ fn main() -> Result<()> {
             actions::aur_push::run(target_path, message)
         }
         "aur-push-tag"     => {
-            // Bug #4 fix: valida que a tag não está vazia e não contém espaços.
-            // Formato esperado pelo AUR: "pkgver-pkgrel" (ex: "1.2.3-1").
             let tag = extra_flags.first().copied()
                 .ok_or_else(|| anyhow::anyhow!(gettext("aur-push-tag requires a version tag argument")))?;
             if tag.is_empty() {
@@ -246,6 +251,13 @@ fn print_usage() {
     println!("Auditing commands:");
     println!("  namcap             {}", gettext("Run namcap on PKGBUILD and compiled packages"));
     println!("  shellcheck         {}", gettext("Run ShellCheck on PKGBUILD"));
+    println!();
+    println!("Validate commands (no compilation):");
+    println!("  validate           {}", gettext("Full offline check: syntax + parse + namcap + shellcheck"));
+    println!("  validate-syntax    {}", gettext("Validate syntax only (makepkg --printsrcinfo)"));
+    println!("  validate-parse     {}", gettext("Parse variables/functions without extracting (makepkg --nobuild --noextract)"));
+    println!("  validate-sources   {}", gettext("Download sources and verify checksums (makepkg --verifysource)"));
+    println!("  validate-deps      {}", gettext("Check declared dependencies exist in repos (makepkg --syncdeps --nobuild)"));
     println!();
     println!("Cleanup commands:");
     println!("  clean              {}", gettext("Clean srcdir with makepkg (makepkg -c)"));

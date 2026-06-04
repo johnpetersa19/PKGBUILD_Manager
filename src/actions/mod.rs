@@ -6,6 +6,7 @@ pub mod namcap;
 pub mod shellcheck;
 pub mod clean;
 pub mod aur_push;
+pub mod validate;
 
 use std::fs;
 use std::path::{Path, PathBuf};
