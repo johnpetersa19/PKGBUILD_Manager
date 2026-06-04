@@ -257,3 +257,40 @@ Locale resolution order: `$LANGUAGE` → `$LC_ALL` → `$LC_MESSAGES` → `$LANG
 3. Add the language code to `po/LINGUAS`.
 4. Add `'../po/<lang>.po'` to `po_files` in `data/meson.build`.
 5. Run `meson install` — no other changes needed.
+
+---
+
+## Translation Automation: `po/update-pot.sh`
+
+If you want to add or update translations, you do **not** need to run any `xgettext`, `msgmerge`, or `msginit` commands manually. The script `po/update-pot.sh` handles everything automatically in a single run:
+
+```bash
+cd <repo root>
+bash po/update-pot.sh
+```
+
+### What it does (6 automated steps)
+
+1. **Discovers Rust sources** — scans `src/**/*.rs` for files that contain `gettext()` calls and extracts all translatable strings using `xgettext -L C`.
+2. **Discovers Python sources** — scans `src/**/*.py` and `data/**/*.py` for `_()` calls and extracts them using `xgettext -L Python`.
+3. **Regenerates `POTFILES.in`** automatically from the discovered files — you never need to edit it by hand.
+4. **Merges all sources** — combines the Rust `.pot`, Python `.pot`, and the static `bash_notify.pot.in` (which contains the Bash script notification strings) into a single `po/pkgbuild_manager.pot` using `msgcat`.
+5. **Fixes the `.pot` header** — writes the correct `Project-Id-Version` (read from `Cargo.toml`) and `POT-Creation-Date` automatically.
+6. **Syncs `LINGUAS` ↔ `.po` files** bidirectionally:
+   - A `.po` file found without a matching `LINGUAS` entry → added to `LINGUAS` automatically.
+   - A language listed in `LINGUAS` without a `.po` file → created via `msginit` automatically.
+   - **All existing `.po` files** are updated with `msgmerge --update`, merging new strings and flagging obsolete ones in one pass.
+
+At the end, the script prints a summary:
+
+```
+✓ Generated: po/pkgbuild_manager.pot
+✓ Total entries: <N>
+✓ Version: pkgbuild_manager <version>
+✓ Languages: de en es fr it pt_BR
+  → de.po          (X/N untranslated)
+  → pt_BR.po        (X/N untranslated)
+  ...
+```
+
+> **Tip:** run `po/update-pot.sh` every time you add new translatable strings to Rust or Python source files. It is safe to run repeatedly — existing translations are never overwritten, only merged.
