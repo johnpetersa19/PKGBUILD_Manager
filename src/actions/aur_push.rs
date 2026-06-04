@@ -17,21 +17,48 @@ pub fn run(path: &Path, message: Option<&str>) -> anyhow::Result<()> {
 pub fn run_with_tag(path: &Path, tag: &str) -> anyhow::Result<()> {
     let target_dir = get_target_dir(path)?;
 
+    // Step 1: commit + push to AUR (normal flow)
     run_with_dir(&target_dir, None)?;
 
-    // Create annotated tag
+    // Step 2: create the annotated tag locally
     println!(">>> git tag -a {:?} -m {:?}", tag, tag);
     run_command("git", &["tag", "-a", tag, "-m", tag], &target_dir)?;
 
-    // Push tag
-    println!(">>> git push --tags");
-    run_command("git", &["push", "--tags"], &target_dir)?;
+    // Step 3: push the tag to the remote.
+    //
+    // FIX: `git push --tags` failing after the commit was already pushed leaves
+    // the repository in an inconsistent state (tag local-only, commit on AUR).
+    // A true rollback is impossible once the commit is on the remote, so instead
+    // we catch the error explicitly and emit a clearly-worded, actionable message
+    // that tells the user exactly what happened and what command to run to recover.
+    println!(">>> git push origin tag {}", tag);
+    if let Err(push_err) = run_command("git", &["push", "origin", "tag", tag], &target_dir) {
+        // Build a human-readable recovery hint using the exact tag name
+        let hint = format!("git push origin {}", tag);
+        return Err(anyhow::anyhow!(
+            "{}\n\
+             {}\n\
+             {}\n  {}",
+            gettextrs::gettext(
+                "Warning: the commit was pushed to the AUR but the tag could not be pushed."
+            ),
+            gettextrs::gettext(
+                "The tag exists locally only. This is an inconsistent state."
+            ),
+            gettextrs::gettext(
+                "Once the network issue is resolved, push the tag manually with:"
+            ),
+            hint,
+        ).context(push_err));
+    }
 
     Ok(())
 }
 
 // Internal: perform the full stage -> commit -> push flow given an already-resolved dir.
 fn run_with_dir(target_dir: &Path, message: Option<&str>) -> anyhow::Result<()> {
+    use anyhow::Context as _;
+    let _ = anyhow::Context::context as fn(_,_) -> _; // ensure trait in scope
     // Regenerate .SRCINFO and parse package info from the same output in one pass.
     let srcinfo_content = regenerate_srcinfo(target_dir)?;
 
