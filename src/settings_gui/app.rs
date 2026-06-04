@@ -399,6 +399,8 @@ fn show_add_item_dialog(
     let dialog = adw::AlertDialog::builder()
         .heading(&gettext("Add Menu Item"))
         .body(&gettext("Choose an action to add to this group."))
+        .content_width(480)
+        .content_height(520)
         .build();
 
     dialog.add_response("cancel", &gettext("Cancel"));
@@ -414,14 +416,17 @@ fn show_add_item_dialog(
 
     let all = config::all_actions();
     for (id, label) in &all {
-        let r = adw::ActionRow::builder().title(*label).subtitle(*id).build();
+        let r = adw::ActionRow::builder()
+            .title(label.as_str())
+            .subtitle(id.as_str())
+            .build();
         list.append(&r);
     }
 
     let scroll = ScrolledWindow::builder()
         .child(&list)
-        .min_content_height(200)
-        .max_content_height(400)
+        .min_content_height(300)
+        .max_content_height(460)
         .build();
 
     dialog.set_extra_child(Some(&scroll));
@@ -439,10 +444,10 @@ fn show_add_item_dialog(
                 }
                 if let Some(row) = list.selected_row() {
                     let idx = row.index() as usize;
-                    if let Some(&(id, label)) = all.get(idx) {
+                    if let Some((id, label)) = all.get(idx) {
                         menu_data.borrow_mut()[g_idx].items.push(MenuItem {
-                            id: id.into(),
-                            label: label.into(),
+                            id: id.clone(),
+                            label: label.clone(),
                             enabled: true,
                         });
                         render_groups(&main_box, &menu_data, &win);
