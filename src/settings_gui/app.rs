@@ -118,8 +118,6 @@ fn build_window(app: &Application) {
             let data = menu_data.borrow().clone();
             match config::save(&data) {
                 Ok(()) => {
-                    // Bug #6 fix: run notify_file_managers on a background thread so
-                    // the GTK main thread is never blocked by process-spawn + sleep.
                     thread::spawn(notify_file_managers);
                     toast_overlay.add_toast(
                         Toast::builder().title(&gettext("Saved! Restarting file manager…")).build(),
@@ -146,11 +144,11 @@ fn render_groups(
     win: &ApplicationWindow,
 ) {
     // Save current scroll position before rebuilding widgets.
-    // GTK resets vadjustment to 0 when children are removed, so we restore
-    // it after the next size-allocate pass via a one-shot signal handler.
-    let saved_scroll = scroll
-        .vadjustment()
-        .map(|adj| adj.value());
+    // In gtk4-rs 0.11, vadjustment() returns Adjustment directly (not Option).
+    // GTK resets it to 0 when children are removed, so we restore via
+    // a one-shot idle callback scheduled after the layout pass.
+    let adj = scroll.vadjustment();
+    let saved_pos = adj.value();
 
     while let Some(child) = main_box.first_child() {
         main_box.remove(&child);
@@ -180,27 +178,15 @@ fn render_groups(
     ));
     main_box.append(&add_btn);
 
-    // Restore scroll position after GTK finishes laying out the new widgets.
-    // connect_size_allocate fires once the allocation is known; we disconnect
-    // immediately after the first call so it only runs once.
-    if let Some(pos) = saved_scroll {
-        let handler_id: Rc<RefCell<Option<glib::SignalHandlerId>>> =
-            Rc::new(RefCell::new(None));
-        let id = main_box.connect_size_allocate(clone!(
-            #[strong] scroll,
-            #[strong] handler_id,
-            move |widget, _| {
-                if let Some(adj) = scroll.vadjustment() {
-                    adj.set_value(pos);
-                }
-                // Disconnect after first run (one-shot)
-                if let Some(id) = handler_id.borrow_mut().take() {
-                    widget.disconnect(id);
-                }
-            }
-        ));
-        *handler_id.borrow_mut() = Some(id);
-    }
+    // Restore scroll position after GTK finishes the layout pass.
+    // glib::idle_add_local runs after the current event loop iteration,
+    // by which point the new allocation is known and set_value is honoured.
+    glib::idle_add_local_once(clone!(
+        #[strong] scroll,
+        move || {
+            scroll.vadjustment().set_value(saved_pos);
+        }
+    ));
 }
 
 // ── Build one group frame ─────────────────────────────────────────────────────
