@@ -86,3 +86,11 @@ install_data(
   'applications/pkgbuild-manager-settings.desktop',
   install_dir: get_option('datadir') / 'applications',
 )
+
+# Post-install scripts: registra/remove atalho Ctrl+Alt+P no DE do usuário
+install_data(
+  'post-install/register-shortcut',
+  'post-install/unregister-shortcut',
+  install_dir: get_option('datadir') / 'pkgbuild-manager',
+  install_mode: 'rwxr-xr-x',
+)
