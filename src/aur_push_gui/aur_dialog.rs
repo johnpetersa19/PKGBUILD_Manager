@@ -517,13 +517,13 @@ impl UnifiedPushWindow {
 
         let (step_rows, total_steps): (Vec<(&'static str, StepRow)>, f64) = match mode {
             RepoMode::Aur => {
-                let srcinfo  = StepRow::new(&gettext("Regen .SRCINFO"));
-                let status   = StepRow::new("git status");
-                let add      = StepRow::new("git add PKGBUILD .SRCINFO");
-                let commit   = StepRow::new("git commit");
-                let push     = StepRow::new("git push");
-                let tag      = StepRow::new("git tag -a");
-                let pushtags = StepRow::new("git push --tags");
+                let srcinfo  = StepRow::new(&gettext("Regenerating .SRCINFO"));
+                let status   = StepRow::new(&gettext("Checking repository status"));
+                let add      = StepRow::new(&gettext("Staging PKGBUILD and .SRCINFO"));
+                let commit   = StepRow::new(&gettext("Creating commit"));
+                let push     = StepRow::new(&gettext("Pushing to AUR"));
+                let tag      = StepRow::new(&gettext("Creating version tag"));
+                let pushtags = StepRow::new(&gettext("Pushing tags"));
                 steps_group.add(&srcinfo.row); steps_group.add(&status.row);
                 steps_group.add(&add.row);     steps_group.add(&commit.row);
                 steps_group.add(&push.row);
@@ -537,12 +537,12 @@ impl UnifiedPushWindow {
                 ], n)
             }
             _ => {
-                let status   = StepRow::new("git status");
-                let add      = StepRow::new("git add .");
-                let commit   = StepRow::new("git commit");
-                let push     = StepRow::new("git push");
-                let tag      = StepRow::new("git tag -a");
-                let pushtags = StepRow::new("git push --tags");
+                let status   = StepRow::new(&gettext("Checking repository status"));
+                let add      = StepRow::new(&gettext("Staging all changes"));
+                let commit   = StepRow::new(&gettext("Creating commit"));
+                let push     = StepRow::new(&gettext("Pushing to remote"));
+                let tag      = StepRow::new(&gettext("Creating version tag"));
+                let pushtags = StepRow::new(&gettext("Pushing tags to remote"));
                 steps_group.add(&status.row); steps_group.add(&add.row);
                 steps_group.add(&commit.row); steps_group.add(&push.row);
                 if with_tag { steps_group.add(&tag.row); steps_group.add(&pushtags.row); }
