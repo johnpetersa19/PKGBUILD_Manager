@@ -19,11 +19,27 @@ use adw::prelude::*;
 use adw::Application;
 use adw::gio::ApplicationFlags;
 use gtk::glib;
+use gettextrs::{LocaleCategory, bind_textdomain_codeset, bindtextdomain, setlocale, textdomain};
 use std::env;
 
 const APP_ID: &str = "io.github.john.PkgbuildManager.ReleaseGui";
 
+const GETTEXT_PACKAGE: &str = "pkgbuild_manager";
+const LOCALEDIR: &str = match option_env!("PKGBUILD_MANAGER_LOCALEDIR_BUILD") {
+    Some(v) => v,
+    None    => "/usr/share/locale",
+};
+
 fn main() -> glib::ExitCode {
+    setlocale(LocaleCategory::LcAll, "");
+
+    let locale_dir = env::var("PKGBUILD_MANAGER_LOCALEDIR")
+        .unwrap_or_else(|_| LOCALEDIR.to_string());
+
+    let _ = bindtextdomain(GETTEXT_PACKAGE, &locale_dir);
+    let _ = bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+    let _ = textdomain(GETTEXT_PACKAGE);
+
     let args: Vec<String> = env::args().collect();
 
     let target = args
