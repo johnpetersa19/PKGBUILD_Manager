@@ -12,7 +12,7 @@ pkg      = meson.project_name()   # 'pkgbuild_manager'
 po_dir   = meson.current_source_dir()
 root_dir = meson.project_source_root()
 
-# ─── Compile and install .mo files ───────────────────────────────────────────
+# ─── Compile and install .mo files ─────────────────────────────────────────
 # Reads LINGUAS for the list of languages.
 # For each language, compiles po/<lang>.po -> .mo with msgfmt.
 # Installs to $localedir/<lang>/LC_MESSAGES/pkgbuild_manager.mo
@@ -29,6 +29,7 @@ msgcat   = find_program('msgcat',   required: false)
 
 if xgettext.found() and msgcat.found()
   rust_sources = [
+    # CLI core
     root_dir / 'src/actions/aur_push.rs',
     root_dir / 'src/actions/build.rs',
     root_dir / 'src/actions/checksums.rs',
@@ -40,10 +41,14 @@ if xgettext.found() and msgcat.found()
     root_dir / 'src/actions/srcinfo.rs',
     root_dir / 'src/config.rs',
     root_dir / 'src/main.rs',
+    # GUI — aur_push_gui
+    root_dir / 'src/aur_push_gui/aur_dialog.rs',
+    root_dir / 'src/aur_push_gui/release_dialog.rs',
+    # GUI — settings_gui
+    root_dir / 'src/settings_gui/app.rs',
   ]
 
   python_sources = [
-    root_dir / 'src/settings/app.py',
     root_dir / 'data/nautilus-extension/pkgbuild_manager.py',
     root_dir / 'data/nautilus-extension/pkgbuild_manager_caja.py',
     root_dir / 'data/nautilus-extension/pkgbuild_manager_nemo.py',
