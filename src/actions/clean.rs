@@ -88,16 +88,33 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
 }
 
 /// Read `pkgname` from the PKGBUILD in `dir` using a simple line scan.
-/// Returns None if the file cannot be read or no `pkgname=` line is found.
+/// Supports both the scalar form (`pkgname=value`) and the array form
+/// (`pkgname=('pkg1' 'pkg2')` or `pkgname=(meu-pacote)`).
+/// Returns the first package name found, or None if the file cannot be
+/// read or no `pkgname=` line is present.
 fn read_pkgname(dir: &std::path::Path) -> Option<String> {
     let text = std::fs::read_to_string(dir.join("PKGBUILD")).ok()?;
     for line in text.lines() {
         let line = line.trim();
         if let Some(val) = line.strip_prefix("pkgname=") {
-            // Strip surrounding quotes if present
-            let val = val.trim_matches(|c| c == '\'' || c == '"');
-            if !val.is_empty() {
-                return Some(val.to_string());
+            let val = val.trim();
+
+            // Array form: pkgname=('pkg1' 'pkg2')  or  pkgname=(meu-pacote)
+            if let Some(inner) = val.strip_prefix('(') {
+                let inner = inner.trim_end_matches(')').trim();
+                // Split on whitespace and take the first non-empty token
+                if let Some(first) = inner.split_whitespace().next() {
+                    let name = first.trim_matches(|c| c == '\'' || c == '"');
+                    if !name.is_empty() {
+                        return Some(name.to_string());
+                    }
+                }
+            } else {
+                // Scalar form: pkgname=value  or  pkgname="value"
+                let name = val.trim_matches(|c| c == '\'' || c == '"');
+                if !name.is_empty() {
+                    return Some(name.to_string());
+                }
             }
         }
     }
