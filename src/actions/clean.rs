@@ -1,4 +1,5 @@
 use std::path::Path;
+use std::process::{Command, Stdio};
 use super::{get_target_dir, run_command, collect_pkg_files};
 
 /// Clean the srcdir using `makepkg -c` (soft clean, preserves pkg/).
@@ -34,11 +35,22 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
         //      that happen to live in the same directory (e.g. workspace setups).
         let pkgname_filter = read_pkgname(&target_dir);
         for pkg in collect_pkg_files(&target_dir) {
-            // If we couldn't read pkgname, fall back to removing all pkg.tar.* files
-            // (same behaviour as before the fix, safe for single-PKGBUILD directories).
-            let matches = pkgname_filter
-                .as_deref()
-                .map_or(true, |n| pkg.starts_with(n));
+            let matches = match pkgname_filter.as_deref() {
+                Some(n) => pkg.starts_with(n),
+                None => {
+                    // Could not determine pkgname (bash expansion that makepkg also
+                    // failed to resolve, or PKGBUILD not readable). Fall back to
+                    // removing all .pkg.tar.* files and warn the user explicitly.
+                    eprintln!(
+                        "  {} {}",
+                        gettextrs::gettext(
+                            "Warning: could not determine pkgname — removing all .pkg.tar.* files:"
+                        ),
+                        pkg
+                    );
+                    true
+                }
+            };
             if matches {
                 let p = target_dir.join(&pkg);
                 std::fs::remove_file(&p)?;
@@ -127,12 +139,68 @@ fn is_bare_git_repo(dir: &std::path::Path) -> bool {
     }
 }
 
-/// Read `pkgname` from the PKGBUILD in `dir` using a simple line scan.
-/// Supports both the scalar form (`pkgname=value`) and the array form
-/// (`pkgname=('pkg1' 'pkg2')` or `pkgname=(meu-pacote)`).
-/// Returns the first package name found, or None if the file cannot be
-/// read or no `pkgname=` line is present.
+/// Read `pkgname` from the PKGBUILD in `dir`.
+///
+/// # Strategy
+///
+/// 1. **Static scan** — fast path for simple, literal values:
+///    Reads `pkgname=` from the PKGBUILD text and strips quotes.
+///    Handles scalar (`pkgname=foo`) and array (`pkgname=(foo bar)`) forms.
+///
+/// 2. **makepkg fallback** — for bash expansions:
+///    If the static value contains `$`, `` ` ``, or `{` it is an unexpanded
+///    bash expression (e.g. `pkgname="${_pkgname}-git"`).  In that case the
+///    literal string would never match real package filenames, so we run
+///    `makepkg --printsrcinfo` (offline, fast) and extract `pkgname =` from
+///    its structured output, which is always fully expanded.
+///
+/// 3. **None** is returned only when both methods fail.  The caller then
+///    falls back to removing all `.pkg.tar.*` files with a visible warning.
 fn read_pkgname(dir: &std::path::Path) -> Option<String> {
+    // ── Step 1: static scan ──────────────────────────────────────────────────
+    if let Some(name) = static_read_pkgname(dir) {
+        // If the name looks like a literal (no bash special chars), use it.
+        if !looks_like_bash_expansion(&name) {
+            return Some(name);
+        }
+        // Otherwise fall through to the makepkg expansion step.
+    }
+
+    // ── Step 2: makepkg --printsrcinfo fallback ────────────────────────────
+    // Run makepkg --printsrcinfo to get the fully-expanded .SRCINFO output.
+    // This is the same invocation used by `validate-syntax` — fast and offline.
+    let output = Command::new("makepkg")
+        .arg("--printsrcinfo")
+        .current_dir(dir)
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .output()
+        .ok()?;
+
+    if !output.status.success() {
+        return None;
+    }
+
+    // Parse `pkgname = <value>` from the .SRCINFO output.
+    // The format is always `key = value` (single space around `=`).
+    let srcinfo = String::from_utf8_lossy(&output.stdout);
+    for line in srcinfo.lines() {
+        let line = line.trim();
+        if let Some(val) = line.strip_prefix("pkgname = ") {
+            let val = val.trim();
+            if !val.is_empty() {
+                return Some(val.to_string());
+            }
+        }
+    }
+
+    None
+}
+
+/// Fast static scan of the PKGBUILD text for a literal `pkgname=` value.
+/// Returns None if the file cannot be read or no `pkgname=` line is found.
+fn static_read_pkgname(dir: &std::path::Path) -> Option<String> {
     let text = std::fs::read_to_string(dir.join("PKGBUILD")).ok()?;
     for line in text.lines() {
         let line = line.trim();
@@ -142,7 +210,6 @@ fn read_pkgname(dir: &std::path::Path) -> Option<String> {
             // Array form: pkgname=('pkg1' 'pkg2')  or  pkgname=(meu-pacote)
             if let Some(inner) = val.strip_prefix('(') {
                 let inner = inner.trim_end_matches(')').trim();
-                // Split on whitespace and take the first non-empty token
                 if let Some(first) = inner.split_whitespace().next() {
                     let name = first.trim_matches(|c| c == '\'' || c == '"');
                     if !name.is_empty() {
@@ -159,4 +226,11 @@ fn read_pkgname(dir: &std::path::Path) -> Option<String> {
         }
     }
     None
+}
+
+/// Returns true if `s` contains bash variable/command expansion characters
+/// that would prevent a static match against real package filenames.
+#[inline]
+fn looks_like_bash_expansion(s: &str) -> bool {
+    s.contains('$') || s.contains('`') || s.contains('{')
 }
