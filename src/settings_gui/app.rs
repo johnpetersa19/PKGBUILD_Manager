@@ -5,8 +5,8 @@ use adw::prelude::*;
 use adw::{Application, ApplicationWindow, HeaderBar, Toast, ToastOverlay};
 use gtk::{
     glib::{self, clone},
-    Align, Box as GBox, Button, Label, ListBox, ListBoxRow, Orientation,
-    ScrolledWindow, SelectionMode, Separator, Switch, pango,
+    Align, Box as GBox, Button, ListBox, ListBoxRow, Orientation,
+    ScrolledWindow, SelectionMode, Separator, Switch,
 };
 use gettextrs::gettext;
 use std::cell::RefCell;
