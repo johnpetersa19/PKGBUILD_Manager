@@ -2,12 +2,18 @@ use std::path::Path;
 use super::{get_target_dir, run_command, collect_pkg_files};
 
 /// Clean the srcdir using `makepkg -c` (soft clean, preserves pkg/).
-/// Use `full = true` for a complete wipe: removes src/, pkg/, built packages,
+/// Use `full = true` for a complete wipe: removes .makepkg.lock, src/, pkg/, built packages,
 /// bare-repo cache dirs and any _build* directories (cmake/meson/autotools out-of-tree builds).
 pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
     let target_dir = get_target_dir(path)?;
 
     if full {
+        // Remove .makepkg.lock first so a failed/interrupted build never blocks clean-all.
+        let lock = target_dir.join(".makepkg.lock");
+        if lock.exists() {
+            std::fs::remove_file(&lock)?;
+        }
+
         println!(
             "{} {:?}",
             gettextrs::gettext("Removing src/ pkg/ and compiled packages in"),
