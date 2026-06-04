@@ -1,6 +1,5 @@
 use std::path::Path;
 use std::process::Command;
-use anyhow::Context as _;
 use super::{get_target_dir, run_command, regenerate_srcinfo};
 
 /// Stage PKGBUILD + .SRCINFO, commit with conventional AUR message, and push to origin.
@@ -34,12 +33,9 @@ pub fn run_with_tag(path: &Path, tag: &str) -> anyhow::Result<()> {
     // that tells the user exactly what happened and what command to run to recover.
     println!(">>> git push origin tag {}", tag);
     if let Err(push_err) = run_command("git", &["push", "origin", "tag", tag], &target_dir) {
-        // Build a human-readable recovery hint using the exact tag name
         let hint = format!("git push origin {}", tag);
         return Err(anyhow::anyhow!(
-            "{}\n\\
-             {}\n\\
-             {}\n  {}",
+            "{}\n{}\n{}\n  {}\n({}: {})",
             gettextrs::gettext(
                 "Warning: the commit was pushed to the AUR but the tag could not be pushed."
             ),
@@ -50,7 +46,9 @@ pub fn run_with_tag(path: &Path, tag: &str) -> anyhow::Result<()> {
                 "Once the network issue is resolved, push the tag manually with:"
             ),
             hint,
-        ).context(push_err));
+            gettextrs::gettext("original error"),
+            push_err,
+        ));
     }
 
     Ok(())
@@ -180,9 +178,7 @@ fn detect_remote_default_branch(dir: &Path) -> Option<String> {
 
     if output.status.success() {
         let stdout = String::from_utf8_lossy(&output.stdout);
-        // Output: "refs/remotes/origin/main\n"
         let ref_str = stdout.trim();
-        // Extract the branch name after the last '/'
         if let Some(branch) = ref_str.rsplit('/').next() {
             let b = branch.trim().to_string();
             if !b.is_empty() && b != "HEAD" {
