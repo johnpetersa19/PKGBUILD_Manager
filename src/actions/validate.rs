@@ -8,7 +8,7 @@ use anyhow::{anyhow, Result};
 use gettextrs::gettext;
 use super::get_target_dir;
 
-// ── helpers ────────────────────────────────────────────────────────────────────────────────
+// ── helpers ──────────────────────────────────────────────────────────────────────────────────────
 
 fn makepkg(dir: &Path, args: &[&str]) -> Result<()> {
     println!(">>> makepkg {} (in {:?})", args.join(" "), dir);
@@ -28,7 +28,7 @@ fn makepkg(dir: &Path, args: &[&str]) -> Result<()> {
     }
 }
 
-// ── public actions ───────────────────────────────────────────────────────────────────
+// ── public actions ──────────────────────────────────────────────────────────────────────────────────
 
 /// `makepkg --printsrcinfo`
 /// Fastest offline check: validates syntax, mandatory variables and all
@@ -92,7 +92,7 @@ pub fn check_deps(path: &Path) -> Result<()> {
     makepkg(&dir, &["--syncdeps", "--nobuild"])
 }
 
-/// Full offline validation suite: syntax \u2192 namcap \u2192 shellcheck.
+/// Full offline validation suite: syntax → namcap → shellcheck.
 /// Does NOT download sources, install deps, or invoke pkgver().
 ///
 /// FIX: the previous implementation called parse() here, which runs
@@ -107,16 +107,31 @@ pub fn all_offline(path: &Path) -> Result<()> {
 
     // syntax() uses --printsrcinfo: guaranteed offline for all PKGBUILD types.
     // parse() is intentionally omitted here — see doc-comment above.
-    if let Err(e) = syntax(path)                  { errors.push(format!("[syntax]    {e}")); }
-    if let Err(e) = super::namcap::run(path)       { errors.push(format!("[namcap]    {e}")); }
-    if let Err(e) = super::shellcheck::run(path)   { errors.push(format!("[shellcheck]{e}")); }
+    if let Err(e) = syntax(path)                { errors.push(format!("[syntax]     {e}")); }
+    if let Err(e) = super::namcap::run(path)     { errors.push(format!("[namcap]     {e}")); }
+    if let Err(e) = super::shellcheck::run(path) { errors.push(format!("[shellcheck] {e}")); }
 
     if errors.is_empty() {
         println!("\n\u2714 {}", gettext("All offline checks passed."));
-        Ok(())
-    } else {
-        eprintln!("\n\u2716 {} {}:", errors.len(), gettext("check(s) failed"));
-        for e in &errors { eprintln!("  {e}"); }
-        Err(anyhow!("{} {}", errors.len(), gettext("validate check(s) failed")))
+        return Ok(());
     }
+
+    // Print a compact summary to the terminal for immediate feedback.
+    eprintln!("\n\u2716 {} {}:", errors.len(), gettext("check(s) failed"));
+    for e in &errors {
+        eprintln!("  {e}");
+    }
+
+    // Return ALL individual error details inside the anyhow chain so that
+    // callers propagating this error via `?` retain full context — not just
+    // the count.  Format:
+    //   "N validate check(s) failed:\n  [syntax]     ...
+    //    [namcap]     ..."
+    let detail = errors.join("\n  ");
+    Err(anyhow!(
+        "{} {}:\n  {}",
+        errors.len(),
+        gettext("validate check(s) failed"),
+        detail
+    ))
 }
