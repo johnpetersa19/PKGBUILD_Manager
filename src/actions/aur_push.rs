@@ -1,5 +1,6 @@
 use std::path::Path;
 use std::process::Command;
+use anyhow::Context as _;
 use super::{get_target_dir, run_command, regenerate_srcinfo};
 
 /// Stage PKGBUILD + .SRCINFO, commit with conventional AUR message, and push to origin.
@@ -36,8 +37,8 @@ pub fn run_with_tag(path: &Path, tag: &str) -> anyhow::Result<()> {
         // Build a human-readable recovery hint using the exact tag name
         let hint = format!("git push origin {}", tag);
         return Err(anyhow::anyhow!(
-            "{}\n\
-             {}\n\
+            "{}\n\\
+             {}\n\\
              {}\n  {}",
             gettextrs::gettext(
                 "Warning: the commit was pushed to the AUR but the tag could not be pushed."
@@ -57,11 +58,6 @@ pub fn run_with_tag(path: &Path, tag: &str) -> anyhow::Result<()> {
 
 // Internal: perform the full stage -> commit -> push flow given an already-resolved dir.
 fn run_with_dir(target_dir: &Path, message: Option<&str>) -> anyhow::Result<()> {
-    // `use anyhow::Context as _` brings the Context trait into scope so that
-    // `.context()` is available on Result/Option values in this function.
-    // No additional steps are needed — the wildcard import is sufficient.
-    use anyhow::Context as _;
-
     // Regenerate .SRCINFO and parse package info from the same output in one pass.
     let srcinfo_content = regenerate_srcinfo(target_dir)?;
 
