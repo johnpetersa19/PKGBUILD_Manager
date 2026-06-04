@@ -97,16 +97,17 @@ fn build_window(app: &Application) {
     toolbar_view.set_content(Some(&toast_overlay));
     win.set_content(Some(&toolbar_view));
 
-    render_groups(&main_box, &menu_data, &win);
+    render_groups(&main_box, &scroll, &menu_data, &win);
 
     // ── Buttons ───────────────────────────────────────────────────────────────
     reset_btn.connect_clicked(clone!(
         #[strong] menu_data,
         #[strong] main_box,
+        #[strong] scroll,
         #[strong] win,
         move |_| {
             *menu_data.borrow_mut() = config::default_menu();
-            render_groups(&main_box, &menu_data, &win);
+            render_groups(&main_box, &scroll, &menu_data, &win);
         }
     ));
 
@@ -140,16 +141,24 @@ fn build_window(app: &Application) {
 
 fn render_groups(
     main_box: &GBox,
+    scroll: &ScrolledWindow,
     menu_data: &Rc<RefCell<Vec<MenuGroup>>>,
     win: &ApplicationWindow,
 ) {
+    // Save current scroll position before rebuilding widgets.
+    // GTK resets vadjustment to 0 when children are removed, so we restore
+    // it after the next size-allocate pass via a one-shot signal handler.
+    let saved_scroll = scroll
+        .vadjustment()
+        .map(|adj| adj.value());
+
     while let Some(child) = main_box.first_child() {
         main_box.remove(&child);
     }
 
     let n_groups = menu_data.borrow().len();
     for g_idx in 0..n_groups {
-        let frame = build_group_widget(g_idx, n_groups, menu_data, main_box, win);
+        let frame = build_group_widget(g_idx, n_groups, menu_data, main_box, scroll, win);
         main_box.append(&frame);
     }
 
@@ -159,16 +168,39 @@ fn render_groups(
     add_btn.connect_clicked(clone!(
         #[strong] menu_data,
         #[strong] main_box,
+        #[strong] scroll,
         #[strong] win,
         move |_| {
             menu_data.borrow_mut().push(MenuGroup {
                 group: gettext("New Group"),
                 items: vec![],
             });
-            render_groups(&main_box, &menu_data, &win);
+            render_groups(&main_box, &scroll, &menu_data, &win);
         }
     ));
     main_box.append(&add_btn);
+
+    // Restore scroll position after GTK finishes laying out the new widgets.
+    // connect_size_allocate fires once the allocation is known; we disconnect
+    // immediately after the first call so it only runs once.
+    if let Some(pos) = saved_scroll {
+        let handler_id: Rc<RefCell<Option<glib::SignalHandlerId>>> =
+            Rc::new(RefCell::new(None));
+        let id = main_box.connect_size_allocate(clone!(
+            #[strong] scroll,
+            #[strong] handler_id,
+            move |widget, _| {
+                if let Some(adj) = scroll.vadjustment() {
+                    adj.set_value(pos);
+                }
+                // Disconnect after first run (one-shot)
+                if let Some(id) = handler_id.borrow_mut().take() {
+                    widget.disconnect(id);
+                }
+            }
+        ));
+        *handler_id.borrow_mut() = Some(id);
+    }
 }
 
 // ── Build one group frame ─────────────────────────────────────────────────────
@@ -178,6 +210,7 @@ fn build_group_widget(
     n_groups: usize,
     menu_data: &Rc<RefCell<Vec<MenuGroup>>>,
     main_box: &GBox,
+    scroll: &ScrolledWindow,
     win: &ApplicationWindow,
 ) -> gtk::Frame {
     let frame = gtk::Frame::new(None);
@@ -197,12 +230,12 @@ fn build_group_widget(
     up_btn.add_css_class("flat");
     up_btn.set_sensitive(g_idx > 0);
     up_btn.connect_clicked(clone!(
-        #[strong] menu_data, #[strong] main_box, #[strong] win,
+        #[strong] menu_data, #[strong] main_box, #[strong] scroll, #[strong] win,
         move |_| {
             let len = menu_data.borrow().len();
             if g_idx > 0 && g_idx < len {
                 menu_data.borrow_mut().swap(g_idx, g_idx - 1);
-                render_groups(&main_box, &menu_data, &win);
+                render_groups(&main_box, &scroll, &menu_data, &win);
             }
         }
     ));
@@ -211,12 +244,12 @@ fn build_group_widget(
     down_btn.add_css_class("flat");
     down_btn.set_sensitive(g_idx < n_groups - 1);
     down_btn.connect_clicked(clone!(
-        #[strong] menu_data, #[strong] main_box, #[strong] win,
+        #[strong] menu_data, #[strong] main_box, #[strong] scroll, #[strong] win,
         move |_| {
             let len = menu_data.borrow().len();
             if g_idx + 1 < len {
                 menu_data.borrow_mut().swap(g_idx, g_idx + 1);
-                render_groups(&main_box, &menu_data, &win);
+                render_groups(&main_box, &scroll, &menu_data, &win);
             }
         }
     ));
@@ -239,11 +272,11 @@ fn build_group_widget(
     del_btn.add_css_class("flat");
     del_btn.add_css_class("error");
     del_btn.connect_clicked(clone!(
-        #[strong] menu_data, #[strong] main_box, #[strong] win,
+        #[strong] menu_data, #[strong] main_box, #[strong] scroll, #[strong] win,
         move |_| {
             if g_idx < menu_data.borrow().len() {
                 menu_data.borrow_mut().remove(g_idx);
-                render_groups(&main_box, &menu_data, &win);
+                render_groups(&main_box, &scroll, &menu_data, &win);
             }
         }
     ));
@@ -264,7 +297,7 @@ fn build_group_widget(
 
     let n_items = menu_data.borrow()[g_idx].items.len();
     for i_idx in 0..n_items {
-        let row = build_item_row(g_idx, i_idx, n_items, menu_data, main_box, win);
+        let row = build_item_row(g_idx, i_idx, n_items, menu_data, main_box, scroll, win);
         items_box.append(&row);
     }
 
@@ -273,9 +306,9 @@ fn build_group_widget(
     add_item_btn.set_halign(Align::Start);
     add_item_btn.set_margin_start(4);
     add_item_btn.connect_clicked(clone!(
-        #[strong] menu_data, #[strong] main_box, #[strong] win,
+        #[strong] menu_data, #[strong] main_box, #[strong] scroll, #[strong] win,
         move |_| {
-            show_add_item_dialog(g_idx, &menu_data, &main_box, &win);
+            show_add_item_dialog(g_idx, &menu_data, &main_box, &scroll, &win);
         }
     ));
     items_box.append(&add_item_btn);
@@ -292,6 +325,7 @@ fn build_item_row(
     n_items: usize,
     menu_data: &Rc<RefCell<Vec<MenuGroup>>>,
     main_box: &GBox,
+    scroll: &ScrolledWindow,
     win: &ApplicationWindow,
 ) -> ListBoxRow {
     let row = ListBoxRow::new();
@@ -340,12 +374,12 @@ fn build_item_row(
     up_btn.add_css_class("flat");
     up_btn.set_sensitive(i_idx > 0);
     up_btn.connect_clicked(clone!(
-        #[strong] menu_data, #[strong] main_box, #[strong] win,
+        #[strong] menu_data, #[strong] main_box, #[strong] scroll, #[strong] win,
         move |_| {
             let len = menu_data.borrow()[g_idx].items.len();
             if i_idx > 0 && i_idx < len {
                 menu_data.borrow_mut()[g_idx].items.swap(i_idx, i_idx - 1);
-                render_groups(&main_box, &menu_data, &win);
+                render_groups(&main_box, &scroll, &menu_data, &win);
             }
         }
     ));
@@ -354,12 +388,12 @@ fn build_item_row(
     down_btn.add_css_class("flat");
     down_btn.set_sensitive(i_idx < n_items - 1);
     down_btn.connect_clicked(clone!(
-        #[strong] menu_data, #[strong] main_box, #[strong] win,
+        #[strong] menu_data, #[strong] main_box, #[strong] scroll, #[strong] win,
         move |_| {
             let len = menu_data.borrow()[g_idx].items.len();
             if i_idx + 1 < len {
                 menu_data.borrow_mut()[g_idx].items.swap(i_idx, i_idx + 1);
-                render_groups(&main_box, &menu_data, &win);
+                render_groups(&main_box, &scroll, &menu_data, &win);
             }
         }
     ));
@@ -368,12 +402,12 @@ fn build_item_row(
     let del_btn = Button::builder().icon_name("list-remove-symbolic").build();
     del_btn.add_css_class("flat");
     del_btn.connect_clicked(clone!(
-        #[strong] menu_data, #[strong] main_box, #[strong] win,
+        #[strong] menu_data, #[strong] main_box, #[strong] scroll, #[strong] win,
         move |_| {
             let len = menu_data.borrow()[g_idx].items.len();
             if i_idx < len {
                 menu_data.borrow_mut()[g_idx].items.remove(i_idx);
-                render_groups(&main_box, &menu_data, &win);
+                render_groups(&main_box, &scroll, &menu_data, &win);
             }
         }
     ));
@@ -394,6 +428,7 @@ fn show_add_item_dialog(
     g_idx: usize,
     menu_data: &Rc<RefCell<Vec<MenuGroup>>>,
     main_box: &GBox,
+    scroll: &ScrolledWindow,
     win: &ApplicationWindow,
 ) {
     let dialog = adw::Dialog::builder()
@@ -435,6 +470,7 @@ fn show_add_item_dialog(
     list_box.connect_row_activated(clone!(
         #[strong] menu_data,
         #[strong] main_box,
+        #[strong] scroll,
         #[strong] win,
         #[strong] dialog,
         #[strong] all,
@@ -447,7 +483,7 @@ fn show_add_item_dialog(
                     enabled: true,
                 });
                 dialog.close();
-                render_groups(&main_box, &menu_data, &win);
+                render_groups(&main_box, &scroll, &menu_data, &win);
             }
         }
     ));
