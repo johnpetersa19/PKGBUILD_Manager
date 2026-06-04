@@ -6,6 +6,7 @@ src/actions/clean.rs
 src/actions/mod.rs
 src/actions/namcap.rs
 src/actions/shellcheck.rs
+src/actions/validate.rs
 src/aur_push_gui/aur_dialog.rs
 src/main.rs
 src/settings_gui/app.rs
