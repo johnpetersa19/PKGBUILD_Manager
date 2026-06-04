@@ -208,7 +208,7 @@ fn setup_nautilus() -> Result<()> {
         println!("{}: {}", gettext("Extension found"), ext_path.display());
     }
 
-    println!("{}", gettext("Restarting Nautilus\u2026"));
+    println!("{}", gettext("Restarting Nautilus\u{2026}"));
     let _ = Command::new("nautilus").arg("-q").status();
     std::thread::sleep(std::time::Duration::from_millis(800));
     let _ = Command::new("nautilus").spawn();

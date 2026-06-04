@@ -61,7 +61,7 @@ fn run_with_dir(target_dir: &Path, message: Option<&str>) -> anyhow::Result<()> 
         // so we detect it explicitly and continue. Any other failure is propagated.
         let combined = format!("{}{}", stdout, stderr);
         if combined.contains("nothing to commit") || combined.contains("nothing added to commit") {
-            println!("{}", gettextrs::gettext("Note: nothing to commit or commit failed \u2014 continuing with push."));
+            println!("{}", gettextrs::gettext("Note: nothing to commit or commit failed \u{2014} continuing with push."));
         } else {
             return Err(anyhow::anyhow!(
                 "{}: {}",
