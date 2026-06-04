@@ -1,0 +1,159 @@
+#!/usr/bin/env bash
+# register-shortcut — configura Ctrl+Alt+P → pkgbuild-manager-settings
+# Suporta GNOME, KDE Plasma, XFCE e Cinnamon.
+# Executado como usuário (não root) pelo .install do pacote.
+
+set -euo pipefail
+
+COMMAND="pkgbuild-manager-settings"
+NAME="PKGBUILD Manager Settings"
+BINDING="<Primary><Alt>p"
+
+detect_de() {
+    local de="${XDG_CURRENT_DESKTOP:-}"
+    de="${de,,}"   # lowercase
+    case "$de" in
+        *gnome*)    echo gnome ;;
+        *kde*)      echo kde ;;
+        *xfce*)     echo xfce ;;
+        *cinnamon*) echo cinnamon ;;
+        *)          echo unknown ;;
+    esac
+}
+
+# ── GNOME ──────────────────────────────────────────────────────────────────────
+register_gnome() {
+    local schema="org.gnome.settings-daemon.plugins.media-keys"
+    local base_path="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
+    local slot_path
+
+    # Lê atalhos personalizados já existentes
+    local existing
+    existing=$(gsettings get "$schema" custom-keybindings 2>/dev/null || echo "@as []")
+
+    # Verifica se o atalho já foi registrado
+    if echo "$existing" | grep -q "pkgbuild-manager"; then
+        echo "[pkgbuild-manager] Atalho GNOME já registrado — nenhuma alteração."
+        return 0
+    fi
+
+    # Encontra o próximo slot livre: custom0, custom1, …
+    local index=0
+    while echo "$existing" | grep -q "custom${index}/"; do
+        (( index++ ))
+    done
+    slot_path="${base_path}/custom${index}/"
+
+    # Registra o novo atalho no slot
+    local full_schema="${schema}.custom-keybinding"
+    gsettings set "${full_schema}:${slot_path}" name    "$NAME"
+    gsettings set "${full_schema}:${slot_path}" command  "$COMMAND"
+    gsettings set "${full_schema}:${slot_path}" binding  "$BINDING"
+
+    # Atualiza a lista de slots ativos
+    local new_list
+    if [ "$existing" = "@as []" ] || [ "$existing" = "[]" ]; then
+        new_list="['${slot_path}']"
+    else
+        # Remove ] do fim, adiciona o novo slot
+        new_list="${existing%]}, '${slot_path}']"
+    fi
+    gsettings set "$schema" custom-keybindings "$new_list"
+
+    echo "[pkgbuild-manager] Atalho GNOME registrado: ${BINDING} → ${COMMAND}"
+}
+
+# ── KDE Plasma ─────────────────────────────────────────────────────────────────
+register_kde() {
+    if ! command -v kwriteconfig5 &>/dev/null && ! command -v kwriteconfig6 &>/dev/null; then
+        echo "[pkgbuild-manager] kwriteconfig não encontrado — pule KDE."
+        return 0
+    fi
+    local kwrite
+    kwrite=$(command -v kwriteconfig6 2>/dev/null || command -v kwriteconfig5)
+
+    local cfg="${HOME}/.config/kglobalshortcutsrc"
+
+    # Verifica duplicidade
+    if grep -q "pkgbuild-manager-settings" "$cfg" 2>/dev/null; then
+        echo "[pkgbuild-manager] Atalho KDE já registrado — nenhuma alteração."
+        return 0
+    fi
+
+    "$kwrite" --file kglobalshortcutsrc \
+        --group "pkgbuild-manager-settings.desktop" \
+        --key "_launch" \
+        "Ctrl+Alt+P,none,${NAME}"
+
+    echo "[pkgbuild-manager] Atalho KDE registrado: Ctrl+Alt+P → ${COMMAND}"
+}
+
+# ── XFCE ───────────────────────────────────────────────────────────────────────
+register_xfce() {
+    if ! command -v xfconf-query &>/dev/null; then
+        echo "[pkgbuild-manager] xfconf-query não encontrado — pule XFCE."
+        return 0
+    fi
+
+    # Verifica duplicidade
+    if xfconf-query -c xfce4-keyboard-shortcuts -l 2>/dev/null | grep -q "pkgbuild-manager"; then
+        echo "[pkgbuild-manager] Atalho XFCE já registrado — nenhuma alteração."
+        return 0
+    fi
+
+    xfconf-query -c xfce4-keyboard-shortcuts \
+        -p "/commands/custom/<Primary><Alt>p" \
+        --create -t string -s "$COMMAND"
+
+    echo "[pkgbuild-manager] Atalho XFCE registrado: Ctrl+Alt+P → ${COMMAND}"
+}
+
+# ── Cinnamon ───────────────────────────────────────────────────────────────────
+register_cinnamon() {
+    local schema="org.cinnamon.desktop.keybindings"
+
+    # Verifica duplicidade via dconf
+    local existing
+    existing=$(gsettings get "$schema" custom-list 2>/dev/null || echo "@as []")
+    if echo "$existing" | grep -q "pkgbuild-manager"; then
+        echo "[pkgbuild-manager] Atalho Cinnamon já registrado — nenhuma alteração."
+        return 0
+    fi
+
+    local slot="pkgbuild-manager-settings"
+    local slot_schema="org.cinnamon.desktop.keybindings.custom-keybinding"
+    local slot_path="/org/cinnamon/desktop/keybindings/custom-keybindings/${slot}/"
+
+    gsettings set "${slot_schema}:${slot_path}" name    "$NAME"
+    gsettings set "${slot_schema}:${slot_path}" command  "$COMMAND"
+    gsettings set "${slot_schema}:${slot_path}" binding  "[\"${BINDING}\"]"
+
+    if [ "$existing" = "@as []" ] || [ "$existing" = "[]" ]; then
+        gsettings set "$schema" custom-list "['${slot}']"
+    else
+        local new_list="${existing%]}, '${slot}']"
+        gsettings set "$schema" custom-list "$new_list"
+    fi
+
+    echo "[pkgbuild-manager] Atalho Cinnamon registrado: ${BINDING} → ${COMMAND}"
+}
+
+# ── Main ───────────────────────────────────────────────────────────────────────
+main() {
+    local de
+    de=$(detect_de)
+    echo "[pkgbuild-manager] Desktop detectado: ${de}"
+
+    case "$de" in
+        gnome)    register_gnome    ;;
+        kde)      register_kde      ;;
+        xfce)     register_xfce     ;;
+        cinnamon) register_cinnamon ;;
+        *)
+            echo "[pkgbuild-manager] DE não suportado (${XDG_CURRENT_DESKTOP:-desconhecido})."
+            echo "  → Registre manualmente: Ctrl+Alt+P → pkgbuild-manager-settings"
+            ;;
+    esac
+}
+
+main "$@"

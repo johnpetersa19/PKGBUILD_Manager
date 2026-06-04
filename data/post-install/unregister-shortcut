@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# unregister-shortcut — remove o atalho Ctrl+Alt+P do pkgbuild-manager
+# Executado como usuário (não root) pelo .install do pacote na desinstalação.
+
+set -euo pipefail
+
+detect_de() {
+    local de="${XDG_CURRENT_DESKTOP:-}"
+    de="${de,,}"
+    case "$de" in
+        *gnome*)    echo gnome ;;
+        *kde*)      echo kde ;;
+        *xfce*)     echo xfce ;;
+        *cinnamon*) echo cinnamon ;;
+        *)          echo unknown ;;
+    esac
+}
+
+unregister_gnome() {
+    local schema="org.gnome.settings-daemon.plugins.media-keys"
+    local base_path="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
+    local full_schema="${schema}.custom-keybinding"
+
+    local existing
+    existing=$(gsettings get "$schema" custom-keybindings 2>/dev/null || echo "@as []")
+
+    # Encontra o slot que aponta para pkgbuild-manager-settings
+    local slot_path
+    local index=0
+    slot_path=""
+    while true; do
+        local p="${base_path}/custom${index}/"
+        local cmd
+        cmd=$(gsettings get "${full_schema}:${p}" command 2>/dev/null || echo "")
+        if [ -z "$cmd" ]; then break; fi
+        if echo "$cmd" | grep -q "pkgbuild-manager-settings"; then
+            slot_path="$p"
+            break
+        fi
+        (( index++ ))
+    done
+
+    if [ -z "$slot_path" ]; then
+        echo "[pkgbuild-manager] Atalho GNOME não encontrado — nenhuma alteração."
+        return 0
+    fi
+
+    # Remove da lista
+    local new_list
+    new_list=$(echo "$existing" | sed "s|'${slot_path}'||g" | sed "s|, ,|,|g" | sed "s|\[, |[|g" | sed "s|, \]|]|g")
+    gsettings set "$schema" custom-keybindings "$new_list"
+
+    # Limpa as chaves do slot
+    gsettings reset "${full_schema}:${slot_path}" name    2>/dev/null || true
+    gsettings reset "${full_schema}:${slot_path}" command 2>/dev/null || true
+    gsettings reset "${full_schema}:${slot_path}" binding 2>/dev/null || true
+
+    echo "[pkgbuild-manager] Atalho GNOME removido."
+}
+
+unregister_kde() {
+    local kwrite
+    kwrite=$(command -v kwriteconfig6 2>/dev/null || command -v kwriteconfig5 2>/dev/null || echo "")
+    if [ -z "$kwrite" ]; then return 0; fi
+
+    "$kwrite" --file kglobalshortcutsrc \
+        --group "pkgbuild-manager-settings.desktop" \
+        --key "_launch" \
+        "none,none,PKGBUILD Manager Settings"
+    echo "[pkgbuild-manager] Atalho KDE removido."
+}
+
+unregister_xfce() {
+    if ! command -v xfconf-query &>/dev/null; then return 0; fi
+    xfconf-query -c xfce4-keyboard-shortcuts \
+        -p "/commands/custom/<Primary><Alt>p" \
+        --reset 2>/dev/null || true
+    echo "[pkgbuild-manager] Atalho XFCE removido."
+}
+
+unregister_cinnamon() {
+    local schema="org.cinnamon.desktop.keybindings"
+    local slot="pkgbuild-manager-settings"
+
+    local existing
+    existing=$(gsettings get "$schema" custom-list 2>/dev/null || echo "@as []")
+    local new_list
+    new_list=$(echo "$existing" | sed "s|'${slot}'||g" | sed "s|, ,|,|g" | sed "s|\[, |[|g" | sed "s|, \]|]|g")
+    gsettings set "$schema" custom-list "$new_list" 2>/dev/null || true
+    echo "[pkgbuild-manager] Atalho Cinnamon removido."
+}
+
+main() {
+    local de
+    de=$(detect_de)
+    case "$de" in
+        gnome)    unregister_gnome    ;;
+        kde)      unregister_kde      ;;
+        xfce)     unregister_xfce     ;;
+        cinnamon) unregister_cinnamon ;;
+        *) echo "[pkgbuild-manager] DE não suportado — nenhuma alteração.";;
+    esac
+}
+
+main "$@"
