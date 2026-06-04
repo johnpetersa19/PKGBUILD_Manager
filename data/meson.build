@@ -87,7 +87,7 @@ install_data(
   install_dir: get_option('datadir') / 'applications',
 )
 
-# Post-install scripts: registra/remove atalho Ctrl+Alt+P no DE do usuário
+# Post-install scripts: register/unregister Ctrl+Alt+P shortcut in the user DE
 install_data(
   'post-install/register-shortcut',
   'post-install/unregister-shortcut',

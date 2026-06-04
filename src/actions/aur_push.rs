@@ -21,8 +21,10 @@ pub fn run_with_tag(path: &Path, tag: &str) -> anyhow::Result<()> {
     run_with_dir(&target_dir, None)?;
 
     // Step 2: create the annotated tag locally
+    println!("[STEP] git-tag start");
     println!(">>> git tag -a {:?} -m {:?}", tag, tag);
     run_command("git", &["tag", "-a", tag, "-m", tag], &target_dir)?;
+    println!("[STEP] git-tag ok");
 
     // Step 3: push the tag to the remote.
     //
@@ -31,8 +33,10 @@ pub fn run_with_tag(path: &Path, tag: &str) -> anyhow::Result<()> {
     // A true rollback is impossible once the commit is on the remote, so instead
     // we catch the error explicitly and emit a clearly-worded, actionable message
     // that tells the user exactly what happened and what command to run to recover.
+    println!("[STEP] git-push-tag start");
     println!(">>> git push origin tag {}", tag);
     if let Err(push_err) = run_command("git", &["push", "origin", "tag", tag], &target_dir) {
+        println!("[STEP] git-push-tag error: {}", push_err);
         let hint = format!("git push origin {}", tag);
         return Err(anyhow::anyhow!(
             "{}\n{}\n{}\n  {}\n({}: {})",
@@ -50,19 +54,39 @@ pub fn run_with_tag(path: &Path, tag: &str) -> anyhow::Result<()> {
             push_err,
         ));
     }
+    println!("[STEP] git-push-tag ok");
 
     Ok(())
 }
 
 // Internal: perform the full stage -> commit -> push flow given an already-resolved dir.
 fn run_with_dir(target_dir: &Path, message: Option<&str>) -> anyhow::Result<()> {
-    // Regenerate .SRCINFO and parse package info from the same output in one pass.
+    // Step 1: Regenerate .SRCINFO and parse package info from the same output in one pass.
+    println!("[STEP] regen-srcinfo start");
     let srcinfo_content = regenerate_srcinfo(target_dir)?;
+    println!("[STEP] regen-srcinfo ok");
 
-    // Stage
+    // Step 2: git status (informational, non-fatal)
+    println!("[STEP] git-status start");
+    if let Ok(o) = Command::new("git")
+        .args(["status", "--short"])
+        .current_dir(target_dir)
+        .output()
+    {
+        let txt = String::from_utf8_lossy(&o.stdout);
+        for line in txt.lines() {
+            println!("  {}", line);
+        }
+    }
+    println!("[STEP] git-status ok");
+
+    // Step 3: git add
+    println!("[STEP] git-add start");
     run_command("git", &["add", "PKGBUILD", ".SRCINFO"], target_dir)?;
+    println!("[STEP] git-add ok");
 
-    // Build commit message
+    // Step 4: Build commit message and commit
+    println!("[STEP] git-commit start");
     let auto_msg;
     let commit_msg: &str = if let Some(m) = message {
         m
@@ -81,21 +105,28 @@ fn run_with_dir(target_dir: &Path, message: Option<&str>) -> anyhow::Result<()> 
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr);
         let stdout = String::from_utf8_lossy(&output.stdout);
-        // git exits 1 with "nothing to commit" -- that is not a real error,
-        // so we detect it explicitly and continue. Any other failure is propagated.
         let combined = format!("{}{}", stdout, stderr);
         if combined.contains("nothing to commit") || combined.contains("nothing added to commit") {
             println!("{}", gettextrs::gettext("Note: nothing to commit or commit failed \u{2014} continuing with push."));
+            println!("[STEP] git-commit ok");
         } else {
+            println!("[STEP] git-commit error: {}", stderr.trim());
             return Err(anyhow::anyhow!(
                 "{}: {}",
                 gettextrs::gettext("git commit failed"),
                 stderr.trim()
             ));
         }
+    } else {
+        println!("[STEP] git-commit ok");
     }
 
-    push_to_aur(target_dir)
+    // Step 5: push
+    println!("[STEP] git-push start");
+    push_to_aur(target_dir)?;
+    println!("[STEP] git-push ok");
+
+    Ok(())
 }
 
 /// Parse pkgname/pkgver/pkgrel from already-fetched .SRCINFO text.
@@ -157,19 +188,18 @@ fn push_to_aur(dir: &Path) -> anyhow::Result<()> {
     Ok(())
 }
 
-/// Bug #11 fix + Opt #6: detecta o branch padrão do remote sem nenhuma
-/// chamada de rede. Usa apenas referências locais do git, que são
-/// instantâneas e nunca bloqueiam a thread chamadora.
+/// Detect the remote default branch without any network call.
+/// Uses only local git refs, which are instantaneous and never block the caller.
 ///
-/// Estratégia (sem rede, em ordem de preferência):
+/// Strategy (no network, in order of preference):
 ///   1. git symbolic-ref refs/remotes/origin/HEAD
-///      → resolve o tracking branch que o `git clone`/`git fetch` define.
-///      Exemplo de saída: "refs/remotes/origin/main" → extrai "main".
-///   2. Verifica se refs/remotes/origin/main existe localmente.
-///   3. Verifica se refs/remotes/origin/master existe localmente.
-///   4. Retorna None → caller usa "master" como fallback.
+///      → resolves the tracking branch set by `git clone`/`git fetch`.
+///      Example output: "refs/remotes/origin/main" → extracts "main".
+///   2. Check if refs/remotes/origin/main exists locally.
+///   3. Check if refs/remotes/origin/master exists locally.
+///   4. Return None → caller falls back to "master".
 fn detect_remote_default_branch(dir: &Path) -> Option<String> {
-    // 1. Tenta symbolic-ref (disponivel após clone ou fetch --all)
+    // 1. Try symbolic-ref (available after clone or fetch --all)
     let output = Command::new("git")
         .args(["symbolic-ref", "refs/remotes/origin/HEAD"])
         .current_dir(dir)
@@ -187,7 +217,7 @@ fn detect_remote_default_branch(dir: &Path) -> Option<String> {
         }
     }
 
-    // 2. Verifica se origin/main existe como ref local
+    // 2. Check if origin/main exists as a local ref
     let check_ref = |refname: &str| -> bool {
         Command::new("git")
             .args(["rev-parse", "--verify", refname])
@@ -207,6 +237,6 @@ fn detect_remote_default_branch(dir: &Path) -> Option<String> {
         return Some("master".to_string());
     }
 
-    // 3. Sem informação local — caller faz fallback para "master"
+    // 3. No local information — caller falls back to "master"
     None
 }
