@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-03 23:23-0300\n"
-"PO-Revision-Date: 2026-06-03 23:27-0300\n"
+"PO-Revision-Date: 2026-06-03 23:31-0300\n"
 "Last-Translator: John Peter Sa\n"
 "Language-Team: Portuguese (Brazil)\n"
 "Language: pt_BR\n"
@@ -517,78 +517,6 @@ msgstr "✓ Fluxo completo concluído com sucesso!"
 msgid "notify_full_workflow_fail"
 msgstr "✗ Falha no fluxo completo! Ver: "
 
-msgid "notify_build_force"
-msgstr "Compilação forçada em andamento…"
-
-msgid "notify_build_force_ok"
-msgstr "✓ Compilação forçada concluída!"
-
-msgid "notify_build_force_fail"
-msgstr "✗ Falha na compilação forçada! Ver: "
-
-msgid "notify_build_nocheck"
-msgstr "Compilando sem verificações…"
-
-msgid "notify_build_nocheck_ok"
-msgstr "✓ Compilado sem verificações!"
-
-msgid "notify_build_nocheck_fail"
-msgstr "✗ Falha na compilação sem verificações! Ver: "
-
-msgid "notify_build_nogpg"
-msgstr "Compilando sem GPG…"
-
-msgid "notify_build_nogpg_ok"
-msgstr "✓ Compilado sem GPG!"
-
-msgid "notify_build_nogpg_fail"
-msgstr "✗ Falha na compilação sem GPG! Ver: "
-
-msgid "notify_fetch_sources"
-msgstr "Baixando fontes…"
-
-msgid "notify_fetch_sources_ok"
-msgstr "✓ Fontes baixadas com sucesso!"
-
-msgid "notify_fetch_sources_fail"
-msgstr "✗ Falha ao baixar fontes! Ver: "
-
-msgid "notify_install_force"
-msgstr "Instalação forçada em andamento…"
-
-msgid "notify_install_force_ok"
-msgstr "✓ Instalação forçada concluída!"
-
-msgid "notify_install_force_fail"
-msgstr "✗ Falha na instalação forçada! Ver: "
-
-msgid "notify_install_rmdeps"
-msgstr "Instalando e removendo dependências de compilação…"
-
-msgid "notify_install_rmdeps_ok"
-msgstr "✓ Instalado e dependências de compilação removidas!"
-
-msgid "notify_install_rmdeps_fail"
-msgstr "✗ Falha ao instalar e remover dependências de compilação! Ver: "
-
-msgid "notify_install_nocheck"
-msgstr "Instalando sem verificações…"
-
-msgid "notify_install_nocheck_ok"
-msgstr "✓ Instalado sem verificações!"
-
-msgid "notify_install_nocheck_fail"
-msgstr "✗ Falha na instalação sem verificações! Ver: "
-
-msgid "notify_install_nogpg"
-msgstr "Instalando sem GPG…"
-
-msgid "notify_install_nogpg_ok"
-msgstr "✓ Instalado sem GPG!"
-
-msgid "notify_install_nogpg_fail"
-msgstr "✗ Falha na instalação sem GPG! Ver: "
-
 msgid "notify_genchecksums"
 msgstr "Gerando checksums…"
 
@@ -606,6 +534,78 @@ msgstr "✓ Tag criada e enviada para o AUR!"
 
 msgid "notify_push_aur_tag_fail"
 msgstr "✗ Falha ao criar tag/enviar para o AUR! Ver: "
+
+#~ msgid "notify_build_force"
+#~ msgstr "Compilação forçada em andamento…"
+
+#~ msgid "notify_build_force_ok"
+#~ msgstr "✓ Compilação forçada concluída!"
+
+#~ msgid "notify_build_force_fail"
+#~ msgstr "✗ Falha na compilação forçada! Ver: "
+
+#~ msgid "notify_build_nocheck"
+#~ msgstr "Compilando sem verificações…"
+
+#~ msgid "notify_build_nocheck_ok"
+#~ msgstr "✓ Compilado sem verificações!"
+
+#~ msgid "notify_build_nocheck_fail"
+#~ msgstr "✗ Falha na compilação sem verificações! Ver: "
+
+#~ msgid "notify_build_nogpg"
+#~ msgstr "Compilando sem GPG…"
+
+#~ msgid "notify_build_nogpg_ok"
+#~ msgstr "✓ Compilado sem GPG!"
+
+#~ msgid "notify_build_nogpg_fail"
+#~ msgstr "✗ Falha na compilação sem GPG! Ver: "
+
+#~ msgid "notify_fetch_sources"
+#~ msgstr "Baixando fontes…"
+
+#~ msgid "notify_fetch_sources_ok"
+#~ msgstr "✓ Fontes baixadas com sucesso!"
+
+#~ msgid "notify_fetch_sources_fail"
+#~ msgstr "✗ Falha ao baixar fontes! Ver: "
+
+#~ msgid "notify_install_force"
+#~ msgstr "Instalação forçada em andamento…"
+
+#~ msgid "notify_install_force_ok"
+#~ msgstr "✓ Instalação forçada concluída!"
+
+#~ msgid "notify_install_force_fail"
+#~ msgstr "✗ Falha na instalação forçada! Ver: "
+
+#~ msgid "notify_install_rmdeps"
+#~ msgstr "Instalando e removendo dependências de compilação…"
+
+#~ msgid "notify_install_rmdeps_ok"
+#~ msgstr "✓ Instalado e dependências de compilação removidas!"
+
+#~ msgid "notify_install_rmdeps_fail"
+#~ msgstr "✗ Falha ao instalar e remover dependências de compilação! Ver: "
+
+#~ msgid "notify_install_nocheck"
+#~ msgstr "Instalando sem verificações…"
+
+#~ msgid "notify_install_nocheck_ok"
+#~ msgstr "✓ Instalado sem verificações!"
+
+#~ msgid "notify_install_nocheck_fail"
+#~ msgstr "✗ Falha na instalação sem verificações! Ver: "
+
+#~ msgid "notify_install_nogpg"
+#~ msgstr "Instalando sem GPG…"
+
+#~ msgid "notify_install_nogpg_ok"
+#~ msgstr "✓ Instalado sem GPG!"
+
+#~ msgid "notify_install_nogpg_fail"
+#~ msgstr "✗ Falha na instalação sem GPG! Ver: "
 
 #~ msgid "Add Action"
 #~ msgstr "Adicionar Ação"
