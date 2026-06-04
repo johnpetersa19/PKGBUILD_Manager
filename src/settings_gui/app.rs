@@ -387,6 +387,8 @@ fn build_item_row(
 }
 
 // ── Add-item dialog ───────────────────────────────────────────────────────────
+// Designer from stable app.py: adw::Dialog + ToolbarView + HeaderBar
+// Simple gtk::Label rows, click to add + close (row-activated), no Cancel/Add buttons.
 
 fn show_add_item_dialog(
     g_idx: usize,
@@ -394,69 +396,65 @@ fn show_add_item_dialog(
     main_box: &GBox,
     win: &ApplicationWindow,
 ) {
-    use adw::prelude::*;
-
-    let dialog = adw::AlertDialog::builder()
-        .heading(&gettext("Add Menu Item"))
-        .body(&gettext("Choose an action to add to this group."))
-        .content_width(480)
-        .content_height(520)
+    let dialog = adw::Dialog::builder()
+        .title(&gettext("Add Action"))
+        .content_width(360)
+        .content_height(480)
         .build();
 
-    dialog.add_response("cancel", &gettext("Cancel"));
-    dialog.add_response("add",    &gettext("Add"));
-    dialog.set_response_appearance("add", adw::ResponseAppearance::Suggested);
-    dialog.set_default_response(Some("add"));
-    dialog.set_close_response("cancel");
+    let toolbar = adw::ToolbarView::new();
+    toolbar.add_top_bar(&HeaderBar::new());
 
-    let list = ListBox::builder()
+    let inner_scroll = ScrolledWindow::builder().vexpand(true).build();
+    inner_scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
+
+    let list_box = ListBox::builder()
         .selection_mode(SelectionMode::Single)
         .build();
-    list.add_css_class("boxed-list");
+    list_box.add_css_class("boxed-list");
+    list_box.set_margin_top(12);
+    list_box.set_margin_bottom(12);
+    list_box.set_margin_start(12);
+    list_box.set_margin_end(12);
 
     let all = config::all_actions();
-    for (id, label) in &all {
-        let r = adw::ActionRow::builder()
-            .title(label.as_str())
-            .subtitle(id.as_str())
+    for (_id, label) in &all {
+        let lbl = gtk::Label::builder()
+            .label(label.as_str())
+            .xalign(0.0)
+            .margin_top(8)
+            .margin_bottom(8)
+            .margin_start(8)
             .build();
-        list.append(&r);
+        let row = ListBoxRow::new();
+        row.set_child(Some(&lbl));
+        list_box.append(&row);
     }
 
-    let scroll = ScrolledWindow::builder()
-        .child(&list)
-        .min_content_height(300)
-        .max_content_height(460)
-        .build();
-
-    dialog.set_extra_child(Some(&scroll));
-
-    dialog.connect_response(
-        None,
-        clone!(
-            #[strong] menu_data,
-            #[strong] main_box,
-            #[strong] win,
-            #[strong] list,
-            move |_, response| {
-                if response != "add" {
-                    return;
-                }
-                if let Some(row) = list.selected_row() {
-                    let idx = row.index() as usize;
-                    if let Some((id, label)) = all.get(idx) {
-                        menu_data.borrow_mut()[g_idx].items.push(MenuItem {
-                            id: id.clone(),
-                            label: label.clone(),
-                            enabled: true,
-                        });
-                        render_groups(&main_box, &menu_data, &win);
-                    }
-                }
+    // row-activated: click = add item + close dialog — matches app.py on_row_activated
+    list_box.connect_row_activated(clone!(
+        #[strong] menu_data,
+        #[strong] main_box,
+        #[strong] win,
+        #[strong] dialog,
+        #[strong] all,
+        move |_, row| {
+            let idx = row.index() as usize;
+            if let Some((id, label)) = all.get(idx) {
+                menu_data.borrow_mut()[g_idx].items.push(MenuItem {
+                    id: id.clone(),
+                    label: label.clone(),
+                    enabled: true,
+                });
+                dialog.close();
+                render_groups(&main_box, &menu_data, &win);
             }
-        ),
-    );
+        }
+    ));
 
+    inner_scroll.set_child(Some(&list_box));
+    toolbar.set_content(Some(&inner_scroll));
+    dialog.set_child(Some(&toolbar));
     dialog.present(Some(win));
 }
 
