@@ -8,6 +8,7 @@ use gtk::{
     Align, Box as GBox, Button, Label, ListBox, ListBoxRow, Orientation,
     ScrolledWindow, SelectionMode, Separator, Switch, pango,
 };
+use gettextrs::gettext;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::process::{Command, Stdio};
@@ -49,7 +50,7 @@ fn build_window(app: &Application) {
 
     let win = ApplicationWindow::builder()
         .application(app)
-        .title("PKGBUILD Manager — Menu Settings")
+        .title(&gettext("PKGBUILD Manager — Menu Settings"))
         .default_width(w)
         .default_height(h)
         .build();
@@ -69,11 +70,11 @@ fn build_window(app: &Application) {
     let toolbar_view = adw::ToolbarView::new();
     let header = HeaderBar::new();
 
-    let reset_btn = Button::builder().label("Reset").build();
+    let reset_btn = Button::builder().label(&gettext("Reset")).build();
     reset_btn.add_css_class("destructive-action");
     header.pack_start(&reset_btn);
 
-    let save_btn = Button::builder().label("Save").build();
+    let save_btn = Button::builder().label(&gettext("Save")).build();
     save_btn.add_css_class("suggested-action");
     header.pack_end(&save_btn);
 
@@ -120,12 +121,12 @@ fn build_window(app: &Application) {
                     // the GTK main thread is never blocked by process-spawn + sleep.
                     thread::spawn(notify_file_managers);
                     toast_overlay.add_toast(
-                        Toast::builder().title("Saved! Restarting file manager…").build(),
+                        Toast::builder().title(&gettext("Saved! Restarting file manager…")).build(),
                     );
                 }
                 Err(e) => {
                     toast_overlay.add_toast(
-                        Toast::builder().title(&format!("Error saving: {e}")).build(),
+                        Toast::builder().title(&format!("{}: {e}", gettext("Error saving"))).build(),
                     );
                 }
             }
@@ -152,7 +153,7 @@ fn render_groups(
         main_box.append(&frame);
     }
 
-    let add_btn = Button::builder().label("+ Add Group").build();
+    let add_btn = Button::builder().label(&gettext("+ Add Group")).build();
     add_btn.add_css_class("pill");
     add_btn.set_halign(Align::Center);
     add_btn.connect_clicked(clone!(
@@ -161,7 +162,7 @@ fn render_groups(
         #[strong] win,
         move |_| {
             menu_data.borrow_mut().push(MenuGroup {
-                group: "New Group".into(),
+                group: gettext("New Group"),
                 items: vec![],
             });
             render_groups(&main_box, &menu_data, &win);
@@ -267,7 +268,7 @@ fn build_group_widget(
         items_box.append(&row);
     }
 
-    let add_item_btn = Button::builder().label("+ Add Item").build();
+    let add_item_btn = Button::builder().label(&gettext("+ Add Item")).build();
     add_item_btn.add_css_class("flat");
     add_item_btn.set_halign(Align::Start);
     add_item_btn.set_margin_start(4);
@@ -396,12 +397,12 @@ fn show_add_item_dialog(
     use adw::prelude::*;
 
     let dialog = adw::AlertDialog::builder()
-        .heading("Add Menu Item")
-        .body("Choose an action to add to this group.")
+        .heading(&gettext("Add Menu Item"))
+        .body(&gettext("Choose an action to add to this group."))
         .build();
 
-    dialog.add_response("cancel", "Cancel");
-    dialog.add_response("add",    "Add");
+    dialog.add_response("cancel", &gettext("Cancel"));
+    dialog.add_response("add",    &gettext("Add"));
     dialog.set_response_appearance("add", adw::ResponseAppearance::Suggested);
     dialog.set_default_response(Some("add"));
     dialog.set_close_response("cancel");
