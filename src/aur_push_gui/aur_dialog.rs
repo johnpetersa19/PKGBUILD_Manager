@@ -491,7 +491,8 @@ impl UnifiedPushWindow {
             .build();
         form_btn_box.append(&push_btn);
 
-        // Validate tag field: disable Continue button if tag contains invalid chars
+        // Validate tag field: disable Continue button if tag contains invalid chars.
+        // Dots are ALLOWED (e.g. 1.2.3-1); only truly git-invalid chars are rejected.
         if with_tag {
             tag_row.connect_changed(clone!(
                 #[strong] push_btn,
@@ -499,8 +500,13 @@ impl UnifiedPushWindow {
                     let text = row.text();
                     let trimmed = text.trim();
                     let has_invalid = trimmed.chars().any(|c| {
-                        c.is_ascii_whitespace() || matches!(c, '~' | '^' | ':' | '?' | '*' | '[' | '\\')
-                    });
+                        c.is_ascii_whitespace()
+                            || matches!(c, '~' | '^' | ':' | '?' | '*' | '[' | '\\' | '\x7f')
+                            || c.is_ascii_control()
+                    }) || trimmed.contains("..")
+                      || trimmed.starts_with('.')
+                      || trimmed.ends_with('.')
+                      || trimmed.ends_with(".lock");
                     if has_invalid {
                         row.add_css_class("error");
                         push_btn.set_sensitive(false);
@@ -825,6 +831,43 @@ fn git_run(target: &str, args: &[&str], tx: &async_channel::Sender<Msg>) -> bool
     }
 }
 
+/// Sanitise a user-supplied version string into a valid git tag name.
+/// Rules applied (subset of git-check-ref-format):
+///   - trim surrounding whitespace
+///   - spaces and the chars ~ ^ : ? * [ \ DEL → replaced with '-'
+///   - collapse runs of '-' into one
+///   - strip leading/trailing '-'
+/// Dots are intentionally kept so "1.2.3-1" → "v1.2.3-1" works correctly.
+fn sanitize_tag(ver: &str) -> String {
+    let cleaned: String = ver.trim()
+        .chars()
+        .map(|c| {
+            if c.is_ascii_whitespace()
+                || matches!(c, '~' | '^' | ':' | '?' | '*' | '[' | '\\' | '\x7f')
+                || c.is_ascii_control()
+            {
+                '-'
+            } else {
+                c
+            }
+        })
+        .collect();
+
+    // Collapse consecutive dashes and strip leading/trailing ones
+    let mut result = String::with_capacity(cleaned.len());
+    let mut prev_dash = false;
+    for c in cleaned.chars() {
+        if c == '-' {
+            if !prev_dash { result.push(c); }
+            prev_dash = true;
+        } else {
+            result.push(c);
+            prev_dash = false;
+        }
+    }
+    result.trim_matches('-').to_string()
+}
+
 fn run_aur_worker(
     target: &str,
     message: Option<String>,
@@ -884,13 +927,9 @@ fn run_aur_worker(
 
     // 6. Optional annotated tag
     if let Some(ref ver) = tag {
-        let ver_clean: String = ver.trim()
-            .chars()
-            .map(|c| if c.is_ascii_whitespace() || matches!(c, '~' | '^' | ':' | '?' | '*' | '[' | '\\' | '.') { '-' } else { c })
-            .collect();
-        let ver_clean = ver_clean.trim_matches('-').to_string();
-        let tag_name = if ver_clean.starts_with('v') { ver_clean.clone() } else { format!("v{ver_clean}") };
-        let tag_msg  = format!("Version {}", ver_clean.trim_start_matches('v'));
+        let ver_clean = sanitize_tag(ver);
+        let tag_name  = if ver_clean.starts_with('v') { ver_clean.clone() } else { format!("v{ver_clean}") };
+        let tag_msg   = format!("Version {}", ver_clean.trim_start_matches('v'));
 
         step!(Start "git-tag");
         if !git_run(target, &["tag", "-a", &tag_name, "-m", &tag_msg], &tx) {
@@ -957,13 +996,9 @@ fn run_git_worker(
 
     // 5. Optional annotated tag
     if let Some(ref ver) = tag {
-        let ver_clean: String = ver.trim()
-            .chars()
-            .map(|c| if c.is_ascii_whitespace() || matches!(c, '~' | '^' | ':' | '?' | '*' | '[' | '\\' | '.') { '-' } else { c })
-            .collect();
-        let ver_clean = ver_clean.trim_matches('-').to_string();
-        let tag_name = if ver_clean.starts_with('v') { ver_clean.clone() } else { format!("v{ver_clean}") };
-        let tag_msg  = format!("Version {}", ver_clean.trim_start_matches('v'));
+        let ver_clean = sanitize_tag(ver);
+        let tag_name  = if ver_clean.starts_with('v') { ver_clean.clone() } else { format!("v{ver_clean}") };
+        let tag_msg   = format!("Version {}", ver_clean.trim_start_matches('v'));
 
         step!(Start "git-tag");
         if !git_run(target, &["tag", "-a", &tag_name, "-m", &tag_msg], &tx) {
