@@ -57,8 +57,11 @@ pub fn run_with_tag(path: &Path, tag: &str) -> anyhow::Result<()> {
 
 // Internal: perform the full stage -> commit -> push flow given an already-resolved dir.
 fn run_with_dir(target_dir: &Path, message: Option<&str>) -> anyhow::Result<()> {
+    // `use anyhow::Context as _` brings the Context trait into scope so that
+    // `.context()` is available on Result/Option values in this function.
+    // No additional steps are needed — the wildcard import is sufficient.
     use anyhow::Context as _;
-    let _ = anyhow::Context::context as fn(_,_) -> _; // ensure trait in scope
+
     // Regenerate .SRCINFO and parse package info from the same output in one pass.
     let srcinfo_content = regenerate_srcinfo(target_dir)?;
 
