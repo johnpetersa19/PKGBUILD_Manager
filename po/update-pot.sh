@@ -1,30 +1,30 @@
 #!/bin/bash
 # po/update-pot.sh
 #
-# Script standalone para regenerar po/pkgbuild_manager.pot fora do Meson.
-# Extrai strings de TODAS as fontes do projeto automaticamente:
+# Regenera po/pkgbuild_manager.pot extraindo strings de TODAS as fontes
+# do projeto automaticamente (sem depender do POTFILES.in estar completo).
 #
-#   Fonte                            Ferramenta         Keyword
+#   Fonte                              Ferramenta         Keyword
 #   ──────────────────────────────── ────────────────── ─────────
-#   src/**/*.rs  (Rust CLI)          xgettext -L C      gettext()
-#   src/settings/app.py  (GTK app)   xgettext -L Python _()
-#   data/nautilus-extension/*.py     xgettext -L Python _()
-#   bash notify_* keys               po/bash_notify.pot.in  (estático)
+#   src/**/*.rs        (Rust)          xgettext -L C      gettext()
+#   src/**/*.py        (Python GTK)    xgettext -L Python _()
+#   data/**/*.py       (extensões)     xgettext -L Python _()
+#   bash notify_* keys                 po/bash_notify.pot.in  (estático)
+#
+# Após rodar, o POTFILES.in é atualizado automaticamente com os arquivos
+# encontrados.
 #
 # Uso:
 #   cd <raiz do repo>
-#   bash po/update-pot.sh
-#
-# Após rodar, atualize os .po com:
-#   msgmerge --update po/pt_BR.po po/pkgbuild_manager.pot
-#   msgmerge --update po/de.po    po/pkgbuild_manager.pot
-#   ... (ou use: bash po/update-pot.sh --merge)
+#   bash po/update-pot.sh            # só regenera o .pot
+#   bash po/update-pot.sh --merge    # regenera e atualiza todos os .po
 
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
 PO_DIR="$ROOT/po"
 OUT="$PO_DIR/pkgbuild_manager.pot"
+POTFILES="$PO_DIR/POTFILES.in"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
@@ -34,14 +34,12 @@ DO_MERGE=false
 echo "=== PKGBUILD Manager — regenerando .pot ==="
 echo ""
 
-# ── 1. Rust ──────────────────────────────────────────────────────────────────
-echo "[1/4] Extraindo strings do Rust (gettext())..."
-RUST_FILES=()
-while IFS= read -r line; do
-    [[ "$line" =~ ^# || -z "$line" ]] && continue
-    f="$ROOT/$line"
-    [[ "$f" == *.rs && -f "$f" ]] && RUST_FILES+=("$f")
-done < "$PO_DIR/POTFILES.in"
+# ── 1. Descobrir arquivos Rust ────────────────────────────────────────────────
+echo "[1/5] Descobrindo arquivos Rust (.rs com gettext())..."
+mapfile -t RUST_FILES < <(
+    find "$ROOT/src" -name "*.rs" -type f | sort
+)
+echo "   → ${#RUST_FILES[@]} arquivos .rs encontrados"
 
 if [[ ${#RUST_FILES[@]} -gt 0 ]]; then
     xgettext \
@@ -50,27 +48,23 @@ if [[ ${#RUST_FILES[@]} -gt 0 ]]; then
         --keyword=gettext \
         --add-comments=translators \
         --package-name=pkgbuild_manager \
-        --package-version="$(grep -m1 'version' "$ROOT/Cargo.toml" | sed 's/.*= *"//;s/"//')" \
+        --package-version="$(grep -m1 '^version' "$ROOT/Cargo.toml" | sed 's/.*= *"//;s/"//')" \
         --output="$TMP/rust.pot" \
         "${RUST_FILES[@]}"
-    echo "   → ${#RUST_FILES[@]} arquivos .rs processados"
+    echo "   → rust.pot gerado ($(grep -c '^msgid' "$TMP/rust.pot" || true) entradas)"
 else
-    echo "   → nenhum arquivo .rs encontrado no POTFILES.in"
+    echo "   → nenhum arquivo .rs encontrado"
 fi
 
-# ── 2. Python settings ───────────────────────────────────────────────────────
-echo "[2/4] Extraindo strings do Python (_())..."
-PY_FILES=()
-while IFS= read -r line; do
-    [[ "$line" =~ ^# || -z "$line" ]] && continue
-    f="$ROOT/$line"
-    [[ "$f" == *.py && -f "$f" ]] && PY_FILES+=("$f")
-done < "$PO_DIR/POTFILES.in"
-
-# Extensões do gerenciador de arquivos (Nautilus, Caja, Nemo)
-for ext_py in "$ROOT"/data/nautilus-extension/*.py; do
-    [[ -f "$ext_py" ]] && PY_FILES+=("$ext_py")
-done
+# ── 2. Descobrir arquivos Python ──────────────────────────────────────────────
+echo "[2/5] Descobrindo arquivos Python (.py com _())..."
+mapfile -t PY_FILES < <(
+    {
+        find "$ROOT/src"  -name "*.py" -type f
+        find "$ROOT/data" -name "*.py" -type f
+    } | sort -u
+)
+echo "   → ${#PY_FILES[@]} arquivos .py encontrados"
 
 if [[ ${#PY_FILES[@]} -gt 0 ]]; then
     xgettext \
@@ -81,25 +75,40 @@ if [[ ${#PY_FILES[@]} -gt 0 ]]; then
         --package-name=pkgbuild_manager \
         --output="$TMP/python.pot" \
         "${PY_FILES[@]}"
-    echo "   → ${#PY_FILES[@]} arquivos .py processados"
+    echo "   → python.pot gerado ($(grep -c '^msgid' "$TMP/python.pot" || true) entradas)"
 else
     echo "   → nenhum arquivo .py encontrado"
 fi
 
-# ── 3. Mescla as extrações ────────────────────────────────────────────────────
-echo "[3/4] Mesclando .pot extraídos..."
+# ── 3. Atualizar POTFILES.in automaticamente ──────────────────────────────────
+echo "[3/5] Atualizando POTFILES.in..."
+{
+    echo "# Auto-gerado por po/update-pot.sh — não edite manualmente"
+    echo ""
+    for f in "${RUST_FILES[@]}" "${PY_FILES[@]}"; do
+        # caminho relativo à raiz do repo
+        echo "${f#"$ROOT/"}"
+    done
+} > "$POTFILES"
+echo "   → POTFILES.in atualizado com $((${#RUST_FILES[@]} + ${#PY_FILES[@]})) entradas"
+
+# ── 4. Mesclar todas as fontes ────────────────────────────────────────────────
+echo "[4/5] Mesclando .pot extraídos + chaves bash estáticas..."
 MERGE=()
 [[ -f "$TMP/rust.pot" ]]   && MERGE+=("$TMP/rust.pot")
 [[ -f "$TMP/python.pot" ]] && MERGE+=("$TMP/python.pot")
-MERGE+=("$PO_DIR/bash_notify.pot.in")   # chaves bash estáticas
+MERGE+=("$PO_DIR/bash_notify.pot.in")   # chaves notify_* dos scripts bash
 
 msgcat \
     --use-first \
     --output="$TMP/merged.pot" \
     "${MERGE[@]}"
 
-# ── 4. Corrige cabeçalho e grava o .pot final ─────────────────────────────────
-echo "[4/4] Gravando $OUT..."
+TOTAL=$(grep -c '^msgid ' "$TMP/merged.pot" || true)
+echo "   → $TOTAL entradas mescladas no total"
+
+# ── 5. Corrigir cabeçalho e gravar .pot final ─────────────────────────────────
+echo "[5/5] Gravando $OUT..."
 PKG_VER=$(grep -m1 '^version' "$ROOT/Cargo.toml" | sed 's/.*= *"//;s/"//')
 DATE=$(date +"%Y-%m-%d %H:%M%z")
 
@@ -113,16 +122,20 @@ sed \
     "$TMP/merged.pot" > "$OUT"
 
 echo ""
-echo "✓ Gerado com sucesso: $OUT"
+echo "✓ Gerado: $OUT"
+echo "✓ Entradas totais: $TOTAL"
+echo "✓ Versão: pkgbuild_manager $PKG_VER"
 
-# ── Opcional: atualiza todos os .po ───────────────────────────────────────────
+# ── Opcional: atualizar todos os .po ─────────────────────────────────────────
 if [[ "$DO_MERGE" == true ]]; then
     echo ""
     echo "=== Atualizando arquivos .po com msgmerge ==="
     for po in "$PO_DIR"/*.po; do
         lang=$(basename "$po" .po)
-        echo "  → $lang.po"
+        printf "  → %-12s" "$lang.po"
         msgmerge --quiet --update --backup=none "$po" "$OUT"
+        NEW=$(grep -c '^msgstr ""' "$po" || true)
+        echo " (${NEW} strings sem tradução)"
     done
     echo "✓ Todos os .po atualizados!"
 else
@@ -130,7 +143,7 @@ else
     echo "Para atualizar os .po existentes, rode:"
     echo "  bash po/update-pot.sh --merge"
     echo ""
-    echo "Ou manualmente para cada idioma:"
+    echo "Ou manualmente por idioma:"
     for po in "$PO_DIR"/*.po; do
         lang=$(basename "$po" .po)
         echo "  msgmerge --update po/$lang.po po/pkgbuild_manager.pot"
