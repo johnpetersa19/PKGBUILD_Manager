@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-04 00:00-0300\n"
-"PO-Revision-Date: 2026-06-04 00:26-0300\n"
+"PO-Revision-Date: 2026-06-04 00:36-0300\n"
 "Last-Translator: John Peter Sa\n"
 "Language-Team: Portuguese (Brazil)\n"
 "Language: pt_BR\n"
@@ -590,10 +590,6 @@ msgid "⚠️ Errors found"
 msgstr "⚠️ Erros encontrados"
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "Regen .SRCINFO"
-msgstr "Regenerar .SRCINFO"
-
-#: src/aur_push_gui/aur_dialog.rs
 msgid "Push again"
 msgstr "Enviar novamente"
 
@@ -636,6 +632,54 @@ msgstr "git tag falhou"
 #: src/aur_push_gui/aur_dialog.rs
 msgid "git push --tags failed"
 msgstr "git push --tags falhou"
+
+# ---------------------------------------------------------------------------
+# Step row labels — aur_dialog.rs (mode: Git/GitLab/Codeberg/Generic)
+# ---------------------------------------------------------------------------
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Checking repository status"
+msgstr "Verificando status do repositório"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Staging all changes"
+msgstr "Preparando todas as alterações"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Creating commit"
+msgstr "Criando commit"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Pushing to remote"
+msgstr "Enviando para o repositório remoto"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Creating version tag"
+msgstr "Criando tag de versão"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Pushing tags to remote"
+msgstr "Enviando tags para o repositório remoto"
+
+# ---------------------------------------------------------------------------
+# Step row labels — aur_dialog.rs (mode: AUR)
+# ---------------------------------------------------------------------------
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Regenerating .SRCINFO"
+msgstr "Regenerando .SRCINFO"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Staging PKGBUILD and .SRCINFO"
+msgstr "Preparando PKGBUILD e .SRCINFO"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Pushing to AUR"
+msgstr "Enviando para o AUR"
+
+#: src/aur_push_gui/aur_dialog.rs
+msgid "Pushing tags"
+msgstr "Enviando tags"
 
 #. used dynamically via gettext key lookup in Rust
 msgid "notify_building"
