@@ -74,20 +74,6 @@ install_data(
   install_mode: 'rw-r--r--',
 )
 
-# Settings Python module
-install_data(
-  '../src/settings/app.py',
-  '../src/settings/__main__.py',
-  install_dir: get_option('datadir') / 'pkgbuild-manager/python/settings',
-)
-
-# Settings launcher binary
-install_data(
-  'bin/pkgbuild-manager-settings',
-  install_dir: get_option('bindir'),
-  install_mode: 'rwxr-xr-x',
-)
-
 # Dolphin desktop regen helper
 install_data(
   'regen-dolphin-desktop',
