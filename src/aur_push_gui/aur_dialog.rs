@@ -13,6 +13,7 @@ use gtk::{
     Orientation, PolicyType, Popover, ProgressBar, ScrolledWindow, Spinner,
     Stack, StackTransitionType, TextView, WrapMode,
 };
+use gettextrs::gettext;
 use std::cell::RefCell;
 use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
@@ -254,12 +255,12 @@ impl UnifiedPushWindow {
 
         // ── Mode-dependent strings ────────────────────────────────────────────
         let win_title = match mode {
-            RepoMode::Aur      => "Push to AUR",
-            RepoMode::Git      => "Push to GitHub",
-            RepoMode::GitLab   => "Push to GitLab",
-            RepoMode::Codeberg => "Push to Codeberg",
-            RepoMode::Generic  => "Push to Git Remote",
-            RepoMode::Unknown  => "Push — Unknown Repository",
+            RepoMode::Aur      => gettext("Push to AUR"),
+            RepoMode::Git      => gettext("Push to GitHub"),
+            RepoMode::GitLab   => gettext("Push to GitLab"),
+            RepoMode::Codeberg => gettext("Push to Codeberg"),
+            RepoMode::Generic  => gettext("Push to Git Remote"),
+            RepoMode::Unknown  => gettext("Push — Unknown Repository"),
         };
         let badge_label = match mode {
             RepoMode::Aur      => "AUR",
@@ -278,43 +279,43 @@ impl UnifiedPushWindow {
             RepoMode::Unknown  => "mode-badge-generic",
         };
         let form_caption = match mode {
-            RepoMode::Unknown => "",
-            _                 => "Step 1 of 2 — Review commit information",
+            RepoMode::Unknown => String::new(),
+            _                 => gettext("Step 1 of 2 — Review commit information"),
         };
         let progress_caption = match mode {
-            RepoMode::Aur      => "Step 2 of 2 — Sending changes to AUR",
-            RepoMode::Git      => "Step 2 of 2 — Sending changes to GitHub",
-            RepoMode::GitLab   => "Step 2 of 2 — Sending changes to GitLab",
-            RepoMode::Codeberg => "Step 2 of 2 — Sending changes to Codeberg",
-            RepoMode::Generic  => "Step 2 of 2 — Sending changes to remote",
-            RepoMode::Unknown  => "",
+            RepoMode::Aur      => gettext("Step 2 of 2 — Sending changes to AUR"),
+            RepoMode::Git      => gettext("Step 2 of 2 — Sending changes to GitHub"),
+            RepoMode::GitLab   => gettext("Step 2 of 2 — Sending changes to GitLab"),
+            RepoMode::Codeberg => gettext("Step 2 of 2 — Sending changes to Codeberg"),
+            RepoMode::Generic  => gettext("Step 2 of 2 — Sending changes to remote"),
+            RepoMode::Unknown  => String::new(),
         };
         let run_label = match (mode, with_tag) {
-            (RepoMode::Aur,      true)  => "Push + Tag to AUR",
-            (RepoMode::Aur,      false) => "Push to AUR",
-            (RepoMode::Git,      true)  => "Commit + Tag → GitHub",
-            (RepoMode::Git,      false) => "Commit & Push → GitHub",
-            (RepoMode::GitLab,   true)  => "Commit + Tag → GitLab",
-            (RepoMode::GitLab,   false) => "Commit & Push → GitLab",
-            (RepoMode::Codeberg, true)  => "Commit + Tag → Codeberg",
-            (RepoMode::Codeberg, false) => "Commit & Push → Codeberg",
-            (RepoMode::Generic,  true)  => "Commit + Tag + Push",
-            (RepoMode::Generic,  false) => "Commit & Push",
-            (RepoMode::Unknown,  _)     => "Push",
+            (RepoMode::Aur,      true)  => gettext("Push + Tag to AUR"),
+            (RepoMode::Aur,      false) => gettext("Push to AUR"),
+            (RepoMode::Git,      true)  => gettext("Commit + Tag → GitHub"),
+            (RepoMode::Git,      false) => gettext("Commit & Push → GitHub"),
+            (RepoMode::GitLab,   true)  => gettext("Commit + Tag → GitLab"),
+            (RepoMode::GitLab,   false) => gettext("Commit & Push → GitLab"),
+            (RepoMode::Codeberg, true)  => gettext("Commit + Tag → Codeberg"),
+            (RepoMode::Codeberg, false) => gettext("Commit & Push → Codeberg"),
+            (RepoMode::Generic,  true)  => gettext("Commit + Tag + Push"),
+            (RepoMode::Generic,  false) => gettext("Commit & Push"),
+            (RepoMode::Unknown,  _)     => gettext("Push"),
         };
         let done_label = match mode {
-            RepoMode::Aur      => "Pushed to AUR!",
-            RepoMode::Git      => "Pushed to GitHub!",
-            RepoMode::GitLab   => "Pushed to GitLab!",
-            RepoMode::Codeberg => "Pushed to Codeberg!",
-            RepoMode::Generic  => "Pushed to remote!",
-            RepoMode::Unknown  => "",
+            RepoMode::Aur      => gettext("Pushed to AUR!"),
+            RepoMode::Git      => gettext("Pushed to GitHub!"),
+            RepoMode::GitLab   => gettext("Pushed to GitLab!"),
+            RepoMode::Codeberg => gettext("Pushed to Codeberg!"),
+            RepoMode::Generic  => gettext("Pushed to remote!"),
+            RepoMode::Unknown  => String::new(),
         };
 
         // ── Window ────────────────────────────────────────────────────────────
         let (saved_w, saved_h) = load_win_size("push-window", 560, 640);
         let win = ApplicationWindow::builder()
-            .application(app).title(win_title)
+            .application(app).title(&win_title)
             .default_width(saved_w).default_height(saved_h)
             .build();
         win.connect_close_request(|w| {
@@ -331,7 +332,7 @@ impl UnifiedPushWindow {
         let title_box = GBox::builder()
             .orientation(Orientation::Vertical).valign(Align::Center).spacing(2).build();
         let title_lbl = Label::builder()
-            .label(win_title).css_classes(vec!["title".to_string()]).build();
+            .label(&win_title).css_classes(vec!["title".to_string()]).build();
         let subtitle_row = GBox::builder()
             .orientation(Orientation::Horizontal).halign(Align::Center).spacing(6).build();
         let path_lbl = Label::builder()
@@ -360,10 +361,12 @@ impl UnifiedPushWindow {
         if mode == RepoMode::Unknown {
             let unknown_page = StatusPage::builder()
                 .icon_name("dialog-question-symbolic")
-                .title("Not a recognised repository")
+                .title(&gettext("Not a recognised repository"))
                 .description(
-                    "The selected folder does not appear to be a Git repository.\n\
-                     Make sure you select a folder that contains a .git directory."
+                    &gettext(
+                        "The selected folder does not appear to be a Git repository.\n\
+                         Make sure you select a folder that contains a .git directory."
+                    )
                 )
                 .build();
             stack.add_named(&unknown_page, Some("unknown"));
@@ -384,36 +387,30 @@ impl UnifiedPushWindow {
         form_scroll.set_child(Some(&form_content));
 
         let form_cap_lbl = Label::builder()
-            .label(form_caption).halign(Align::Start)
+            .label(&form_caption).halign(Align::Start)
             .css_classes(vec!["stage-caption".to_string()])
             .build();
         form_content.append(&form_cap_lbl);
 
-        let fields_group = adw::PreferencesGroup::builder().title("Commit").build();
+        let fields_group = adw::PreferencesGroup::builder().title(&gettext("Commit")).build();
 
         // Commit message
         let msg_row = adw::EntryRow::builder()
-            .title("Message").show_apply_button(false).build();
+            .title(&gettext("Message")).show_apply_button(false).build();
         fields_group.add(&msg_row);
 
         // Tag version
         let tag_row = adw::EntryRow::builder()
-            .title("Tag version  (e.g. 1.2.3-1)").show_apply_button(false).build();
+            .title(&gettext("Tag version  (e.g. 1.2.3-1)")).show_apply_button(false).build();
         tag_row.set_visible(with_tag);
         fields_group.add(&tag_row);
 
         // ── Git-based modes: editable branch + remote hint ────────────────────
-        //
-        // All non-AUR modes show:
-        //   • Branch EntryRow  — editable, pre-filled with HEAD branch,
-        //                        with a ⎇ button that pops up all local branches.
-        //   • Remote URL row   — read-only, shows the active remote URL.
-
         let is_git_based = mode != RepoMode::Aur;
 
         let branch_entry: Rc<adw::EntryRow> = Rc::new(
             adw::EntryRow::builder()
-                .title("Branch")
+                .title(&gettext("Branch"))
                 .show_apply_button(false)
                 .build()
         );
@@ -422,7 +419,6 @@ impl UnifiedPushWindow {
             let current_branch = detect_branch(&target);
             branch_entry.set_text(&current_branch);
 
-            // Popover with all local branches
             let branches = list_branches(&target);
             let popover_box = GBox::builder()
                 .orientation(Orientation::Vertical).spacing(2)
@@ -446,7 +442,7 @@ impl UnifiedPushWindow {
             let popover = Popover::builder().child(&popover_box).build();
             let pick_btn = Button::builder()
                 .icon_name("vcs-branch-symbolic")
-                .tooltip_text("Choose branch")
+                .tooltip_text(&gettext("Choose branch"))
                 .valign(Align::Center)
                 .css_classes(vec!["flat".to_string()])
                 .build();
@@ -458,15 +454,13 @@ impl UnifiedPushWindow {
             branch_entry.add_suffix(&pick_btn);
             fields_group.add(&*branch_entry);
 
-            // Remote URL hint row
             let remote_url = detect_remote(&target);
             if !remote_url.is_empty() {
                 let remote_row = adw::ActionRow::builder()
-                    .title("Remote")
+                    .title(&gettext("Remote"))
                     .subtitle(&remote_url)
                     .activatable(false)
                     .build();
-                // Add a small icon matching the platform
                 let remote_icon_name = match mode {
                     RepoMode::GitLab   => "application-x-addon-symbolic",
                     RepoMode::Codeberg => "globe-symbolic",
@@ -489,12 +483,12 @@ impl UnifiedPushWindow {
             .orientation(Orientation::Horizontal).halign(Align::End)
             .margin_top(4).spacing(8).build();
         let push_btn = Button::builder()
-            .label("Continue to Push")
+            .label(&gettext("Continue to Push"))
             .css_classes(vec!["suggested-action".to_string(), "pill".to_string()])
             .build();
         form_btn_box.append(&push_btn);
         form_content.append(&form_btn_box);
-        stack.add_titled(&form_scroll, Some("form"), "Form");
+        stack.add_titled(&form_scroll, Some("form"), &gettext("Form"));
 
         // ══ PROGRESS page ══════════════════════════════════════════════════════
         let progress_scroll = ScrolledWindow::builder()
@@ -508,7 +502,7 @@ impl UnifiedPushWindow {
         progress_scroll.set_child(Some(&progress_content));
 
         let prog_cap_lbl = Label::builder()
-            .label(progress_caption).halign(Align::Start)
+            .label(&progress_caption).halign(Align::Start)
             .css_classes(vec!["stage-caption".to_string()])
             .build();
         progress_content.append(&prog_cap_lbl);
@@ -519,11 +513,11 @@ impl UnifiedPushWindow {
             .build();
         progress_content.append(&progress);
 
-        let steps_group = adw::PreferencesGroup::builder().title("Steps").build();
+        let steps_group = adw::PreferencesGroup::builder().title(&gettext("Steps")).build();
 
         let (step_rows, total_steps): (Vec<(&'static str, StepRow)>, f64) = match mode {
             RepoMode::Aur => {
-                let srcinfo  = StepRow::new("Regen .SRCINFO");
+                let srcinfo  = StepRow::new(&gettext("Regen .SRCINFO"));
                 let status   = StepRow::new("git status");
                 let add      = StepRow::new("git add PKGBUILD .SRCINFO");
                 let commit   = StepRow::new("git commit");
@@ -542,7 +536,6 @@ impl UnifiedPushWindow {
                     ("git-push-tags", pushtags),
                 ], n)
             }
-            // All Git-based modes share identical steps
             _ => {
                 let status   = StepRow::new("git status");
                 let add      = StepRow::new("git add .");
@@ -572,7 +565,7 @@ impl UnifiedPushWindow {
             .visible(false).css_classes(vec!["error-box".to_string()])
             .build();
         let error_title_lbl = Label::builder()
-            .label("⚠️ Errors found").halign(Align::Start)
+            .label(&gettext("⚠️ Errors found")).halign(Align::Start)
             .css_classes(vec!["error-title".to_string()])
             .build();
         let error_scroll = ScrolledWindow::builder()
@@ -599,16 +592,16 @@ impl UnifiedPushWindow {
             .orientation(Orientation::Horizontal).halign(Align::End)
             .margin_top(4).spacing(8).build();
         let back_btn = Button::builder()
-            .label("Back").css_classes(vec!["pill".to_string()]).build();
+            .label(&gettext("Back")).css_classes(vec!["pill".to_string()]).build();
         let run_btn = Button::builder()
-            .label(run_label)
+            .label(&run_label)
             .css_classes(vec!["suggested-action".to_string(), "pill".to_string()])
             .build();
         progress_btn_box.append(&back_btn);
         progress_btn_box.append(&run_btn);
         progress_content.append(&progress_btn_box);
 
-        stack.add_titled(&progress_scroll, Some("progress"), "Progress");
+        stack.add_titled(&progress_scroll, Some("progress"), &gettext("Progress"));
         stack.set_visible_child_name("form");
 
         // ── State ─────────────────────────────────────────────────────────────
@@ -711,14 +704,14 @@ impl UnifiedPushWindow {
                             back_btn.set_sensitive(true);
                             if ok {
                                 progress.set_fraction(1.0);
-                                run_btn.set_label("Push again");
+                                run_btn.set_label(&gettext("Push again"));
                                 status_page.set_icon_name(Some("emblem-ok-symbolic"));
                                 status_page.set_title(&done_label_owned);
                                 status_page.remove_css_class("error");
                                 status_page.set_visible(true);
                             } else {
                                 progress.set_fraction(0.0);
-                                run_btn.set_label("Try again");
+                                run_btn.set_label(&gettext("Try again"));
                             }
                         }
                     }
@@ -760,7 +753,6 @@ fn list_branches(path: &str) -> Vec<String> {
 /// Returns the URL of the `origin` remote (or the first remote found).
 
 fn detect_remote(path: &str) -> String {
-    // Try `git remote get-url origin` first
     let origin = Command::new("git")
         .args(["remote", "get-url", "origin"])
         .current_dir(path)
@@ -773,7 +765,6 @@ fn detect_remote(path: &str) -> String {
         return url;
     }
 
-    // Fallback: first remote listed by `git remote -v`
     Command::new("git")
         .args(["remote", "-v"])
         .current_dir(path)
@@ -797,7 +788,7 @@ fn run_aur_worker(
     tx: async_channel::Sender<Msg>,
 ) {
     if target.is_empty() {
-        let _ = tx.send_blocking(Msg::StderrLine("No target directory provided.".into()));
+        let _ = tx.send_blocking(Msg::StderrLine(gettext("No target directory provided.")));
         let _ = tx.send_blocking(Msg::Done(false));
         return;
     }
@@ -812,7 +803,9 @@ fn run_aur_worker(
         Ok(c) => c,
         Err(e) => {
             let _ = tx.send_blocking(Msg::StderrLine(format!(
-                "Failed to start pkgbuild_manager: {e}\nMake sure it is installed and in PATH."
+                "{}: {e}\n{}",
+                gettext("Failed to start pkgbuild_manager"),
+                gettext("Make sure it is installed and in PATH.")
             )));
             let _ = tx.send_blocking(Msg::Done(false));
             return;
@@ -857,7 +850,7 @@ fn run_git_worker(
             Ok(c) => c,
             Err(e) => {
                 let _ = tx.send_blocking(Msg::StderrLine(
-                    format!("git {}: failed to start: {e}", args.join(" "))
+                    format!("git {}: {}: {e}", args.join(" "), gettext("failed to start"))
                 ));
                 return false;
             }
@@ -880,7 +873,7 @@ fn run_git_worker(
     // 2. git add .
     step!(start "git-add");
     if !git_run(target, &["add", "."], &tx) {
-        step!(err "git-add", "git add failed");
+        step!(err "git-add", gettext("git add failed"));
         let _ = tx.send_blocking(Msg::Done(false)); return;
     }
     step!(ok "git-add");
@@ -889,7 +882,7 @@ fn run_git_worker(
     let commit_msg = message.as_deref().filter(|s| !s.is_empty()).unwrap_or("Update");
     step!(start "git-commit");
     if !git_run(target, &["commit", "-m", commit_msg], &tx) {
-        step!(err "git-commit", "git commit failed (nothing to commit?)");
+        step!(err "git-commit", gettext("git commit failed (nothing to commit?)"));
         let _ = tx.send_blocking(Msg::Done(false)); return;
     }
     step!(ok "git-commit");
@@ -897,7 +890,7 @@ fn run_git_worker(
     // 4. git push origin <branch>
     step!(start "git-push");
     if !git_run(target, &["push", "origin", &target_branch], &tx) {
-        step!(err "git-push", format!("git push origin {} failed", target_branch).as_str());
+        step!(err "git-push", format!("git push origin {} {}", target_branch, gettext("failed")).as_str());
         let _ = tx.send_blocking(Msg::Done(false)); return;
     }
     step!(ok "git-push");
@@ -909,14 +902,14 @@ fn run_git_worker(
 
         step!(start "git-tag");
         if !git_run(target, &["tag", "-a", &tag_name, "-m", &tag_msg], &tx) {
-            step!(err "git-tag", "git tag failed");
+            step!(err "git-tag", gettext("git tag failed"));
             let _ = tx.send_blocking(Msg::Done(false)); return;
         }
         step!(ok "git-tag");
 
         step!(start "git-push-tags");
         if !git_run(target, &["push", "--tags"], &tx) {
-            step!(err "git-push-tags", "git push --tags failed");
+            step!(err "git-push-tags", gettext("git push --tags failed"));
             let _ = tx.send_blocking(Msg::Done(false)); return;
         }
         step!(ok "git-push-tags");
