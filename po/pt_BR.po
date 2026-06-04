@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-04 00:00-0300\n"
-"PO-Revision-Date: 2026-06-04 00:18-0300\n"
+"PO-Revision-Date: 2026-06-04 00:26-0300\n"
 "Last-Translator: John Peter Sa\n"
 "Language-Team: Portuguese (Brazil)\n"
 "Language: pt_BR\n"
@@ -446,31 +446,31 @@ msgid "Push to Git Remote"
 msgstr "Enviar para o repositório Git"
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "Push \u2014 Unknown Repository"
+msgid "Push — Unknown Repository"
 msgstr "Enviar — Repositório desconhecido"
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "Step 1 of 2 \u2014 Review commit information"
+msgid "Step 1 of 2 — Review commit information"
 msgstr "Passo 1 de 2 — Revise as informações do commit"
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "Step 2 of 2 \u2014 Sending changes to AUR"
+msgid "Step 2 of 2 — Sending changes to AUR"
 msgstr "Passo 2 de 2 — Enviando alterações para o AUR"
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "Step 2 of 2 \u2014 Sending changes to GitHub"
+msgid "Step 2 of 2 — Sending changes to GitHub"
 msgstr "Passo 2 de 2 — Enviando alterações para o GitHub"
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "Step 2 of 2 \u2014 Sending changes to GitLab"
+msgid "Step 2 of 2 — Sending changes to GitLab"
 msgstr "Passo 2 de 2 — Enviando alterações para o GitLab"
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "Step 2 of 2 \u2014 Sending changes to Codeberg"
+msgid "Step 2 of 2 — Sending changes to Codeberg"
 msgstr "Passo 2 de 2 — Enviando alterações para o Codeberg"
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "Step 2 of 2 \u2014 Sending changes to remote"
+msgid "Step 2 of 2 — Sending changes to remote"
 msgstr "Passo 2 de 2 — Enviando alterações para o repositório remoto"
 
 #: src/aur_push_gui/aur_dialog.rs
@@ -522,27 +522,27 @@ msgid "Push + Tag to AUR"
 msgstr "Enviar + Tag para o AUR"
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "Commit + Tag \u2192 GitHub"
+msgid "Commit + Tag → GitHub"
 msgstr "Commit + Tag → GitHub"
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "Commit & Push \u2192 GitHub"
+msgid "Commit & Push → GitHub"
 msgstr "Commit e Enviar → GitHub"
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "Commit + Tag \u2192 GitLab"
+msgid "Commit + Tag → GitLab"
 msgstr "Commit + Tag → GitLab"
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "Commit & Push \u2192 GitLab"
+msgid "Commit & Push → GitLab"
 msgstr "Commit e Enviar → GitLab"
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "Commit + Tag \u2192 Codeberg"
+msgid "Commit + Tag → Codeberg"
 msgstr "Commit + Tag → Codeberg"
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "Commit & Push \u2192 Codeberg"
+msgid "Commit & Push → Codeberg"
 msgstr "Commit e Enviar → Codeberg"
 
 #: src/aur_push_gui/aur_dialog.rs
@@ -586,7 +586,7 @@ msgid "The selected folder does not appear to be a Git repository.\nMake sure yo
 msgstr "A pasta selecionada não parece ser um repositório Git.\nVerifique se a pasta contém um diretório .git."
 
 #: src/aur_push_gui/aur_dialog.rs
-msgid "\u26a0\ufe0f Errors found"
+msgid "⚠️ Errors found"
 msgstr "⚠️ Erros encontrados"
 
 #: src/aur_push_gui/aur_dialog.rs
