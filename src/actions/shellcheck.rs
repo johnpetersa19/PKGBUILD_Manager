@@ -37,7 +37,11 @@ pub fn run(path: &Path) -> anyhow::Result<()> {
                     )
                 );
             }
-            anyhow::anyhow!("failed to run shellcheck: {}", e)
+            anyhow::anyhow!(
+                "{}: {}",
+                gettextrs::gettext("Failed to run shellcheck"),
+                e
+            )
         })?;
 
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -86,7 +90,7 @@ fn write_error_log(
     content: &str,
 ) -> anyhow::Result<std::path::PathBuf> {
     let home = std::env::var("HOME")
-        .map_err(|_| anyhow::anyhow!("HOME env var not set"))?;
+        .map_err(|_| anyhow::anyhow!("{}", gettextrs::gettext("HOME env var not set")))?;
 
     let log_dir = std::path::PathBuf::from(home)
         .join(".local/share/pkgbuild_manager/logs");
