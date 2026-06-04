@@ -17,4 +17,7 @@ src/actions/shellcheck.rs
 src/actions/srcinfo.rs
 src/config.rs
 src/main.rs
-src/settings/app.py
+src/settings_gui/app.rs
+src/settings_gui/config.rs
+src/settings_gui/main.rs
+src/settings_gui/win_state.rs
