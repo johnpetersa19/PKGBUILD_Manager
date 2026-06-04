@@ -61,7 +61,9 @@ fn main() -> Result<()> {
                 Some(rel_idx) => {
                     let idx = 2 + rel_idx;
                     flags = args[idx + 1..].iter().map(|s| s.as_str()).collect();
-                    if idx > 2 {
+                    // Use args[2] as path only when the separator is not at args[2] itself
+                    // (i.e. the user actually provided a path before "--")
+                    if idx > 2 && args[2] != "--" {
                         path = &args[2];
                     }
                     (path, flags)
