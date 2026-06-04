@@ -1,26 +1,50 @@
 #!/bin/bash
 # po/update-pot.sh
 #
-# Regenera po/pkgbuild_manager.pot extraindo strings de TODAS as fontes
-# do projeto automaticamente, sincroniza LINGUAS <-> arquivos .po e
-# atualiza TODOS os .po ao final (msgmerge automatico).
+# Regenerates po/pkgbuild_manager.pot by extracting strings from ALL project
+# sources automatically, syncs LINGUAS <-> .po files, and updates ALL .po
+# files at the end (automatic msgmerge).
 #
-#   Fonte                              Ferramenta         Keyword
-#   ──────────────────────────────── ────────────────── ─────────
+# ──────────────────────────────────────────────────────────────────────────────
+# LANGUAGE DETECTION
+# ──────────────────────────────────────────────────────────────────────────────
+# The tool automatically detects the system locale at runtime using the
+# following priority order:
+#
+#   $LANGUAGE  →  $LC_ALL  →  $LC_MESSAGES  →  $LANG
+#
+# If no matching translation is found, it falls back to English (default).
+#
+# SUPPORTED LANGUAGES
+# ──────────────────────────────────────────────────────────────────────────────
+#   Code    Language
+#   ──────  ──────────────────────
+#   en      English          (default)
+#   pt_BR   Portuguese (Brazil)
+#   es      Spanish
+#   it      Italian
+#   ja      Japanese
+#   zh_CN   Mandarin Chinese (Simplified)
+#
+# ──────────────────────────────────────────────────────────────────────────────
+# SOURCE EXTRACTION TABLE
+# ──────────────────────────────────────────────────────────────────────────────
+#   Source                             Tool               Keyword
+#   ────────────────────────────────── ────────────────── ─────────
 #   src/**/*.rs        (Rust)          xgettext -L C      gettext()
 #   src/**/*.py        (Python GTK)    xgettext -L Python _()
-#   data/**/*.py       (extensões)     xgettext -L Python _()
-#   bash notify_* keys                 po/bash_notify.pot.in  (estático)
+#   data/**/*.py       (extensions)    xgettext -L Python _()
+#   bash notify_* keys                 po/bash_notify.pot.in  (static)
 #
-# Sincronização bidirecional LINGUAS <-> .po:
-#   • .po encontrado sem entrada no LINGUAS  → adiciona ao LINGUAS
-#   • idioma no LINGUAS sem arquivo .po       → cria .po via msginit
+# BIDIRECTIONAL LINGUAS <-> .po SYNC
+#   • .po found without a LINGUAS entry  → added to LINGUAS automatically
+#   • Language in LINGUAS without .po    → created via msginit automatically
 #
-# Ao final, TODOS os .po existentes são atualizados automaticamente
-# com msgmerge (equivalente a --merge sempre ativo).
+# At the end, ALL existing .po files are updated automatically
+# with msgmerge (equivalent to --merge always active).
 #
-# Uso:
-#   cd <raiz do repo>
+# USAGE:
+#   cd <repo root>
 #   bash po/update-pot.sh
 
 set -euo pipefail
@@ -33,22 +57,22 @@ LINGUAS_FILE="$PO_DIR/LINGUAS"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-echo "=== PKGBUILD Manager — regenerando .pot ==="
+echo "=== PKGBUILD Manager — regenerating .pot ==="
 echo ""
 
-# ── 1. Descobrir e filtrar arquivos Rust com gettext() ────────────────────────
-echo "[1/6] Descobrindo arquivos Rust (.rs com gettext())..."
-# Filtra apenas .rs que realmente contenham gettext() — evita avisos
-# do xgettext ao parsear sintaxe Rust como C (arrows, lifetimes, etc.)
+# ── 1. Discover and filter Rust files containing gettext() ───────────────────
+echo "[1/6] Discovering Rust files (.rs with gettext())..."
+# Filter only .rs files that actually contain gettext() — avoids xgettext
+# warnings when parsing Rust syntax as C (arrows, lifetimes, etc.)
 mapfile -t RUST_FILES < <(
     find "$ROOT/src" -name "*.rs" -type f \
     | xargs grep -l 'gettext(' 2>/dev/null \
     | sort
 )
-echo "   → ${#RUST_FILES[@]} arquivos .rs com gettext() encontrados"
+echo "   → ${#RUST_FILES[@]} .rs files with gettext() found"
 
 if [[ ${#RUST_FILES[@]} -gt 0 ]]; then
-    # 2>/dev/null suprime avisos falsos de sintaxe Rust (arrows ->, lifetimes 'a, etc.)
+    # 2>/dev/null suppresses false warnings from Rust syntax (arrows ->, lifetimes 'a, etc.)
     xgettext \
         --from-code=UTF-8 \
         --language=C \
@@ -59,20 +83,20 @@ if [[ ${#RUST_FILES[@]} -gt 0 ]]; then
         --output="$TMP/rust.pot" \
         "${RUST_FILES[@]}" 2>/dev/null
     COUNT=$(grep -c '^msgid ' "$TMP/rust.pot" 2>/dev/null || echo 0)
-    echo "   → rust.pot gerado ($COUNT entradas)"
+    echo "   → rust.pot generated ($COUNT entries)"
 else
-    echo "   → nenhum arquivo .rs com gettext() encontrado"
+    echo "   → no .rs files with gettext() found"
 fi
 
-# ── 2. Descobrir arquivos Python ──────────────────────────────────────────────
-echo "[2/6] Descobrindo arquivos Python (.py com _())..."
+# ── 2. Discover Python files ──────────────────────────────────────────────────
+echo "[2/6] Discovering Python files (.py with _())..."
 mapfile -t PY_FILES < <(
     {
         find "$ROOT/src"  -name "*.py" -type f
         find "$ROOT/data" -name "*.py" -type f
     } | sort -u
 )
-echo "   → ${#PY_FILES[@]} arquivos .py encontrados"
+echo "   → ${#PY_FILES[@]} .py files found"
 
 if [[ ${#PY_FILES[@]} -gt 0 ]]; then
     xgettext \
@@ -85,27 +109,27 @@ if [[ ${#PY_FILES[@]} -gt 0 ]]; then
         "${PY_FILES[@]}" 2>/dev/null || true
     if [[ -f "$TMP/python.pot" ]]; then
         COUNT=$(grep -c '^msgid ' "$TMP/python.pot" 2>/dev/null || echo 0)
-        echo "   → python.pot gerado ($COUNT entradas)"
+        echo "   → python.pot generated ($COUNT entries)"
     else
-        echo "   → python.pot vazio (nenhuma string _() encontrada nos .py)"
+        echo "   → python.pot empty (no _() strings found in .py files)"
     fi
 else
-    echo "   → nenhum arquivo .py encontrado"
+    echo "   → no .py files found"
 fi
 
-# ── 3. Atualizar POTFILES.in automaticamente ──────────────────────────────────
-echo "[3/6] Atualizando POTFILES.in..."
+# ── 3. Update POTFILES.in automatically ──────────────────────────────────────
+echo "[3/6] Updating POTFILES.in..."
 {
-    echo "# Auto-gerado por po/update-pot.sh — não edite manualmente"
+    echo "# Auto-generated by po/update-pot.sh — do not edit manually"
     echo ""
     for f in "${RUST_FILES[@]}" "${PY_FILES[@]}"; do
         echo "${f#"$ROOT/"}"
     done
 } > "$POTFILES"
-echo "   → POTFILES.in atualizado com $((${#RUST_FILES[@]} + ${#PY_FILES[@]})) entradas"
+echo "   → POTFILES.in updated with $((${#RUST_FILES[@]} + ${#PY_FILES[@]})) entries"
 
-# ── 4. Mesclar todas as fontes ────────────────────────────────────────────────
-echo "[4/6] Mesclando .pot extraídos + chaves bash estáticas..."
+# ── 4. Merge all sources ──────────────────────────────────────────────────────
+echo "[4/6] Merging extracted .pot files + static bash keys..."
 MERGE=()
 [[ -f "$TMP/rust.pot" ]]   && MERGE+=("$TMP/rust.pot")
 [[ -f "$TMP/python.pot" ]] && MERGE+=("$TMP/python.pot")
@@ -117,10 +141,10 @@ msgcat \
     "${MERGE[@]}"
 
 TOTAL=$(grep -c '^msgid ' "$TMP/merged.pot" 2>/dev/null || echo 0)
-echo "   → $TOTAL entradas mescladas no total"
+echo "   → $TOTAL entries merged in total"
 
-# ── 5. Corrigir cabeçalho e gravar .pot final ─────────────────────────────────
-echo "[5/6] Gravando $OUT..."
+# ── 5. Fix header and write final .pot ────────────────────────────────────────
+echo "[5/6] Writing $OUT..."
 PKG_VER=$(grep -m1 '^version' "$ROOT/Cargo.toml" | sed 's/.*= *"//;s/"//')
 DATE=$(date +"%Y-%m-%d %H:%M%z")
 
@@ -133,10 +157,10 @@ sed \
     -e "s|^\"Language:.*|\"Language: \\\\n\"|" \
     "$TMP/merged.pot" > "$OUT"
 
-echo "   → $OUT gravado"
+echo "   → $OUT written"
 
-# ── 6. Sincronizar LINGUAS <-> arquivos .po ──────────────────────────────────
-echo "[6/6] Sincronizando LINGUAS <-> arquivos .po..."
+# ── 6. Sync LINGUAS <-> .po files ────────────────────────────────────────────
+echo "[6/6] Syncing LINGUAS <-> .po files..."
 
 declare -A LINGUAS_SET
 while IFS= read -r lang || [[ -n "$lang" ]]; do
@@ -148,23 +172,23 @@ done < "$LINGUAS_FILE"
 ADDED_TO_LINGUAS=()
 CREATED_PO=()
 
-# 6a. .po existe mas não está no LINGUAS → adicionar
+# 6a. .po exists but is not in LINGUAS → add it
 for po_file in "$PO_DIR"/*.po; do
     [[ -f "$po_file" ]] || continue
     lang=$(basename "$po_file" .po)
     if [[ -z "${LINGUAS_SET[$lang]:-}" ]]; then
-        echo "   + LINGUAS: adicionando '$lang' (arquivo .po existe)"
+        echo "   + LINGUAS: adding '$lang' (.po file exists)"
         echo "$lang" >> "$LINGUAS_FILE"
         LINGUAS_SET["$lang"]=1
         ADDED_TO_LINGUAS+=("$lang")
     fi
 done
 
-# 6b. Idioma no LINGUAS sem .po → criar via msginit
+# 6b. Language in LINGUAS without a .po file → create via msginit
 for lang in "${!LINGUAS_SET[@]}"; do
     po_file="$PO_DIR/$lang.po"
     if [[ ! -f "$po_file" ]]; then
-        echo "   + Criando $lang.po via msginit..."
+        echo "   + Creating $lang.po via msginit..."
         msginit \
             --input="$OUT" \
             --locale="$lang" \
@@ -173,38 +197,38 @@ for lang in "${!LINGUAS_SET[@]}"; do
             2>/dev/null || true
         if [[ -f "$po_file" ]]; then
             COUNT=$(grep -c '^msgid ' "$po_file" 2>/dev/null || echo 0)
-            echo "   → $lang.po criado ($COUNT entradas)"
+            echo "   → $lang.po created ($COUNT entries)"
             CREATED_PO+=("$lang")
         else
-            echo "   ⚠ msginit falhou para '$lang' — locale instalado?"
+            echo "   ⚠ msginit failed for '$lang' — is the locale installed?"
         fi
     fi
 done
 
-# Regravar LINGUAS ordenado e sem duplicatas
+# Rewrite LINGUAS sorted and deduplicated
 sort -u "$LINGUAS_FILE" > "$TMP/linguas_sorted"
 mv "$TMP/linguas_sorted" "$LINGUAS_FILE"
 
-[[ ${#ADDED_TO_LINGUAS[@]} -gt 0 ]] && echo "   → Adicionados ao LINGUAS: ${ADDED_TO_LINGUAS[*]}"
-[[ ${#CREATED_PO[@]}       -gt 0 ]] && echo "   → Arquivos .po criados:   ${CREATED_PO[*]}"
+[[ ${#ADDED_TO_LINGUAS[@]} -gt 0 ]] && echo "   → Added to LINGUAS: ${ADDED_TO_LINGUAS[*]}"
+[[ ${#CREATED_PO[@]}       -gt 0 ]] && echo "   → .po files created: ${CREATED_PO[*]}"
 [[ ${#ADDED_TO_LINGUAS[@]} -eq 0 && ${#CREATED_PO[@]} -eq 0 ]] && \
-    echo "   → LINGUAS e .po já estão sincronizados"
+    echo "   → LINGUAS and .po files are already in sync"
 
 echo ""
-echo "✓ Gerado: $OUT"
-echo "✓ Entradas totais: $TOTAL"
-echo "✓ Versão: pkgbuild_manager $PKG_VER"
-echo "✓ Idiomas: $(tr '\n' ' ' < "$LINGUAS_FILE" | xargs)"
+echo "✓ Generated: $OUT"
+echo "✓ Total entries: $TOTAL"
+echo "✓ Version: pkgbuild_manager $PKG_VER"
+echo "✓ Languages: $(tr '\n' ' ' < "$LINGUAS_FILE" | xargs)"
 
-# ── Atualizar TODOS os .po automaticamente (sempre) ─────────────────────────
+# ── Update ALL .po files automatically (always) ──────────────────────────────
 echo ""
-echo "=== Atualizando todos os .po com msgmerge ==="
+echo "=== Updating all .po files with msgmerge ==="
 for po in "$PO_DIR"/*.po; do
     lang=$(basename "$po" .po)
     printf "  → %-14s" "$lang.po"
     msgmerge --quiet --update --backup=none "$po" "$OUT"
     UNTRANSLATED=$(grep -c '^msgstr ""' "$po" 2>/dev/null || echo 0)
     TOTAL_ENTRIES=$(grep -c '^msgid '   "$po" 2>/dev/null || echo 0)
-    echo " ($UNTRANSLATED/$TOTAL_ENTRIES sem tradução)"
+    echo " ($UNTRANSLATED/$TOTAL_ENTRIES untranslated)"
 done
-echo "✓ Todos os .po atualizados!"
+echo "✓ All .po files updated!"
