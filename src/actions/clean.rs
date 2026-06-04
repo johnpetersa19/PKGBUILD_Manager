@@ -62,7 +62,8 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
                         continue;
                     }
 
-                    if p.join("HEAD").exists() && p.join("objects").exists() {
+                    // FIX: use a robust helper instead of the fragile HEAD+objects heuristic
+                    if is_bare_git_repo(&p) {
                         std::fs::remove_dir_all(&p)?;
                         println!(
                             "  {} {:?}",
@@ -85,6 +86,45 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
     }
 
     Ok(())
+}
+
+/// Returns true only when `dir` looks like a genuine git bare repository.
+///
+/// A bare repo created by git always contains **all four** of:
+///   - `HEAD`   — file whose content starts with "ref: refs/" or is a 40-char hex SHA
+///   - `objects/` — directory
+///   - `refs/`    — directory
+///   - `config`   — file
+///
+/// Requiring all four makes false positives from build-cache directories
+/// (which might incidentally have a `HEAD` file or an `objects/` folder)
+/// practically impossible.
+fn is_bare_git_repo(dir: &std::path::Path) -> bool {
+    // Structural presence check
+    if !dir.join("objects").is_dir()
+        || !dir.join("refs").is_dir()
+        || !dir.join("config").is_file()
+    {
+        return false;
+    }
+
+    // Content check on HEAD: must look like a git HEAD
+    let head_path = dir.join("HEAD");
+    match std::fs::read_to_string(&head_path) {
+        Ok(content) => {
+            let content = content.trim();
+            // Symbolic ref: "ref: refs/heads/main"
+            if content.starts_with("ref: refs/") {
+                return true;
+            }
+            // Detached HEAD: exactly 40 lowercase hex chars
+            if content.len() == 40 && content.chars().all(|c| c.is_ascii_hexdigit()) {
+                return true;
+            }
+            false
+        }
+        Err(_) => false,
+    }
 }
 
 /// Read `pkgname` from the PKGBUILD in `dir` using a simple line scan.
