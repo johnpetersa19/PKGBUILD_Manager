@@ -111,6 +111,9 @@ msgstr "namcap falhou com status"
 msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
 msgstr "shellcheck não encontrado. Instale com: sudo pacman -S shellcheck"
 
+# ---------------------------------------------------------------------------
+# aur_push_gui — UnifiedPushWindow (aur_dialog.rs)
+# ---------------------------------------------------------------------------
 #: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:258
 #: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:295
 msgid "Push to AUR"
@@ -224,6 +227,16 @@ msgstr "Enviado para o repositório remoto com sucesso!"
 msgid "Not a recognised repository"
 msgstr "Repositório não reconhecido"
 
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:367
+#, fuzzy
+msgid ""
+"The selected folder does not appear to be a Git repository.\n"
+"                         Make sure you select a folder that contains a .git "
+"directory."
+msgstr ""
+"A pasta selecionada não parece ser um repositório Git.\n"
+"Verifique se a pasta contém um diretório .git."
+
 #: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:395
 msgid "Commit"
 msgstr "Commit"
@@ -260,10 +273,16 @@ msgstr "Formulário"
 msgid "Steps"
 msgstr "Etapas"
 
+# ---------------------------------------------------------------------------
+# Step row labels — aur_dialog.rs (mode: AUR)
+# ---------------------------------------------------------------------------
 #: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:520
 msgid "Regenerating .SRCINFO"
 msgstr "Regenerando .SRCINFO"
 
+# ---------------------------------------------------------------------------
+# Step row labels — aur_dialog.rs (mode: Git/GitLab/Codeberg/Generic)
+# ---------------------------------------------------------------------------
 #: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:521
 #: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:540
 msgid "Checking repository status"
@@ -327,6 +346,14 @@ msgstr "Tentar novamente"
 msgid "No target directory provided."
 msgstr "Nenhum diretório de destino fornecido."
 
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:807
+msgid "Failed to start pkgbuild_manager"
+msgstr "Falha ao iniciar o pkgbuild_manager"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:808
+msgid "Make sure it is installed and in PATH."
+msgstr "Verifique se está instalado e no PATH."
+
 #: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:853
 msgid "failed to start"
 msgstr "falha ao iniciar"
@@ -389,55 +416,511 @@ msgstr "Instale o pacote pkgbuild-manager para obter a extensão."
 msgid "Extension found"
 msgstr "Extensão encontrada"
 
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:211
+msgid "Restarting Nautilus\\u{2026}"
+msgstr "Reiniciando o Nautilus…"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:216
+msgid "Done. Right-click a PKGBUILD directory to see the menu."
+msgstr ""
+"Pronto. Clique com o botão direito em um diretório PKGBUILD para ver o menu."
+
 #: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:224
 msgid "Compiled package (makepkg)"
 msgstr "Compilar pacote (makepkg)"
 
-# ---------------------------------------------------------------------------
-# validate.rs — PKGBUILD static analysis
-# ---------------------------------------------------------------------------
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:225
+msgid "Compile and clean srcdir (makepkg -c)"
+msgstr "Compilar e limpar srcdir (makepkg -c)"
 
-msgid "Validating PKGBUILD syntax (makepkg --printsrcinfo)…"
-msgstr "Validando sintaxe do PKGBUILD (makepkg --printsrcinfo)…"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:226
+msgid "Force recompilation (makepkg -f)"
+msgstr "Forçar recompilação (makepkg -f)"
 
-msgid "✔ PKGBUILD syntax OK"
-msgstr "✔ Sintaxe do PKGBUILD OK"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:227
+msgid "Basic check() function (makepkg --nocheck)"
+msgstr "Pular função check() (makepkg --nocheck)"
 
-msgid "PKGBUILD has syntax errors"
-msgstr "O PKGBUILD contém erros de sintaxe"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:228
+msgid "Popular PGP signature check (makepkg --skippgpcheck)"
+msgstr "Pular verificação de assinatura PGP (makepkg --skippgpcheck)"
 
-msgid "Parsing PKGBUILD variables (makepkg --nobuild --noextract)…"
-msgstr "Analisando variáveis do PKGBUILD (makepkg --nobuild --noextract)…"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:229
+msgid "Compile with custom flags after the path"
+msgstr "Compilar com flags personalizadas após o caminho"
 
-msgid "Verifying source checksums (makepkg --verifysource)…"
-msgstr "Verificando checksums das fontes (makepkg --verifysource)…"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:232
+msgid "Compile, install and resolve dependencies (makepkg -si)"
+msgstr "Compilar, instalar e resolver dependências (makepkg -si)"
 
-msgid "Checking declared dependencies (makepkg --syncdeps --nobuild)…"
-msgstr "Verificando dependências declaradas (makepkg --syncdeps --nobuild)…"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:233
+msgid "Compile, install and clean srcdir (makepkg -sic)"
+msgstr "Compilar, instalar e limpar srcdir (makepkg -sic)"
 
-msgid "validate-offline: PKGBUILD full offline check"
-msgstr "validate-offline: verificação completa offline do PKGBUILD"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:234
+msgid "Force compilation and installation (makepkg -sif)"
+msgstr "Forçar compilação e instalação (makepkg -sif)"
 
-msgid "All offline checks passed."
-msgstr "Todas as verificações offline passaram."
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:235
+msgid "Install and remove makedeps afterwards (makepkg -sir)"
+msgstr "Instalar e remover makedeps depois (makepkg -sir)"
 
-msgid "check(s) failed"
-msgstr "verificação(ões) falhou(aram)"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:236
+msgid "Install without running check()"
+msgstr "Instalar sem executar check()"
 
-msgid "validate check(s) failed"
-msgstr "verificação(ões) de validação falhou(aram)"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:237
+msgid "Install skipping PGP checks"
+msgstr "Instalar pulando verificações PGP"
 
-msgid "Full offline check: syntax + parse + namcap + shellcheck"
-msgstr "Verificação offline completa: sintaxe + parse + namcap + shellcheck"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:238
+msgid "Install with custom flags after the path"
+msgstr "Instalar com flags personalizadas após o caminho"
 
-msgid "Validate syntax only (makepkg --printsrcinfo)"
-msgstr "Validar apenas a sintaxe (makepkg --printsrcinfo)"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:241
+msgid "Download and extract sources only (makepkg -o)"
+msgstr "Baixar e extrair fontes apenas (makepkg -o)"
 
-msgid "Parse variables/functions without extracting (makepkg --nobuild --noextract)"
-msgstr "Analisar variáveis/funções sem extrair (makepkg --nobuild --noextract)"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:242
+msgid "Update checksums without PKGBUILD (updpkgsums)"
+msgstr "Atualizar checksums no PKGBUILD (updpkgsums)"
 
-msgid "Download sources and verify checksums (makepkg --verifysource)"
-msgstr "Baixar fontes e verificar checksums (makepkg --verifysource)"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:243
+msgid "Generate checksums and print to standard output (makepkg -g)"
+msgstr "Gerar checksums e imprimir na saída padrão (makepkg -g)"
 
-msgid "Check declared dependencies exist in repos (makepkg --syncdeps --nobuild)"
-msgstr "Verificar se as dependências declaradas existem nos repositórios (makepkg --syncdeps --nobuild)"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:244
+msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
+msgstr "Regenerar .SRCINFO (makepkg --printsrcinfo)"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:247
+msgid "Run namcap on PKGBUILD and compiled packages"
+msgstr "Executar namcap no PKGBUILD e pacotes compilados"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:248
+msgid "Run ShellCheck on PKGBUILD"
+msgstr "Executar ShellCheck no PKGBUILD"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:251
+msgid "Clean srcdir with makepkg (makepkg -c)"
+msgstr "Limpar srcdir com makepkg (makepkg -c)"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:252
+msgid "Remove src/, packages/ and compiled packages"
+msgstr "Remover src/, pkg/ e pacotes compilados"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:255
+msgid "Stage, commit and push to the AUR (automatic message if not provided)"
+msgstr "Stage, commit e push para o AUR (mensagem automática se não fornecida)"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:256
+msgid "Push with version tag (e.g., 1.2.3-1)"
+msgstr "Push com tag de versão (ex: 1.2.3-1)"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:259
+msgid "Remove obsolete symbolic links and check the Nautilus extension"
+msgstr "Remover links simbólicos obsoletos e verificar a extensão do Nautilus"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:260
+msgid "Display program version"
+msgstr "Exibir a versão do programa"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:261
+msgid "Display this help message"
+msgstr "Exibir esta mensagem de ajuda"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/app.rs:53
+msgid "PKGBUILD Manager — Menu Settings"
+msgstr "PKGBUILD Manager — Configurações do Menu"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/app.rs:73
+msgid "Reset"
+msgstr "Redefinir"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/app.rs:77
+msgid "Save"
+msgstr "Salvar"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/app.rs:124
+msgid "Saved! Restarting file manager…"
+msgstr "Salvo! Reiniciando o gerenciador de arquivos…"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/app.rs:129
+msgid "Error saving"
+msgstr "Erro ao salvar"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/app.rs:156
+msgid "+ Add Group"
+msgstr "+ Adicionar Grupo"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/app.rs:165
+msgid "New Group"
+msgstr "Novo Grupo"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/app.rs:271
+msgid "+ Add Item"
+msgstr "+ Adicionar Item"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/app.rs:400
+msgid "Add Menu Item"
+msgstr "Adicionar Item ao Menu"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/app.rs:401
+msgid "Choose an action to add to this group."
+msgstr "Escolha uma ação para adicionar a este grupo."
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/app.rs:406
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/app.rs:407
+msgid "Add"
+msgstr "Adicionar"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:43
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:74
+msgid "00_Full Workflow"
+msgstr "Fluxo Completo"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:44
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:76
+msgid "01_Build"
+msgstr "Compilar"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:45
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:77
+msgid "02b_Build and Clean"
+msgstr "Compilar e Limpar"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:46
+msgid "08_Build Force"
+msgstr "Compilar Forçado"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:47
+msgid "09_Build NoCheck"
+msgstr "Compilar sem Check"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:48
+msgid "10_Build NoGPG"
+msgstr "Compilar sem GPG"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:49
+msgid "11_Fetch Sources"
+msgstr "Baixar Fontes"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:50
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:75
+msgid "02_Install"
+msgstr "Instalar"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:51
+msgid "12_Install Force"
+msgstr "Instalar Forçado"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:52
+msgid "13_Install RmDeps"
+msgstr "Instalar Remover Deps"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:53
+msgid "14_Install NoCheck"
+msgstr "Instalar sem Check"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:54
+msgid "15_Install NoGPG"
+msgstr "Instalar sem GPG"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:55
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:83
+msgid "03_Update Checksums"
+msgstr "Atualizar Checksums"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:56
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:84
+msgid "04_Update .SRCINFO"
+msgstr "Atualizar .SRCINFO"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:57
+msgid "16_Gen Checksums"
+msgstr "Gerar Checksums"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:58
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:90
+msgid "05_Namcap"
+msgstr "Namcap"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:59
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:91
+msgid "05b_ShellCheck"
+msgstr "ShellCheck"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:60
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:97
+msgid "06_Push AUR"
+msgstr "Enviar para AUR"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:61
+msgid "17_Push AUR Tag"
+msgstr "Enviar Tag AUR"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:62
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:103
+msgid "07_Clean srcdir"
+msgstr "Limpar srcdir"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:63
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:104
+msgid "07b_Clean Everything"
+msgstr "Limpar Tudo"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:72
+msgid "Actions"
+msgstr "Ações"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:81
+msgid "Metadata"
+msgstr "Metadados"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:88
+msgid "Audit"
+msgstr "Auditoria"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:95
+msgid "Git / AUR"
+msgstr "Git / AUR"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/settings_gui/config.rs:101
+msgid "Clean"
+msgstr "Limpar"
+
+msgid "notify_building"
+msgstr "Compilando pacote…"
+
+msgid "notify_build_ok"
+msgstr "✓ Pacote compilado com sucesso!"
+
+msgid "notify_build_fail"
+msgstr "✗ Falha ao compilar o pacote! Ver: "
+
+msgid "notify_installing"
+msgstr "Instalando pacote…"
+
+msgid "notify_install_ok"
+msgstr "✓ Pacote instalado com sucesso!"
+
+msgid "notify_install_fail"
+msgstr "✗ Falha ao instalar o pacote! Ver: "
+
+msgid "notify_checksums"
+msgstr "Atualizando checksums…"
+
+msgid "notify_checksums_ok"
+msgstr "✓ Checksums atualizados com sucesso!"
+
+msgid "notify_checksums_fail"
+msgstr "✗ Falha ao atualizar checksums! Ver: "
+
+msgid "notify_srcinfo"
+msgstr "Regenerando .SRCINFO…"
+
+msgid "notify_srcinfo_ok"
+msgstr "✓ .SRCINFO regenerado com sucesso!"
+
+msgid "notify_srcinfo_fail"
+msgstr "✗ Falha ao regenerar .SRCINFO! Ver: "
+
+msgid "notify_namcap"
+msgstr "Executando namcap…"
+
+msgid "notify_namcap_warn"
+msgstr "⚠ Namcap encontrou avisos. Ver: "
+
+msgid "notify_namcap_ok"
+msgstr "✓ Namcap: nenhum problema encontrado!"
+
+msgid "notify_namcap_fail"
+msgstr "✗ Falha ao executar namcap! Ver: "
+
+msgid "notify_shellcheck"
+msgstr "Executando ShellCheck…"
+
+msgid "notify_shellcheck_warn"
+msgstr "⚠ ShellCheck encontrou avisos. Ver: "
+
+msgid "notify_shellcheck_ok"
+msgstr "✓ ShellCheck: nenhum problema encontrado!"
+
+msgid "notify_shellcheck_fail"
+msgstr "✗ Falha ao executar ShellCheck! Ver: "
+
+msgid "notify_push_aur"
+msgstr "Enviando para o AUR…"
+
+msgid "notify_push_aur_ok"
+msgstr "✓ Enviado para o AUR com sucesso!"
+
+msgid "notify_push_aur_fail"
+msgstr "✗ Falha ao enviar para o AUR! Ver: "
+
+msgid "notify_clean_src"
+msgstr "Limpando srcdir…"
+
+msgid "notify_clean_src_ok"
+msgstr "✓ srcdir limpo com sucesso!"
+
+msgid "notify_clean_src_fail"
+msgstr "✗ Falha ao limpar srcdir! Ver: "
+
+msgid "notify_clean_all"
+msgstr "Limpando tudo…"
+
+msgid "notify_clean_all_ok"
+msgstr "✓ Tudo limpo com sucesso!"
+
+msgid "notify_clean_all_fail"
+msgstr "✗ Falha ao limpar tudo! Ver: "
+
+msgid "notify_full_workflow"
+msgstr "Executando fluxo completo…"
+
+msgid "notify_full_workflow_ok"
+msgstr "✓ Fluxo completo concluído com sucesso!"
+
+msgid "notify_full_workflow_fail"
+msgstr "✗ Falha no fluxo completo! Ver: "
+
+msgid "notify_build_force"
+msgstr "Compilação forçada em andamento…"
+
+msgid "notify_build_force_ok"
+msgstr "✓ Compilação forçada concluída!"
+
+msgid "notify_build_force_fail"
+msgstr "✗ Falha na compilação forçada! Ver: "
+
+msgid "notify_build_nocheck"
+msgstr "Compilando sem verificações…"
+
+msgid "notify_build_nocheck_ok"
+msgstr "✓ Compilado sem verificações!"
+
+msgid "notify_build_nocheck_fail"
+msgstr "✗ Falha na compilação sem verificações! Ver: "
+
+msgid "notify_build_nogpg"
+msgstr "Compilando sem GPG…"
+
+msgid "notify_build_nogpg_ok"
+msgstr "✓ Compilado sem GPG!"
+
+msgid "notify_build_nogpg_fail"
+msgstr "✗ Falha na compilação sem GPG! Ver: "
+
+msgid "notify_fetch_sources"
+msgstr "Baixando fontes…"
+
+msgid "notify_fetch_sources_ok"
+msgstr "✓ Fontes baixadas com sucesso!"
+
+msgid "notify_fetch_sources_fail"
+msgstr "✗ Falha ao baixar fontes! Ver: "
+
+msgid "notify_install_force"
+msgstr "Instalação forçada em andamento…"
+
+msgid "notify_install_force_ok"
+msgstr "✓ Instalação forçada concluída!"
+
+msgid "notify_install_force_fail"
+msgstr "✗ Falha na instalação forçada! Ver: "
+
+msgid "notify_install_rmdeps"
+msgstr "Instalando e removendo dependências de compilação…"
+
+msgid "notify_install_rmdeps_ok"
+msgstr "✓ Instalado e dependências de compilação removidas!"
+
+msgid "notify_install_rmdeps_fail"
+msgstr "✗ Falha ao instalar e remover dependências de compilação! Ver: "
+
+msgid "notify_install_nocheck"
+msgstr "Instalando sem verificações…"
+
+msgid "notify_install_nocheck_ok"
+msgstr "✓ Instalado sem verificações!"
+
+msgid "notify_install_nocheck_fail"
+msgstr "✗ Falha na instalação sem verificações! Ver: "
+
+msgid "notify_install_nogpg"
+msgstr "Instalando sem GPG…"
+
+msgid "notify_install_nogpg_ok"
+msgstr "✓ Instalado sem GPG!"
+
+msgid "notify_install_nogpg_fail"
+msgstr "✗ Falha na instalação sem GPG! Ver: "
+
+msgid "notify_genchecksums"
+msgstr "Gerando checksums…"
+
+msgid "notify_genchecksums_ok"
+msgstr "✓ Checksums gerados com sucesso!"
+
+msgid "notify_genchecksums_fail"
+msgstr "✗ Falha ao gerar checksums! Ver: "
+
+msgid "notify_push_aur_tag"
+msgstr "Criando tag e enviando para o AUR…"
+
+msgid "notify_push_aur_tag_ok"
+msgstr "✓ Tag criada e enviada para o AUR!"
+
+msgid "notify_push_aur_tag_fail"
+msgstr "✗ Falha ao criar tag/enviar para o AUR! Ver: "
+
+#~ msgid "Add Action"
+#~ msgstr "Adicionar Ação"
+
+#~ msgid "All actions are already in a group."
+#~ msgstr "Todas as ações já estão em um grupo."
+
+#~ msgid ""
+#~ "Nautilus extension not found at /usr/share/nautilus-python/extensions/"
+#~ "pkgbuild_manager.py. Please reinstall the package."
+#~ msgstr ""
+#~ "Extensão do Nautilus não encontrada em /usr/share/nautilus-python/"
+#~ "extensions/pkgbuild_manager.py. Por favor, reinstale o pacote."
+
+#~ msgid "PKGBUILD Manager - CLI Tool"
+#~ msgstr "PKGBUILD Manager - Ferramenta CLI"
+
+#~ msgid "Usage:"
+#~ msgstr "Uso:"
+
+#~ msgid "Build commands"
+#~ msgstr "Comandos de compilação"
+
+#~ msgid "Install commands"
+#~ msgstr "Comandos de instalação"
+
+#~ msgid "Package metadata commands"
+#~ msgstr "Comandos de metadados do pacote"
+
+#~ msgid "Audit commands"
+#~ msgstr "Comandos de auditoria"
+
+#~ msgid "Clean commands"
+#~ msgstr "Comandos de limpeza"
+
+#~ msgid "AUR/Git commands"
+#~ msgstr "Comandos AUR/Git"
+
+#~ msgid "Other"
+#~ msgstr "Outros"
+
+#~ msgid "Symlink scripts to user directory with localization"
+#~ msgstr ""
+#~ "Criar links simbólicos de scripts no diretório do usuário com localização"
+
+#~ msgid "Nautilus scripts successfully configured under 'PKGBUILD' submenu."
+#~ msgstr "Scripts do Nautilus configurados com sucesso no submenu 'PKGBUILD'."
