@@ -100,6 +100,10 @@ fn main() -> Result<()> {
         "build-force"      => actions::build::run(target_path, &merge_flags(&["-f"], &extra_flags)),
         "build-nocheck"    => actions::build::run(target_path, &merge_flags(&["--nocheck"], &extra_flags)),
         "build-nogpg"      => actions::build::run(target_path, &merge_flags(&["--skippgpcheck"], &extra_flags)),
+        // Intentional pass-through alias for `build`.
+        // Exists as a distinct subcommand name so GUI frontends (Paru GUI, Nautilus scripts)
+        // can expose a dedicated "custom flags" entry point without special-casing `build`.
+        // Behaviour: identical to `build` — all extra_flags are forwarded unchanged.
         "build-custom"     => actions::build::run(target_path, &extra_flags),
 
         "install"          => actions::install::run(target_path, &extra_flags),
@@ -108,6 +112,10 @@ fn main() -> Result<()> {
         "install-rmdeps"   => actions::install::run(target_path, &merge_flags(&["-r"], &extra_flags)),
         "install-nocheck"  => actions::install::run(target_path, &merge_flags(&["--nocheck"], &extra_flags)),
         "install-nogpg"    => actions::install::run(target_path, &merge_flags(&["--skippgpcheck"], &extra_flags)),
+        // Intentional pass-through alias for `install`.
+        // Same rationale as `build-custom` above: distinct name for GUI/script consumers
+        // that need to invoke install with arbitrary user-supplied flags.
+        // Behaviour: identical to `install` — all extra_flags are forwarded unchanged.
         "install-custom"   => actions::install::run(target_path, &extra_flags),
 
         "fetch-sources"    => actions::build::run(target_path, &merge_flags(&["-o"], &extra_flags)),
@@ -233,7 +241,7 @@ fn print_usage() {
     println!("  build-force        {}", gettext("Force recompilation (makepkg -f)"));
     println!("  build-nocheck      {}", gettext("Basic check() function (makepkg --nocheck)"));
     println!("  build-nogpg        {}", gettext("Popular PGP signature check (makepkg --skippgpcheck)"));
-    println!("  build-custom       {}", gettext("Compile with custom flags after the path"));
+    println!("  build-custom       {}", gettext("Same as 'build' — all extra flags after the path are forwarded to makepkg"));
     println!();
     println!("Installation Commands:");
     println!("  install            {}", gettext("Compile, install and resolve dependencies (makepkg -si)"));
@@ -242,7 +250,7 @@ fn print_usage() {
     println!("  install-rmdeps     {}", gettext("Install and remove makedeps afterwards (makepkg -sir)"));
     println!("  install-nocheck    {}", gettext("Install without running check()"));
     println!("  install-nogpg      {}", gettext("Install skipping PGP checks"));
-    println!("  install-custom     {}", gettext("Install with custom flags after the path"));
+    println!("  install-custom     {}", gettext("Same as 'install' — all extra flags after the path are forwarded to makepkg"));
     println!();
     println!("Package metadata commands:");
     println!("  fetch-sources      {}", gettext("Download and extract sources only (makepkg -o)"));
@@ -255,9 +263,9 @@ fn print_usage() {
     println!("  shellcheck         {}", gettext("Run ShellCheck on PKGBUILD"));
     println!();
     println!("Validate commands (no compilation):");
-    println!("  validate           {}", gettext("Full offline check: syntax + parse + namcap + shellcheck"));
+    println!("  validate           {}", gettext("Full offline check: syntax + namcap + shellcheck (no network)"));
     println!("  validate-syntax    {}", gettext("Validate syntax only (makepkg --printsrcinfo)"));
-    println!("  validate-parse     {}", gettext("Parse variables/functions without extracting (makepkg --nobuild --noextract)"));
+    println!("  validate-parse     {}", gettext("Parse variables/functions without extracting (makepkg --nobuild --noextract); may access network on VCS packages"));
     println!("  validate-sources   {}", gettext("Download sources and verify checksums (makepkg --verifysource)"));
     println!("  validate-deps      {}", gettext("Check declared dependencies exist in repos (makepkg --syncdeps --nobuild)"));
     println!();
