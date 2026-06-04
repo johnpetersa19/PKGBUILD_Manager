@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-04 14:32-0300\n"
+"POT-Creation-Date: 2026-06-04 15:47-0300\n"
 "PO-Revision-Date: 2026-06-02 16:15-0300\n"
 "Last-Translator: John Peter Sa\n"
 "Language-Team: English (US)\n"
@@ -16,22 +16,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:64
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:43
+#, fuzzy
+msgid ""
+"Warning: the commit was pushed to the AUR but the tag could not be pushed."
+msgstr "Stage, commit and push to the AUR (automatic message if not provided)"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:46
+msgid "The tag exists locally only. This is an inconsistent state."
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:49
+msgid "Once the network issue is resolved, push the tag manually with:"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:94
 #, fuzzy
 msgid ""
 "Note: nothing to commit or commit failed \\u{2014} continuing with push."
 msgstr "Note: nothing to commit or commit failed — continuing with push."
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:68
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:98
 #, fuzzy
 msgid "git commit failed"
 msgstr "Command failed"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:127
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:157
 msgid "Note: push to origin/master failed"
 msgstr "Note: push to origin/master failed"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:129
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:159
 msgid "Attempting simple 'git push'..."
 msgstr "Attempting simple 'git push'..."
 
@@ -53,24 +67,28 @@ msgstr "Compiled package (makepkg)"
 msgid "makepkg -g failed:"
 msgstr "makepkg -g failed:"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:19
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:20
 msgid "Removing src/ pkg/ and compiled packages in"
 msgstr "Removing src/ pkg/ and compiled packages in"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:28
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:45
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:29
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:57
 msgid "Removed"
 msgstr "Removed"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:69
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:47
+msgid "Warning: could not determine pkgname — removing all .pkg.tar.* files:"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:82
 msgid "Removed bare-repo cache"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:76
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:89
 msgid "Removed build directory"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:26
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:27
 #, fuzzy
 msgid "failed to canonicalize path"
 msgstr "Failed to canonicalize path"
@@ -78,52 +96,86 @@ msgstr "Failed to canonicalize path"
 # ---------------------------------------------------------------------------
 # CLI / Rust binary strings
 # ---------------------------------------------------------------------------
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:35
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:36
 msgid "Failed to resolve parent directory"
 msgstr "Failed to resolve parent directory"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:42
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:43
 #, fuzzy
 msgid "Directory does not exist"
 msgstr "The directory does not exist"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:50
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:125
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:51
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:126
 #, fuzzy
 msgid "No PKGBUILD found in directory"
 msgstr "No PKGBUILD found in the directory"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:76
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:77
 #, fuzzy
 msgid "failed to spawn command"
 msgstr "Failed to start command"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:86
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:87
 #, fuzzy
 msgid "command failed"
 msgstr "Command failed"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:88
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:89
 #, fuzzy
 msgid "with status"
 msgstr "namcap failed with status"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:130
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:131
 msgid ">>> Regenerating .SRCINFO in"
 msgstr ">>> Regenerating .SRCINFO in"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:142
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:143
 msgid "makepkg --printsrcinfo failed"
 msgstr "makepkg --printsrcinfo failed"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/namcap.rs:25
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:169
+msgid "HOME env var not set"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/namcap.rs:60
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:64
+msgid "Error log written to"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/namcap.rs:65
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:69
+msgid "Warning: could not write error log"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/namcap.rs:74
+msgid "namcap reported errors"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/namcap.rs:77
+msgid "error"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/namcap.rs:79
+msgid "errors"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/namcap.rs:87
 msgid "namcap failed with status"
 msgstr "namcap failed with status"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:24
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:35
 #, fuzzy
 msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
 msgstr "shellcheck not found. Install with: sudo pacman -S shellcheck"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:41
+msgid "Failed to run shellcheck"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:76
+msgid "shellcheck found issues (see log above)"
+msgstr ""
 
 #: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:22
 #, fuzzy
@@ -136,44 +188,44 @@ msgstr "Failed to start command"
 msgid "failed"
 msgstr "Command failed"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:39
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:41
 msgid "Validating PKGBUILD syntax (makepkg --printsrcinfo)…"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:53
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:55
 msgid "PKGBUILD syntax OK"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:56
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:58
 msgid "PKGBUILD has syntax errors"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:65
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:73
 msgid "Parsing PKGBUILD variables (makepkg --nobuild --noextract)…"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:74
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:82
 msgid "Verifying source checksums (makepkg --verifysource)…"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:83
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:91
 #, fuzzy
 msgid "Checking declared dependencies (makepkg --syncdeps --nobuild)…"
 msgstr "Compile, install and resolve dependencies (makepkg -si)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:90
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:104
 msgid "validate-offline: PKGBUILD full offline check"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:100
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:115
 msgid "All offline checks passed."
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:103
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:120
 msgid "check(s) failed"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:105
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:134
 msgid "validate check(s) failed"
 msgstr ""
 
@@ -446,178 +498,181 @@ msgstr "makepkg -g failed:"
 msgid "git push --tags failed"
 msgstr "Note: push to origin/master failed"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:136
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:183
 msgid "aur-push-tag requires a version tag argument"
 msgstr "aur-push-tag requires a version tag argument"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:138
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:185
 msgid "aur-push-tag: tag cannot be empty"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:143
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:190
 msgid "aur-push-tag: invalid tag"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:145
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:192
 msgid ""
 "tags cannot contain spaces (expected format: pkgver-pkgrel, e.g. 1.2.3-1)"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:159
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:206
 msgid "Unknown command"
 msgstr "Unknown command"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:200
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:247
 msgid "Warning: Could not remove obsolete PKGBUILD directory"
 msgstr "Warning: Could not remove obsolete PKGBUILD directory"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:208
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:255
 msgid "Warning: Nautilus Python extension not found at"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:211
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:258
 msgid "Install the pkgbuild-manager package to get the extension."
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:213
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:260
 msgid "Extension found"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:216
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:263
 msgid "Restarting Nautilus\\u{2026}"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:221
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:268
 #, fuzzy
 msgid "Done. Right-click a PKGBUILD directory to see the menu."
 msgstr ""
 "PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD file "
 "to see the PKGBUILD submenu."
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:229
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:276
 msgid "Compiled package (makepkg)"
 msgstr "Compiled package (makepkg)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:230
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:277
 msgid "Compile and clean srcdir (makepkg -c)"
 msgstr "Compile and clean srcdir (makepkg -c)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:231
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:278
 msgid "Force recompilation (makepkg -f)"
 msgstr "Force recompilation (makepkg -f)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:232
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:279
 msgid "Basic check() function (makepkg --nocheck)"
 msgstr "Basic check() function (makepkg --nocheck)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:233
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:280
 msgid "Popular PGP signature check (makepkg --skippgpcheck)"
 msgstr "Popular PGP signature check (makepkg --skippgpcheck)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:234
-msgid "Compile with custom flags after the path"
-msgstr "Compile with custom flags after the path"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:281
+msgid ""
+"Same as 'build' — all extra flags after the path are forwarded to makepkg"
+msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:237
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:284
 msgid "Compile, install and resolve dependencies (makepkg -si)"
 msgstr "Compile, install and resolve dependencies (makepkg -si)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:238
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:285
 msgid "Compile, install and clean srcdir (makepkg -sic)"
 msgstr "Compile, install and clean srcdir (makepkg -sic)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:239
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:286
 msgid "Force compilation and installation (makepkg -sif)"
 msgstr "Force compilation and installation (makepkg -sif)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:240
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:287
 msgid "Install and remove makedeps afterwards (makepkg -sir)"
 msgstr "Install and remove makedeps afterwards (makepkg -sir)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:241
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:288
 msgid "Install without running check()"
 msgstr "Install without running check()"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:242
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:289
 msgid "Install skipping PGP checks"
 msgstr "Install skipping PGP checks"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:243
-msgid "Install with custom flags after the path"
-msgstr "Install with custom flags after the path"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:290
+msgid ""
+"Same as 'install' — all extra flags after the path are forwarded to makepkg"
+msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:246
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:293
 msgid "Download and extract sources only (makepkg -o)"
 msgstr "Download and extract sources only (makepkg -o)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:247
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:294
 msgid "Update checksums without PKGBUILD (updpkgsums)"
 msgstr "Update checksums without PKGBUILD (updpkgsums)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:248
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:295
 msgid "Generate checksums and print to standard output (makepkg -g)"
 msgstr "Generate checksums and print to standard output (makepkg -g)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:249
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:296
 msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
 msgstr "Regenerate .SRCINFO (makepkg --printsrcinfo)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:252
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:299
 msgid "Run namcap on PKGBUILD and compiled packages"
 msgstr "Run namcap on PKGBUILD and compiled packages"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:253
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:300
 msgid "Run ShellCheck on PKGBUILD"
 msgstr "Run ShellCheck on PKGBUILD"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:256
-msgid "Full offline check: syntax + parse + namcap + shellcheck"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:303
+msgid "Full offline check: syntax + namcap + shellcheck (no network)"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:257
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:304
 #, fuzzy
 msgid "Validate syntax only (makepkg --printsrcinfo)"
 msgstr "Regenerate .SRCINFO (makepkg --printsrcinfo)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:258
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:305
 msgid ""
-"Parse variables/functions without extracting (makepkg --nobuild --noextract)"
+"Parse variables/functions without extracting (makepkg --nobuild --"
+"noextract); may access network on VCS packages"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:259
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:306
 msgid "Download sources and verify checksums (makepkg --verifysource)"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:260
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:307
 msgid ""
 "Check declared dependencies exist in repos (makepkg --syncdeps --nobuild)"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:263
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:310
 msgid "Clean srcdir with makepkg (makepkg -c)"
 msgstr "Clean srcdir with makepkg (makepkg -c)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:264
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:311
 msgid "Remove src/, packages/ and compiled packages"
 msgstr "Remove src/, packages/ and compiled packages"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:267
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:314
 msgid "Stage, commit and push to the AUR (automatic message if not provided)"
 msgstr "Stage, commit and push to the AUR (automatic message if not provided)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:268
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:315
 msgid "Push with version tag (e.g., 1.2.3-1)"
 msgstr "Push with version tag (e.g., 1.2.3-1)"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:271
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:318
 msgid "Remove obsolete symbolic links and check the Nautilus extension"
 msgstr "Remove obsolete symbolic links and check the Nautilus extension"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:272
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:319
 msgid "Display program version"
 msgstr "Display program version"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:273
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:320
 msgid "Display this help message"
 msgstr "Display this help message"
 
@@ -968,6 +1023,12 @@ msgstr "✓ Tag created and sent to AUR!"
 
 msgid "notify_push_aur_tag_fail"
 msgstr "✗ Failed to create tag/send to AUR! See:"
+
+#~ msgid "Compile with custom flags after the path"
+#~ msgstr "Compile with custom flags after the path"
+
+#~ msgid "Install with custom flags after the path"
+#~ msgstr "Install with custom flags after the path"
 
 #, fuzzy
 #~ msgid "Push with version tag"

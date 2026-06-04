@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-04 14:32-0300\n"
+"POT-Creation-Date: 2026-06-04 15:47-0300\n"
 "PO-Revision-Date: 2026-05-31 14:10-0300\n"
 "Last-Translator: AI <ai@example.com>\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -12,22 +12,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:64
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:43
+#, fuzzy
+msgid ""
+"Warning: the commit was pushed to the AUR but the tag could not be pushed."
+msgstr "暂存、提交并推送到 AUR（未提供时自动生成提交信息）"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:46
+msgid "The tag exists locally only. This is an inconsistent state."
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:49
+msgid "Once the network issue is resolved, push the tag manually with:"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:94
 #, fuzzy
 msgid ""
 "Note: nothing to commit or commit failed \\u{2014} continuing with push."
 msgstr "注意：无内容可提交或提交失败 — 继续推送。"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:68
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:98
 #, fuzzy
 msgid "git commit failed"
 msgstr "命令执行失败"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:127
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:157
 msgid "Note: push to origin/master failed"
 msgstr "注意：推送到 origin/master 失败"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:129
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/aur_push.rs:159
 #, fuzzy
 msgid "Attempting simple 'git push'..."
 msgstr "尝试普通 'git push'..."
@@ -50,70 +64,108 @@ msgstr "无法启动命令"
 msgid "makepkg -g failed:"
 msgstr "makepkg -g 失败："
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:19
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:20
 #, fuzzy
 msgid "Removing src/ pkg/ and compiled packages in"
 msgstr "正在删除以下目录中的 src/、pkg/ 和已构建的软件包"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:28
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:45
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:29
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:57
 msgid "Removed"
 msgstr "已删除"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:69
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:47
+msgid "Warning: could not determine pkgname — removing all .pkg.tar.* files:"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:82
 msgid "Removed bare-repo cache"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:76
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/clean.rs:89
 msgid "Removed build directory"
 msgstr ""
 
 # CLI: errors and status
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:26
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:27
 msgid "failed to canonicalize path"
 msgstr "无法规范化路径"
 
 # CLI strings
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:35
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:36
 msgid "Failed to resolve parent directory"
 msgstr "无法解析父目录"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:42
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:43
 msgid "Directory does not exist"
 msgstr "目录不存在"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:50
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:125
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:51
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:126
 msgid "No PKGBUILD found in directory"
 msgstr "目录中未找到 PKGBUILD"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:76
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:77
 msgid "failed to spawn command"
 msgstr "无法启动命令"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:86
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:87
 msgid "command failed"
 msgstr "命令执行失败"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:88
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:89
 msgid "with status"
 msgstr "状态："
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:130
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:131
 msgid ">>> Regenerating .SRCINFO in"
 msgstr ">>> 正在重新生成 .SRCINFO 于"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:142
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:143
 msgid "makepkg --printsrcinfo failed"
 msgstr "makepkg --printsrcinfo 失败"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/namcap.rs:25
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/mod.rs:169
+msgid "HOME env var not set"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/namcap.rs:60
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:64
+msgid "Error log written to"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/namcap.rs:65
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:69
+msgid "Warning: could not write error log"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/namcap.rs:74
+msgid "namcap reported errors"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/namcap.rs:77
+msgid "error"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/namcap.rs:79
+msgid "errors"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/namcap.rs:87
 msgid "namcap failed with status"
 msgstr "namcap 失败，状态码："
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:24
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:35
 msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
 msgstr "未找到 shellcheck。请安装：sudo pacman -S shellcheck"
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:41
+msgid "Failed to run shellcheck"
+msgstr ""
+
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:76
+msgid "shellcheck found issues (see log above)"
+msgstr ""
 
 #: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:22
 #, fuzzy
@@ -126,45 +178,45 @@ msgstr "namcap 失败，状态码："
 msgid "failed"
 msgstr "命令执行失败"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:39
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:41
 #, fuzzy
 msgid "Validating PKGBUILD syntax (makepkg --printsrcinfo)…"
 msgstr "使用 makepkg --printsrcinfo 读取 PKGBUILD 信息失败"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:53
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:55
 msgid "PKGBUILD syntax OK"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:56
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:58
 msgid "PKGBUILD has syntax errors"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:65
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:73
 msgid "Parsing PKGBUILD variables (makepkg --nobuild --noextract)…"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:74
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:82
 msgid "Verifying source checksums (makepkg --verifysource)…"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:83
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:91
 #, fuzzy
 msgid "Checking declared dependencies (makepkg --syncdeps --nobuild)…"
 msgstr "编译、安装并解决依赖（makepkg -si）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:90
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:104
 msgid "validate-offline: PKGBUILD full offline check"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:100
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:115
 msgid "All offline checks passed."
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:103
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:120
 msgid "check(s) failed"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:105
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/actions/validate.rs:134
 msgid "validate check(s) failed"
 msgstr ""
 
@@ -438,196 +490,197 @@ msgstr "makepkg -g 失败："
 msgid "git push --tags failed"
 msgstr "注意：推送到 origin/master 失败"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:136
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:183
 msgid "aur-push-tag requires a version tag argument"
 msgstr "aur-push-tag 需要一个版本标签参数"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:138
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:185
 msgid "aur-push-tag: tag cannot be empty"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:143
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:190
 msgid "aur-push-tag: invalid tag"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:145
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:192
 msgid ""
 "tags cannot contain spaces (expected format: pkgver-pkgrel, e.g. 1.2.3-1)"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:159
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:206
 msgid "Unknown command"
 msgstr "未知命令"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:200
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:247
 #, fuzzy
 msgid "Warning: Could not remove obsolete PKGBUILD directory"
 msgstr "警告：无法删除过期的 PKGBUILD 目录"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:208
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:255
 msgid "Warning: Nautilus Python extension not found at"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:211
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:258
 msgid "Install the pkgbuild-manager package to get the extension."
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:213
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:260
 msgid "Extension found"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:216
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:263
 msgid "Restarting Nautilus\\u{2026}"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:221
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:268
 #, fuzzy
 msgid "Done. Right-click a PKGBUILD directory to see the menu."
 msgstr ""
 "PKGBUILD Manager：Nautilus 扩展已启用。右键单击任意 PKGBUILD 文件可查看 "
 "PKGBUILD 子菜单。"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:229
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:276
 #, fuzzy
 msgid "Compiled package (makepkg)"
 msgstr "编译软件包（makepkg）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:230
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:277
 msgid "Compile and clean srcdir (makepkg -c)"
 msgstr "编译并清理源目录（makepkg -c）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:231
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:278
 #, fuzzy
 msgid "Force recompilation (makepkg -f)"
 msgstr "强制重新编译（makepkg -f）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:232
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:279
 #, fuzzy
 msgid "Basic check() function (makepkg --nocheck)"
 msgstr "跳过 check() 函数（makepkg --nocheck）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:233
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:280
 #, fuzzy
 msgid "Popular PGP signature check (makepkg --skippgpcheck)"
 msgstr "跳过 PGP 签名检查（makepkg --skippgpcheck）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:234
-#, fuzzy
-msgid "Compile with custom flags after the path"
-msgstr "使用路径后传递的自定义标志编译"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:281
+msgid ""
+"Same as 'build' — all extra flags after the path are forwarded to makepkg"
+msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:237
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:284
 #, fuzzy
 msgid "Compile, install and resolve dependencies (makepkg -si)"
 msgstr "编译、安装并解决依赖（makepkg -si）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:238
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:285
 msgid "Compile, install and clean srcdir (makepkg -sic)"
 msgstr "编译、安装并清理源目录（makepkg -sic）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:239
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:286
 #, fuzzy
 msgid "Force compilation and installation (makepkg -sif)"
 msgstr "强制编译并安装（makepkg -sif）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:240
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:287
 #, fuzzy
 msgid "Install and remove makedeps afterwards (makepkg -sir)"
 msgstr "安装并在之后删除构建依赖（makepkg -sir）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:241
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:288
 msgid "Install without running check()"
 msgstr "安装时不运行 check()"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:242
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:289
 msgid "Install skipping PGP checks"
 msgstr "安装时跳过 PGP 检查"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:243
-#, fuzzy
-msgid "Install with custom flags after the path"
-msgstr "使用路径后传递的自定义标志安装"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:290
+msgid ""
+"Same as 'install' — all extra flags after the path are forwarded to makepkg"
+msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:246
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:293
 msgid "Download and extract sources only (makepkg -o)"
 msgstr "仅下载并解压源代码（makepkg -o）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:247
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:294
 #, fuzzy
 msgid "Update checksums without PKGBUILD (updpkgsums)"
 msgstr "更新 PKGBUILD 中的校验和（updpkgsums）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:248
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:295
 #, fuzzy
 msgid "Generate checksums and print to standard output (makepkg -g)"
 msgstr "生成校验和并输出到标准输出（makepkg -g）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:249
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:296
 msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
 msgstr "重新生成 .SRCINFO（makepkg --printsrcinfo）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:252
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:299
 #, fuzzy
 msgid "Run namcap on PKGBUILD and compiled packages"
 msgstr "对 PKGBUILD 和已构建软件包运行 namcap"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:253
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:300
 #, fuzzy
 msgid "Run ShellCheck on PKGBUILD"
 msgstr "对 PKGBUILD 运行 shellcheck"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:256
-msgid "Full offline check: syntax + parse + namcap + shellcheck"
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:303
+msgid "Full offline check: syntax + namcap + shellcheck (no network)"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:257
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:304
 #, fuzzy
 msgid "Validate syntax only (makepkg --printsrcinfo)"
 msgstr "重新生成 .SRCINFO（makepkg --printsrcinfo）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:258
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:305
 msgid ""
-"Parse variables/functions without extracting (makepkg --nobuild --noextract)"
+"Parse variables/functions without extracting (makepkg --nobuild --"
+"noextract); may access network on VCS packages"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:259
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:306
 msgid "Download sources and verify checksums (makepkg --verifysource)"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:260
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:307
 msgid ""
 "Check declared dependencies exist in repos (makepkg --syncdeps --nobuild)"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:263
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:310
 msgid "Clean srcdir with makepkg (makepkg -c)"
 msgstr "使用 makepkg 清理源目录（makepkg -c）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:264
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:311
 #, fuzzy
 msgid "Remove src/, packages/ and compiled packages"
 msgstr "删除 src/、pkg/ 和已构建的软件包"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:267
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:314
 #, fuzzy
 msgid "Stage, commit and push to the AUR (automatic message if not provided)"
 msgstr "暂存、提交并推送到 AUR（未提供时自动生成提交信息）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:268
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:315
 #, fuzzy
 msgid "Push with version tag (e.g., 1.2.3-1)"
 msgstr "使用版本标签推送（例如 1.2.3-1）"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:271
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:318
 msgid "Remove obsolete symbolic links and check the Nautilus extension"
 msgstr ""
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:272
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:319
 #, fuzzy
 msgid "Display program version"
 msgstr "显示程序版本"
 
-#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:273
+#: /home/john/Projects/beta/src/PKGBUILD_Manager/po/../src/main.rs:320
 #, fuzzy
 msgid "Display this help message"
 msgstr "显示此帮助信息"
@@ -973,6 +1026,14 @@ msgstr "✓ 标签已创建并推送到 AUR！"
 
 msgid "notify_push_aur_tag_fail"
 msgstr "✗ 创建标签/推送到 AUR 失败！请查看："
+
+#, fuzzy
+#~ msgid "Compile with custom flags after the path"
+#~ msgstr "使用路径后传递的自定义标志编译"
+
+#, fuzzy
+#~ msgid "Install with custom flags after the path"
+#~ msgstr "使用路径后传递的自定义标志安装"
 
 #, fuzzy
 #~ msgid "Push with version tag"
