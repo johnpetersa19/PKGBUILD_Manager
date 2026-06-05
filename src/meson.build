@@ -26,11 +26,20 @@ cargo_opt  = [ '--manifest-path', meson.project_source_root() / 'Cargo.toml' ]
 cargo_opt += [ '--target-dir', meson.project_build_root()  / 'src' ]
 cargo_env  = [ 'CARGO_HOME=' + meson.project_build_root()  / 'cargo-home' ]
 
-if get_option('buildtype') == 'release'
+buildtype = get_option('buildtype')
+
+if buildtype == 'release'
   cargo_opt += [ '--release' ]
   rust_target = 'release'
+  cargo_env += [ 'RUSTFLAGS=-C debuginfo=0' ]
+elif buildtype == 'debugoptimized'
+  cargo_opt += [ '--release' ]
+  rust_target = 'release'
+  cargo_env += [ 'RUSTFLAGS=-C debuginfo=2 -C opt-level=2' ]
 else
+  # debug or plain
   rust_target = 'debug'
+  cargo_env += [ 'RUSTFLAGS=-C debuginfo=2' ]
 endif
 
 cargo_build = custom_target(
