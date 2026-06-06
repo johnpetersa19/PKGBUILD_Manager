@@ -149,6 +149,10 @@ const CSS: &str = "
 .mode-badge-codeberg { background-color: alpha(@blue_5,            0.15); color: #2185d0;          border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
 .mode-badge-generic  { background-color: alpha(@window_fg_color,   0.08); color: @window_fg_color; border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
 
+/* ── Auth method badges ── */
+.auth-badge-ssh   { background-color: alpha(@success_bg_color, 0.15); color: @success_color;  border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
+.auth-badge-https { background-color: alpha(@warning_bg_color, 0.15); color: @warning_color;  border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
+
 /* ── Branch picker ── */
 .branch-item { padding: 6px 12px; border-radius: 6px; }
 .branch-item:hover { background-color: alpha(@accent_bg_color, 0.12); }
@@ -344,6 +348,22 @@ impl UnifiedPushWindow {
             .label(badge_label).css_classes(vec![badge_class.to_string()]).build();
         subtitle_row.append(&path_lbl);
         subtitle_row.append(&badge);
+
+        // ── Auth method badge (SSH / HTTPS) — all modes except Unknown ────────
+        if mode != RepoMode::Unknown {
+            let auth_method = detect_auth_method(&target);
+            let (auth_label, auth_class) = if auth_method == "SSH" {
+                ("SSH", "auth-badge-ssh")
+            } else {
+                ("HTTPS", "auth-badge-https")
+            };
+            let auth_badge = Label::builder()
+                .label(auth_label)
+                .css_classes(vec![auth_class.to_string()])
+                .build();
+            subtitle_row.append(&auth_badge);
+        }
+
         title_box.append(&title_lbl);
         title_box.append(&subtitle_row);
         header.set_title_widget(Some(&title_box));
@@ -777,6 +797,30 @@ fn detect_remote(path: &str) -> String {
                 .map(str::to_string)
         })
         .unwrap_or_default()
+}
+
+// ── detect_auth_method ────────────────────────────────────────────────────────
+/// Detects whether the origin remote uses SSH or HTTPS.
+/// Covers: ssh://..., git@..., aur@..., and any user@host:path pattern.
+
+fn detect_auth_method(path: &str) -> &'static str {
+    let url = Command::new("git")
+        .args(["remote", "get-url", "origin"])
+        .current_dir(path)
+        .output()
+        .ok()
+        .and_then(|o| String::from_utf8(o.stdout).ok())
+        .unwrap_or_default();
+    let url = url.trim();
+    if url.starts_with("ssh://")
+        || url.starts_with("git@")
+        || url.starts_with("aur@")
+        || (url.contains('@') && !url.starts_with("http"))
+    {
+        "SSH"
+    } else {
+        "HTTPS"
+    }
 }
 
 // ── run_aur_worker ────────────────────────────────────────────────────────────
