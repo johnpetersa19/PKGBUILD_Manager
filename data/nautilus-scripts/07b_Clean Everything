@@ -1,5 +1,8 @@
 #!/bin/bash
 # PKGBUILD Manager - Clean Everything
+# Removes src/, pkg/, built packages, bare-repo caches and _build* dirs.
+# Handles read-only trees (git object files at 444/555) via remove_dir_force
+# in the Rust backend — no manual chmod needed from this script.
 set -euo pipefail
 
 TARGET="${NAUTILUS_SCRIPT_SELECTED_FILE_PATHS:-}"
@@ -11,6 +14,7 @@ source "$(dirname "$0")/_i18n"
 notify-send "PKGBUILD Manager" "$MSG_CLEAN_ALL"
 
 # Use a temp file outside TARGET so the log is never inside the dir being cleaned.
+# This avoids a conflict where the log file itself blocks directory removal.
 LOG_PATH="$(mktemp /tmp/pkgbuild-clean-all-XXXXXX.log)"
 
 if pkgbuild_manager clean-all "$TARGET" > "$LOG_PATH" 2>&1; then

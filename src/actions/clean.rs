@@ -46,7 +46,8 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
             target_dir
         );
 
-        // Remove src/ and pkg/ directories
+        // Remove src/ and pkg/ — use remove_dir_force so git object files
+        // with chmod 444/555 (common in AUR source repos) never block the wipe.
         for dir in &["src", "pkg"] {
             let to_remove = target_dir.join(dir);
             if to_remove.exists() {
@@ -84,8 +85,8 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
         }
 
         // Single directory traversal: removes bare git repo cache dirs and _build* dirs.
-        // FIX: a normal git clone also has HEAD + objects/ inside .git/, so we must
-        // explicitly skip .git/ to avoid destroying the package repository itself.
+        // GUARD: skip .git/ explicitly — a normal git clone has HEAD + objects/ inside
+        // .git/ and would be misidentified as a bare repo without this check.
         if let Ok(entries) = std::fs::read_dir(&target_dir) {
             for entry in entries.flatten() {
                 let Ok(ft) = entry.file_type() else { continue };
@@ -94,12 +95,12 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
                 let name = name.to_string_lossy();
 
                 if ft.is_dir() {
-                    // FIX: never remove the project's own .git/ directory
+                    // Never remove the project's own .git/ directory.
                     if name == ".git" {
                         continue;
                     }
 
-                    // FIX: use a robust helper instead of the fragile HEAD+objects heuristic
+                    // Robust bare-repo detection: requires all 4 canonical markers.
                     if is_bare_git_repo(&p) {
                         remove_dir_force(&p)?;
                         println!(
