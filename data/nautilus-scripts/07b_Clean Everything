@@ -10,11 +10,12 @@ if [ -f "$TARGET" ]; then TARGET="$(dirname "$TARGET")"; fi
 source "$(dirname "$0")/_i18n"
 notify-send "PKGBUILD Manager" "$MSG_CLEAN_ALL"
 
-LOG_PATH="${TARGET}/clean_all.log"
+# Use a temp file outside TARGET so the log is never inside the dir being cleaned.
+LOG_PATH="$(mktemp /tmp/pkgbuild-clean-all-XXXXXX.log)"
 
 if pkgbuild_manager clean-all "$TARGET" > "$LOG_PATH" 2>&1; then
     rm -f "$LOG_PATH"
     notify-send "PKGBUILD Manager" "$MSG_CLEAN_ALL_OK"
 else
-    notify-send -u critical "PKGBUILD Manager" "${MSG_CLEAN_ALL_FAIL}$(basename "$LOG_PATH")"
+    notify-send -u critical "PKGBUILD Manager" "${MSG_CLEAN_ALL_FAIL}${LOG_PATH}"
 fi
