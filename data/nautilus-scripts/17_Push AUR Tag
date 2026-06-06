@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # 17_Push AUR Tag — Create an annotated version tag and push commits + tags.
+# Detects the git remote host and exports SERVICE= so the GUI can show
+# e.g. "Enviar Tag GitHub" / "Push Tag GitHub" dynamically.
 # Opens the same pkgbuild-manager-aur-push GUI with --tag flag so the user
 # can type the version before confirming.
 set -euo pipefail
@@ -17,6 +19,33 @@ if [ -f "$TARGET" ]; then
   TARGET="$(dirname "$TARGET")"
 fi
 
+# ── Detect remote host ────────────────────────────────────────────────────────
+REMOTE_URL=""
+if git -C "$TARGET" remote get-url origin &>/dev/null; then
+  REMOTE_URL="$(git -C "$TARGET" remote get-url origin 2>/dev/null || true)"
+elif git -C "$TARGET" remote &>/dev/null; then
+  FIRST_REMOTE="$(git -C "$TARGET" remote | head -n1)"
+  REMOTE_URL="$(git -C "$TARGET" remote get-url "$FIRST_REMOTE" 2>/dev/null || true)"
+fi
+
+detect_service() {
+  local url="$1"
+  case "$url" in
+    *aur.archlinux.org*)     echo "AUR"       ;;
+    *github.com*)            echo "GitHub"    ;;
+    *gitlab.com*)            echo "GitLab"    ;;
+    *codeberg.org*)          echo "Codeberg"  ;;
+    *gitea.*)                echo "Gitea"     ;;
+    *bitbucket.org*)         echo "Bitbucket" ;;
+    *sourcehut.org*|*sr.ht*) echo "SourceHut" ;;
+    *)                       echo "AUR"       ;;
+  esac
+}
+
+export SERVICE="$(detect_service "$REMOTE_URL")"
+export REMOTE_URL
+
+# ── Launch GUI ────────────────────────────────────────────────────────────────
 # setsid detaches the GUI process from the Nautilus process group so it gets
 # its own D-Bus/Wayland context and is not killed when the script exits.
 setsid pkgbuild-manager-aur-push "$TARGET" --tag &
