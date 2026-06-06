@@ -2,6 +2,31 @@ use std::path::Path;
 use std::process::{Command, Stdio};
 use super::{get_target_dir, run_command, collect_pkg_files};
 
+/// Remove a directory tree, handling read-only files/dirs inside it.
+///
+/// `std::fs::remove_dir_all` fails with EACCES on Linux when the tree
+/// contains files or directories with restrictive permissions (e.g. git
+/// object files at chmod 444, or src/ subdirs at 555).  This helper
+/// retries after running `chmod -R u+rwX` so the caller gets the same
+/// behaviour as `rm -rf`.
+fn remove_dir_force(path: &Path) -> anyhow::Result<()> {
+    // Fast path — most trees are writable, avoid spawning chmod.
+    if std::fs::remove_dir_all(path).is_ok() {
+        return Ok(());
+    }
+    // Slow path — unlock permissions then retry.
+    let _ = Command::new("chmod")
+        .args(["-R", "u+rwX"])
+        .arg(path)
+        .status();
+    std::fs::remove_dir_all(path).map_err(|e| {
+        anyhow::anyhow!(
+            "remove_dir_force: could not remove {:?}: {}",
+            path, e
+        )
+    })
+}
+
 /// Clean the srcdir using `makepkg -c` (soft clean, preserves pkg/).
 /// Use `full = true` for a complete wipe: removes .makepkg.lock, src/, pkg/, built packages,
 /// bare-repo cache dirs and any _build* directories (cmake/meson/autotools out-of-tree builds).
@@ -25,7 +50,7 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
         for dir in &["src", "pkg"] {
             let to_remove = target_dir.join(dir);
             if to_remove.exists() {
-                std::fs::remove_dir_all(&to_remove)?;
+                remove_dir_force(&to_remove)?;
                 println!("  {} {:?}", gettextrs::gettext("Removed"), to_remove);
             }
         }
@@ -76,14 +101,14 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
 
                     // FIX: use a robust helper instead of the fragile HEAD+objects heuristic
                     if is_bare_git_repo(&p) {
-                        std::fs::remove_dir_all(&p)?;
+                        remove_dir_force(&p)?;
                         println!(
                             "  {} {:?}",
                             gettextrs::gettext("Removed bare-repo cache"),
                             p
                         );
                     } else if name.starts_with("_build") {
-                        std::fs::remove_dir_all(&p)?;
+                        remove_dir_force(&p)?;
                         println!(
                             "  {} {:?}",
                             gettextrs::gettext("Removed build directory"),
