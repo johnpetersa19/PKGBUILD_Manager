@@ -153,6 +153,38 @@ const CSS: &str = "
 .auth-badge-ssh   { background-color: alpha(@success_bg_color, 0.15); color: @success_color;  border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
 .auth-badge-https { background-color: alpha(@warning_bg_color, 0.15); color: @warning_color;  border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
 
+/* ── Auth warning banner ── */
+.auth-warning-box {
+    border-radius: 10px;
+    background-color: alpha(@warning_bg_color, 0.12);
+    border: 1px solid alpha(@warning_color, 0.35);
+    padding: 12px 14px;
+}
+.auth-warning-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: @warning_color;
+    margin-bottom: 4px;
+}
+.auth-warning-body {
+    font-size: 12px;
+    color: alpha(@window_fg_color, 0.80);
+    line-height: 1.5;
+}
+
+/* ── Auth ok banner ── */
+.auth-ok-box {
+    border-radius: 10px;
+    background-color: alpha(@success_bg_color, 0.10);
+    border: 1px solid alpha(@success_color, 0.28);
+    padding: 10px 14px;
+}
+.auth-ok-label {
+    font-size: 12px;
+    color: @success_color;
+    font-weight: 600;
+}
+
 /* ── Branch picker ── */
 .branch-item { padding: 6px 12px; border-radius: 6px; }
 .branch-item:hover { background-color: alpha(@accent_bg_color, 0.12); }
@@ -350,9 +382,9 @@ impl UnifiedPushWindow {
         subtitle_row.append(&badge);
 
         // ── Auth method badge (SSH / HTTPS) — all modes except Unknown ────────
-        if mode != RepoMode::Unknown {
-            let auth_method = detect_auth_method(&target);
-            let (auth_label, auth_class) = if auth_method == "SSH" {
+        let auth_method = if mode != RepoMode::Unknown {
+            let m = detect_auth_method(&target);
+            let (auth_label, auth_class) = if m == "SSH" {
                 ("SSH", "auth-badge-ssh")
             } else {
                 ("HTTPS", "auth-badge-https")
@@ -362,7 +394,10 @@ impl UnifiedPushWindow {
                 .css_classes(vec![auth_class.to_string()])
                 .build();
             subtitle_row.append(&auth_badge);
-        }
+            m
+        } else {
+            ""
+        };
 
         title_box.append(&title_lbl);
         title_box.append(&subtitle_row);
@@ -411,6 +446,80 @@ impl UnifiedPushWindow {
             .css_classes(vec!["stage-caption".to_string()])
             .build();
         form_content.append(&form_cap_lbl);
+
+        // ── Auth readiness banner ─────────────────────────────────────────────
+        // Check if auth is ready before allowing push.
+        // SSH: verify ssh-agent has the key loaded (ssh-add -l succeeds).
+        // HTTPS: check git credential helper is configured.
+        let auth_ready = check_auth_ready(&target, auth_method);
+
+        if !auth_ready {
+            let warn_box = GBox::builder()
+                .orientation(Orientation::Vertical).spacing(6)
+                .css_classes(vec!["auth-warning-box".to_string()])
+                .build();
+
+            let warn_title_text = if auth_method == "SSH" {
+                gettext("⚠ SSH key not loaded")
+            } else {
+                gettext("⚠ HTTPS credentials not configured")
+            };
+            let warn_title = Label::builder()
+                .label(&warn_title_text)
+                .halign(Align::Start)
+                .css_classes(vec!["auth-warning-title".to_string()])
+                .build();
+
+            let warn_body_text = if auth_method == "SSH" {
+                gettext(
+                    "No SSH key was found in ssh-agent for this remote.\n\
+                     Run the command below before pushing:\n\n\
+                     ssh-add ~/.ssh/id_ed25519\n\n\
+                     If you use a different key, replace the path accordingly.\n\
+                     You can also start the agent with: eval $(ssh-agent -s)"
+                )
+            } else {
+                gettext(
+                    "No Git credential helper is configured for HTTPS authentication.\n\
+                     To store credentials, run one of the following commands:\n\n\
+                     git config --global credential.helper store\n\
+                     git config --global credential.helper cache\n\n\
+                     Or use libsecret (GNOME Keyring):\n\
+                     git config --global credential.helper /usr/lib/git-core/git-credential-libsecret"
+                )
+            };
+            let warn_body = Label::builder()
+                .label(&warn_body_text)
+                .halign(Align::Start)
+                .wrap(true)
+                .selectable(true)
+                .css_classes(vec!["auth-warning-body".to_string()])
+                .build();
+
+            warn_box.append(&warn_title);
+            warn_box.append(&warn_body);
+            form_content.append(&warn_box);
+        } else {
+            // Auth is ready — show a small confirmation banner
+            let ok_box = GBox::builder()
+                .orientation(Orientation::Horizontal).spacing(8)
+                .css_classes(vec!["auth-ok-box".to_string()])
+                .build();
+            let ok_icon = Label::builder().label("🔐").build();
+            let ok_text_str = if auth_method == "SSH" {
+                gettext("SSH key loaded — ready to push")
+            } else {
+                gettext("HTTPS credentials configured — ready to push")
+            };
+            let ok_lbl = Label::builder()
+                .label(&ok_text_str)
+                .halign(Align::Start)
+                .css_classes(vec!["auth-ok-label".to_string()])
+                .build();
+            ok_box.append(&ok_icon);
+            ok_box.append(&ok_lbl);
+            form_content.append(&ok_box);
+        }
 
         let fields_group = adw::PreferencesGroup::builder().title(&gettext("Commit")).build();
 
@@ -504,8 +613,18 @@ impl UnifiedPushWindow {
             .margin_top(4).spacing(8).build();
         let push_btn = Button::builder()
             .label(&gettext("Continue to Push"))
+            .sensitive(auth_ready)
             .css_classes(vec!["suggested-action".to_string(), "pill".to_string()])
             .build();
+        // If auth is not ready, add a tooltip explaining why the button is disabled
+        if !auth_ready {
+            let tip = if auth_method == "SSH" {
+                gettext("Configure SSH authentication before pushing")
+            } else {
+                gettext("Configure HTTPS credentials before pushing")
+            };
+            push_btn.set_tooltip_text(Some(&tip));
+        }
         form_btn_box.append(&push_btn);
         form_content.append(&form_btn_box);
         stack.add_titled(&form_scroll, Some("form"), &gettext("Form"));
@@ -820,6 +939,46 @@ fn detect_auth_method(path: &str) -> &'static str {
         "SSH"
     } else {
         "HTTPS"
+    }
+}
+
+// ── check_auth_ready ──────────────────────────────────────────────────────────
+/// Returns `true` when the user is ready to push without being prompted for
+/// credentials.
+///
+/// **SSH** — Checks that ssh-agent is running and has at least one identity
+/// loaded (`ssh-add -l` exits 0). This covers aur@, git@github.com, etc.
+///
+/// **HTTPS** — Checks that a credential helper is configured in git config
+/// (global or local). If no helper is set, the push would block on a
+/// username/password prompt.
+
+fn check_auth_ready(path: &str, auth_method: &str) -> bool {
+    if auth_method == "SSH" {
+        // ssh-add -l: exit 0 = agent running + has keys
+        //             exit 1 = agent running but no keys
+        //             exit 2 = cannot connect to agent
+        Command::new("ssh-add")
+            .arg("-l")
+            .output()
+            .map(|o| o.status.success())
+            .unwrap_or(false)
+    } else {
+        // Check for credential.helper in local or global git config
+        let local_helper = Command::new("git")
+            .args(["config", "--local", "credential.helper"])
+            .current_dir(path)
+            .output()
+            .map(|o| o.status.success() && !o.stdout.is_empty())
+            .unwrap_or(false);
+
+        if local_helper { return true; }
+
+        Command::new("git")
+            .args(["config", "--global", "credential.helper"])
+            .output()
+            .map(|o| o.status.success() && !o.stdout.is_empty())
+            .unwrap_or(false)
     }
 }
 
