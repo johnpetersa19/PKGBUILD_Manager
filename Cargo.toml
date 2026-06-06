@@ -1,38 +1,14 @@
 [package]
-name = "pkgbuild_manager"
-version = "2.2.0"
+name = "temporal-explorer"
+version = "0.1.0"
 edition = "2021"
 
-[[bin]]
-name = "pkgbuild_manager"
-path = "src/main.rs"
-
-[[bin]]
-name = "pkgbuild-manager-aur-push"
-path = "src/aur_push_gui/main.rs"
-
-[[bin]]
-name = "pkgbuild-manager-release-gui"
-path = "src/aur_push_gui/release_main.rs"
-
-[[bin]]
-name = "pkgbuild-manager-settings"
-path = "src/settings_gui/main.rs"
-
 [dependencies]
-gettext-rs  = { version = "0.7", features = ["gettext-system"] }
-anyhow      = "1"
-async-channel = "2"
-serde       = { version = "1", features = ["derive"] }
-serde_json  = "1"
-dirs        = "6"
-
-[dependencies.gtk]
-package  = "gtk4"
-version  = "0.11"
-features = ["v4_14"]
+gettext-rs = { version = "0.7", features = ["gettext-system"] }
+gtk = { version = "0.9", package = "gtk4", features = ["gnome_47"] }
+git2 = "0.19"
 
 [dependencies.adw]
-package  = "libadwaita"
-version  = "0.9"
+package = "libadwaita"
+version = "0.7"
 features = ["v1_6"]
