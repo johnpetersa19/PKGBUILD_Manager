@@ -39,7 +39,9 @@ impl SettingsApp {
     }
 
     pub fn run(&self) -> glib::ExitCode {
-        self.0.run()
+        // The unified launcher already consumed the `settings` subcommand.
+        // Do not let GApplication reinterpret it as a file to open.
+        self.0.run_with_args::<String>(&[])
     }
 }
 
