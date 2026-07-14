@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # 06_Push AUR — Stage PKGBUILD/.SRCINFO, commit (upgpkg: …) and push.
 # detect_service() + $SERVICE + $REMOTE_URL are provided by _i18n.
+# Runs the operation in the unified GTK/libadwaita GUI.
 set -euo pipefail
 
 TARGET="${NAUTILUS_SCRIPT_SELECTED_FILE_PATHS:-}"
@@ -22,5 +23,5 @@ source "$(dirname "$0")/_i18n"
 
 # Launch GUI — setsid detaches the process from Nautilus so it gets its own
 # D-Bus/Wayland context and is not killed when this script exits.
-setsid pkgbuild-manager-aur-push "$TARGET" &
+setsid pkgbuild-manager-gui push "$TARGET" &
 disown

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # 17_Push AUR Tag — Create an annotated version tag and push commits + tags.
 # detect_service() + $SERVICE + $REMOTE_URL are provided by _i18n.
-# Opens pkgbuild-manager-aur-push with --tag so the user can type the
-# version before confirming.
+# Opens the unified GUI in push mode with --tag so the user
+# can type the version before confirming.
 set -euo pipefail
 
 TARGET="${NAUTILUS_SCRIPT_SELECTED_FILE_PATHS:-}"
@@ -24,5 +24,5 @@ source "$(dirname "$0")/_i18n"
 
 # Launch GUI — setsid detaches the process from Nautilus so it gets its own
 # D-Bus/Wayland context and is not killed when this script exits.
-setsid pkgbuild-manager-aur-push "$TARGET" --tag &
+setsid pkgbuild-manager-gui push "$TARGET" --tag &
 disown

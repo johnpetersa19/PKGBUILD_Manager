@@ -1,7 +1,6 @@
 /target/
 /build/
 /pkg/
-/src/
 /PKGBUILD_Manager/
 *.pkg.tar.*
 *.log

@@ -14,6 +14,15 @@ nautilus_scripts = [
   'nautilus-scripts/06_Push AUR',
   'nautilus-scripts/07_Clean srcdir',
   'nautilus-scripts/07b_Clean Everything',
+  'nautilus-scripts/08_Build Force',
+  'nautilus-scripts/09_Build NoCheck',
+  'nautilus-scripts/10_Build NoGPG',
+  'nautilus-scripts/11_Fetch Sources',
+  'nautilus-scripts/12_Install Force',
+  'nautilus-scripts/13_Install RmDeps',
+  'nautilus-scripts/14_Install NoCheck',
+  'nautilus-scripts/15_Install NoGPG',
+  'nautilus-scripts/16_Gen Checksums',
   'nautilus-scripts/17_Push AUR Tag',
 ]
 

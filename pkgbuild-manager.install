@@ -24,7 +24,7 @@ post_install() {
                 name "PKGBUILD Manager Settings" 2>/dev/null || true
             ${_gset} set \
                 org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${_binding} \
-                command "pkgbuild-manager-settings" 2>/dev/null || true
+                command "pkgbuild-manager-gui settings" 2>/dev/null || true
             ${_gset} set \
                 org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${_binding} \
                 binding "<Control><Alt>p" 2>/dev/null || true

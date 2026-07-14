@@ -6,7 +6,7 @@
 //
 // At runtime, PKGBUILD_MANAGER_LOCALEDIR env var always overrides LOCALEDIR
 // (see main.rs), which is useful for development/testing.
-pub static VERSION: &str = "2.0.0";
+pub static VERSION: &str = "2.2.0";
 pub static GETTEXT_PACKAGE: &str = "pkgbuild_manager";
 pub static LOCALEDIR: &str = "/usr/share/locale";
 pub static PKGDATADIR: &str = "/usr/share/pkgbuild_manager";

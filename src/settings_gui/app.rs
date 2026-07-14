@@ -3,17 +3,17 @@
 
 use adw::prelude::*;
 use adw::{Application, ApplicationWindow, HeaderBar, Toast, ToastOverlay};
+use gettextrs::gettext;
 use gtk::{
     glib::{self, clone},
-    Align, Box as GBox, Button, ListBox, ListBoxRow, Orientation,
-    ScrolledWindow, SelectionMode, Separator, Switch,
+    Align, Box as GBox, Button, ListBox, ListBoxRow, Orientation, ScrolledWindow, SelectionMode,
+    Separator, Switch,
 };
-use gettextrs::gettext;
 use std::cell::RefCell;
-use std::rc::Rc;
 use std::process::{Command, Stdio};
-use std::time::Duration;
+use std::rc::Rc;
 use std::thread;
+use std::time::Duration;
 
 use crate::config::{self, MenuGroup, MenuItem};
 use crate::win_state;
@@ -101,10 +101,14 @@ fn build_window(app: &Application) {
 
     // ── Buttons ───────────────────────────────────────────────────────────────
     reset_btn.connect_clicked(clone!(
-        #[strong] menu_data,
-        #[strong] main_box,
-        #[strong] scroll,
-        #[strong] win,
+        #[strong]
+        menu_data,
+        #[strong]
+        main_box,
+        #[strong]
+        scroll,
+        #[strong]
+        win,
         move |_| {
             *menu_data.borrow_mut() = config::default_menu();
             render_groups(&main_box, &scroll, &menu_data, &win);
@@ -112,20 +116,26 @@ fn build_window(app: &Application) {
     ));
 
     save_btn.connect_clicked(clone!(
-        #[strong] menu_data,
-        #[strong] toast_overlay,
+        #[strong]
+        menu_data,
+        #[strong]
+        toast_overlay,
         move |_| {
             let data = menu_data.borrow().clone();
             match config::save(&data) {
                 Ok(()) => {
                     thread::spawn(notify_file_managers);
                     toast_overlay.add_toast(
-                        Toast::builder().title(&gettext("Saved! Restarting file manager…")).build(),
+                        Toast::builder()
+                            .title(&gettext("Saved! Restarting file manager…"))
+                            .build(),
                     );
                 }
                 Err(e) => {
                     toast_overlay.add_toast(
-                        Toast::builder().title(&format!("{}: {e}", gettext("Error saving"))).build(),
+                        Toast::builder()
+                            .title(&format!("{}: {e}", gettext("Error saving")))
+                            .build(),
                     );
                 }
             }
@@ -164,10 +174,14 @@ fn render_groups(
     add_btn.add_css_class("pill");
     add_btn.set_halign(Align::Center);
     add_btn.connect_clicked(clone!(
-        #[strong] menu_data,
-        #[strong] main_box,
-        #[strong] scroll,
-        #[strong] win,
+        #[strong]
+        menu_data,
+        #[strong]
+        main_box,
+        #[strong]
+        scroll,
+        #[strong]
+        win,
         move |_| {
             menu_data.borrow_mut().push(MenuGroup {
                 group: gettext("New Group"),
@@ -182,7 +196,8 @@ fn render_groups(
     // glib::idle_add_local runs after the current event loop iteration,
     // by which point the new allocation is known and set_value is honoured.
     glib::idle_add_local_once(clone!(
-        #[strong] scroll,
+        #[strong]
+        scroll,
         move || {
             scroll.vadjustment().set_value(saved_pos);
         }
@@ -202,21 +217,33 @@ fn build_group_widget(
     let frame = gtk::Frame::new(None);
     frame.add_css_class("card");
 
-    let vbox = GBox::builder().orientation(Orientation::Vertical).spacing(0).build();
+    let vbox = GBox::builder()
+        .orientation(Orientation::Vertical)
+        .spacing(0)
+        .build();
     frame.set_child(Some(&vbox));
 
     let header_row = GBox::builder()
         .orientation(Orientation::Horizontal)
         .spacing(8)
-        .margin_top(8).margin_bottom(4)
-        .margin_start(12).margin_end(8)
+        .margin_top(8)
+        .margin_bottom(4)
+        .margin_start(12)
+        .margin_end(8)
         .build();
 
     let up_btn = Button::builder().icon_name("go-up-symbolic").build();
     up_btn.add_css_class("flat");
     up_btn.set_sensitive(g_idx > 0);
     up_btn.connect_clicked(clone!(
-        #[strong] menu_data, #[strong] main_box, #[strong] scroll, #[strong] win,
+        #[strong]
+        menu_data,
+        #[strong]
+        main_box,
+        #[strong]
+        scroll,
+        #[strong]
+        win,
         move |_| {
             let len = menu_data.borrow().len();
             if g_idx > 0 && g_idx < len {
@@ -230,7 +257,14 @@ fn build_group_widget(
     down_btn.add_css_class("flat");
     down_btn.set_sensitive(g_idx < n_groups - 1);
     down_btn.connect_clicked(clone!(
-        #[strong] menu_data, #[strong] main_box, #[strong] scroll, #[strong] win,
+        #[strong]
+        menu_data,
+        #[strong]
+        main_box,
+        #[strong]
+        scroll,
+        #[strong]
+        win,
         move |_| {
             let len = menu_data.borrow().len();
             if g_idx + 1 < len {
@@ -244,7 +278,8 @@ fn build_group_widget(
     name_entry.set_text(&menu_data.borrow()[g_idx].group);
     name_entry.set_hexpand(true);
     name_entry.connect_changed(clone!(
-        #[strong] menu_data,
+        #[strong]
+        menu_data,
         move |e| {
             if let Ok(mut data) = menu_data.try_borrow_mut() {
                 if g_idx < data.len() {
@@ -258,7 +293,14 @@ fn build_group_widget(
     del_btn.add_css_class("flat");
     del_btn.add_css_class("error");
     del_btn.connect_clicked(clone!(
-        #[strong] menu_data, #[strong] main_box, #[strong] scroll, #[strong] win,
+        #[strong]
+        menu_data,
+        #[strong]
+        main_box,
+        #[strong]
+        scroll,
+        #[strong]
+        win,
         move |_| {
             if g_idx < menu_data.borrow().len() {
                 menu_data.borrow_mut().remove(g_idx);
@@ -275,9 +317,12 @@ fn build_group_widget(
     vbox.append(&Separator::new(Orientation::Horizontal));
 
     let items_box = GBox::builder()
-        .orientation(Orientation::Vertical).spacing(0)
-        .margin_top(4).margin_bottom(8)
-        .margin_start(8).margin_end(8)
+        .orientation(Orientation::Vertical)
+        .spacing(0)
+        .margin_top(4)
+        .margin_bottom(8)
+        .margin_start(8)
+        .margin_end(8)
         .build();
     vbox.append(&items_box);
 
@@ -292,7 +337,14 @@ fn build_group_widget(
     add_item_btn.set_halign(Align::Start);
     add_item_btn.set_margin_start(4);
     add_item_btn.connect_clicked(clone!(
-        #[strong] menu_data, #[strong] main_box, #[strong] scroll, #[strong] win,
+        #[strong]
+        menu_data,
+        #[strong]
+        main_box,
+        #[strong]
+        scroll,
+        #[strong]
+        win,
         move |_| {
             show_add_item_dialog(g_idx, &menu_data, &main_box, &scroll, &win);
         }
@@ -320,16 +372,22 @@ fn build_item_row(
     let hbox = GBox::builder()
         .orientation(Orientation::Horizontal)
         .spacing(8)
-        .margin_top(2).margin_bottom(2)
-        .margin_start(4).margin_end(4)
+        .margin_top(2)
+        .margin_bottom(2)
+        .margin_start(4)
+        .margin_end(4)
         .build();
     row.set_child(Some(&hbox));
 
     // Switch first (left) — matches app.py
     let enabled = menu_data.borrow()[g_idx].items[i_idx].enabled;
-    let sw = Switch::builder().active(enabled).valign(Align::Center).build();
+    let sw = Switch::builder()
+        .active(enabled)
+        .valign(Align::Center)
+        .build();
     sw.connect_state_set(clone!(
-        #[strong] menu_data,
+        #[strong]
+        menu_data,
         move |_, state| {
             if let Ok(mut data) = menu_data.try_borrow_mut() {
                 if g_idx < data.len() && i_idx < data[g_idx].items.len() {
@@ -346,7 +404,8 @@ fn build_item_row(
     label_entry.set_text(&label_text);
     label_entry.set_hexpand(true);
     label_entry.connect_changed(clone!(
-        #[strong] menu_data,
+        #[strong]
+        menu_data,
         move |e| {
             if let Ok(mut data) = menu_data.try_borrow_mut() {
                 if g_idx < data.len() && i_idx < data[g_idx].items.len() {
@@ -360,7 +419,14 @@ fn build_item_row(
     up_btn.add_css_class("flat");
     up_btn.set_sensitive(i_idx > 0);
     up_btn.connect_clicked(clone!(
-        #[strong] menu_data, #[strong] main_box, #[strong] scroll, #[strong] win,
+        #[strong]
+        menu_data,
+        #[strong]
+        main_box,
+        #[strong]
+        scroll,
+        #[strong]
+        win,
         move |_| {
             let len = menu_data.borrow()[g_idx].items.len();
             if i_idx > 0 && i_idx < len {
@@ -374,7 +440,14 @@ fn build_item_row(
     down_btn.add_css_class("flat");
     down_btn.set_sensitive(i_idx < n_items - 1);
     down_btn.connect_clicked(clone!(
-        #[strong] menu_data, #[strong] main_box, #[strong] scroll, #[strong] win,
+        #[strong]
+        menu_data,
+        #[strong]
+        main_box,
+        #[strong]
+        scroll,
+        #[strong]
+        win,
         move |_| {
             let len = menu_data.borrow()[g_idx].items.len();
             if i_idx + 1 < len {
@@ -388,7 +461,14 @@ fn build_item_row(
     let del_btn = Button::builder().icon_name("list-remove-symbolic").build();
     del_btn.add_css_class("flat");
     del_btn.connect_clicked(clone!(
-        #[strong] menu_data, #[strong] main_box, #[strong] scroll, #[strong] win,
+        #[strong]
+        menu_data,
+        #[strong]
+        main_box,
+        #[strong]
+        scroll,
+        #[strong]
+        win,
         move |_| {
             let len = menu_data.borrow()[g_idx].items.len();
             if i_idx < len {
@@ -454,12 +534,18 @@ fn show_add_item_dialog(
 
     // row-activated: click = add item + close dialog — matches app.py on_row_activated
     list_box.connect_row_activated(clone!(
-        #[strong] menu_data,
-        #[strong] main_box,
-        #[strong] scroll,
-        #[strong] win,
-        #[strong] dialog,
-        #[strong] all,
+        #[strong]
+        menu_data,
+        #[strong]
+        main_box,
+        #[strong]
+        scroll,
+        #[strong]
+        win,
+        #[strong]
+        dialog,
+        #[strong]
+        all,
         move |_, row| {
             let idx = row.index() as usize;
             if let Some((id, label)) = all.get(idx) {

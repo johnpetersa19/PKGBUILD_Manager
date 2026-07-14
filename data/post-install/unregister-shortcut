@@ -24,7 +24,7 @@ unregister_gnome() {
     local existing
     existing=$(gsettings get "$schema" custom-keybindings 2>/dev/null || echo "@as []")
 
-    # Encontra o slot que aponta para pkgbuild-manager-settings
+    # Encontra tanto o comando atual quanto o usado por versões antigas.
     local slot_path
     local index=0
     slot_path=""
@@ -33,7 +33,7 @@ unregister_gnome() {
         local cmd
         cmd=$(gsettings get "${full_schema}:${p}" command 2>/dev/null || echo "")
         if [ -z "$cmd" ]; then break; fi
-        if echo "$cmd" | grep -q "pkgbuild-manager-settings"; then
+        if echo "$cmd" | grep -Eq "pkgbuild-manager-(gui settings|settings)"; then
             slot_path="$p"
             break
         fi
