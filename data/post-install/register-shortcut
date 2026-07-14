@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# register-shortcut — configura Ctrl+Alt+P → pkgbuild-manager-settings
+# register-shortcut — configura Ctrl+Alt+P → pkgbuild-manager-gui settings
 # Suporta GNOME, KDE Plasma, XFCE e Cinnamon.
 # Executado como usuário (não root) pelo .install do pacote.
 
 set -euo pipefail
 
-COMMAND="pkgbuild-manager-settings"
+COMMAND="pkgbuild-manager-gui settings"
 NAME="PKGBUILD Manager Settings"
 BINDING="<Primary><Alt>p"
 
@@ -75,7 +75,7 @@ register_kde() {
     local cfg="${HOME}/.config/kglobalshortcutsrc"
 
     # Verifica duplicidade
-    if grep -q "pkgbuild-manager-settings" "$cfg" 2>/dev/null; then
+    if grep -q "pkgbuild-manager-gui settings" "$cfg" 2>/dev/null; then
         echo "[pkgbuild-manager] Atalho KDE já registrado — nenhuma alteração."
         return 0
     fi
@@ -151,7 +151,7 @@ main() {
         cinnamon) register_cinnamon ;;
         *)
             echo "[pkgbuild-manager] DE não suportado (${XDG_CURRENT_DESKTOP:-desconhecido})."
-            echo "  → Registre manualmente: Ctrl+Alt+P → pkgbuild-manager-settings"
+            echo "  → Registre manualmente: Ctrl+Alt+P → pkgbuild-manager-gui settings"
             ;;
     esac
 }

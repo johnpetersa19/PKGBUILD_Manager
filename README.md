@@ -20,10 +20,10 @@ Interactive actions (compilation, linting, etc.) open a terminal window. Backgro
 
 ## Settings Panel
 
-> **How to open:** press <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>P</kbd> from any window, or run `pkgbuild-manager-settings` in a terminal.
+> **How to open:** press <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>P</kbd> from any window, or run `pkgbuild-manager-gui settings` in a terminal.
 > The app does **not** appear in the application grid by design — it is meant to be launched via the keyboard shortcut.
 
-The settings panel (`pkgbuild-manager-settings`) is a GTK4 + Libadwaita application that lets you fully customise the context-menu layout:
+The settings panel (`pkgbuild-manager-gui settings`) is a GTK4 + Libadwaita application that lets you fully customise the context-menu layout:
 
 - **Create / delete / rename groups** — organise actions into labelled submenus.
 - **Add items from the full catalogue** — click *+ Add Item* inside any group to pick from all 21 available actions.
@@ -157,7 +157,7 @@ This installs:
 - Caja extension → `/usr/share/caja-python/extensions/`
 - Nemo extension → `/usr/share/nemo-python/extensions/`
 - `regen-dolphin-desktop` helper → `/usr/share/pkgbuild-manager/`
-- Settings panel → installed as `pkgbuild-manager-settings`
+- Unified GTK application → installed as `pkgbuild-manager-gui` (`settings`, `push` and `release` modes)
 
 ### Via Cargo (manual)
 
@@ -171,7 +171,7 @@ sudo cp target/release/pkgbuild_manager /usr/local/bin/
 After installation, open the settings panel to generate your initial `menu.json`:
 
 - **Press <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>P</kbd>** — recommended, works from any window.
-- Or run `pkgbuild-manager-settings` in a terminal.
+- Or run `pkgbuild-manager-gui settings` in a terminal.
 
 > The settings app does **not** appear in the application grid by design (`NoDisplay=true`). Use the keyboard shortcut to open it.
 

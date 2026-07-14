@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 06_Push AUR — Stage PKGBUILD/.SRCINFO, commit (upgpkg: …) and push to AUR.
 # Runs the full logic via pkgbuild_manager aur-push, streaming progress to the
-# dedicated gtk4-rs/libadwaita GUI window (pkgbuild-manager-aur-push).
+# unified gtk4-rs/libadwaita GUI (pkgbuild-manager-gui push).
 set -euo pipefail
 
 TARGET="${NAUTILUS_SCRIPT_SELECTED_FILE_PATHS:-}"
@@ -19,5 +19,5 @@ fi
 
 # setsid detaches the GUI process from the Nautilus process group so it gets
 # its own D-Bus/Wayland context and is not killed when the script exits.
-setsid pkgbuild-manager-aur-push "$TARGET" &
+setsid pkgbuild-manager-gui push "$TARGET" &
 disown

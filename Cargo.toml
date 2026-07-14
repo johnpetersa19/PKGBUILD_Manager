@@ -8,16 +8,8 @@ name = "pkgbuild_manager"
 path = "src/main.rs"
 
 [[bin]]
-name = "pkgbuild-manager-aur-push"
-path = "src/aur_push_gui/main.rs"
-
-[[bin]]
-name = "pkgbuild-manager-release-gui"
-path = "src/aur_push_gui/release_main.rs"
-
-[[bin]]
-name = "pkgbuild-manager-settings"
-path = "src/settings_gui/main.rs"
+name = "pkgbuild-manager-gui"
+path = "src/gui/main.rs"
 
 [dependencies]
 gettext-rs  = { version = "0.7", features = ["gettext-system"] }
@@ -26,6 +18,13 @@ async-channel = "2"
 serde       = { version = "1", features = ["derive"] }
 serde_json  = "1"
 dirs        = "6"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+panic = "abort"
+opt-level = "s"
 
 [dependencies.gtk]
 package  = "gtk4"

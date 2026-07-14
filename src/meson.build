@@ -59,49 +59,17 @@ cargo_build = custom_target(
 )
 
 custom_target(
-  'cargo-build-aur-push',
+  'cargo-build-gui',
   build_by_default: true,
   build_always_stale: true,
-  output: 'pkgbuild-manager-aur-push',
+  output: 'pkgbuild-manager-gui',
   console: true,
   install: true,
   install_dir: get_option('bindir'),
   depends: cargo_build,
   command: [
     'cp',
-    meson.project_build_root() / 'src' / rust_target / 'pkgbuild-manager-aur-push',
-    '@OUTPUT@',
-  ]
-)
-
-custom_target(
-  'cargo-build-release-gui',
-  build_by_default: true,
-  build_always_stale: true,
-  output: 'pkgbuild-manager-release-gui',
-  console: true,
-  install: true,
-  install_dir: get_option('bindir'),
-  depends: cargo_build,
-  command: [
-    'cp',
-    meson.project_build_root() / 'src' / rust_target / 'pkgbuild-manager-release-gui',
-    '@OUTPUT@',
-  ]
-)
-
-custom_target(
-  'cargo-build-settings',
-  build_by_default: true,
-  build_always_stale: true,
-  output: 'pkgbuild-manager-settings',
-  console: true,
-  install: true,
-  install_dir: get_option('bindir'),
-  depends: cargo_build,
-  command: [
-    'cp',
-    meson.project_build_root() / 'src' / rust_target / 'pkgbuild-manager-settings',
+    meson.project_build_root() / 'src' / rust_target / 'pkgbuild-manager-gui',
     '@OUTPUT@',
   ]
 )
