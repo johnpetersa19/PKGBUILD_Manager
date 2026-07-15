@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 2.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-14 21:44-0300\n"
+"POT-Creation-Date: 2026-07-14 22:22-0300\n"
 "PO-Revision-Date: 2026-07-14 21:44-0300\n"
 "Last-Translator: John Peter Sa\n"
 "Language-Team: English (United States)\n"
@@ -17,55 +17,55 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:40
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:39
 msgid ""
 "Warning: the commit was pushed to the AUR but the tag could not be pushed."
 msgstr ""
 "Warning: the commit was pushed to the AUR but the tag could not be pushed."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:43
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:42
 msgid "The tag exists locally only. This is an inconsistent state."
 msgstr "The tag exists locally only. This is an inconsistent state."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:46
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:45
 msgid "Once the network issue is resolved, push the tag manually with:"
 msgstr "Once the network issue is resolved, push the tag manually with:"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:49
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:48
 msgid "original error"
 msgstr "original error"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:88
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:87
 msgid ""
 "Note: nothing to commit or commit failed \\u{2014} continuing with push."
 msgstr ""
 "Note: nothing to commit or commit failed \\u{2014} continuing with push."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:92
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:91
 msgid "git commit failed"
 msgstr "git commit failed"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:151
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:150
 msgid "Note: push to origin/master failed"
 msgstr "Note: push to origin/master failed"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:153
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:152
 msgid "Attempting simple 'git push'..."
 msgstr "Attempting simple 'git push'..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/checksums.rs:15
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/checksums.rs:14
 msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
 msgstr "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/checksums.rs:40
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/checksums.rs:39
 msgid "makepkg not found. Install it with: sudo pacman -S pacman"
 msgstr "makepkg not found. Install it with: sudo pacman -S pacman"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/checksums.rs:46
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/checksums.rs:45
 msgid "failed to spawn makepkg"
 msgstr "failed to spawn makepkg"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/checksums.rs:56
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/checksums.rs:55
 msgid "makepkg -g failed:"
 msgstr "makepkg -g failed:"
 
@@ -174,7 +174,7 @@ msgid "failed to spawn"
 msgstr "failed to spawn"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:27
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1344
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1345
 msgid "failed"
 msgstr "failed"
 
@@ -514,53 +514,53 @@ msgstr "Try again"
 msgid "No target directory provided."
 msgstr "No target directory provided."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1231
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1232
 msgid "Failed to start pkgbuild_manager"
 msgstr "Failed to start pkgbuild_manager"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1232
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1233
 msgid "Make sure it is installed and in PATH."
 msgstr "Make sure it is installed and in PATH."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1299
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1300
 msgid "failed to start"
 msgstr "failed to start"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1322
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1323
 msgid "git add failed"
 msgstr "git add failed"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1335
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1336
 msgid "git commit failed (nothing to commit?)"
 msgstr "git commit failed (nothing to commit?)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1361
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1362
 msgid "git tag failed"
 msgstr "git tag failed"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1369
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1370
 msgid "git push --tags failed"
 msgstr "git push --tags failed"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:183
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:184
 msgid "aur-push-tag requires a version tag argument"
 msgstr "aur-push-tag requires a version tag argument"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:185
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:186
 msgid "aur-push-tag: tag cannot be empty"
 msgstr "aur-push-tag: tag cannot be empty"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:190
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:191
 msgid "aur-push-tag: invalid tag"
 msgstr "aur-push-tag: invalid tag"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:192
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:193
 msgid ""
 "tags cannot contain spaces (expected format: pkgver-pkgrel, e.g. 1.2.3-1)"
 msgstr ""
 "tags cannot contain spaces (expected format: pkgver-pkgrel, e.g. 1.2.3-1)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:206
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:207
 msgid "Unknown command"
 msgstr "Unknown command"
 
@@ -858,250 +858,304 @@ msgstr "Git / AUR"
 msgid "Clean"
 msgstr "Clean"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:108
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:114
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:344
+msgid "Git repository"
+msgstr "Git repository"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:115
+msgid "✓ Repository downloaded successfully: "
+msgstr "✓ Repository downloaded successfully: "
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:118
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:139
+msgid "Unknown Git error"
+msgstr "Unknown Git error"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:119
+msgid "✗ Failed to download repository: "
+msgstr "✗ Failed to download repository: "
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:133
+msgid "The repository check timed out."
+msgstr "The repository check timed out."
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:151
+msgid "Branch not found: "
+msgstr "Branch not found: "
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:336
+msgid "Repository URL error"
+msgstr "Repository URL error"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:337
+msgid "Click to view the repository access error"
+msgstr "Click to view the repository access error"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:344
+msgid "Download "
+msgstr "Download "
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:345
+msgid "Clone the repository URL from the clipboard into this folder"
+msgstr "Clone the repository URL from the clipboard into this folder"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:133
 msgid "Compiling package…"
 msgstr "Compiling package…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:109
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:134
 msgid "✓ Package compiled successfully!"
 msgstr "✓ Package compiled successfully!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:110
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:135
 msgid "✗ Package compilation failed! See: "
 msgstr "✗ Package compilation failed! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:111
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:136
 msgid "Forced compilation in progress…"
 msgstr "Forced compilation in progress…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:112
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:137
 msgid "✓ Forced compilation completed!"
 msgstr "✓ Forced compilation completed!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:113
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:138
 msgid "✗ Forced compilation failed! See: "
 msgstr "✗ Forced compilation failed! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:114
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:139
 msgid "Compiling without checks…"
 msgstr "Compiling without checks…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:115
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:140
 msgid "✓ Compiled without checks!"
 msgstr "✓ Compiled without checks!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:116
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:141
 msgid "✗ Compilation without checks failed! See: "
 msgstr "✗ Compilation without checks failed! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:117
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:142
 msgid "Compiling without GPG…"
 msgstr "Compiling without GPG…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:118
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:143
 msgid "✓ Compiled without GPG!"
 msgstr "✓ Compiled without GPG!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:119
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:144
 msgid "✗ Compilation without GPG failed! See: "
 msgstr "✗ Compilation without GPG failed! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:120
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:145
 msgid "Downloading sources…"
 msgstr "Downloading sources…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:121
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:146
 msgid "✓ Sources downloaded successfully!"
 msgstr "✓ Sources downloaded successfully!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:122
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:147
 msgid "✗ Failed to download sources! See: "
 msgstr "✗ Failed to download sources! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:124
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:149
 msgid "Installing package…"
 msgstr "Installing package…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:125
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:150
 msgid "✓ Package installed successfully!"
 msgstr "✓ Package installed successfully!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:126
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:151
 msgid "✗ Package installation failed! See: "
 msgstr "✗ Package installation failed! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:127
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:152
 msgid "Forced installation in progress…"
 msgstr "Forced installation in progress…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:128
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:153
 msgid "✓ Forced installation completed!"
 msgstr "✓ Forced installation completed!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:129
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:154
 msgid "✗ Forced installation failed! See: "
 msgstr "✗ Forced installation failed! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:130
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:155
 msgid "Installing and removing build dependencies…"
 msgstr "Installing and removing build dependencies…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:131
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:156
 msgid "✓ Installed and build dependencies removed!"
 msgstr "✓ Installed and build dependencies removed!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:132
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:157
 msgid "✗ Failed to install and remove build dependencies! See: "
 msgstr "✗ Failed to install and remove build dependencies! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:133
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:158
 msgid "Installing without checks…"
 msgstr "Installing without checks…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:134
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:159
 msgid "✓ Installed without checks!"
 msgstr "✓ Installed without checks!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:135
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:160
 msgid "✗ Failed to install without checks! See: "
 msgstr "✗ Failed to install without checks! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:136
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:161
 msgid "Installing without GPG…"
 msgstr "Installing without GPG…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:137
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:162
 msgid "✓ Installed without GPG!"
 msgstr "✓ Installed without GPG!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:138
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:163
 msgid "✗ Failed to install without GPG! See: "
 msgstr "✗ Failed to install without GPG! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:140
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:165
 msgid "Updating checksums…"
 msgstr "Updating checksums…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:141
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:166
 msgid "✓ Checksums updated successfully!"
 msgstr "✓ Checksums updated successfully!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:142
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:167
 msgid "✗ Failed to update checksums! See: "
 msgstr "✗ Failed to update checksums! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:143
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:168
 msgid "Generating checksums…"
 msgstr "Generating checksums…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:144
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:169
 msgid "✓ Checksums generated successfully!"
 msgstr "✓ Checksums generated successfully!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:145
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:170
 msgid "✗ Failed to generate checksums! See: "
 msgstr "✗ Failed to generate checksums! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:146
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:171
 msgid "Regenerating .SRCINFO…"
 msgstr "Regenerating .SRCINFO…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:147
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:172
 msgid "✓ .SRCINFO regenerated successfully!"
 msgstr "✓ .SRCINFO regenerated successfully!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:148
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:173
 msgid "✗ Failed to regenerate .SRCINFO! See: "
 msgstr "✗ Failed to regenerate .SRCINFO! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:150
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:175
 msgid "Running namcap…"
 msgstr "Running namcap…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:151
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:176
 msgid "⚠ Namcap encountered warnings. See: "
 msgstr "⚠ Namcap encountered warnings. See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:152
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:177
 msgid "✓ Namcap: no problems found!"
 msgstr "✓ Namcap: no problems found!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:153
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:178
 msgid "✗ Failed to execute namcap! See: "
 msgstr "✗ Failed to execute namcap! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:154
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:179
 msgid "Running ShellCheck…"
 msgstr "Running ShellCheck…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:155
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:180
 msgid "⚠ ShellCheck encountered warnings. See: "
 msgstr "⚠ ShellCheck encountered warnings. See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:156
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:181
 msgid "✓ ShellCheck: no problems found!"
 msgstr "✓ ShellCheck: no problems found!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:157
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:182
 msgid "✗ Failed to execute ShellCheck! See: "
 msgstr "✗ Failed to execute ShellCheck! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:159
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:184
 msgid "Sending to AUR…"
 msgstr "Sending to AUR…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:160
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:185
 msgid "✓ Sent to AUR successfully!"
 msgstr "✓ Sent to AUR successfully!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:161
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:186
 msgid "✗ Failed to send to AUR! See: "
 msgstr "✗ Failed to send to AUR! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:162
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:187
 msgid "Creating tag and sending to AUR…"
 msgstr "Creating tag and sending to AUR…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:163
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:188
 msgid "✓ Tag created and sent to AUR!"
 msgstr "✓ Tag created and sent to AUR!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:164
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:189
 msgid "✗ Failed to create tag/send to AUR! See: "
 msgstr "✗ Failed to create tag/send to AUR! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:166
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:191
 msgid "Cleaning srcdir…"
 msgstr "Cleaning srcdir…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:167
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:192
 msgid "✓ srcdir cleaned successfully!"
 msgstr "✓ srcdir cleaned successfully!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:168
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:193
 msgid "✗ Failed to clean srcdir! See: "
 msgstr "✗ Failed to clean srcdir! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:169
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:194
 msgid "Cleaning everything…"
 msgstr "Cleaning everything…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:170
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:195
 msgid "✓ Everything cleaned successfully!"
 msgstr "✓ Everything cleaned successfully!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:171
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:196
 msgid "✗ Failed to clean everything! See: "
 msgstr "✗ Failed to clean everything! See: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:173
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:198
 msgid "Running full workflow…"
 msgstr "Running full workflow…"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:174
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:199
 msgid "✓ Full workflow completed successfully!"
 msgstr "✓ Full workflow completed successfully!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:175
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:200
 msgid "✗ Full workflow failed! See: "
 msgstr "✗ Full workflow failed! See: "
+
+#~ msgid "Download copied repository"
+#~ msgstr "Download copied repository"
+
+#~ msgid "The clipboard does not contain a valid repository URL."
+#~ msgstr "The clipboard does not contain a valid repository URL."
+
+#~ msgid "Could not access the clipboard."
+#~ msgstr "Could not access the clipboard."
+
+#~ msgid "Could not read the clipboard."
+#~ msgstr "Could not read the clipboard."

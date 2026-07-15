@@ -6,8 +6,15 @@ import os
 import json
 import gettext
 import subprocess
+import threading
+import gi
+import re
+from urllib.parse import urlparse
 from pathlib import Path
-from gi.repository import Nautilus, GObject
+
+gi.require_version("Nautilus", "4.1")
+gi.require_version("Gdk", "4.0")
+from gi.repository import Nautilus, GObject, Gdk, GLib
 
 _user_locale = os.path.expanduser("~/.local/share/locale")
 gettext.bindtextdomain("pkgbuild_manager", _user_locale if os.path.isdir(_user_locale) else "/usr/share/locale")
@@ -45,6 +52,108 @@ DEFAULT_LABELS = dict(DEFAULT_ACTIONS)
 ROOT_GROUP = "PKGBUILD"
 
 
+def _notify(message, error=False):
+    args = ["notify-send", "-a", "PKGBUILD Manager"]
+    if error:
+        args.extend(["-u", "critical"])
+    subprocess.Popen(args + [message], close_fds=True)
+
+
+def _repository_from_url(text):
+    """Return (clone_url, optional_branch) for a copied repository URL."""
+    value = (text or "").strip().splitlines()[0] if (text or "").strip() else ""
+    if re.match(r"^[^\s@]+@[^\s:]+:.+", value):
+        return value, None
+
+    parsed = urlparse(value)
+    if parsed.scheme not in ("http", "https", "ssh", "git") or not parsed.netloc:
+        return None
+
+    parts = [part for part in parsed.path.split("/") if part]
+    host = parsed.netloc.lower()
+    branch = None
+
+    if host in ("github.com", "www.github.com") and len(parts) >= 2:
+        owner, repository = parts[0], parts[1].removesuffix(".git")
+        if len(parts) >= 4 and parts[2] == "tree":
+            branch = "/".join(parts[3:])
+        return f"{parsed.scheme}://{parsed.netloc}/{owner}/{repository}.git", branch
+
+    # GitLab uses /owner/repository/-/tree/branch.
+    if "-/tree" in parsed.path:
+        prefix, branch = parsed.path.split("/-/tree/", 1)
+        return f"{parsed.scheme}://{parsed.netloc}{prefix}.git", branch.strip("/")
+
+    # Codeberg/Gitea uses /owner/repository/src/branch/branch-name.
+    if "/src/branch/" in parsed.path:
+        prefix, branch = parsed.path.split("/src/branch/", 1)
+        return f"{parsed.scheme}://{parsed.netloc}{prefix}.git", branch.strip("/")
+
+    if len(parts) >= 2:
+        # Unknown Git servers are tested as copied. Some do not accept a .git
+        # suffix, so avoid rewriting URLs when their web layout is unknown.
+        return value.rstrip("/"), None
+    return None
+
+
+def _repository_name(clone_url):
+    path = clone_url.rstrip("/")
+    # Handles both normal URLs and SCP-style SSH addresses (git@host:repo).
+    name = re.split(r"[/:]", path)[-1].removesuffix(".git").strip()
+    return name or None
+
+
+def _clone_repository(repository, destination):
+    clone_url, branch = repository
+    command = ["git", "clone"]
+    if branch:
+        command.extend(["--branch", branch, "--single-branch"])
+    command.append(clone_url)
+    result = subprocess.run(command, cwd=destination, text=True, capture_output=True)
+    if result.returncode == 0:
+        name = _repository_name(clone_url) or _("Git repository")
+        GLib.idle_add(_notify, _("✓ Repository downloaded successfully: ") + name, False)
+    else:
+        detail = (result.stderr or result.stdout).strip().splitlines()
+        message = detail[-1] if detail else _("Unknown Git error")
+        GLib.idle_add(_notify, _("✗ Failed to download repository: ") + message, True)
+
+
+def _validate_repository(repository):
+    """Validate access and resolve the longest branch in a /tree/... URL."""
+    clone_url, requested_branch = repository
+    try:
+        result = subprocess.run(
+            ["git", "ls-remote", "--heads", clone_url],
+            text=True,
+            capture_output=True,
+            timeout=15,
+        )
+    except subprocess.TimeoutExpired:
+        return None, _("The repository check timed out.")
+    except OSError as error:
+        return None, str(error)
+
+    if result.returncode != 0:
+        details = (result.stderr or result.stdout).strip().splitlines()
+        return None, details[-1] if details else _("Unknown Git error")
+
+    if requested_branch:
+        branches = []
+        for line in result.stdout.splitlines():
+            if "\trefs/heads/" in line:
+                branches.append(line.split("\trefs/heads/", 1)[1])
+        matches = [
+            branch for branch in branches
+            if requested_branch == branch or requested_branch.startswith(branch + "/")
+        ]
+        if not matches:
+            return None, _("Branch not found: ") + requested_branch
+        requested_branch = max(matches, key=len)
+
+    return (clone_url, requested_branch), None
+
+
 def _scripts_dir():
     user_flatpak = os.path.expanduser("~/.local/share/pkgbuild-manager/scripts")
     if os.path.isdir(user_flatpak):
@@ -76,6 +185,49 @@ def _load_menu():
 
 
 class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
+
+    def __init__(self):
+        super().__init__()
+        self._clipboard_generation = 0
+        self._repository_state = None
+        display = Gdk.Display.get_default()
+        self._clipboard = display.get_clipboard() if display else None
+        if self._clipboard:
+            self._clipboard.connect("changed", self._clipboard_changed)
+            self._clipboard_changed(self._clipboard)
+
+    def _clipboard_changed(self, clipboard, *_args):
+        self._clipboard_generation += 1
+        generation = self._clipboard_generation
+        self._repository_state = None  # Hidden while reading/testing.
+
+        def clipboard_ready(source, result, _data=None):
+            try:
+                text = source.read_text_finish(result)
+            except GLib.Error as error:
+                if generation == self._clipboard_generation:
+                    self._repository_state = ("error", None, str(error))
+                return
+            repository = _repository_from_url(text)
+            if not repository:
+                return
+
+            def validate():
+                valid_repository, error = _validate_repository(repository)
+
+                def store_result():
+                    if generation == self._clipboard_generation:
+                        if valid_repository:
+                            self._repository_state = ("valid", valid_repository, None)
+                        else:
+                            self._repository_state = ("error", None, error)
+                    return False
+
+                GLib.idle_add(store_result)
+
+            threading.Thread(target=validate, daemon=True).start()
+
+        clipboard.read_text_async(None, clipboard_ready, None)
 
     def _build_menu(self, pkgbuild_path):
         scripts = _scripts_dir()
@@ -167,4 +319,37 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
         return self._build_menu(path) if path else []
 
     def get_background_items(self, folder):
-        return []
+        if not folder.get_uri().startswith("file://"):
+            return []
+        destination = folder.get_location().get_path()
+        if not destination:
+            return []
+
+        state = self._repository_state
+        if state is None:
+            return []
+
+        status, repository, error = state
+        if status == "error":
+            item = Nautilus.MenuItem(
+                name="PkgbuildManager::ClipboardRepositoryError",
+                label=_("Repository URL error"),
+                tip=_("Click to view the repository access error"),
+            )
+            item.connect("activate", lambda _item: _notify(error, True))
+            return [item]
+
+        item = Nautilus.MenuItem(
+            name="PkgbuildManager::CloneClipboardRepository",
+            label=_("Download ") + (_repository_name(repository[0]) or _("Git repository")),
+            tip=_("Clone the repository URL from the clipboard into this folder"),
+        )
+        item.connect(
+            "activate",
+            lambda _item: threading.Thread(
+                target=_clone_repository,
+                args=(repository, destination),
+                daemon=True,
+            ).start(),
+        )
+        return [item]

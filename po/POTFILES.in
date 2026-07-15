@@ -12,7 +12,7 @@ src/aur_push_gui/release_dialog.rs
 src/main.rs
 src/settings_gui/app.rs
 src/settings_gui/config.rs
+data/nautilus-extension/pkgbuild_manager.py
 data/nautilus-extension/pkgbuild_manager_caja.py
 data/nautilus-extension/pkgbuild_manager_nemo.py
-data/nautilus-extension/pkgbuild_manager.py
 data/nautilus-scripts/_i18n
