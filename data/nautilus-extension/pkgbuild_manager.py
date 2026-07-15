@@ -162,39 +162,32 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
 
     def __init__(self):
         super().__init__()
-        self._clipboard_generation = 0
-        self._repository_state = None
         display = Gdk.Display.get_default()
         self._clipboard = display.get_clipboard() if display else None
-        if self._clipboard:
-            self._clipboard.connect("changed", self._clipboard_changed)
-            self._clipboard_changed(self._clipboard)
 
-    def _clipboard_changed(self, clipboard, *_args):
-        self._clipboard_generation += 1
-        generation = self._clipboard_generation
-        self._repository_state = None
-        self.emit_items_updated_signal()
+    def _read_clipboard_now(self):
+        """Read clipboard text during menu creation, bounded to 100 ms."""
+        if self._clipboard is None:
+            return None
+        loop = GLib.MainLoop()
+        value = {"text": None, "finished": False}
 
         def clipboard_ready(source, result, _data=None):
             try:
-                text = source.read_text_finish(result)
-            except GLib.Error as error:
-                if generation == self._clipboard_generation:
-                    self._repository_state = ("error", None, str(error))
-                    self.emit_items_updated_signal()
-                return
-            repository = _repository_from_url(text)
-            if not repository:
-                return
+                value["text"] = source.read_text_finish(result)
+            except GLib.Error:
+                pass
+            value["finished"] = True
+            loop.quit()
 
-            # URL parsing is entirely local. Notify Nautilus immediately so
-            # it drops the cached menu and asks for the new dynamic label.
-            if generation == self._clipboard_generation:
-                self._repository_state = ("valid", repository, None)
-                self.emit_items_updated_signal()
+        def timed_out():
+            loop.quit()
+            return False
 
-        clipboard.read_text_async(None, clipboard_ready, None)
+        self._clipboard.read_text_async(None, clipboard_ready, None)
+        GLib.timeout_add(100, timed_out)
+        loop.run()
+        return value["text"] if value["finished"] else None
 
     def _build_menu(self, pkgbuild_path):
         scripts = _scripts_dir()
@@ -292,19 +285,9 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
         if not destination:
             return []
 
-        state = self._repository_state
-        if state is None:
+        repository = _repository_from_url(self._read_clipboard_now())
+        if repository is None:
             return []
-
-        status, repository, error = state
-        if status == "error":
-            item = Nautilus.MenuItem(
-                name="PkgbuildManager::ClipboardRepositoryError",
-                label=_("Repository URL error"),
-                tip=_("Click to view the repository access error"),
-            )
-            item.connect("activate", lambda _item: _show_error_window(error))
-            return [item]
 
         item = Nautilus.MenuItem(
             name="PkgbuildManager::CloneClipboardRepository",
