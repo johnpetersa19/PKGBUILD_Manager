@@ -14,7 +14,8 @@ from pathlib import Path
 
 gi.require_version("Nautilus", "4.1")
 gi.require_version("Gdk", "4.0")
-from gi.repository import Nautilus, GObject, Gdk, GLib
+gi.require_version("Gtk", "4.0")
+from gi.repository import Nautilus, GObject, Gdk, Gtk, GLib
 
 _user_locale = os.path.expanduser("~/.local/share/locale")
 gettext.bindtextdomain("pkgbuild_manager", _user_locale if os.path.isdir(_user_locale) else "/usr/share/locale")
@@ -57,6 +58,14 @@ def _notify(message, error=False):
     if error:
         args.extend(["-u", "critical"])
     subprocess.Popen(args + [message], close_fds=True)
+
+
+def _show_error_window(message):
+    dialog = Gtk.AlertDialog()
+    dialog.set_message(_("Repository download error"))
+    dialog.set_detail(str(message))
+    dialog.set_buttons([_("Close")])
+    dialog.show(None)
 
 
 def _repository_from_url(text):
@@ -116,7 +125,7 @@ def _clone_repository(repository, destination):
     else:
         detail = (result.stderr or result.stdout).strip().splitlines()
         message = detail[-1] if detail else _("Unknown Git error")
-        GLib.idle_add(_notify, _("✗ Failed to download repository: ") + message, True)
+        GLib.idle_add(_show_error_window, message)
 
 
 def _validate_repository(repository):
@@ -228,8 +237,9 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
                     if generation == self._clipboard_generation:
                         if valid_repository:
                             self._repository_state = ("valid", valid_repository, None)
-                        else:
-                            self._repository_state = ("error", None, error)
+                        # A network/authentication failure must not hide or
+                        # replace a structurally valid URL. The real clone
+                        # attempt will show a detailed error window if needed.
                     return False
 
                 GLib.idle_add(store_result)
@@ -345,7 +355,7 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
                 label=_("Repository URL error"),
                 tip=_("Click to view the repository access error"),
             )
-            item.connect("activate", lambda _item: _notify(error, True))
+            item.connect("activate", lambda _item: _show_error_window(error))
             return [item]
 
         item = Nautilus.MenuItem(

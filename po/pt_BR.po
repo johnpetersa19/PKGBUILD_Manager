@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-14 22:22-0300\n"
+"POT-Creation-Date: 2026-07-14 22:49-0300\n"
 "PO-Revision-Date: 2026-06-04 15:58-0300\n"
 "Last-Translator: John Peter Sa\n"
 "Language-Team: Portuguese (Brazil)\n"
@@ -879,48 +879,52 @@ msgstr "Git / AUR"
 msgid "Clean"
 msgstr "Limpar"
 
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:65
+msgid "Repository download error"
+msgstr "Erro ao baixar repositório"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:67
+msgid "Close"
+msgstr "Fechar"
+
 # ---------------------------------------------------------------------------
 # Step row labels — aur_dialog.rs (mode: Git/GitLab/Codeberg/Generic)
 # ---------------------------------------------------------------------------
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:114
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:344
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:123
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:363
 msgid "Git repository"
 msgstr "repositório Git"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:115
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:124
 msgid "✓ Repository downloaded successfully: "
 msgstr "✓ Repositório baixado com sucesso: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:118
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:139
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:127
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:152
 msgid "Unknown Git error"
 msgstr "Erro desconhecido do Git"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:119
-msgid "✗ Failed to download repository: "
-msgstr "✗ Falha ao baixar o repositório: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:133
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:146
 msgid "The repository check timed out."
 msgstr "A verificação do repositório excedeu o tempo limite."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:151
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:164
 msgid "Branch not found: "
 msgstr "Branch não encontrada: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:336
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:355
 msgid "Repository URL error"
 msgstr "Erro na URL do repositório"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:337
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:356
 msgid "Click to view the repository access error"
 msgstr "Clique para ver o erro de acesso ao repositório"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:344
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:363
 msgid "Download "
 msgstr "Baixar "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:345
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:364
 msgid "Clone the repository URL from the clipboard into this folder"
 msgstr "Clonar a URL do repositório da área de transferência nesta pasta"
 
@@ -1174,6 +1178,9 @@ msgstr "✓ Fluxo completo concluído com sucesso!"
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:200
 msgid "✗ Full workflow failed! See: "
 msgstr "✗ Falha no fluxo completo! Ver: "
+
+#~ msgid "✗ Failed to download repository: "
+#~ msgstr "✗ Falha ao baixar o repositório: "
 
 #~ msgid "Download copied repository"
 #~ msgstr "Baixar repositório copiado"
