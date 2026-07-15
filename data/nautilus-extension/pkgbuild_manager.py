@@ -164,6 +164,12 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
         super().__init__()
         display = Gdk.Display.get_default()
         self._clipboard = display.get_clipboard() if display else None
+        if self._clipboard is not None:
+            self._clipboard.connect("changed", self._on_clipboard_changed)
+
+    def _on_clipboard_changed(self, _clipboard):
+        """Tell Nautilus to rebuild the current folder's context menu."""
+        self.emit_items_updated_signal()
 
     def _read_clipboard_now(self):
         """Read clipboard text during menu creation, bounded to 100 ms."""
