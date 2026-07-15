@@ -128,45 +128,6 @@ def _clone_repository(repository, destination):
         GLib.idle_add(_show_error_window, message)
 
 
-def _validate_repository(repository):
-    """Validate access and resolve the longest branch in a /tree/... URL."""
-    clone_url, requested_branch = repository
-    try:
-        environment = os.environ.copy()
-        environment["GIT_TERMINAL_PROMPT"] = "0"
-        environment["GIT_SSH_COMMAND"] = "ssh -o BatchMode=yes -o ConnectTimeout=3"
-        result = subprocess.run(
-            ["git", "-c", "credential.interactive=never", "ls-remote", "--heads", clone_url],
-            text=True,
-            capture_output=True,
-            timeout=5,
-            env=environment,
-        )
-    except subprocess.TimeoutExpired:
-        return None, _("The repository check timed out.")
-    except OSError as error:
-        return None, str(error)
-
-    if result.returncode != 0:
-        details = (result.stderr or result.stdout).strip().splitlines()
-        return None, details[-1] if details else _("Unknown Git error")
-
-    if requested_branch:
-        branches = []
-        for line in result.stdout.splitlines():
-            if "\trefs/heads/" in line:
-                branches.append(line.split("\trefs/heads/", 1)[1])
-        matches = [
-            branch for branch in branches
-            if requested_branch == branch or requested_branch.startswith(branch + "/")
-        ]
-        if not matches:
-            return None, _("Branch not found: ") + requested_branch
-        requested_branch = max(matches, key=len)
-
-    return (clone_url, requested_branch), None
-
-
 def _scripts_dir():
     user_flatpak = os.path.expanduser("~/.local/share/pkgbuild-manager/scripts")
     if os.path.isdir(user_flatpak):
@@ -212,7 +173,8 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
     def _clipboard_changed(self, clipboard, *_args):
         self._clipboard_generation += 1
         generation = self._clipboard_generation
-        self._repository_state = None  # Hidden while reading/testing.
+        self._repository_state = None
+        self.emit_items_updated_signal()
 
         def clipboard_ready(source, result, _data=None):
             try:
@@ -220,31 +182,17 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
             except GLib.Error as error:
                 if generation == self._clipboard_generation:
                     self._repository_state = ("error", None, str(error))
+                    self.emit_items_updated_signal()
                 return
             repository = _repository_from_url(text)
             if not repository:
                 return
 
-            # Show the action immediately from the parsed URL. Network
-            # validation continues below and can replace it with an error.
+            # URL parsing is entirely local. Notify Nautilus immediately so
+            # it drops the cached menu and asks for the new dynamic label.
             if generation == self._clipboard_generation:
                 self._repository_state = ("valid", repository, None)
-
-            def validate():
-                valid_repository, error = _validate_repository(repository)
-
-                def store_result():
-                    if generation == self._clipboard_generation:
-                        if valid_repository:
-                            self._repository_state = ("valid", valid_repository, None)
-                        # A network/authentication failure must not hide or
-                        # replace a structurally valid URL. The real clone
-                        # attempt will show a detailed error window if needed.
-                    return False
-
-                GLib.idle_add(store_result)
-
-            threading.Thread(target=validate, daemon=True).start()
+                self.emit_items_updated_signal()
 
         clipboard.read_text_async(None, clipboard_ready, None)
 
