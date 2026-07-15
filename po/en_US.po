@@ -1,15 +1,16 @@
-# English (US) translation for pkgbuild_manager
+# English translation for pkgbuild_manager.
 # Copyright (C) 2026 John Peter Sa
 # This file is distributed under the same license as the pkgbuild_manager package.
 #
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: pkgbuild_manager 0.1.0\n"
+"Project-Id-Version: pkgbuild_manager 2.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-14 21:36-0300\n"
-"PO-Revision-Date: 2026-06-02 16:15-0300\n"
+"POT-Creation-Date: 2026-07-14 21:44-0300\n"
+"PO-Revision-Date: 2026-07-14 21:44-0300\n"
 "Last-Translator: John Peter Sa\n"
-"Language-Team: English (US)\n"
+"Language-Team: English (United States)\n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,33 +18,32 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:40
-#, fuzzy
 msgid ""
 "Warning: the commit was pushed to the AUR but the tag could not be pushed."
-msgstr "Stage, commit and push to the AUR (automatic message if not provided)"
+msgstr ""
+"Warning: the commit was pushed to the AUR but the tag could not be pushed."
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:43
 msgid "The tag exists locally only. This is an inconsistent state."
-msgstr ""
+msgstr "The tag exists locally only. This is an inconsistent state."
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:46
 msgid "Once the network issue is resolved, push the tag manually with:"
-msgstr ""
+msgstr "Once the network issue is resolved, push the tag manually with:"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:49
 msgid "original error"
-msgstr ""
+msgstr "original error"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:88
-#, fuzzy
 msgid ""
 "Note: nothing to commit or commit failed \\u{2014} continuing with push."
-msgstr "Note: nothing to commit or commit failed — continuing with push."
+msgstr ""
+"Note: nothing to commit or commit failed \\u{2014} continuing with push."
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:92
-#, fuzzy
 msgid "git commit failed"
-msgstr "Command failed"
+msgstr "git commit failed"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/aur_push.rs:151
 msgid "Note: push to origin/master failed"
@@ -58,14 +58,12 @@ msgid "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
 msgstr "updpkgsums not found. Install it with: sudo pacman -S pacman-contrib"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/checksums.rs:40
-#, fuzzy
 msgid "makepkg not found. Install it with: sudo pacman -S pacman"
-msgstr "namcap not found. Install with: sudo pacman -S namcap"
+msgstr "makepkg not found. Install it with: sudo pacman -S pacman"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/checksums.rs:46
-#, fuzzy
 msgid "failed to spawn makepkg"
-msgstr "Compiled package (makepkg)"
+msgstr "failed to spawn makepkg"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/checksums.rs:56
 msgid "makepkg -g failed:"
@@ -82,53 +80,44 @@ msgstr "Removed"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/clean.rs:73
 msgid "Warning: could not determine pkgname — removing all .pkg.tar.* files:"
-msgstr ""
+msgstr "Warning: could not determine pkgname — removing all .pkg.tar.* files:"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/clean.rs:108
 msgid "Removed bare-repo cache"
-msgstr ""
+msgstr "Removed bare-repo cache"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/clean.rs:115
 msgid "Removed build directory"
-msgstr ""
+msgstr "Removed build directory"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/mod.rs:27
-#, fuzzy
 msgid "failed to canonicalize path"
-msgstr "Failed to canonicalize path"
+msgstr "failed to canonicalize path"
 
-# ---------------------------------------------------------------------------
-# CLI / Rust binary strings
-# ---------------------------------------------------------------------------
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/mod.rs:36
 msgid "Failed to resolve parent directory"
 msgstr "Failed to resolve parent directory"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/mod.rs:43
-#, fuzzy
 msgid "Directory does not exist"
-msgstr "The directory does not exist"
+msgstr "Directory does not exist"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/mod.rs:51
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/mod.rs:126
-#, fuzzy
 msgid "No PKGBUILD found in directory"
-msgstr "No PKGBUILD found in the directory"
+msgstr "No PKGBUILD found in directory"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/mod.rs:77
-#, fuzzy
 msgid "failed to spawn command"
-msgstr "Failed to start command"
+msgstr "failed to spawn command"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/mod.rs:87
-#, fuzzy
 msgid "command failed"
-msgstr "Command failed"
+msgstr "command failed"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/mod.rs:89
-#, fuzzy
 msgid "with status"
-msgstr "namcap failed with status"
+msgstr "with status"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/mod.rs:131
 msgid ">>> Regenerating .SRCINFO in"
@@ -140,220 +129,208 @@ msgstr "makepkg --printsrcinfo failed"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/mod.rs:169
 msgid "HOME env var not set"
-msgstr ""
+msgstr "HOME env var not set"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/namcap.rs:60
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:64
 msgid "Error log written to"
-msgstr ""
+msgstr "Error log written to"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/namcap.rs:65
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:69
 msgid "Warning: could not write error log"
-msgstr ""
+msgstr "Warning: could not write error log"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/namcap.rs:74
 msgid "namcap reported errors"
-msgstr ""
+msgstr "namcap reported errors"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/namcap.rs:77
 msgid "error"
-msgstr ""
+msgstr "error"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/namcap.rs:79
 msgid "errors"
-msgstr ""
+msgstr "errors"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/namcap.rs:87
 msgid "namcap failed with status"
 msgstr "namcap failed with status"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:35
-#, fuzzy
 msgid "shellcheck not found. Install it with: sudo pacman -S shellcheck"
-msgstr "shellcheck not found. Install with: sudo pacman -S shellcheck"
+msgstr "shellcheck not found. Install it with: sudo pacman -S shellcheck"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:41
 msgid "Failed to run shellcheck"
-msgstr ""
+msgstr "Failed to run shellcheck"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:76
 msgid "shellcheck found issues (see log above)"
-msgstr ""
+msgstr "shellcheck found issues (see log above)"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:22
-#, fuzzy
 msgid "failed to spawn"
-msgstr "Failed to start command"
+msgstr "failed to spawn"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:27
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1344
-#, fuzzy
 msgid "failed"
-msgstr "Command failed"
+msgstr "failed"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:41
 msgid "Validating PKGBUILD syntax (makepkg --printsrcinfo)…"
-msgstr ""
+msgstr "Validating PKGBUILD syntax (makepkg --printsrcinfo)…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:55
 msgid "PKGBUILD syntax OK"
-msgstr ""
+msgstr "PKGBUILD syntax OK"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:58
 msgid "PKGBUILD has syntax errors"
-msgstr ""
+msgstr "PKGBUILD has syntax errors"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:73
 msgid "Parsing PKGBUILD variables (makepkg --nobuild --noextract)…"
-msgstr ""
+msgstr "Parsing PKGBUILD variables (makepkg --nobuild --noextract)…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:82
 msgid "Verifying source checksums (makepkg --verifysource)…"
-msgstr ""
+msgstr "Verifying source checksums (makepkg --verifysource)…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:91
-#, fuzzy
 msgid "Checking declared dependencies (makepkg --syncdeps --nobuild)…"
-msgstr "Compile, install and resolve dependencies (makepkg -si)"
+msgstr "Checking declared dependencies (makepkg --syncdeps --nobuild)…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:104
 msgid "validate-offline: PKGBUILD full offline check"
-msgstr ""
+msgstr "validate-offline: PKGBUILD full offline check"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:115
 msgid "All offline checks passed."
-msgstr ""
+msgstr "All offline checks passed."
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:120
 msgid "check(s) failed"
-msgstr ""
+msgstr "check(s) failed"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:134
 msgid "validate check(s) failed"
-msgstr ""
+msgstr "validate check(s) failed"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:336
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:373
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:74
-#, fuzzy
 msgid "Push to AUR"
-msgstr "06_Push AUR"
+msgstr "Push to AUR"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:337
 msgid "Push to GitHub"
-msgstr ""
+msgstr "Push to GitHub"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:338
 msgid "Push to GitLab"
-msgstr ""
+msgstr "Push to GitLab"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:339
 msgid "Push to Codeberg"
-msgstr ""
+msgstr "Push to Codeberg"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:340
-#, fuzzy
 msgid "Push to Git Remote"
-msgstr "06_Push AUR"
+msgstr "Push to Git Remote"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:341
 msgid "Push — Unknown Repository"
-msgstr ""
+msgstr "Push — Unknown Repository"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:361
 msgid "Step 1 of 2 — Review commit information"
-msgstr ""
+msgstr "Step 1 of 2 — Review commit information"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:364
 msgid "Step 2 of 2 — Sending changes to AUR"
-msgstr ""
+msgstr "Step 2 of 2 — Sending changes to AUR"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:365
 msgid "Step 2 of 2 — Sending changes to GitHub"
-msgstr ""
+msgstr "Step 2 of 2 — Sending changes to GitHub"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:366
 msgid "Step 2 of 2 — Sending changes to GitLab"
-msgstr ""
+msgstr "Step 2 of 2 — Sending changes to GitLab"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:367
 msgid "Step 2 of 2 — Sending changes to Codeberg"
-msgstr ""
+msgstr "Step 2 of 2 — Sending changes to Codeberg"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:368
 msgid "Step 2 of 2 — Sending changes to remote"
-msgstr ""
+msgstr "Step 2 of 2 — Sending changes to remote"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:372
-#, fuzzy
 msgid "Push + Tag to AUR"
-msgstr "06_Push AUR"
+msgstr "Push + Tag to AUR"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:374
 msgid "Commit + Tag → GitHub"
-msgstr ""
+msgstr "Commit + Tag → GitHub"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:375
 msgid "Commit & Push → GitHub"
-msgstr ""
+msgstr "Commit & Push → GitHub"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:376
 msgid "Commit + Tag → GitLab"
-msgstr ""
+msgstr "Commit + Tag → GitLab"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:377
 msgid "Commit & Push → GitLab"
-msgstr ""
+msgstr "Commit & Push → GitLab"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:378
 msgid "Commit + Tag → Codeberg"
-msgstr ""
+msgstr "Commit + Tag → Codeberg"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:379
 msgid "Commit & Push → Codeberg"
-msgstr ""
+msgstr "Commit & Push → Codeberg"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:380
 msgid "Commit + Tag + Push"
-msgstr ""
+msgstr "Commit + Tag + Push"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:381
 msgid "Commit & Push"
-msgstr ""
+msgstr "Commit & Push"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:382
 msgid "Push"
-msgstr ""
+msgstr "Push"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:385
-#, fuzzy
 msgid "Pushed to AUR!"
-msgstr "06_Push AUR"
+msgstr "Pushed to AUR!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:386
-#, fuzzy
 msgid "Pushed to GitHub!"
-msgstr "06_Push AUR"
+msgstr "Pushed to GitHub!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:387
-#, fuzzy
 msgid "Pushed to GitLab!"
-msgstr "06_Push AUR"
+msgstr "Pushed to GitLab!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:388
-#, fuzzy
 msgid "Pushed to Codeberg!"
-msgstr "06_Push AUR"
+msgstr "Pushed to Codeberg!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:389
-#, fuzzy
 msgid "Pushed to remote!"
-msgstr "06_Push AUR"
+msgstr "Pushed to remote!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:479
 msgid "Not a recognised repository"
-msgstr ""
+msgstr "Not a recognised repository"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:481
 msgid ""
@@ -361,14 +338,17 @@ msgid ""
 "                         Make sure you select a folder that contains a .git "
 "directory."
 msgstr ""
+"The selected folder does not appear to be a Git repository.\n"
+"                         Make sure you select a folder that contains a .git "
+"directory."
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:527
 msgid "⚠ SSH key not loaded"
-msgstr ""
+msgstr "⚠ SSH key not loaded"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:529
 msgid "⚠ HTTPS credentials not configured"
-msgstr ""
+msgstr "⚠ HTTPS credentials not configured"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:539
 msgid ""
@@ -381,6 +361,14 @@ msgid ""
 "accordingly.\n"
 "                     You can also start the agent with: eval $(ssh-agent -s)"
 msgstr ""
+"No SSH key was found in ssh-agent for this remote.\n"
+"                     Run the command below before pushing:\n"
+"\n"
+"                     ssh-add ~/.ssh/id_ed25519\n"
+"\n"
+"                     If you use a different key, replace the path "
+"accordingly.\n"
+"                     You can also start the agent with: eval $(ssh-agent -s)"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:547
 msgid ""
@@ -395,164 +383,164 @@ msgid ""
 "                     git config --global credential.helper /usr/lib/git-core/"
 "git-credential-libsecret"
 msgstr ""
+"No Git credential helper is configured for HTTPS authentication.\n"
+"                     To store credentials, run one of the following "
+"commands:\n"
+"\n"
+"                     git config --global credential.helper store\n"
+"                     git config --global credential.helper cache\n"
+"\n"
+"                     Or use libsecret (GNOME Keyring):\n"
+"                     git config --global credential.helper /usr/lib/git-core/"
+"git-credential-libsecret"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:574
 msgid "SSH key loaded — ready to push"
-msgstr ""
+msgstr "SSH key loaded — ready to push"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:576
 msgid "HTTPS credentials configured — ready to push"
-msgstr ""
+msgstr "HTTPS credentials configured — ready to push"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:589
 msgid "Commit"
-msgstr ""
+msgstr "Commit"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:594
 msgid "Message"
-msgstr ""
+msgstr "Message"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:601
-#, fuzzy
 msgid "Tag version  (e.g. 1.2.3-1)"
-msgstr "Push with version tag (e.g., 1.2.3-1)"
+msgstr "Tag version  (e.g. 1.2.3-1)"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:612
 msgid "Branch"
-msgstr ""
+msgstr "Branch"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:651
 msgid "Choose branch"
-msgstr ""
+msgstr "Choose branch"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:669
-#, fuzzy
 msgid "Remote"
-msgstr "Removed"
+msgstr "Remote"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:698
 msgid "Continue to Push"
-msgstr ""
+msgstr "Continue to Push"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:705
 msgid "Configure SSH authentication before pushing"
-msgstr ""
+msgstr "Configure SSH authentication before pushing"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:707
 msgid "Configure HTTPS credentials before pushing"
-msgstr ""
+msgstr "Configure HTTPS credentials before pushing"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:713
 msgid "Form"
-msgstr ""
+msgstr "Form"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:746
 msgid "Steps"
-msgstr ""
+msgstr "Steps"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:751
-#, fuzzy
 msgid "Regenerating .SRCINFO"
-msgstr ">>> Regenerating .SRCINFO in"
+msgstr "Regenerating .SRCINFO"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:752
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:782
 msgid "Checking repository status"
-msgstr ""
+msgstr "Checking repository status"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:753
 msgid "Staging PKGBUILD and .SRCINFO"
-msgstr ""
+msgstr "Staging PKGBUILD and .SRCINFO"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:754
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:784
 msgid "Creating commit"
-msgstr ""
+msgstr "Creating commit"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:755
-#, fuzzy
 msgid "Pushing to AUR"
-msgstr "06_Push AUR"
+msgstr "Pushing to AUR"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:756
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:786
 msgid "Creating version tag"
-msgstr ""
+msgstr "Creating version tag"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:757
 msgid "Pushing tags"
-msgstr ""
+msgstr "Pushing tags"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:783
 msgid "Staging all changes"
-msgstr ""
+msgstr "Staging all changes"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:785
-#, fuzzy
 msgid "Pushing to remote"
-msgstr "06_Push AUR"
+msgstr "Pushing to remote"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:787
 msgid "Pushing tags to remote"
-msgstr ""
+msgstr "Pushing tags to remote"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:820
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:348
 msgid "⚠️ Errors found"
-msgstr ""
+msgstr "⚠️ Errors found"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:860
 msgid "Back"
-msgstr ""
+msgstr "Back"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:871
 msgid "Progress"
-msgstr ""
+msgstr "Progress"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1050
 msgid "Push again"
-msgstr ""
+msgstr "Push again"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1057
 msgid "Try again"
-msgstr ""
+msgstr "Try again"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1208
 msgid "No target directory provided."
-msgstr ""
+msgstr "No target directory provided."
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1231
-#, fuzzy
 msgid "Failed to start pkgbuild_manager"
-msgstr "Failed to start command"
+msgstr "Failed to start pkgbuild_manager"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1232
 msgid "Make sure it is installed and in PATH."
-msgstr ""
+msgstr "Make sure it is installed and in PATH."
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1299
-#, fuzzy
 msgid "failed to start"
-msgstr "Failed to start command"
+msgstr "failed to start"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1322
-#, fuzzy
 msgid "git add failed"
-msgstr "Command failed"
+msgstr "git add failed"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1335
 msgid "git commit failed (nothing to commit?)"
-msgstr ""
+msgstr "git commit failed (nothing to commit?)"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1361
-#, fuzzy
 msgid "git tag failed"
-msgstr "makepkg -g failed:"
+msgstr "git tag failed"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1369
-#, fuzzy
 msgid "git push --tags failed"
-msgstr "Note: push to origin/master failed"
+msgstr "git push --tags failed"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:183
 msgid "aur-push-tag requires a version tag argument"
@@ -560,16 +548,17 @@ msgstr "aur-push-tag requires a version tag argument"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:185
 msgid "aur-push-tag: tag cannot be empty"
-msgstr ""
+msgstr "aur-push-tag: tag cannot be empty"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:190
 msgid "aur-push-tag: invalid tag"
-msgstr ""
+msgstr "aur-push-tag: invalid tag"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:192
 msgid ""
 "tags cannot contain spaces (expected format: pkgver-pkgrel, e.g. 1.2.3-1)"
 msgstr ""
+"tags cannot contain spaces (expected format: pkgver-pkgrel, e.g. 1.2.3-1)"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:206
 msgid "Unknown command"
@@ -581,26 +570,23 @@ msgstr "Warning: Could not remove obsolete PKGBUILD directory"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:255
 msgid "Warning: Nautilus Python extension not found at"
-msgstr ""
+msgstr "Warning: Nautilus Python extension not found at"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:258
 msgid "Install the pkgbuild-manager package to get the extension."
-msgstr ""
+msgstr "Install the pkgbuild-manager package to get the extension."
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:260
 msgid "Extension found"
-msgstr ""
+msgstr "Extension found"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:263
 msgid "Restarting Nautilus\\u{2026}"
-msgstr ""
+msgstr "Restarting Nautilus\\u{2026}"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:268
-#, fuzzy
 msgid "Done. Right-click a PKGBUILD directory to see the menu."
-msgstr ""
-"PKGBUILD Manager: Nautilus extension active. Right-click any PKGBUILD file "
-"to see the PKGBUILD submenu."
+msgstr "Done. Right-click a PKGBUILD directory to see the menu."
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:276
 msgid "Compiled package (makepkg)"
@@ -626,6 +612,7 @@ msgstr "Popular PGP signature check (makepkg --skippgpcheck)"
 msgid ""
 "Same as 'build' — all extra flags after the path are forwarded to makepkg"
 msgstr ""
+"Same as 'build' — all extra flags after the path are forwarded to makepkg"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:284
 msgid "Compile, install and resolve dependencies (makepkg -si)"
@@ -655,6 +642,7 @@ msgstr "Install skipping PGP checks"
 msgid ""
 "Same as 'install' — all extra flags after the path are forwarded to makepkg"
 msgstr ""
+"Same as 'install' — all extra flags after the path are forwarded to makepkg"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:293
 msgid "Download and extract sources only (makepkg -o)"
@@ -682,27 +670,29 @@ msgstr "Run ShellCheck on PKGBUILD"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:303
 msgid "Full offline check: syntax + namcap + shellcheck (no network)"
-msgstr ""
+msgstr "Full offline check: syntax + namcap + shellcheck (no network)"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:304
-#, fuzzy
 msgid "Validate syntax only (makepkg --printsrcinfo)"
-msgstr "Regenerate .SRCINFO (makepkg --printsrcinfo)"
+msgstr "Validate syntax only (makepkg --printsrcinfo)"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:305
 msgid ""
 "Parse variables/functions without extracting (makepkg --nobuild --"
 "noextract); may access network on VCS packages"
 msgstr ""
+"Parse variables/functions without extracting (makepkg --nobuild --"
+"noextract); may access network on VCS packages"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:306
 msgid "Download sources and verify checksums (makepkg --verifysource)"
-msgstr ""
+msgstr "Download sources and verify checksums (makepkg --verifysource)"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:307
 msgid ""
 "Check declared dependencies exist in repos (makepkg --syncdeps --nobuild)"
 msgstr ""
+"Check declared dependencies exist in repos (makepkg --syncdeps --nobuild)"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:310
 msgid "Clean srcdir with makepkg (makepkg -c)"
@@ -732,9 +722,6 @@ msgstr "Display program version"
 msgid "Display this help message"
 msgstr "Display this help message"
 
-# ---------------------------------------------------------------------------
-# Settings panel
-# ---------------------------------------------------------------------------
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:55
 msgid "PKGBUILD Manager — Menu Settings"
 msgstr "PKGBUILD Manager — Menu Settings"
@@ -748,13 +735,12 @@ msgid "Save"
 msgstr "Save"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:132
-#, fuzzy
 msgid "Saved! Restarting file manager…"
-msgstr "Save! Restart the file manager for application."
+msgstr "Saved! Restarting file manager…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:139
 msgid "Error saving"
-msgstr ""
+msgstr "Error saving"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:175
 msgid "+ Add Group"
@@ -772,107 +758,85 @@ msgstr "+ Add Item"
 msgid "Add Action"
 msgstr "Add Action"
 
-# ---------------------------------------------------------------------------
-# Menu labels
-# ---------------------------------------------------------------------------
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:57
-#, fuzzy
 msgid "Full Workflow"
-msgstr "00_Full Workflow"
+msgstr "Full Workflow"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:58
-#, fuzzy
 msgid "Build"
-msgstr "01_Build"
+msgstr "Build"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:59
-#, fuzzy
 msgid "Build and Clean"
-msgstr "02b_Build and Clean"
+msgstr "Build and Clean"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:60
 msgid "Force Build"
-msgstr ""
+msgstr "Force Build"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:61
-#, fuzzy
 msgid "Build without Checks"
-msgstr "09_Build NoCheck"
+msgstr "Build without Checks"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:62
-#, fuzzy
 msgid "Build without GPG"
-msgstr "10_Build NoGPG"
+msgstr "Build without GPG"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:63
-#, fuzzy
 msgid "Fetch Sources"
-msgstr "11_Fetch Sources"
+msgstr "Fetch Sources"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:64
-#, fuzzy
 msgid "Install"
-msgstr "02_Install"
+msgstr "Install"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:65
-#, fuzzy
 msgid "Force Install"
-msgstr "02_Install"
+msgstr "Force Install"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:66
-#, fuzzy
 msgid "Install and Remove Build Dependencies"
-msgstr "Compile, install and resolve dependencies (makepkg -si)"
+msgstr "Install and Remove Build Dependencies"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:67
-#, fuzzy
 msgid "Install without Checks"
-msgstr "Install without running check()"
+msgstr "Install without Checks"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:68
-#, fuzzy
 msgid "Install without GPG"
-msgstr "15_Install NoGPG"
+msgstr "Install without GPG"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:69
-#, fuzzy
 msgid "Update Checksums"
-msgstr "03_Update Checksums"
+msgstr "Update Checksums"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:70
-#, fuzzy
 msgid "Update .SRCINFO"
-msgstr "04_Update .SRCINFO"
+msgstr "Update .SRCINFO"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:71
-#, fuzzy
 msgid "Generate Checksums"
-msgstr "Generating checksums…"
+msgstr "Generate Checksums"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:72
-#, fuzzy
 msgid "Namcap"
-msgstr "05_Namcap"
+msgstr "Namcap"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:73
-#, fuzzy
 msgid "ShellCheck"
-msgstr "05b_ShellCheck"
+msgstr "ShellCheck"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:75
-#, fuzzy
 msgid "Push AUR Tag"
-msgstr "17_Push AUR Tag"
+msgstr "Push AUR Tag"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:76
-#, fuzzy
 msgid "Clean srcdir"
-msgstr "07_Clean srcdir"
+msgstr "Clean srcdir"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:77
-#, fuzzy
 msgid "Clean Everything"
-msgstr "07b_Clean Everything"
+msgstr "Clean Everything"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:87
 msgid "Actions"
@@ -883,620 +847,261 @@ msgid "Metadata"
 msgstr "Metadata"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:127
-#, fuzzy
 msgid "Audit"
-msgstr "Auditors"
+msgstr "Audit"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:142
 msgid "Git / AUR"
-msgstr ""
+msgstr "Git / AUR"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:150
 msgid "Clean"
 msgstr "Clean"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:108
-#, fuzzy
 msgid "Compiling package…"
-msgstr "Compiled package (makepkg)"
+msgstr "Compiling package…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:109
 msgid "✓ Package compiled successfully!"
-msgstr ""
+msgstr "✓ Package compiled successfully!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:110
 msgid "✗ Package compilation failed! See: "
-msgstr ""
+msgstr "✗ Package compilation failed! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:111
-#, fuzzy
 msgid "Forced compilation in progress…"
-msgstr "Force recompilation (makepkg -f)"
+msgstr "Forced compilation in progress…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:112
-#, fuzzy
 msgid "✓ Forced compilation completed!"
-msgstr "Force recompilation (makepkg -f)"
+msgstr "✓ Forced compilation completed!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:113
-#, fuzzy
 msgid "✗ Forced compilation failed! See: "
-msgstr "Force recompilation (makepkg -f)"
+msgstr "✗ Forced compilation failed! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:114
 msgid "Compiling without checks…"
-msgstr ""
+msgstr "Compiling without checks…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:115
 msgid "✓ Compiled without checks!"
-msgstr ""
+msgstr "✓ Compiled without checks!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:116
 msgid "✗ Compilation without checks failed! See: "
-msgstr ""
+msgstr "✗ Compilation without checks failed! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:117
 msgid "Compiling without GPG…"
-msgstr ""
+msgstr "Compiling without GPG…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:118
 msgid "✓ Compiled without GPG!"
-msgstr ""
+msgstr "✓ Compiled without GPG!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:119
 msgid "✗ Compilation without GPG failed! See: "
-msgstr ""
+msgstr "✗ Compilation without GPG failed! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:120
 msgid "Downloading sources…"
-msgstr ""
+msgstr "Downloading sources…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:121
 msgid "✓ Sources downloaded successfully!"
-msgstr ""
+msgstr "✓ Sources downloaded successfully!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:122
 msgid "✗ Failed to download sources! See: "
-msgstr ""
+msgstr "✗ Failed to download sources! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:124
 msgid "Installing package…"
-msgstr ""
+msgstr "Installing package…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:125
 msgid "✓ Package installed successfully!"
-msgstr ""
+msgstr "✓ Package installed successfully!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:126
 msgid "✗ Package installation failed! See: "
-msgstr ""
+msgstr "✗ Package installation failed! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:127
 msgid "Forced installation in progress…"
-msgstr ""
+msgstr "Forced installation in progress…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:128
 msgid "✓ Forced installation completed!"
-msgstr ""
+msgstr "✓ Forced installation completed!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:129
 msgid "✗ Forced installation failed! See: "
-msgstr ""
+msgstr "✗ Forced installation failed! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:130
 msgid "Installing and removing build dependencies…"
-msgstr ""
+msgstr "Installing and removing build dependencies…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:131
 msgid "✓ Installed and build dependencies removed!"
-msgstr ""
+msgstr "✓ Installed and build dependencies removed!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:132
-#, fuzzy
 msgid "✗ Failed to install and remove build dependencies! See: "
-msgstr "Compile, install and resolve dependencies (makepkg -si)"
+msgstr "✗ Failed to install and remove build dependencies! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:133
-#, fuzzy
 msgid "Installing without checks…"
-msgstr "Install without running check()"
+msgstr "Installing without checks…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:134
-#, fuzzy
 msgid "✓ Installed without checks!"
-msgstr "Install without running check()"
+msgstr "✓ Installed without checks!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:135
 msgid "✗ Failed to install without checks! See: "
-msgstr ""
+msgstr "✗ Failed to install without checks! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:136
 msgid "Installing without GPG…"
-msgstr ""
+msgstr "Installing without GPG…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:137
 msgid "✓ Installed without GPG!"
-msgstr ""
+msgstr "✓ Installed without GPG!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:138
 msgid "✗ Failed to install without GPG! See: "
-msgstr ""
+msgstr "✗ Failed to install without GPG! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:140
-#, fuzzy
 msgid "Updating checksums…"
-msgstr "03_Update Checksums"
+msgstr "Updating checksums…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:141
 msgid "✓ Checksums updated successfully!"
-msgstr ""
+msgstr "✓ Checksums updated successfully!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:142
 msgid "✗ Failed to update checksums! See: "
-msgstr ""
+msgstr "✗ Failed to update checksums! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:143
-#, fuzzy
 msgid "Generating checksums…"
 msgstr "Generating checksums…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:144
 msgid "✓ Checksums generated successfully!"
-msgstr ""
+msgstr "✓ Checksums generated successfully!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:145
 msgid "✗ Failed to generate checksums! See: "
-msgstr ""
+msgstr "✗ Failed to generate checksums! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:146
-#, fuzzy
 msgid "Regenerating .SRCINFO…"
-msgstr ">>> Regenerating .SRCINFO in"
+msgstr "Regenerating .SRCINFO…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:147
 msgid "✓ .SRCINFO regenerated successfully!"
-msgstr ""
+msgstr "✓ .SRCINFO regenerated successfully!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:148
 msgid "✗ Failed to regenerate .SRCINFO! See: "
-msgstr ""
+msgstr "✗ Failed to regenerate .SRCINFO! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:150
 msgid "Running namcap…"
-msgstr ""
+msgstr "Running namcap…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:151
 msgid "⚠ Namcap encountered warnings. See: "
-msgstr ""
+msgstr "⚠ Namcap encountered warnings. See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:152
 msgid "✓ Namcap: no problems found!"
-msgstr ""
+msgstr "✓ Namcap: no problems found!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:153
 msgid "✗ Failed to execute namcap! See: "
-msgstr ""
+msgstr "✗ Failed to execute namcap! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:154
 msgid "Running ShellCheck…"
-msgstr ""
+msgstr "Running ShellCheck…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:155
 msgid "⚠ ShellCheck encountered warnings. See: "
-msgstr ""
+msgstr "⚠ ShellCheck encountered warnings. See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:156
 msgid "✓ ShellCheck: no problems found!"
-msgstr ""
+msgstr "✓ ShellCheck: no problems found!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:157
 msgid "✗ Failed to execute ShellCheck! See: "
-msgstr ""
+msgstr "✗ Failed to execute ShellCheck! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:159
-#, fuzzy
 msgid "Sending to AUR…"
-msgstr "06_Push AUR"
+msgstr "Sending to AUR…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:160
 msgid "✓ Sent to AUR successfully!"
-msgstr ""
+msgstr "✓ Sent to AUR successfully!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:161
 msgid "✗ Failed to send to AUR! See: "
-msgstr ""
+msgstr "✗ Failed to send to AUR! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:162
 msgid "Creating tag and sending to AUR…"
-msgstr ""
+msgstr "Creating tag and sending to AUR…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:163
 msgid "✓ Tag created and sent to AUR!"
-msgstr ""
+msgstr "✓ Tag created and sent to AUR!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:164
 msgid "✗ Failed to create tag/send to AUR! See: "
-msgstr ""
+msgstr "✗ Failed to create tag/send to AUR! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:166
-#, fuzzy
 msgid "Cleaning srcdir…"
-msgstr "07_Clean srcdir"
+msgstr "Cleaning srcdir…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:167
 msgid "✓ srcdir cleaned successfully!"
-msgstr ""
+msgstr "✓ srcdir cleaned successfully!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:168
 msgid "✗ Failed to clean srcdir! See: "
-msgstr ""
+msgstr "✗ Failed to clean srcdir! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:169
-#, fuzzy
 msgid "Cleaning everything…"
-msgstr "07b_Clean Everything"
+msgstr "Cleaning everything…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:170
 msgid "✓ Everything cleaned successfully!"
-msgstr ""
+msgstr "✓ Everything cleaned successfully!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:171
 msgid "✗ Failed to clean everything! See: "
-msgstr ""
+msgstr "✗ Failed to clean everything! See: "
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:173
-#, fuzzy
 msgid "Running full workflow…"
 msgstr "Running full workflow…"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:174
 msgid "✓ Full workflow completed successfully!"
-msgstr ""
+msgstr "✓ Full workflow completed successfully!"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:175
 msgid "✗ Full workflow failed! See: "
-msgstr ""
-
-# ---------------------------------------------------------------------------
-# Notification keys — msgstr = visible display text
-# ---------------------------------------------------------------------------
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:108
-msgid "notify_building"
-msgstr "Compiling package…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:109
-msgid "notify_build_ok"
-msgstr "✓ Package compiled successfully!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:110
-msgid "notify_build_fail"
-msgstr "✗ Package compilation failed! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:111
-msgid "notify_build_force"
-msgstr "Forced compilation in progress…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:112
-msgid "notify_build_force_ok"
-msgstr "✓ Forced compilation completed!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:113
-msgid "notify_build_force_fail"
-msgstr "✗ Forced compilation failed! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:114
-msgid "notify_build_nocheck"
-msgstr "Compiling without checks…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:115
-msgid "notify_build_nocheck_ok"
-msgstr "✓ Compiled without checks!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:116
-msgid "notify_build_nocheck_fail"
-msgstr "✗ Compilation without checks failed! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:117
-msgid "notify_build_nogpg"
-msgstr "Compiling without GPG…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:118
-msgid "notify_build_nogpg_ok"
-msgstr "✓ Compiled without GPG!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:119
-msgid "notify_build_nogpg_fail"
-msgstr "✗ Compilation without GPG failed! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:120
-msgid "notify_fetch_sources"
-msgstr "Downloading sources…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:121
-msgid "notify_fetch_sources_ok"
-msgstr "✓ Sources downloaded successfully!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:122
-msgid "notify_fetch_sources_fail"
-msgstr "✗ Failed to download sources! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:124
-msgid "notify_installing"
-msgstr "Installing package…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:125
-msgid "notify_install_ok"
-msgstr "✓ Package installed successfully!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:126
-msgid "notify_install_fail"
-msgstr "✗ Package installation failed! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:127
-msgid "notify_install_force"
-msgstr "Forced installation in progress…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:128
-msgid "notify_install_force_ok"
-msgstr "✓ Forced installation completed!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:129
-msgid "notify_install_force_fail"
-msgstr "✗ Forced installation failed! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:130
-msgid "notify_install_rmdeps"
-msgstr "Installing and removing compilation dependencies…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:131
-msgid "notify_install_rmdeps_ok"
-msgstr "✓ Installed and compilation dependencies removed!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:132
-msgid "notify_install_rmdeps_fail"
-msgstr "✗ Failed to install and remove build dependencies! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:133
-msgid "notify_install_nocheck"
-msgstr "Installing without checks…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:134
-msgid "notify_install_nocheck_ok"
-msgstr "✓ Installed without checks!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:135
-msgid "notify_install_nocheck_fail"
-msgstr "✗ Failed to install without checks! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:136
-msgid "notify_install_nogpg"
-msgstr "Installing without GPG…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:137
-msgid "notify_install_nogpg_ok"
-msgstr "✓ Installed without GPG!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:138
-msgid "notify_install_nogpg_fail"
-msgstr "✗ Failed to install without GPG! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:140
-msgid "notify_checksums"
-msgstr "Updating checksums…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:141
-msgid "notify_checksums_ok"
-msgstr "✓ Checksums updated successfully!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:142
-msgid "notify_checksums_fail"
-msgstr "✗ Failed to update checksums! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:143
-#, fuzzy
-msgid "notify_genchecksums"
-msgstr "✓ Checksums generated successfully!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:144
-msgid "notify_genchecksums_ok"
-msgstr "✓ Checksums generated successfully!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:145
-msgid "notify_genchecksums_fail"
-msgstr "✗ Failed to generate checksums! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:146
-msgid "notify_srcinfo"
-msgstr "Regenerating .SRCINFO…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:147
-msgid "notify_srcinfo_ok"
-msgstr "✓ .SRCINFO regenerated successfully!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:148
-msgid "notify_srcinfo_fail"
-msgstr "✗ Failed to regenerate .SRCINFO! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:150
-msgid "notify_namcap"
-msgstr "Running namcap…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:151
-msgid "notify_namcap_warn"
-msgstr "⚠ Namcap encountered warnings. See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:152
-msgid "notify_namcap_ok"
-msgstr "✓ Namcap: no problems found!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:153
-msgid "notify_namcap_fail"
-msgstr "✗ Failed to execute namcap! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:154
-msgid "notify_shellcheck"
-msgstr "Running ShellCheck…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:155
-msgid "notify_shellcheck_warn"
-msgstr "⚠ ShellCheck encountered warnings. See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:156
-msgid "notify_shellcheck_ok"
-msgstr "✓ ShellCheck: no problems found!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:157
-msgid "notify_shellcheck_fail"
-msgstr "✗ Failed to execute ShellCheck! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:159
-msgid "notify_push_aur"
-msgstr "Sending to AUR…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:160
-msgid "notify_push_aur_ok"
-msgstr "✓ Sent to AUR successfully!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:161
-msgid "notify_push_aur_fail"
-msgstr "✗ Failed to send to AUR! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:162
-msgid "notify_push_aur_tag"
-msgstr "Creating tag and sending to AUR…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:163
-msgid "notify_push_aur_tag_ok"
-msgstr "✓ Tag created and sent to AUR!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:164
-msgid "notify_push_aur_tag_fail"
-msgstr "✗ Failed to create tag/send to AUR! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:166
-msgid "notify_clean_src"
-msgstr "Cleaning srcdir…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:167
-msgid "notify_clean_src_ok"
-msgstr "✓ srcdir cleaned successfully!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:168
-msgid "notify_clean_src_fail"
-msgstr "✗ Failed to clean srcdir! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:169
-msgid "notify_clean_all"
-msgstr "Cleaning everything…"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:170
-msgid "notify_clean_all_ok"
-msgstr "✓ Everything cleaned successfully!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:171
-msgid "notify_clean_all_fail"
-msgstr "✗ Failed to clean everything! See: "
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:173
-#, fuzzy
-msgid "notify_full_workflow"
-msgstr "✓ Full workflow completed successfully!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:174
-msgid "notify_full_workflow_ok"
-msgstr "✓ Full workflow completed successfully!"
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:175
-msgid "notify_full_workflow_fail"
 msgstr "✗ Full workflow failed! See: "
-
-#~ msgid "08_Build Force"
-#~ msgstr "08_Build Force"
-
-#~ msgid "12_Install Force"
-#~ msgstr "12_Install Force"
-
-#~ msgid "13_Install RmDeps"
-#~ msgstr "13_Install RmDeps"
-
-#~ msgid "14_Install NoCheck"
-#~ msgstr "14_Install NoCheck"
-
-#~ msgid "16_Gen Checksums"
-#~ msgstr "16_Gen Checksums"
-
-#~ msgid "06_Push AUR"
-#~ msgstr "06_Push AUR"
-
-#~ msgid "Compile with custom flags after the path"
-#~ msgstr "Compile with custom flags after the path"
-
-#~ msgid "Install with custom flags after the path"
-#~ msgstr "Install with custom flags after the path"
-
-#, fuzzy
-#~ msgid "Push with version tag"
-#~ msgstr "Push with version tag (e.g., 1.2.3-1)"
-
-#, fuzzy
-#~ msgid "git status failed"
-#~ msgstr "makepkg -g failed:"
-
-#, fuzzy
-#~ msgid "git push failed"
-#~ msgstr "Note: push to origin/master failed"
-
-#, fuzzy
-#~ msgid "Add Menu Item"
-#~ msgstr "+ Add Item"
-
-#~ msgid "All actions are already in a group."
-#~ msgstr "All actions are already in a group."
-
-#~ msgid "Git/AUR"
-#~ msgstr "Git/AUR"
-
-#~ msgid "Communication status"
-#~ msgstr "Communication status"
-
-#~ msgid ""
-#~ "Nautilus extension not found in /usr/share/nautilus-python/extensions/"
-#~ "pkgbuild_manager.py. Please reinstall the package."
-#~ msgstr ""
-#~ "Nautilus extension not found in /usr/share/nautilus-python/extensions/"
-#~ "pkgbuild_manager.py. Please reinstall the package."
-
-#~ msgid "PKGBUILD Manager - CLI Tool"
-#~ msgstr "PKGBUILD Manager - CLI Tool"
-
-#~ msgid "Usages:"
-#~ msgstr "Usages:"
-
-#~ msgid "Compilation Commands"
-#~ msgstr "Compilation Commands"
-
-#~ msgid "Installation Commands"
-#~ msgstr "Installation Commands"
-
-#~ msgid "Package metadata commands"
-#~ msgstr "Package metadata commands"
-
-#~ msgid "Auditing commands"
-#~ msgstr "Auditing commands"
-
-#~ msgid "Cleanup commands"
-#~ msgstr "Cleanup commands"
-
-#~ msgid "AUR/Git commands"
-#~ msgstr "AUR/Git commands"
-
-#~ msgid "Other"
-#~ msgstr "Other"
-
-#~ msgid ""
-#~ "Creating symbolic links to scripts in the user directory with location"
-#~ msgstr ""
-#~ "Creating symbolic links to scripts in the user directory with location"
-
-#~ msgid "Nautilus scripts successfully configured in the 'PKGBUILD' submenu."
-#~ msgstr "Nautilus scripts successfully configured in the 'PKGBUILD' submenu."

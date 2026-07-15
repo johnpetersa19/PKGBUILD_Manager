@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-14 21:36-0300\n"
+"POT-Creation-Date: 2026-07-14 21:44-0300\n"
 "PO-Revision-Date: 2026-05-31 14:10-0300\n"
 "Last-Translator: AI <ai@example.com>\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -1163,255 +1163,193 @@ msgid "✗ Full workflow failed! See: "
 msgstr ""
 
 # Notification messages
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:108
-msgid "notify_building"
-msgstr "正在构建软件包..."
+#~ msgid "notify_building"
+#~ msgstr "正在构建软件包..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:109
-msgid "notify_build_ok"
-msgstr "✓ 构建成功完成！"
+#~ msgid "notify_build_ok"
+#~ msgstr "✓ 构建成功完成！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:110
-msgid "notify_build_fail"
-msgstr "✗ 构建失败！请查看："
+#~ msgid "notify_build_fail"
+#~ msgstr "✗ 构建失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:111
-msgid "notify_build_force"
-msgstr "正在强制重新构建..."
+#~ msgid "notify_build_force"
+#~ msgstr "正在强制重新构建..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:112
-msgid "notify_build_force_ok"
-msgstr "✓ 强制重新构建完成！"
+#~ msgid "notify_build_force_ok"
+#~ msgstr "✓ 强制重新构建完成！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:113
-msgid "notify_build_force_fail"
-msgstr "✗ 强制重新构建失败！请查看："
+#~ msgid "notify_build_force_fail"
+#~ msgstr "✗ 强制重新构建失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:114
-msgid "notify_build_nocheck"
-msgstr "正在构建（跳过测试）..."
+#~ msgid "notify_build_nocheck"
+#~ msgstr "正在构建（跳过测试）..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:115
-msgid "notify_build_nocheck_ok"
-msgstr "✓ 构建（跳过测试）完成！"
+#~ msgid "notify_build_nocheck_ok"
+#~ msgstr "✓ 构建（跳过测试）完成！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:116
-msgid "notify_build_nocheck_fail"
-msgstr "✗ 构建（跳过测试）失败！请查看："
+#~ msgid "notify_build_nocheck_fail"
+#~ msgstr "✗ 构建（跳过测试）失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:117
-msgid "notify_build_nogpg"
-msgstr "正在构建（跳过GPG）..."
+#~ msgid "notify_build_nogpg"
+#~ msgstr "正在构建（跳过GPG）..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:118
-msgid "notify_build_nogpg_ok"
-msgstr "✓ 构建（跳过GPG）完成！"
+#~ msgid "notify_build_nogpg_ok"
+#~ msgstr "✓ 构建（跳过GPG）完成！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:119
-msgid "notify_build_nogpg_fail"
-msgstr "✗ 构建（跳过GPG）失败！请查看："
+#~ msgid "notify_build_nogpg_fail"
+#~ msgstr "✗ 构建（跳过GPG）失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:120
-msgid "notify_fetch_sources"
-msgstr "正在获取源代码..."
+#~ msgid "notify_fetch_sources"
+#~ msgstr "正在获取源代码..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:121
-msgid "notify_fetch_sources_ok"
-msgstr "✓ 源代码获取成功！"
+#~ msgid "notify_fetch_sources_ok"
+#~ msgstr "✓ 源代码获取成功！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:122
-msgid "notify_fetch_sources_fail"
-msgstr "✗ 获取源代码失败！请查看："
+#~ msgid "notify_fetch_sources_fail"
+#~ msgstr "✗ 获取源代码失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:124
-msgid "notify_installing"
-msgstr "正在安装软件包..."
+#~ msgid "notify_installing"
+#~ msgstr "正在安装软件包..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:125
-msgid "notify_install_ok"
-msgstr "✓ 安装完成！"
+#~ msgid "notify_install_ok"
+#~ msgstr "✓ 安装完成！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:126
-msgid "notify_install_fail"
-msgstr "✗ 安装失败！请查看："
+#~ msgid "notify_install_fail"
+#~ msgstr "✗ 安装失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:127
-msgid "notify_install_force"
-msgstr "正在强制安装..."
+#~ msgid "notify_install_force"
+#~ msgstr "正在强制安装..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:128
-msgid "notify_install_force_ok"
-msgstr "✓ 强制安装完成！"
+#~ msgid "notify_install_force_ok"
+#~ msgstr "✓ 强制安装完成！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:129
-msgid "notify_install_force_fail"
-msgstr "✗ 强制安装失败！请查看："
+#~ msgid "notify_install_force_fail"
+#~ msgstr "✗ 强制安装失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:130
-msgid "notify_install_rmdeps"
-msgstr "正在安装（删除构建依赖）..."
+#~ msgid "notify_install_rmdeps"
+#~ msgstr "正在安装（删除构建依赖）..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:131
-msgid "notify_install_rmdeps_ok"
-msgstr "✓ 安装（rmdeps）完成！"
+#~ msgid "notify_install_rmdeps_ok"
+#~ msgstr "✓ 安装（rmdeps）完成！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:132
-msgid "notify_install_rmdeps_fail"
-msgstr "✗ 安装（rmdeps）失败！请查看："
+#~ msgid "notify_install_rmdeps_fail"
+#~ msgstr "✗ 安装（rmdeps）失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:133
-msgid "notify_install_nocheck"
-msgstr "正在安装（跳过测试）..."
+#~ msgid "notify_install_nocheck"
+#~ msgstr "正在安装（跳过测试）..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:134
-msgid "notify_install_nocheck_ok"
-msgstr "✓ 安装（跳过测试）完成！"
+#~ msgid "notify_install_nocheck_ok"
+#~ msgstr "✓ 安装（跳过测试）完成！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:135
-msgid "notify_install_nocheck_fail"
-msgstr "✗ 安装（跳过测试）失败！请查看："
+#~ msgid "notify_install_nocheck_fail"
+#~ msgstr "✗ 安装（跳过测试）失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:136
-msgid "notify_install_nogpg"
-msgstr "正在安装（跳过GPG）..."
+#~ msgid "notify_install_nogpg"
+#~ msgstr "正在安装（跳过GPG）..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:137
-msgid "notify_install_nogpg_ok"
-msgstr "✓ 安装（跳过GPG）完成！"
+#~ msgid "notify_install_nogpg_ok"
+#~ msgstr "✓ 安装（跳过GPG）完成！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:138
-msgid "notify_install_nogpg_fail"
-msgstr "✗ 安装（跳过GPG）失败！请查看："
+#~ msgid "notify_install_nogpg_fail"
+#~ msgstr "✗ 安装（跳过GPG）失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:140
-msgid "notify_checksums"
-msgstr "正在更新校验和..."
+#~ msgid "notify_checksums"
+#~ msgstr "正在更新校验和..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:141
-msgid "notify_checksums_ok"
-msgstr "✓ 校验和更新成功！"
+#~ msgid "notify_checksums_ok"
+#~ msgstr "✓ 校验和更新成功！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:142
-msgid "notify_checksums_fail"
-msgstr "✗ 更新校验和失败！请查看："
+#~ msgid "notify_checksums_fail"
+#~ msgstr "✗ 更新校验和失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:143
 #, fuzzy
-msgid "notify_genchecksums"
-msgstr "✓ 校验和生成成功！"
+#~ msgid "notify_genchecksums"
+#~ msgstr "✓ 校验和生成成功！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:144
-msgid "notify_genchecksums_ok"
-msgstr "✓ 校验和生成成功！"
+#~ msgid "notify_genchecksums_ok"
+#~ msgstr "✓ 校验和生成成功！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:145
-msgid "notify_genchecksums_fail"
-msgstr "✗ 生成校验和失败！请查看："
+#~ msgid "notify_genchecksums_fail"
+#~ msgstr "✗ 生成校验和失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:146
-msgid "notify_srcinfo"
-msgstr "正在更新 .SRCINFO..."
+#~ msgid "notify_srcinfo"
+#~ msgstr "正在更新 .SRCINFO..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:147
-msgid "notify_srcinfo_ok"
-msgstr "✓ .SRCINFO 更新成功！"
+#~ msgid "notify_srcinfo_ok"
+#~ msgstr "✓ .SRCINFO 更新成功！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:148
-msgid "notify_srcinfo_fail"
-msgstr "✗ 更新 .SRCINFO 失败！请查看："
+#~ msgid "notify_srcinfo_fail"
+#~ msgstr "✗ 更新 .SRCINFO 失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:150
-msgid "notify_namcap"
-msgstr "正在运行 namcap..."
+#~ msgid "notify_namcap"
+#~ msgstr "正在运行 namcap..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:151
-msgid "notify_namcap_warn"
-msgstr "⚠ Namcap 完成，有警告。请查看："
+#~ msgid "notify_namcap_warn"
+#~ msgstr "⚠ Namcap 完成，有警告。请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:152
-msgid "notify_namcap_ok"
-msgstr "✓ Namcap 完成！未发现警告。"
+#~ msgid "notify_namcap_ok"
+#~ msgstr "✓ Namcap 完成！未发现警告。"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:153
-msgid "notify_namcap_fail"
-msgstr "✗ Namcap 失败！请查看："
+#~ msgid "notify_namcap_fail"
+#~ msgstr "✗ Namcap 失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:154
-msgid "notify_shellcheck"
-msgstr "正在运行 ShellCheck..."
+#~ msgid "notify_shellcheck"
+#~ msgstr "正在运行 ShellCheck..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:155
-msgid "notify_shellcheck_warn"
-msgstr "⚠ ShellCheck 发现警告。请查看："
+#~ msgid "notify_shellcheck_warn"
+#~ msgstr "⚠ ShellCheck 发现警告。请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:156
-msgid "notify_shellcheck_ok"
-msgstr "✓ ShellCheck：未发现问题。"
+#~ msgid "notify_shellcheck_ok"
+#~ msgstr "✓ ShellCheck：未发现问题。"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:157
-msgid "notify_shellcheck_fail"
-msgstr "✗ ShellCheck 失败！请查看："
+#~ msgid "notify_shellcheck_fail"
+#~ msgstr "✗ ShellCheck 失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:159
-msgid "notify_push_aur"
-msgstr "正在推送到 AUR..."
+#~ msgid "notify_push_aur"
+#~ msgstr "正在推送到 AUR..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:160
-msgid "notify_push_aur_ok"
-msgstr "✓ 成功推送到 AUR！"
+#~ msgid "notify_push_aur_ok"
+#~ msgstr "✓ 成功推送到 AUR！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:161
-msgid "notify_push_aur_fail"
-msgstr "✗ 推送到 AUR 失败！请查看："
+#~ msgid "notify_push_aur_fail"
+#~ msgstr "✗ 推送到 AUR 失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:162
-msgid "notify_push_aur_tag"
-msgstr "正在创建标签并推送到 AUR..."
+#~ msgid "notify_push_aur_tag"
+#~ msgstr "正在创建标签并推送到 AUR..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:163
-msgid "notify_push_aur_tag_ok"
-msgstr "✓ 标签已创建并推送到 AUR！"
+#~ msgid "notify_push_aur_tag_ok"
+#~ msgstr "✓ 标签已创建并推送到 AUR！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:164
-msgid "notify_push_aur_tag_fail"
-msgstr "✗ 创建标签/推送到 AUR 失败！请查看："
+#~ msgid "notify_push_aur_tag_fail"
+#~ msgstr "✗ 创建标签/推送到 AUR 失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:166
-msgid "notify_clean_src"
-msgstr "正在清理源目录..."
+#~ msgid "notify_clean_src"
+#~ msgstr "正在清理源目录..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:167
-msgid "notify_clean_src_ok"
-msgstr "✓ 源目录清理成功！"
+#~ msgid "notify_clean_src_ok"
+#~ msgstr "✓ 源目录清理成功！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:168
-msgid "notify_clean_src_fail"
-msgstr "✗ 清理源目录失败！请查看："
+#~ msgid "notify_clean_src_fail"
+#~ msgstr "✗ 清理源目录失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:169
-msgid "notify_clean_all"
-msgstr "正在全部清理..."
+#~ msgid "notify_clean_all"
+#~ msgstr "正在全部清理..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:170
-msgid "notify_clean_all_ok"
-msgstr "✓ 全部清理成功！"
+#~ msgid "notify_clean_all_ok"
+#~ msgstr "✓ 全部清理成功！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:171
-msgid "notify_clean_all_fail"
-msgstr "✗ 清理失败！请查看："
+#~ msgid "notify_clean_all_fail"
+#~ msgstr "✗ 清理失败！请查看："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:173
 #, fuzzy
-msgid "notify_full_workflow"
-msgstr "✓ 完整工作流完成！"
+#~ msgid "notify_full_workflow"
+#~ msgstr "✓ 完整工作流完成！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:174
-msgid "notify_full_workflow_ok"
-msgstr "✓ 完整工作流完成！"
+#~ msgid "notify_full_workflow_ok"
+#~ msgstr "✓ 完整工作流完成！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:175
-msgid "notify_full_workflow_fail"
-msgstr "✗ 完整工作流失败！请查看："
+#~ msgid "notify_full_workflow_fail"
+#~ msgstr "✗ 完整工作流失败！请查看："
 
 #~ msgid "08_Build Force"
 #~ msgstr "构建（强制）"

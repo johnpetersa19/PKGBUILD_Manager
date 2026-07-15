@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-14 21:36-0300\n"
+"POT-Creation-Date: 2026-07-14 21:44-0300\n"
 "PO-Revision-Date: 2026-05-31 14:10-0300\n"
 "Last-Translator: AI <ai@example.com>\n"
 "Language-Team: Japanese\n"
@@ -1165,255 +1165,193 @@ msgid "✗ Full workflow failed! See: "
 msgstr ""
 
 # Notification messages
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:108
-msgid "notify_building"
-msgstr "パッケージをビルド中..."
+#~ msgid "notify_building"
+#~ msgstr "パッケージをビルド中..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:109
-msgid "notify_build_ok"
-msgstr "✓ ビルドが正常に完了しました！"
+#~ msgid "notify_build_ok"
+#~ msgstr "✓ ビルドが正常に完了しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:110
-msgid "notify_build_fail"
-msgstr "✗ ビルドに失敗しました！確認してください："
+#~ msgid "notify_build_fail"
+#~ msgstr "✗ ビルドに失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:111
-msgid "notify_build_force"
-msgstr "強制的に再ビルド中..."
+#~ msgid "notify_build_force"
+#~ msgstr "強制的に再ビルド中..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:112
-msgid "notify_build_force_ok"
-msgstr "✓ 強制再ビルドが完了しました！"
+#~ msgid "notify_build_force_ok"
+#~ msgstr "✓ 強制再ビルドが完了しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:113
-msgid "notify_build_force_fail"
-msgstr "✗ 強制再ビルドに失敗しました！確認してください："
+#~ msgid "notify_build_force_fail"
+#~ msgstr "✗ 強制再ビルドに失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:114
-msgid "notify_build_nocheck"
-msgstr "ビルド中（チェックなし）..."
+#~ msgid "notify_build_nocheck"
+#~ msgstr "ビルド中（チェックなし）..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:115
-msgid "notify_build_nocheck_ok"
-msgstr "✓ ビルド（チェックなし）が完了しました！"
+#~ msgid "notify_build_nocheck_ok"
+#~ msgstr "✓ ビルド（チェックなし）が完了しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:116
-msgid "notify_build_nocheck_fail"
-msgstr "✗ ビルド（チェックなし）に失敗しました！確認してください："
+#~ msgid "notify_build_nocheck_fail"
+#~ msgstr "✗ ビルド（チェックなし）に失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:117
-msgid "notify_build_nogpg"
-msgstr "ビルド中（GPGなし）..."
+#~ msgid "notify_build_nogpg"
+#~ msgstr "ビルド中（GPGなし）..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:118
-msgid "notify_build_nogpg_ok"
-msgstr "✓ ビルド（GPGなし）が完了しました！"
+#~ msgid "notify_build_nogpg_ok"
+#~ msgstr "✓ ビルド（GPGなし）が完了しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:119
-msgid "notify_build_nogpg_fail"
-msgstr "✗ ビルド（GPGなし）に失敗しました！確認してください："
+#~ msgid "notify_build_nogpg_fail"
+#~ msgstr "✗ ビルド（GPGなし）に失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:120
-msgid "notify_fetch_sources"
-msgstr "ソースを取得中..."
+#~ msgid "notify_fetch_sources"
+#~ msgstr "ソースを取得中..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:121
-msgid "notify_fetch_sources_ok"
-msgstr "✓ ソースの取得が成功しました！"
+#~ msgid "notify_fetch_sources_ok"
+#~ msgstr "✓ ソースの取得が成功しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:122
-msgid "notify_fetch_sources_fail"
-msgstr "✗ ソースの取得に失敗しました！確認してください："
+#~ msgid "notify_fetch_sources_fail"
+#~ msgstr "✗ ソースの取得に失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:124
-msgid "notify_installing"
-msgstr "パッケージをインストール中..."
+#~ msgid "notify_installing"
+#~ msgstr "パッケージをインストール中..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:125
-msgid "notify_install_ok"
-msgstr "✓ インストールが完了しました！"
+#~ msgid "notify_install_ok"
+#~ msgstr "✓ インストールが完了しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:126
-msgid "notify_install_fail"
-msgstr "✗ インストールに失敗しました！確認してください："
+#~ msgid "notify_install_fail"
+#~ msgstr "✗ インストールに失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:127
-msgid "notify_install_force"
-msgstr "強制的にインストール中..."
+#~ msgid "notify_install_force"
+#~ msgstr "強制的にインストール中..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:128
-msgid "notify_install_force_ok"
-msgstr "✓ 強制インストールが完了しました！"
+#~ msgid "notify_install_force_ok"
+#~ msgstr "✓ 強制インストールが完了しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:129
-msgid "notify_install_force_fail"
-msgstr "✗ 強制インストールに失敗しました！確認してください："
+#~ msgid "notify_install_force_fail"
+#~ msgstr "✗ 強制インストールに失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:130
-msgid "notify_install_rmdeps"
-msgstr "インストール中（ビルド依存関係を削除）..."
+#~ msgid "notify_install_rmdeps"
+#~ msgstr "インストール中（ビルド依存関係を削除）..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:131
-msgid "notify_install_rmdeps_ok"
-msgstr "✓ インストール（rmdeps）が完了しました！"
+#~ msgid "notify_install_rmdeps_ok"
+#~ msgstr "✓ インストール（rmdeps）が完了しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:132
-msgid "notify_install_rmdeps_fail"
-msgstr "✗ インストール（rmdeps）に失敗しました！確認してください："
+#~ msgid "notify_install_rmdeps_fail"
+#~ msgstr "✗ インストール（rmdeps）に失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:133
-msgid "notify_install_nocheck"
-msgstr "インストール中（チェックなし）..."
+#~ msgid "notify_install_nocheck"
+#~ msgstr "インストール中（チェックなし）..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:134
-msgid "notify_install_nocheck_ok"
-msgstr "✓ インストール（チェックなし）が完了しました！"
+#~ msgid "notify_install_nocheck_ok"
+#~ msgstr "✓ インストール（チェックなし）が完了しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:135
-msgid "notify_install_nocheck_fail"
-msgstr "✗ インストール（チェックなし）に失敗しました！確認してください："
+#~ msgid "notify_install_nocheck_fail"
+#~ msgstr "✗ インストール（チェックなし）に失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:136
-msgid "notify_install_nogpg"
-msgstr "インストール中（GPGなし）..."
+#~ msgid "notify_install_nogpg"
+#~ msgstr "インストール中（GPGなし）..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:137
-msgid "notify_install_nogpg_ok"
-msgstr "✓ インストール（GPGなし）が完了しました！"
+#~ msgid "notify_install_nogpg_ok"
+#~ msgstr "✓ インストール（GPGなし）が完了しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:138
-msgid "notify_install_nogpg_fail"
-msgstr "✗ インストール（GPGなし）に失敗しました！確認してください："
+#~ msgid "notify_install_nogpg_fail"
+#~ msgstr "✗ インストール（GPGなし）に失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:140
-msgid "notify_checksums"
-msgstr "チェックサムを更新中..."
+#~ msgid "notify_checksums"
+#~ msgstr "チェックサムを更新中..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:141
-msgid "notify_checksums_ok"
-msgstr "✓ チェックサムが正常に更新されました！"
+#~ msgid "notify_checksums_ok"
+#~ msgstr "✓ チェックサムが正常に更新されました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:142
-msgid "notify_checksums_fail"
-msgstr "✗ チェックサムの更新に失敗しました！確認してください："
+#~ msgid "notify_checksums_fail"
+#~ msgstr "✗ チェックサムの更新に失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:143
 #, fuzzy
-msgid "notify_genchecksums"
-msgstr "✓ チェックサムが正常に生成されました！"
+#~ msgid "notify_genchecksums"
+#~ msgstr "✓ チェックサムが正常に生成されました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:144
-msgid "notify_genchecksums_ok"
-msgstr "✓ チェックサムが正常に生成されました！"
+#~ msgid "notify_genchecksums_ok"
+#~ msgstr "✓ チェックサムが正常に生成されました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:145
-msgid "notify_genchecksums_fail"
-msgstr "✗ チェックサムの生成に失敗しました！確認してください："
+#~ msgid "notify_genchecksums_fail"
+#~ msgstr "✗ チェックサムの生成に失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:146
-msgid "notify_srcinfo"
-msgstr ".SRCINFOを更新中..."
+#~ msgid "notify_srcinfo"
+#~ msgstr ".SRCINFOを更新中..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:147
-msgid "notify_srcinfo_ok"
-msgstr "✓ .SRCINFOが正常に更新されました！"
+#~ msgid "notify_srcinfo_ok"
+#~ msgstr "✓ .SRCINFOが正常に更新されました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:148
-msgid "notify_srcinfo_fail"
-msgstr "✗ .SRCINFOの更新に失敗しました！確認してください："
+#~ msgid "notify_srcinfo_fail"
+#~ msgstr "✗ .SRCINFOの更新に失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:150
-msgid "notify_namcap"
-msgstr "namcapを実行中..."
+#~ msgid "notify_namcap"
+#~ msgstr "namcapを実行中..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:151
-msgid "notify_namcap_warn"
-msgstr "⚠ Namcapが警告付きで完了しました。確認してください："
+#~ msgid "notify_namcap_warn"
+#~ msgstr "⚠ Namcapが警告付きで完了しました。確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:152
-msgid "notify_namcap_ok"
-msgstr "✓ Namcapが完了しました！警告は見つかりませんでした。"
+#~ msgid "notify_namcap_ok"
+#~ msgstr "✓ Namcapが完了しました！警告は見つかりませんでした。"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:153
-msgid "notify_namcap_fail"
-msgstr "✗ Namcapに失敗しました！確認してください："
+#~ msgid "notify_namcap_fail"
+#~ msgstr "✗ Namcapに失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:154
-msgid "notify_shellcheck"
-msgstr "ShellCheckを実行中..."
+#~ msgid "notify_shellcheck"
+#~ msgstr "ShellCheckを実行中..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:155
-msgid "notify_shellcheck_warn"
-msgstr "⚠ ShellCheckが警告を検出しました。確認してください："
+#~ msgid "notify_shellcheck_warn"
+#~ msgstr "⚠ ShellCheckが警告を検出しました。確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:156
-msgid "notify_shellcheck_ok"
-msgstr "✓ ShellCheck：問題は見つかりませんでした。"
+#~ msgid "notify_shellcheck_ok"
+#~ msgstr "✓ ShellCheck：問題は見つかりませんでした。"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:157
-msgid "notify_shellcheck_fail"
-msgstr "✗ ShellCheckに失敗しました！確認してください："
+#~ msgid "notify_shellcheck_fail"
+#~ msgstr "✗ ShellCheckに失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:159
-msgid "notify_push_aur"
-msgstr "AURにプッシュ中..."
+#~ msgid "notify_push_aur"
+#~ msgstr "AURにプッシュ中..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:160
-msgid "notify_push_aur_ok"
-msgstr "✓ AURへのプッシュが成功しました！"
+#~ msgid "notify_push_aur_ok"
+#~ msgstr "✓ AURへのプッシュが成功しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:161
-msgid "notify_push_aur_fail"
-msgstr "✗ AURへのプッシュに失敗しました！確認してください："
+#~ msgid "notify_push_aur_fail"
+#~ msgstr "✗ AURへのプッシュに失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:162
-msgid "notify_push_aur_tag"
-msgstr "タグを作成してAURにプッシュ中..."
+#~ msgid "notify_push_aur_tag"
+#~ msgstr "タグを作成してAURにプッシュ中..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:163
-msgid "notify_push_aur_tag_ok"
-msgstr "✓ タグを作成してAURにプッシュしました！"
+#~ msgid "notify_push_aur_tag_ok"
+#~ msgstr "✓ タグを作成してAURにプッシュしました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:164
-msgid "notify_push_aur_tag_fail"
-msgstr "✗ タグ作成/AURへのプッシュに失敗しました！確認してください："
+#~ msgid "notify_push_aur_tag_fail"
+#~ msgstr "✗ タグ作成/AURへのプッシュに失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:166
-msgid "notify_clean_src"
-msgstr "ソースディレクトリをクリーン中..."
+#~ msgid "notify_clean_src"
+#~ msgstr "ソースディレクトリをクリーン中..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:167
-msgid "notify_clean_src_ok"
-msgstr "✓ ソースディレクトリのクリーンが完了しました！"
+#~ msgid "notify_clean_src_ok"
+#~ msgstr "✓ ソースディレクトリのクリーンが完了しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:168
-msgid "notify_clean_src_fail"
-msgstr "✗ ソースディレクトリのクリーンに失敗しました！確認してください："
+#~ msgid "notify_clean_src_fail"
+#~ msgstr "✗ ソースディレクトリのクリーンに失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:169
-msgid "notify_clean_all"
-msgstr "すべてをクリーン中..."
+#~ msgid "notify_clean_all"
+#~ msgstr "すべてをクリーン中..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:170
-msgid "notify_clean_all_ok"
-msgstr "✓ すべてのクリーンが完了しました！"
+#~ msgid "notify_clean_all_ok"
+#~ msgstr "✓ すべてのクリーンが完了しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:171
-msgid "notify_clean_all_fail"
-msgstr "✗ クリーンに失敗しました！確認してください："
+#~ msgid "notify_clean_all_fail"
+#~ msgstr "✗ クリーンに失敗しました！確認してください："
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:173
 #, fuzzy
-msgid "notify_full_workflow"
-msgstr "✓ フルワークフローが完了しました！"
+#~ msgid "notify_full_workflow"
+#~ msgstr "✓ フルワークフローが完了しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:174
-msgid "notify_full_workflow_ok"
-msgstr "✓ フルワークフローが完了しました！"
+#~ msgid "notify_full_workflow_ok"
+#~ msgstr "✓ フルワークフローが完了しました！"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:175
-msgid "notify_full_workflow_fail"
-msgstr "✗ フルワークフローに失敗しました！確認してください："
+#~ msgid "notify_full_workflow_fail"
+#~ msgstr "✗ フルワークフローに失敗しました！確認してください："
 
 #~ msgid "08_Build Force"
 #~ msgstr "ビルド（強制）"

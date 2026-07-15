@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-14 21:36-0300\n"
+"POT-Creation-Date: 2026-07-14 21:44-0300\n"
 "PO-Revision-Date: 2026-05-31 14:10-0300\n"
 "Last-Translator: AI <ai@example.com>\n"
 "Language-Team: Italian\n"
@@ -1167,255 +1167,193 @@ msgid "✗ Full workflow failed! See: "
 msgstr ""
 
 # Notification messages
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:108
-msgid "notify_building"
-msgstr "Compilazione del pacchetto in corso..."
+#~ msgid "notify_building"
+#~ msgstr "Compilazione del pacchetto in corso..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:109
-msgid "notify_build_ok"
-msgstr "✓ Compilazione completata con successo!"
+#~ msgid "notify_build_ok"
+#~ msgstr "✓ Compilazione completata con successo!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:110
-msgid "notify_build_fail"
-msgstr "✗ Compilazione fallita! Vedi: "
+#~ msgid "notify_build_fail"
+#~ msgstr "✗ Compilazione fallita! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:111
-msgid "notify_build_force"
-msgstr "Ricompilazione forzata in corso..."
+#~ msgid "notify_build_force"
+#~ msgstr "Ricompilazione forzata in corso..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:112
-msgid "notify_build_force_ok"
-msgstr "✓ Ricompilazione forzata completata!"
+#~ msgid "notify_build_force_ok"
+#~ msgstr "✓ Ricompilazione forzata completata!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:113
-msgid "notify_build_force_fail"
-msgstr "✗ Ricompilazione forzata fallita! Vedi: "
+#~ msgid "notify_build_force_fail"
+#~ msgstr "✗ Ricompilazione forzata fallita! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:114
-msgid "notify_build_nocheck"
-msgstr "Compilazione (senza test)..."
+#~ msgid "notify_build_nocheck"
+#~ msgstr "Compilazione (senza test)..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:115
-msgid "notify_build_nocheck_ok"
-msgstr "✓ Compilazione (senza test) completata!"
+#~ msgid "notify_build_nocheck_ok"
+#~ msgstr "✓ Compilazione (senza test) completata!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:116
-msgid "notify_build_nocheck_fail"
-msgstr "✗ Compilazione (senza test) fallita! Vedi: "
+#~ msgid "notify_build_nocheck_fail"
+#~ msgstr "✗ Compilazione (senza test) fallita! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:117
-msgid "notify_build_nogpg"
-msgstr "Compilazione (senza GPG)..."
+#~ msgid "notify_build_nogpg"
+#~ msgstr "Compilazione (senza GPG)..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:118
-msgid "notify_build_nogpg_ok"
-msgstr "✓ Compilazione (senza GPG) completata!"
+#~ msgid "notify_build_nogpg_ok"
+#~ msgstr "✓ Compilazione (senza GPG) completata!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:119
-msgid "notify_build_nogpg_fail"
-msgstr "✗ Compilazione (senza GPG) fallita! Vedi: "
+#~ msgid "notify_build_nogpg_fail"
+#~ msgstr "✗ Compilazione (senza GPG) fallita! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:120
-msgid "notify_fetch_sources"
-msgstr "Download sorgenti in corso..."
+#~ msgid "notify_fetch_sources"
+#~ msgstr "Download sorgenti in corso..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:121
-msgid "notify_fetch_sources_ok"
-msgstr "✓ Sorgenti scaricate con successo!"
+#~ msgid "notify_fetch_sources_ok"
+#~ msgstr "✓ Sorgenti scaricate con successo!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:122
-msgid "notify_fetch_sources_fail"
-msgstr "✗ Download sorgenti fallito! Vedi: "
+#~ msgid "notify_fetch_sources_fail"
+#~ msgstr "✗ Download sorgenti fallito! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:124
-msgid "notify_installing"
-msgstr "Installazione del pacchetto in corso..."
+#~ msgid "notify_installing"
+#~ msgstr "Installazione del pacchetto in corso..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:125
-msgid "notify_install_ok"
-msgstr "✓ Installazione completata!"
+#~ msgid "notify_install_ok"
+#~ msgstr "✓ Installazione completata!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:126
-msgid "notify_install_fail"
-msgstr "✗ Installazione fallita! Vedi: "
+#~ msgid "notify_install_fail"
+#~ msgstr "✗ Installazione fallita! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:127
-msgid "notify_install_force"
-msgstr "Installazione forzata in corso..."
+#~ msgid "notify_install_force"
+#~ msgstr "Installazione forzata in corso..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:128
-msgid "notify_install_force_ok"
-msgstr "✓ Installazione forzata completata!"
+#~ msgid "notify_install_force_ok"
+#~ msgstr "✓ Installazione forzata completata!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:129
-msgid "notify_install_force_fail"
-msgstr "✗ Installazione forzata fallita! Vedi: "
+#~ msgid "notify_install_force_fail"
+#~ msgstr "✗ Installazione forzata fallita! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:130
-msgid "notify_install_rmdeps"
-msgstr "Installazione (rimozione dipendenze build)..."
+#~ msgid "notify_install_rmdeps"
+#~ msgstr "Installazione (rimozione dipendenze build)..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:131
-msgid "notify_install_rmdeps_ok"
-msgstr "✓ Installazione (rmdeps) completata!"
+#~ msgid "notify_install_rmdeps_ok"
+#~ msgstr "✓ Installazione (rmdeps) completata!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:132
-msgid "notify_install_rmdeps_fail"
-msgstr "✗ Installazione (rmdeps) fallita! Vedi: "
+#~ msgid "notify_install_rmdeps_fail"
+#~ msgstr "✗ Installazione (rmdeps) fallita! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:133
-msgid "notify_install_nocheck"
-msgstr "Installazione (senza test)..."
+#~ msgid "notify_install_nocheck"
+#~ msgstr "Installazione (senza test)..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:134
-msgid "notify_install_nocheck_ok"
-msgstr "✓ Installazione (senza test) completata!"
+#~ msgid "notify_install_nocheck_ok"
+#~ msgstr "✓ Installazione (senza test) completata!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:135
-msgid "notify_install_nocheck_fail"
-msgstr "✗ Installazione (senza test) fallita! Vedi: "
+#~ msgid "notify_install_nocheck_fail"
+#~ msgstr "✗ Installazione (senza test) fallita! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:136
-msgid "notify_install_nogpg"
-msgstr "Installazione (senza GPG)..."
+#~ msgid "notify_install_nogpg"
+#~ msgstr "Installazione (senza GPG)..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:137
-msgid "notify_install_nogpg_ok"
-msgstr "✓ Installazione (senza GPG) completata!"
+#~ msgid "notify_install_nogpg_ok"
+#~ msgstr "✓ Installazione (senza GPG) completata!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:138
-msgid "notify_install_nogpg_fail"
-msgstr "✗ Installazione (senza GPG) fallita! Vedi: "
+#~ msgid "notify_install_nogpg_fail"
+#~ msgstr "✗ Installazione (senza GPG) fallita! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:140
-msgid "notify_checksums"
-msgstr "Aggiornamento checksum in corso..."
+#~ msgid "notify_checksums"
+#~ msgstr "Aggiornamento checksum in corso..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:141
-msgid "notify_checksums_ok"
-msgstr "✓ Checksum aggiornati con successo!"
+#~ msgid "notify_checksums_ok"
+#~ msgstr "✓ Checksum aggiornati con successo!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:142
-msgid "notify_checksums_fail"
-msgstr "✗ Aggiornamento checksum fallito! Vedi: "
+#~ msgid "notify_checksums_fail"
+#~ msgstr "✗ Aggiornamento checksum fallito! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:143
 #, fuzzy
-msgid "notify_genchecksums"
-msgstr "✓ Checksum generati con successo!"
+#~ msgid "notify_genchecksums"
+#~ msgstr "✓ Checksum generati con successo!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:144
-msgid "notify_genchecksums_ok"
-msgstr "✓ Checksum generati con successo!"
+#~ msgid "notify_genchecksums_ok"
+#~ msgstr "✓ Checksum generati con successo!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:145
-msgid "notify_genchecksums_fail"
-msgstr "✗ Generazione checksum fallita! Vedi: "
+#~ msgid "notify_genchecksums_fail"
+#~ msgstr "✗ Generazione checksum fallita! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:146
-msgid "notify_srcinfo"
-msgstr "Aggiornamento .SRCINFO in corso..."
+#~ msgid "notify_srcinfo"
+#~ msgstr "Aggiornamento .SRCINFO in corso..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:147
-msgid "notify_srcinfo_ok"
-msgstr "✓ .SRCINFO aggiornato con successo!"
+#~ msgid "notify_srcinfo_ok"
+#~ msgstr "✓ .SRCINFO aggiornato con successo!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:148
-msgid "notify_srcinfo_fail"
-msgstr "✗ Aggiornamento .SRCINFO fallito! Vedi: "
+#~ msgid "notify_srcinfo_fail"
+#~ msgstr "✗ Aggiornamento .SRCINFO fallito! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:150
-msgid "notify_namcap"
-msgstr "Esecuzione namcap in corso..."
+#~ msgid "notify_namcap"
+#~ msgstr "Esecuzione namcap in corso..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:151
-msgid "notify_namcap_warn"
-msgstr "⚠ Namcap completato con avvisi. Vedi: "
+#~ msgid "notify_namcap_warn"
+#~ msgstr "⚠ Namcap completato con avvisi. Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:152
-msgid "notify_namcap_ok"
-msgstr "✓ Namcap completato! Nessun avviso trovato."
+#~ msgid "notify_namcap_ok"
+#~ msgstr "✓ Namcap completato! Nessun avviso trovato."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:153
-msgid "notify_namcap_fail"
-msgstr "✗ Namcap fallito! Vedi: "
+#~ msgid "notify_namcap_fail"
+#~ msgstr "✗ Namcap fallito! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:154
-msgid "notify_shellcheck"
-msgstr "Esecuzione ShellCheck in corso..."
+#~ msgid "notify_shellcheck"
+#~ msgstr "Esecuzione ShellCheck in corso..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:155
-msgid "notify_shellcheck_warn"
-msgstr "⚠ ShellCheck ha trovato avvisi. Vedi: "
+#~ msgid "notify_shellcheck_warn"
+#~ msgstr "⚠ ShellCheck ha trovato avvisi. Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:156
-msgid "notify_shellcheck_ok"
-msgstr "✓ ShellCheck: Nessun problema trovato."
+#~ msgid "notify_shellcheck_ok"
+#~ msgstr "✓ ShellCheck: Nessun problema trovato."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:157
-msgid "notify_shellcheck_fail"
-msgstr "✗ ShellCheck fallito! Vedi: "
+#~ msgid "notify_shellcheck_fail"
+#~ msgstr "✗ ShellCheck fallito! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:159
-msgid "notify_push_aur"
-msgstr "Invio all'AUR in corso..."
+#~ msgid "notify_push_aur"
+#~ msgstr "Invio all'AUR in corso..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:160
-msgid "notify_push_aur_ok"
-msgstr "✓ Inviato all'AUR con successo!"
+#~ msgid "notify_push_aur_ok"
+#~ msgstr "✓ Inviato all'AUR con successo!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:161
-msgid "notify_push_aur_fail"
-msgstr "✗ Invio all'AUR fallito! Vedi: "
+#~ msgid "notify_push_aur_fail"
+#~ msgstr "✗ Invio all'AUR fallito! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:162
-msgid "notify_push_aur_tag"
-msgstr "Creazione tag e invio all'AUR..."
+#~ msgid "notify_push_aur_tag"
+#~ msgstr "Creazione tag e invio all'AUR..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:163
-msgid "notify_push_aur_tag_ok"
-msgstr "✓ Tag creato e inviato all'AUR!"
+#~ msgid "notify_push_aur_tag_ok"
+#~ msgstr "✓ Tag creato e inviato all'AUR!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:164
-msgid "notify_push_aur_tag_fail"
-msgstr "✗ Creazione tag/invio all'AUR fallita! Vedi: "
+#~ msgid "notify_push_aur_tag_fail"
+#~ msgstr "✗ Creazione tag/invio all'AUR fallita! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:166
-msgid "notify_clean_src"
-msgstr "Pulizia della directory sorgente in corso..."
+#~ msgid "notify_clean_src"
+#~ msgstr "Pulizia della directory sorgente in corso..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:167
-msgid "notify_clean_src_ok"
-msgstr "✓ Directory sorgente pulita con successo!"
+#~ msgid "notify_clean_src_ok"
+#~ msgstr "✓ Directory sorgente pulita con successo!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:168
-msgid "notify_clean_src_fail"
-msgstr "✗ Pulizia directory sorgente fallita! Vedi: "
+#~ msgid "notify_clean_src_fail"
+#~ msgstr "✗ Pulizia directory sorgente fallita! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:169
-msgid "notify_clean_all"
-msgstr "Pulizia di tutto in corso..."
+#~ msgid "notify_clean_all"
+#~ msgstr "Pulizia di tutto in corso..."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:170
-msgid "notify_clean_all_ok"
-msgstr "✓ Tutto pulito con successo!"
+#~ msgid "notify_clean_all_ok"
+#~ msgstr "✓ Tutto pulito con successo!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:171
-msgid "notify_clean_all_fail"
-msgstr "✗ Pulizia fallita! Vedi: "
+#~ msgid "notify_clean_all_fail"
+#~ msgstr "✗ Pulizia fallita! Vedi: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:173
 #, fuzzy
-msgid "notify_full_workflow"
-msgstr "✓ Flusso di lavoro completo terminato!"
+#~ msgid "notify_full_workflow"
+#~ msgstr "✓ Flusso di lavoro completo terminato!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:174
-msgid "notify_full_workflow_ok"
-msgstr "✓ Flusso di lavoro completo terminato!"
+#~ msgid "notify_full_workflow_ok"
+#~ msgstr "✓ Flusso di lavoro completo terminato!"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:175
-msgid "notify_full_workflow_fail"
-msgstr "✗ Flusso di lavoro completo fallito! Vedi: "
+#~ msgid "notify_full_workflow_fail"
+#~ msgstr "✗ Flusso di lavoro completo fallito! Vedi: "
 
 #~ msgid "08_Build Force"
 #~ msgstr "Compilare (Forzare)"
