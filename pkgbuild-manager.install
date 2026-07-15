@@ -19,17 +19,20 @@ post_install() {
             _new=$(echo "$_current" | sed "s|]$|, '$_binding']|" | sed "s|\[\]|['$_binding']|")
             ${_gset} set org.gnome.settings-daemon.plugins.media-keys \
                 custom-keybindings "$_new" 2>/dev/null || true
-            ${_gset} set \
-                org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${_binding} \
-                name "PKGBUILD Manager Settings" 2>/dev/null || true
-            ${_gset} set \
-                org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${_binding} \
-                command "pkgbuild-manager-gui settings" 2>/dev/null || true
-            ${_gset} set \
-                org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${_binding} \
-                binding "<Control><Alt>p" 2>/dev/null || true
-            echo ">>> Keyboard shortcut Ctrl+Alt+P registered."
         fi
+
+        # Always refresh the keys. This migrates shortcuts created by older
+        # releases whose command was `pkgbuild-manager-settings`.
+        ${_gset} set \
+            org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${_binding} \
+            name "PKGBUILD Manager Settings" 2>/dev/null || true
+        ${_gset} set \
+            org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${_binding} \
+            command "pkgbuild-manager-gui settings" 2>/dev/null || true
+        ${_gset} set \
+            org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${_binding} \
+            binding "<Control><Alt>p" 2>/dev/null || true
+        echo ">>> Keyboard shortcut Ctrl+Alt+P registered/updated."
     fi
 
     # Detect installed file managers and show targeted hints

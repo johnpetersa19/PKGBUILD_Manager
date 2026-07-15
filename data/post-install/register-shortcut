@@ -31,11 +31,20 @@ register_gnome() {
     local existing
     existing=$(gsettings get "$schema" custom-keybindings 2>/dev/null || echo "@as []")
 
-    # Verifica se o atalho já foi registrado
-    if echo "$existing" | grep -q "pkgbuild-manager"; then
-        echo "[pkgbuild-manager] Atalho GNOME já registrado — nenhuma alteração."
-        return 0
-    fi
+    # Reuse a slot created by this or an older release, updating its command.
+    local full_schema="${schema}.custom-keybinding"
+    local p cmd
+    while IFS= read -r p; do
+        cmd=$(gsettings get "${full_schema}:${p}" command 2>/dev/null || true)
+        if echo "$cmd" | grep -q "pkgbuild-manager"; then
+            slot_path="$p"
+            gsettings set "${full_schema}:${slot_path}" name "$NAME"
+            gsettings set "${full_schema}:${slot_path}" command "$COMMAND"
+            gsettings set "${full_schema}:${slot_path}" binding "$BINDING"
+            echo "[pkgbuild-manager] Atalho GNOME atualizado: ${BINDING} → ${COMMAND}"
+            return 0
+        fi
+    done < <(printf '%s\n' "$existing" | grep -o "'[^']*'" | tr -d "'")
 
     # Encontra o próximo slot livre: custom0, custom1, …
     local index=0
@@ -45,7 +54,6 @@ register_gnome() {
     slot_path="${base_path}/custom${index}/"
 
     # Registra o novo atalho no slot
-    local full_schema="${schema}.custom-keybinding"
     gsettings set "${full_schema}:${slot_path}" name    "$NAME"
     gsettings set "${full_schema}:${slot_path}" command  "$COMMAND"
     gsettings set "${full_schema}:${slot_path}" binding  "$BINDING"
