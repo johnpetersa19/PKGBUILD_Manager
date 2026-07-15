@@ -10,7 +10,7 @@ use gtk::{
     Separator, Switch,
 };
 use std::cell::RefCell;
-use std::process::{Command, Stdio};
+use std::process::Stdio;
 use std::rc::Rc;
 use std::thread;
 use std::time::Duration;
@@ -572,25 +572,25 @@ fn show_add_item_dialog(
 
 fn notify_file_managers() {
     // Nautilus
-    let _ = Command::new("nautilus")
+    let _ = crate::host::command("nautilus")
         .arg("-q")
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .status();
     thread::sleep(Duration::from_millis(600));
-    let _ = Command::new("nautilus")
+    let _ = crate::host::command("nautilus")
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .spawn();
 
     // Nemo
-    let _ = Command::new("nemo")
+    let _ = crate::host::command("nemo")
         .arg("--quit")
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .status();
     thread::sleep(Duration::from_millis(400));
-    let _ = Command::new("nemo")
+    let _ = crate::host::command("nemo")
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .spawn();

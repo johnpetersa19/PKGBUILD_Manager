@@ -10,6 +10,8 @@ mod release_dialog;
 mod settings_app;
 #[path = "../aur_push_gui/win_state.rs"]
 mod win_state;
+#[path = "../host.rs"]
+mod host;
 
 use adw::gio::ApplicationFlags;
 use adw::prelude::*;
@@ -27,13 +29,19 @@ const LOCALEDIR: &str = match option_env!("PKGBUILD_MANAGER_LOCALEDIR_BUILD") {
 
 fn main() -> gtk::glib::ExitCode {
     init_i18n();
+    if host::is_flatpak() {
+        if let Err(error) = install_flatpak_desktop_integration() {
+            eprintln!("Could not install Flatpak desktop integration: {error}");
+        }
+    }
 
     let args: Vec<String> = std::env::args().skip(1).collect();
     match args.first().map(String::as_str) {
         Some("settings") => settings_app::SettingsApp::new().run(),
         Some("push") => run_push(&args[1..]),
         Some("release") => run_release(&args[1..]),
-        Some("help" | "--help" | "-h") | None => {
+        None => settings_app::SettingsApp::new().run(),
+        Some("help" | "--help" | "-h") => {
             print_usage();
             gtk::glib::ExitCode::SUCCESS
         }
@@ -45,10 +53,65 @@ fn main() -> gtk::glib::ExitCode {
     }
 }
 
+fn install_flatpak_desktop_integration() -> std::io::Result<()> {
+    use std::fs;
+    use std::path::PathBuf;
+
+    fn copy_tree(source: &std::path::Path, target: &std::path::Path) -> std::io::Result<()> {
+        if !source.is_dir() { return Ok(()); }
+        fs::create_dir_all(target)?;
+        for entry in fs::read_dir(source)? {
+            let entry = entry?;
+            let destination = target.join(entry.file_name());
+            if entry.file_type()?.is_dir() {
+                copy_tree(&entry.path(), &destination)?;
+            } else {
+                fs::copy(entry.path(), destination)?;
+            }
+        }
+        Ok(())
+    }
+
+    let home = std::env::var_os("HOME")
+        .map(PathBuf::from)
+        .ok_or_else(|| std::io::Error::new(std::io::ErrorKind::NotFound, "HOME is not set"))?;
+    let source_scripts = PathBuf::from("/app/share/pkgbuild-manager/scripts");
+    let target_scripts = home.join(".local/share/pkgbuild-manager/scripts");
+    fs::create_dir_all(&target_scripts)?;
+    if source_scripts.is_dir() {
+        for entry in fs::read_dir(source_scripts)? {
+            let entry = entry?;
+            if entry.file_type()?.is_file() {
+                let target = target_scripts.join(entry.file_name());
+                fs::copy(entry.path(), &target)?;
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::PermissionsExt;
+                    fs::set_permissions(&target, fs::Permissions::from_mode(0o755))?;
+                }
+            }
+        }
+    }
+
+    let source_extension =
+        PathBuf::from("/app/share/nautilus-python/extensions/pkgbuild_manager.py");
+    let extension_dir = home.join(".local/share/nautilus-python/extensions");
+    fs::create_dir_all(&extension_dir)?;
+    if source_extension.is_file() {
+        fs::copy(source_extension, extension_dir.join("pkgbuild_manager.py"))?;
+    }
+    copy_tree(
+        std::path::Path::new("/app/share/locale"),
+        &home.join(".local/share/locale"),
+    )?;
+    Ok(())
+}
+
 fn init_i18n() {
     setlocale(LocaleCategory::LcAll, "");
-    let locale_dir =
-        std::env::var("PKGBUILD_MANAGER_LOCALEDIR").unwrap_or_else(|_| LOCALEDIR.to_string());
+    let locale_dir = std::env::var("PKGBUILD_MANAGER_LOCALEDIR").unwrap_or_else(|_| {
+        if host::is_flatpak() { "/app/share/locale".to_string() } else { LOCALEDIR.to_string() }
+    });
     let _ = bindtextdomain(GETTEXT_PACKAGE, &locale_dir);
     let _ = bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
     let _ = textdomain(GETTEXT_PACKAGE);

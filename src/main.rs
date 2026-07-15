@@ -20,6 +20,7 @@
 
 mod config;
 mod actions;
+mod host;
 
 use anyhow::Result;
 use config::{GETTEXT_PACKAGE, LOCALEDIR, VERSION};
@@ -213,7 +214,6 @@ fn main() -> Result<()> {
 fn setup_nautilus() -> Result<()> {
     use std::fs;
     use std::path::PathBuf;
-    use std::process::Command;
 
     let home = std::env::var("HOME")?;
     let scripts_root = PathBuf::from(&home).join(".local/share/nautilus/scripts");
@@ -261,9 +261,9 @@ fn setup_nautilus() -> Result<()> {
     }
 
     println!("{}", gettext("Restarting Nautilus\u{2026}"));
-    let _ = Command::new("nautilus").arg("-q").status();
+    let _ = crate::host::command("nautilus").arg("-q").status();
     std::thread::sleep(std::time::Duration::from_millis(800));
-    let _ = Command::new("nautilus").spawn();
+    let _ = crate::host::command("nautilus").spawn();
 
     println!("{}", gettext("Done. Right-click a PKGBUILD directory to see the menu."));
     Ok(())

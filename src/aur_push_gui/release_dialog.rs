@@ -25,7 +25,7 @@ use gtk::{
 use std::cell::RefCell;
 use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
-use std::process::{Command, Stdio};
+use std::process::Stdio;
 use std::rc::Rc;
 
 // ── Platform ──────────────────────────────────────────────────────────────────
@@ -1684,7 +1684,7 @@ fn handle_msg(
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 fn detect_branch(path: &str) -> String {
-    Command::new("git")
+    crate::host::command("git")
         .args(["rev-parse", "--abbrev-ref", "HEAD"])
         .current_dir(path)
         .output()
@@ -1696,7 +1696,7 @@ fn detect_branch(path: &str) -> String {
 }
 
 fn list_branches(path: &str) -> Vec<String> {
-    Command::new("git")
+    crate::host::command("git")
         .args(["branch", "--format=%(refname:short)"])
         .current_dir(path)
         .output()
@@ -1713,7 +1713,7 @@ fn list_branches(path: &str) -> Vec<String> {
 }
 
 fn list_tags(path: &str) -> Vec<String> {
-    Command::new("git")
+    crate::host::command("git")
         .args(["tag", "--sort=-creatordate"])
         .current_dir(path)
         .output()
@@ -1730,7 +1730,7 @@ fn list_tags(path: &str) -> Vec<String> {
 }
 
 fn detect_remote(path: &str) -> String {
-    Command::new("git")
+    crate::host::command("git")
         .args(["remote", "get-url", "origin"])
         .current_dir(path)
         .output()
@@ -1744,7 +1744,7 @@ fn detect_remote(path: &str) -> String {
 // ── Workers ───────────────────────────────────────────────────────────────────
 
 fn git_run(target: &str, args: &[&str], tx: &async_channel::Sender<Msg>) -> bool {
-    let mut child = match Command::new("git")
+    let mut child = match crate::host::command("git")
         .args(args)
         .current_dir(target)
         .stdout(Stdio::piped())
@@ -2006,7 +2006,7 @@ fn run_release_worker(
 }
 
 fn run_cli(cmd: &str, args: &[&str], cwd: &str, tx: &async_channel::Sender<Msg>) -> bool {
-    let mut child = match Command::new(cmd)
+    let mut child = match crate::host::command(cmd)
         .args(args)
         .current_dir(cwd)
         .stdout(Stdio::piped())

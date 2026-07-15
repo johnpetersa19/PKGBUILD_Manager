@@ -96,6 +96,13 @@ install_data(
   install_dir: get_option('datadir') / 'applications',
 )
 
+# Flatpak launcher. Its filename must match the application ID so Flatpak can
+# export it to the host desktop.
+install_data(
+  'applications/io.github.johnpetersa19.PkgbuildManager.desktop',
+  install_dir: get_option('datadir') / 'applications',
+)
+
 # Post-install scripts: registra/remove atalho Ctrl+Alt+P no DE do usuário
 install_data(
   'post-install/register-shortcut',

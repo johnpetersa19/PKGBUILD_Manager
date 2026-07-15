@@ -9,7 +9,8 @@ import subprocess
 from pathlib import Path
 from gi.repository import Caja, GObject
 
-gettext.bindtextdomain("pkgbuild_manager", "/usr/share/locale")
+_user_locale = os.path.expanduser("~/.local/share/locale")
+gettext.bindtextdomain("pkgbuild_manager", _user_locale if os.path.isdir(_user_locale) else "/usr/share/locale")
 gettext.textdomain("pkgbuild_manager")
 _ = gettext.gettext
 
@@ -31,6 +32,9 @@ DEFAULT_ACTIONS = [
 
 
 def _scripts_dir():
+    user_flatpak = os.path.expanduser("~/.local/share/pkgbuild-manager/scripts")
+    if os.path.isdir(user_flatpak):
+        return user_flatpak
     installed = "/usr/share/pkgbuild-manager/scripts"
     if os.path.isdir(installed):
         return installed

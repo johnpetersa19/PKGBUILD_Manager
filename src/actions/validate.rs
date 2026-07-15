@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::path::Path;
-use std::process::{Command, Stdio};
+use std::process::Stdio;
 use anyhow::{anyhow, Result};
 use gettextrs::gettext;
 use super::get_target_dir;
@@ -12,7 +12,7 @@ use super::get_target_dir;
 
 fn makepkg(dir: &Path, args: &[&str]) -> Result<()> {
     println!(">>> makepkg {} (in {:?})", args.join(" "), dir);
-    let status = Command::new("makepkg")
+    let status = crate::host::command("makepkg")
         .args(args)
         .current_dir(dir)
         .stdin(Stdio::inherit())
@@ -39,7 +39,7 @@ fn makepkg(dir: &Path, args: &[&str]) -> Result<()> {
 pub fn syntax(path: &Path) -> Result<()> {
     let dir = get_target_dir(path)?;
     println!(">>> {}", gettext("Validating PKGBUILD syntax (makepkg --printsrcinfo)…"));
-    let output = Command::new("makepkg")
+    let output = crate::host::command("makepkg")
         .arg("--printsrcinfo")
         .current_dir(&dir)
         .output()

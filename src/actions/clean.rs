@@ -1,5 +1,5 @@
 use std::path::Path;
-use std::process::{Command, Stdio};
+use std::process::Stdio;
 use super::{get_target_dir, run_command, collect_pkg_files};
 
 /// Remove a directory tree, handling read-only files/dirs inside it.
@@ -15,7 +15,7 @@ fn remove_dir_force(path: &Path) -> anyhow::Result<()> {
         return Ok(());
     }
     // Slow path — unlock permissions then retry.
-    let _ = Command::new("chmod")
+    let _ = crate::host::command("chmod")
         .args(["-R", "u+rwX"])
         .arg(path)
         .status();
@@ -195,7 +195,7 @@ fn read_pkgname(dir: &std::path::Path) -> Option<String> {
     // ── Step 2: makepkg --printsrcinfo fallback ────────────────────────────
     // Run makepkg --printsrcinfo to get the fully-expanded .SRCINFO output.
     // This is the same invocation used by `validate-syntax` — fast and offline.
-    let output = Command::new("makepkg")
+    let output = crate::host::command("makepkg")
         .arg("--printsrcinfo")
         .current_dir(dir)
         .stdin(Stdio::null())

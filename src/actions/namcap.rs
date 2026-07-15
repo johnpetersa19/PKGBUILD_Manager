@@ -1,5 +1,5 @@
 use std::path::Path;
-use std::process::{Command, Stdio};
+use std::process::Stdio;
 use super::{get_target_dir, collect_pkg_files, write_error_log};
 
 pub fn run(path: &Path) -> anyhow::Result<()> {
@@ -17,7 +17,7 @@ pub fn run(path: &Path) -> anyhow::Result<()> {
     // user to see output live. Strategy: inherit stdout/stderr for live display
     // AND collect via piped output in a second pass. Since namcap is fast,
     // we run it once with output capture and print it ourselves immediately.
-    let output = Command::new("namcap")
+    let output = crate::host::command("namcap")
         .args(&args_slices)
         .current_dir(&target_dir)
         .stdin(Stdio::inherit())

@@ -1070,7 +1070,7 @@ impl UnifiedPushWindow {
 // ── detect_branch ─────────────────────────────────────────────────────────────
 
 fn detect_branch(path: &str) -> String {
-    Command::new("git")
+    crate::host::command("git")
         .args(["rev-parse", "--abbrev-ref", "HEAD"])
         .current_dir(path)
         .output()
@@ -1084,7 +1084,7 @@ fn detect_branch(path: &str) -> String {
 // ── list_branches ─────────────────────────────────────────────────────────────
 
 fn list_branches(path: &str) -> Vec<String> {
-    Command::new("git")
+    crate::host::command("git")
         .args(["branch", "--format=%(refname:short)"])
         .current_dir(path)
         .output()
@@ -1104,7 +1104,7 @@ fn list_branches(path: &str) -> Vec<String> {
 /// Returns the URL of the `origin` remote (or the first remote found).
 
 fn detect_remote(path: &str) -> String {
-    let origin = Command::new("git")
+    let origin = crate::host::command("git")
         .args(["remote", "get-url", "origin"])
         .current_dir(path)
         .output()
@@ -1117,7 +1117,7 @@ fn detect_remote(path: &str) -> String {
         return url;
     }
 
-    Command::new("git")
+    crate::host::command("git")
         .args(["remote", "-v"])
         .current_dir(path)
         .output()
@@ -1137,7 +1137,7 @@ fn detect_remote(path: &str) -> String {
 /// Covers: ssh://..., git@..., aur@..., and any user@host:path pattern.
 
 fn detect_auth_method(path: &str) -> &'static str {
-    let url = Command::new("git")
+    let url = crate::host::command("git")
         .args(["remote", "get-url", "origin"])
         .current_dir(path)
         .output()
@@ -1172,14 +1172,14 @@ fn check_auth_ready(path: &str, auth_method: &str) -> bool {
         // ssh-add -l: exit 0 = agent running + has keys
         //             exit 1 = agent running but no keys
         //             exit 2 = cannot connect to agent
-        Command::new("ssh-add")
+        crate::host::command("ssh-add")
             .arg("-l")
             .output()
             .map(|o| o.status.success())
             .unwrap_or(false)
     } else {
         // Check for credential.helper in local or global git config
-        let local_helper = Command::new("git")
+        let local_helper = crate::host::command("git")
             .args(["config", "--local", "credential.helper"])
             .current_dir(path)
             .output()
@@ -1188,7 +1188,7 @@ fn check_auth_ready(path: &str, auth_method: &str) -> bool {
 
         if local_helper { return true; }
 
-        Command::new("git")
+        crate::host::command("git")
             .args(["config", "--global", "credential.helper"])
             .output()
             .map(|o| o.status.success() && !o.stdout.is_empty())
@@ -1209,6 +1209,7 @@ fn run_aur_worker(
         let _ = tx.send_blocking(Msg::Done(false));
         return;
     }
+    // This is our bundled CLI; it delegates only the required system tools.
     let mut cmd = Command::new("pkgbuild_manager");
     cmd.arg(if tag.is_some() {
         "aur-push-tag"
@@ -1284,7 +1285,7 @@ fn run_git_worker(
     }
 
     fn git_run(target: &str, args: &[&str], tx: &async_channel::Sender<Msg>) -> bool {
-        let mut child = match Command::new("git")
+        let mut child = match crate::host::command("git")
             .args(args)
             .current_dir(target)
             .stdout(Stdio::piped())
