@@ -123,11 +123,15 @@ def _validate_repository(repository):
     """Validate access and resolve the longest branch in a /tree/... URL."""
     clone_url, requested_branch = repository
     try:
+        environment = os.environ.copy()
+        environment["GIT_TERMINAL_PROMPT"] = "0"
+        environment["GIT_SSH_COMMAND"] = "ssh -o BatchMode=yes -o ConnectTimeout=3"
         result = subprocess.run(
-            ["git", "ls-remote", "--heads", clone_url],
+            ["git", "-c", "credential.interactive=never", "ls-remote", "--heads", clone_url],
             text=True,
             capture_output=True,
-            timeout=15,
+            timeout=5,
+            env=environment,
         )
     except subprocess.TimeoutExpired:
         return None, _("The repository check timed out.")
@@ -211,6 +215,11 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
             repository = _repository_from_url(text)
             if not repository:
                 return
+
+            # Show the action immediately from the parsed URL. Network
+            # validation continues below and can replace it with an error.
+            if generation == self._clipboard_generation:
+                self._repository_state = ("valid", repository, None)
 
             def validate():
                 valid_repository, error = _validate_repository(repository)
