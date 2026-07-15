@@ -162,38 +162,75 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
 
     def __init__(self):
         super().__init__()
+        self._repository = None
+        self._destination = None
+        self._clipboard_generation = 0
+        self._download_item = Nautilus.MenuItem(
+            name="PkgbuildManager::CloneClipboardRepository",
+            label=_("Download Git repository"),
+            tip=_("Copy a repository URL to enable this option"),
+        )
+        self._download_item.set_property("sensitive", False)
+        self._download_item.connect("activate", self._download_repository)
+
         display = Gdk.Display.get_default()
         self._clipboard = display.get_clipboard() if display else None
         if self._clipboard is not None:
             self._clipboard.connect("changed", self._on_clipboard_changed)
+            self._refresh_clipboard()
 
     def _on_clipboard_changed(self, _clipboard):
-        """Tell Nautilus to rebuild the current folder's context menu."""
-        self.emit_items_updated_signal()
+        """Update the existing menu item as soon as clipboard text changes."""
+        self._refresh_clipboard()
 
-    def _read_clipboard_now(self):
-        """Read clipboard text during menu creation, bounded to 100 ms."""
+    def _refresh_clipboard(self):
+        """Read and cache the repository URL without blocking Nautilus."""
         if self._clipboard is None:
-            return None
-        loop = GLib.MainLoop()
-        value = {"text": None, "finished": False}
+            return
+
+        self._clipboard_generation += 1
+        generation = self._clipboard_generation
 
         def clipboard_ready(source, result, _data=None):
             try:
-                value["text"] = source.read_text_finish(result)
+                text = source.read_text_finish(result)
             except GLib.Error:
-                pass
-            value["finished"] = True
-            loop.quit()
+                text = None
 
-        def timed_out():
-            loop.quit()
-            return False
+            if generation != self._clipboard_generation:
+                return
+
+            self._repository = _repository_from_url(text)
+            if self._repository is None:
+                self._download_item.set_property("label", _("Download Git repository"))
+                self._download_item.set_property(
+                    "tip", _("Copy a repository URL to enable this option")
+                )
+                self._download_item.set_property("sensitive", False)
+            else:
+                name = _repository_name(self._repository[0]) or _("Git repository")
+                self._download_item.set_property("label", _("Download ") + name)
+                self._download_item.set_property(
+                    "tip", _("Clone the repository URL from the clipboard into this folder")
+                )
+                self._download_item.set_property("sensitive", True)
+
+            # Some Nautilus versions rebuild extension actions on this signal;
+            # versions that do not still receive the property updates above.
+            self.emit_items_updated_signal()
 
         self._clipboard.read_text_async(None, clipboard_ready, None)
-        GLib.timeout_add(100, timed_out)
-        loop.run()
-        return value["text"] if value["finished"] else None
+
+    def _download_repository(self, _item):
+        repository = self._repository
+        destination = self._destination
+        if repository is None or not destination:
+            return
+        threading.Thread(
+            target=_clone_repository,
+            args=(repository, destination),
+            daemon=True,
+        ).start()
 
     def _build_menu(self, pkgbuild_path):
         scripts = _scripts_dir()
@@ -287,25 +324,11 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
     def get_background_items(self, folder):
         if not folder.get_uri().startswith("file://"):
             return []
-        destination = folder.get_location().get_path()
-        if not destination:
+        self._destination = folder.get_location().get_path()
+        if not self._destination:
             return []
 
-        repository = _repository_from_url(self._read_clipboard_now())
-        if repository is None:
-            return []
-
-        item = Nautilus.MenuItem(
-            name="PkgbuildManager::CloneClipboardRepository",
-            label=_("Download ") + (_repository_name(repository[0]) or _("Git repository")),
-            tip=_("Clone the repository URL from the clipboard into this folder"),
-        )
-        item.connect(
-            "activate",
-            lambda _item: threading.Thread(
-                target=_clone_repository,
-                args=(repository, destination),
-                daemon=True,
-            ).start(),
-        )
-        return [item]
+        # Keep the same MenuItem alive. Its label and sensitivity are updated
+        # directly by the clipboard callback, without requiring a folder change.
+        self._refresh_clipboard()
+        return [self._download_item]
