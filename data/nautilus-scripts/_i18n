@@ -86,165 +86,90 @@ _load_po() {
 _load_po "$_PO_FILE"
 
 # ---------------------------------------------------------------------------
-# Lookup a msgid from cache, fallback to English hardcoded strings
+# Lookup the real English msgid from cache. The optional legacy key keeps
+# existing catalogs working while they migrate away from notify_* msgids.
 # ---------------------------------------------------------------------------
 _getmsg() {
     local msgid="$1"
+    local legacy_key="${2:-}"
     local val="${_I18N_CACHE[$msgid]:-}"
+    [[ -z "$val" && -n "$legacy_key" ]] && val="${_I18N_CACHE[$legacy_key]:-}"
     if [[ -n "$val" ]]; then
         printf '%b' "${val//\\\"/\"}"
     else
-        _en_fallback "$msgid"
+        printf '%s' "$msgid"
     fi
 }
 
 # ---------------------------------------------------------------------------
-# English fallbacks
-# ---------------------------------------------------------------------------
-_en_fallback() {
-    case "$1" in
-        # Build
-        notify_building)              echo "Compiling package…" ;;
-        notify_build_ok)              echo "✓ Package compiled successfully!" ;;
-        notify_build_fail)            echo "✗ Package compilation failed! View:" ;;
-        notify_build_force)           echo "Compilation in progress…" ;;
-        notify_build_force_ok)        echo "✓ Compilation completed!" ;;
-        notify_build_force_fail)      echo "✗ Compilation based on data failed! View:" ;;
-        notify_build_nocheck)         echo "Compiling without checks…" ;;
-        notify_build_nocheck_ok)      echo "✓ Compiled without checks!" ;;
-        notify_build_nocheck_fail)    echo "✗ Compilation without checks failed! View:" ;;
-        notify_build_nogpg)           echo "Compiling without GPG…" ;;
-        notify_build_nogpg_ok)        echo "✓ Compiled without GPG!" ;;
-        notify_build_nogpg_fail)      echo "✗ Compilation without GPG failed! View:" ;;
-        notify_fetch_sources)         echo "Downloading sources…" ;;
-        notify_fetch_sources_ok)      echo "✓ Sources downloaded successfully!" ;;
-        notify_fetch_sources_fail)    echo "✗ Sources downloaded failed! View:" ;;
-        # Install
-        notify_installing)            echo "Installing package…" ;;
-        notify_install_ok)            echo "✓ Package installed successfully!" ;;
-        notify_install_fail)          echo "✗ Package installation failed! View:" ;;
-        notify_install_force)         echo "Planned installation in progress…" ;;
-        notify_install_force_ok)      echo "✓ Installation completed!" ;;
-        notify_install_force_fail)    echo "✗ Forced installation failed! View:" ;;
-        notify_install_rmdeps)        echo "Installing and removing compilation dependencies…" ;;
-        notify_install_rmdeps_ok)     echo "✓ Installed and compilation dependencies removed!" ;;
-        notify_install_rmdeps_fail)   echo "✗ Failed to install and remove build dependencies! See:" ;;
-        notify_install_nocheck)       echo "Installing without checks…" ;;
-        notify_install_nocheck_ok)    echo "✓ Installed without checks!" ;;
-        notify_install_nocheck_fail)  echo "✗ Installation failed without checks! See:" ;;
-        notify_install_nogpg)         echo "Installing without GPG…" ;;
-        notify_install_nogpg_ok)      echo "✓ Installed without GPG!" ;;
-        notify_install_nogpg_fail)    echo "✗ Installation failed without GPG! See:" ;;
-        # Metadata
-        notify_checksums)             echo "Updating checksums…" ;;
-        notify_checksums_ok)          echo "✓ Checksums updated successfully!" ;;
-        notify_checksums_fail)        echo "✗ Failed to update checksums! See:" ;;
-        notify_genchecksums)          echo "Generating checksums…" ;;
-        notify_genchecksums_ok)       echo "✓ Checksums generated successfully!" ;;
-        notify_genchecksums_fail)     echo "✗ Failed to generate checksums! See:" ;;
-        notify_srcinfo)               echo "Regenerating .SRCINFO…" ;;
-        notify_srcinfo_ok)            echo "✓ .SRCINFO regenerated successfully!" ;;
-        notify_srcinfo_fail)          echo "✗ Failed to regenerate .SRCINFO! See:" ;;
-        # Audit
-        notify_namcap)                echo "Running namcap…" ;;
-        notify_namcap_warn)           echo "⚠ Namcap encountered warnings. See:" ;;
-        notify_namcap_ok)             echo "✓ Namcap: no problems found!" ;;
-        notify_namcap_fail)           echo "✗ Failed to execute namcap! See:" ;;
-        notify_shellcheck)            echo "Running ShellCheck…" ;;
-        notify_shellcheck_warn)       echo "⚠ ShellCheck encountered warnings. See:" ;;
-        notify_shellcheck_ok)         echo "✓ ShellCheck: no problems found!" ;;
-        notify_shellcheck_fail)       echo "✗ Failed to execute ShellCheck! See:" ;;
-        # Git / AUR
-        notify_push_aur)              echo "Sending to AUR…" ;;
-        notify_push_aur_ok)           echo "✓ Sent to AUR successfully!" ;;
-        notify_push_aur_fail)         echo "✗ Failed to send to AUR! See:" ;;
-        notify_push_aur_tag)          echo "Creating tag and sending to AUR…" ;;
-        notify_push_aur_tag_ok)       echo "✓ Tag created and sent to AUR!" ;;
-        notify_push_aur_tag_fail)     echo "✗ Failed to create tag/send to AUR! See:" ;;
-        # Clean
-        notify_clean_src)             echo "Cleaning srcdir…" ;;
-        notify_clean_src_ok)          echo "✓ srcdir cleaned successfully!" ;;
-        notify_clean_src_fail)        echo "✗ Failed to clean srcdir! See:" ;;
-        notify_clean_all)             echo "Cleaning everything…" ;;
-        notify_clean_all_ok)          echo "✓ Everything cleaned successfully!" ;;
-        notify_clean_all_fail)        echo "✗ Failed to clean everything! See:" ;;
-        # Full workflow
-        notify_full_workflow)         echo "Executing complete flow…" ;;
-        notify_full_workflow_ok)      echo "✓ Complete flow completed successfully!" ;;
-        notify_full_workflow_fail)    echo "✗ Complete flow failed! See:" ;;
-        *)                            echo "$1" ;;
-    esac
-}
-
-# ---------------------------------------------------------------------------
-# Export MSG_* variables (single cache lookup each, no grep/sed)
+# Export MSG_* variables. English source text lives here as the actual msgid.
 # ---------------------------------------------------------------------------
 # Build
-MSG_BUILDING=$(             _getmsg notify_building            )
-MSG_BUILD_OK=$(             _getmsg notify_build_ok            )
-MSG_BUILD_FAIL=$(           _getmsg notify_build_fail          )
-MSG_BUILD_FORCE=$(          _getmsg notify_build_force         )
-MSG_BUILD_FORCE_OK=$(       _getmsg notify_build_force_ok      )
-MSG_BUILD_FORCE_FAIL=$(     _getmsg notify_build_force_fail    )
-MSG_BUILD_NOCHECK=$(        _getmsg notify_build_nocheck       )
-MSG_BUILD_NOCHECK_OK=$(     _getmsg notify_build_nocheck_ok    )
-MSG_BUILD_NOCHECK_FAIL=$(   _getmsg notify_build_nocheck_fail  )
-MSG_BUILD_NOGPG=$(          _getmsg notify_build_nogpg         )
-MSG_BUILD_NOGPG_OK=$(       _getmsg notify_build_nogpg_ok      )
-MSG_BUILD_NOGPG_FAIL=$(     _getmsg notify_build_nogpg_fail    )
-MSG_FETCH_SOURCES=$(        _getmsg notify_fetch_sources       )
-MSG_FETCH_SOURCES_OK=$(     _getmsg notify_fetch_sources_ok    )
-MSG_FETCH_SOURCES_FAIL=$(   _getmsg notify_fetch_sources_fail  )
+MSG_BUILDING=$(             _getmsg "Compiling package…" "notify_building" )
+MSG_BUILD_OK=$(             _getmsg "✓ Package compiled successfully!" "notify_build_ok" )
+MSG_BUILD_FAIL=$(           _getmsg "✗ Package compilation failed! See: " "notify_build_fail" )
+MSG_BUILD_FORCE=$(          _getmsg "Forced compilation in progress…" "notify_build_force" )
+MSG_BUILD_FORCE_OK=$(       _getmsg "✓ Forced compilation completed!" "notify_build_force_ok" )
+MSG_BUILD_FORCE_FAIL=$(     _getmsg "✗ Forced compilation failed! See: " "notify_build_force_fail" )
+MSG_BUILD_NOCHECK=$(        _getmsg "Compiling without checks…" "notify_build_nocheck" )
+MSG_BUILD_NOCHECK_OK=$(     _getmsg "✓ Compiled without checks!" "notify_build_nocheck_ok" )
+MSG_BUILD_NOCHECK_FAIL=$(   _getmsg "✗ Compilation without checks failed! See: " "notify_build_nocheck_fail" )
+MSG_BUILD_NOGPG=$(          _getmsg "Compiling without GPG…" "notify_build_nogpg" )
+MSG_BUILD_NOGPG_OK=$(       _getmsg "✓ Compiled without GPG!" "notify_build_nogpg_ok" )
+MSG_BUILD_NOGPG_FAIL=$(     _getmsg "✗ Compilation without GPG failed! See: " "notify_build_nogpg_fail" )
+MSG_FETCH_SOURCES=$(        _getmsg "Downloading sources…" "notify_fetch_sources" )
+MSG_FETCH_SOURCES_OK=$(     _getmsg "✓ Sources downloaded successfully!" "notify_fetch_sources_ok" )
+MSG_FETCH_SOURCES_FAIL=$(   _getmsg "✗ Failed to download sources! See: " "notify_fetch_sources_fail" )
 # Install
-MSG_INSTALLING=$(           _getmsg notify_installing          )
-MSG_INSTALL_OK=$(           _getmsg notify_install_ok          )
-MSG_INSTALL_FAIL=$(         _getmsg notify_install_fail        )
-MSG_INSTALL_FORCE=$(        _getmsg notify_install_force       )
-MSG_INSTALL_FORCE_OK=$(     _getmsg notify_install_force_ok    )
-MSG_INSTALL_FORCE_FAIL=$(   _getmsg notify_install_force_fail  )
-MSG_INSTALL_RMDEPS=$(       _getmsg notify_install_rmdeps      )
-MSG_INSTALL_RMDEPS_OK=$(    _getmsg notify_install_rmdeps_ok   )
-MSG_INSTALL_RMDEPS_FAIL=$(  _getmsg notify_install_rmdeps_fail )
-MSG_INSTALL_NOCHECK=$(      _getmsg notify_install_nocheck     )
-MSG_INSTALL_NOCHECK_OK=$(   _getmsg notify_install_nocheck_ok  )
-MSG_INSTALL_NOCHECK_FAIL=$( _getmsg notify_install_nocheck_fail)
-MSG_INSTALL_NOGPG=$(        _getmsg notify_install_nogpg       )
-MSG_INSTALL_NOGPG_OK=$(     _getmsg notify_install_nogpg_ok    )
-MSG_INSTALL_NOGPG_FAIL=$(   _getmsg notify_install_nogpg_fail  )
+MSG_INSTALLING=$(           _getmsg "Installing package…" "notify_installing" )
+MSG_INSTALL_OK=$(           _getmsg "✓ Package installed successfully!" "notify_install_ok" )
+MSG_INSTALL_FAIL=$(         _getmsg "✗ Package installation failed! See: " "notify_install_fail" )
+MSG_INSTALL_FORCE=$(        _getmsg "Forced installation in progress…" "notify_install_force" )
+MSG_INSTALL_FORCE_OK=$(     _getmsg "✓ Forced installation completed!" "notify_install_force_ok" )
+MSG_INSTALL_FORCE_FAIL=$(   _getmsg "✗ Forced installation failed! See: " "notify_install_force_fail" )
+MSG_INSTALL_RMDEPS=$(       _getmsg "Installing and removing build dependencies…" "notify_install_rmdeps" )
+MSG_INSTALL_RMDEPS_OK=$(    _getmsg "✓ Installed and build dependencies removed!" "notify_install_rmdeps_ok" )
+MSG_INSTALL_RMDEPS_FAIL=$(  _getmsg "✗ Failed to install and remove build dependencies! See: " "notify_install_rmdeps_fail" )
+MSG_INSTALL_NOCHECK=$(      _getmsg "Installing without checks…" "notify_install_nocheck" )
+MSG_INSTALL_NOCHECK_OK=$(   _getmsg "✓ Installed without checks!" "notify_install_nocheck_ok" )
+MSG_INSTALL_NOCHECK_FAIL=$( _getmsg "✗ Failed to install without checks! See: " "notify_install_nocheck_fail" )
+MSG_INSTALL_NOGPG=$(        _getmsg "Installing without GPG…" "notify_install_nogpg" )
+MSG_INSTALL_NOGPG_OK=$(     _getmsg "✓ Installed without GPG!" "notify_install_nogpg_ok" )
+MSG_INSTALL_NOGPG_FAIL=$(   _getmsg "✗ Failed to install without GPG! See: " "notify_install_nogpg_fail" )
 # Metadata
-MSG_CHECKSUMS=$(            _getmsg notify_checksums           )
-MSG_CHECKSUMS_OK=$(         _getmsg notify_checksums_ok        )
-MSG_CHECKSUMS_FAIL=$(       _getmsg notify_checksums_fail      )
-MSG_GENCHECKSUMS=$(         _getmsg notify_genchecksums        )
-MSG_GENCHECKSUMS_OK=$(      _getmsg notify_genchecksums_ok     )
-MSG_GENCHECKSUMS_FAIL=$(    _getmsg notify_genchecksums_fail   )
-MSG_SRCINFO=$(              _getmsg notify_srcinfo             )
-MSG_SRCINFO_OK=$(           _getmsg notify_srcinfo_ok          )
-MSG_SRCINFO_FAIL=$(         _getmsg notify_srcinfo_fail        )
+MSG_CHECKSUMS=$(            _getmsg "Updating checksums…" "notify_checksums" )
+MSG_CHECKSUMS_OK=$(         _getmsg "✓ Checksums updated successfully!" "notify_checksums_ok" )
+MSG_CHECKSUMS_FAIL=$(       _getmsg "✗ Failed to update checksums! See: " "notify_checksums_fail" )
+MSG_GENCHECKSUMS=$(         _getmsg "Generating checksums…" "notify_genchecksums" )
+MSG_GENCHECKSUMS_OK=$(      _getmsg "✓ Checksums generated successfully!" "notify_genchecksums_ok" )
+MSG_GENCHECKSUMS_FAIL=$(    _getmsg "✗ Failed to generate checksums! See: " "notify_genchecksums_fail" )
+MSG_SRCINFO=$(              _getmsg "Regenerating .SRCINFO…" "notify_srcinfo" )
+MSG_SRCINFO_OK=$(           _getmsg "✓ .SRCINFO regenerated successfully!" "notify_srcinfo_ok" )
+MSG_SRCINFO_FAIL=$(         _getmsg "✗ Failed to regenerate .SRCINFO! See: " "notify_srcinfo_fail" )
 # Audit
-MSG_NAMCAP=$(               _getmsg notify_namcap              )
-MSG_NAMCAP_WARN=$(          _getmsg notify_namcap_warn         )
-MSG_NAMCAP_OK=$(            _getmsg notify_namcap_ok           )
-MSG_NAMCAP_FAIL=$(          _getmsg notify_namcap_fail         )
-MSG_SHELLCHECK=$(           _getmsg notify_shellcheck          )
-MSG_SHELLCHECK_WARN=$(      _getmsg notify_shellcheck_warn     )
-MSG_SHELLCHECK_OK=$(        _getmsg notify_shellcheck_ok       )
-MSG_SHELLCHECK_FAIL=$(      _getmsg notify_shellcheck_fail     )
+MSG_NAMCAP=$(               _getmsg "Running namcap…" "notify_namcap" )
+MSG_NAMCAP_WARN=$(          _getmsg "⚠ Namcap encountered warnings. See: " "notify_namcap_warn" )
+MSG_NAMCAP_OK=$(            _getmsg "✓ Namcap: no problems found!" "notify_namcap_ok" )
+MSG_NAMCAP_FAIL=$(          _getmsg "✗ Failed to execute namcap! See: " "notify_namcap_fail" )
+MSG_SHELLCHECK=$(           _getmsg "Running ShellCheck…" "notify_shellcheck" )
+MSG_SHELLCHECK_WARN=$(      _getmsg "⚠ ShellCheck encountered warnings. See: " "notify_shellcheck_warn" )
+MSG_SHELLCHECK_OK=$(        _getmsg "✓ ShellCheck: no problems found!" "notify_shellcheck_ok" )
+MSG_SHELLCHECK_FAIL=$(      _getmsg "✗ Failed to execute ShellCheck! See: " "notify_shellcheck_fail" )
 # Git / AUR
-MSG_PUSH_AUR=$(             _getmsg notify_push_aur            )
-MSG_PUSH_AUR_OK=$(          _getmsg notify_push_aur_ok         )
-MSG_PUSH_AUR_FAIL=$(        _getmsg notify_push_aur_fail       )
-MSG_PUSH_AUR_TAG=$(         _getmsg notify_push_aur_tag        )
-MSG_PUSH_AUR_TAG_OK=$(      _getmsg notify_push_aur_tag_ok     )
-MSG_PUSH_AUR_TAG_FAIL=$(    _getmsg notify_push_aur_tag_fail   )
+MSG_PUSH_AUR=$(             _getmsg "Sending to AUR…" "notify_push_aur" )
+MSG_PUSH_AUR_OK=$(          _getmsg "✓ Sent to AUR successfully!" "notify_push_aur_ok" )
+MSG_PUSH_AUR_FAIL=$(        _getmsg "✗ Failed to send to AUR! See: " "notify_push_aur_fail" )
+MSG_PUSH_AUR_TAG=$(         _getmsg "Creating tag and sending to AUR…" "notify_push_aur_tag" )
+MSG_PUSH_AUR_TAG_OK=$(      _getmsg "✓ Tag created and sent to AUR!" "notify_push_aur_tag_ok" )
+MSG_PUSH_AUR_TAG_FAIL=$(    _getmsg "✗ Failed to create tag/send to AUR! See: " "notify_push_aur_tag_fail" )
 # Clean
-MSG_CLEAN_SRC=$(            _getmsg notify_clean_src           )
-MSG_CLEAN_SRC_OK=$(         _getmsg notify_clean_src_ok        )
-MSG_CLEAN_SRC_FAIL=$(       _getmsg notify_clean_src_fail      )
-MSG_CLEAN_ALL=$(            _getmsg notify_clean_all           )
-MSG_CLEAN_ALL_OK=$(         _getmsg notify_clean_all_ok        )
-MSG_CLEAN_ALL_FAIL=$(       _getmsg notify_clean_all_fail      )
+MSG_CLEAN_SRC=$(            _getmsg "Cleaning srcdir…" "notify_clean_src" )
+MSG_CLEAN_SRC_OK=$(         _getmsg "✓ srcdir cleaned successfully!" "notify_clean_src_ok" )
+MSG_CLEAN_SRC_FAIL=$(       _getmsg "✗ Failed to clean srcdir! See: " "notify_clean_src_fail" )
+MSG_CLEAN_ALL=$(            _getmsg "Cleaning everything…" "notify_clean_all" )
+MSG_CLEAN_ALL_OK=$(         _getmsg "✓ Everything cleaned successfully!" "notify_clean_all_ok" )
+MSG_CLEAN_ALL_FAIL=$(       _getmsg "✗ Failed to clean everything! See: " "notify_clean_all_fail" )
 # Full workflow
-MSG_FULL_WORKFLOW=$(        _getmsg notify_full_workflow       )
-MSG_FULL_WORKFLOW_OK=$(     _getmsg notify_full_workflow_ok    )
-MSG_FULL_WORKFLOW_FAIL=$(   _getmsg notify_full_workflow_fail  )
+MSG_FULL_WORKFLOW=$(        _getmsg "Running full workflow…" "notify_full_workflow" )
+MSG_FULL_WORKFLOW_OK=$(     _getmsg "✓ Full workflow completed successfully!" "notify_full_workflow_ok" )
+MSG_FULL_WORKFLOW_FAIL=$(   _getmsg "✗ Full workflow failed! See: " "notify_full_workflow_fail" )

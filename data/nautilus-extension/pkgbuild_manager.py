@@ -17,28 +17,29 @@ CONFIG_FILE = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) /
 
 # Mantém paridade com all_actions() em src/settings_gui/config.rs
 DEFAULT_ACTIONS = [
-    ("00_Full Workflow",     "00_Full Workflow"),
-    ("01_Build",             "01_Build"),
-    ("02b_Build and Clean",  "02b_Build and Clean"),
-    ("08_Build Force",       "08_Build Force"),
-    ("09_Build NoCheck",     "09_Build NoCheck"),
-    ("10_Build NoGPG",       "10_Build NoGPG"),
-    ("11_Fetch Sources",     "11_Fetch Sources"),
-    ("02_Install",           "02_Install"),
-    ("12_Install Force",     "12_Install Force"),
-    ("13_Install RmDeps",    "13_Install RmDeps"),
-    ("14_Install NoCheck",   "14_Install NoCheck"),
-    ("15_Install NoGPG",     "15_Install NoGPG"),
-    ("03_Update Checksums",  "03_Update Checksums"),
-    ("04_Update .SRCINFO",   "04_Update .SRCINFO"),
-    ("16_Gen Checksums",     "16_Gen Checksums"),
-    ("05_Namcap",            "05_Namcap"),
-    ("05b_ShellCheck",       "05b_ShellCheck"),
-    ("06_Push AUR",          "06_Push AUR"),
-    ("17_Push AUR Tag",      "17_Push AUR Tag"),
-    ("07_Clean srcdir",      "07_Clean srcdir"),
-    ("07b_Clean Everything", "07b_Clean Everything"),
+    ("00_Full Workflow",     "Full Workflow"),
+    ("01_Build",             "Build"),
+    ("02b_Build and Clean",  "Build and Clean"),
+    ("08_Build Force",       "Force Build"),
+    ("09_Build NoCheck",     "Build without Checks"),
+    ("10_Build NoGPG",       "Build without GPG"),
+    ("11_Fetch Sources",     "Fetch Sources"),
+    ("02_Install",           "Install"),
+    ("12_Install Force",     "Force Install"),
+    ("13_Install RmDeps",    "Install and Remove Build Dependencies"),
+    ("14_Install NoCheck",   "Install without Checks"),
+    ("15_Install NoGPG",     "Install without GPG"),
+    ("03_Update Checksums",  "Update Checksums"),
+    ("04_Update .SRCINFO",   "Update .SRCINFO"),
+    ("16_Gen Checksums",     "Generate Checksums"),
+    ("05_Namcap",            "Namcap"),
+    ("05b_ShellCheck",       "ShellCheck"),
+    ("06_Push AUR",          "Push to AUR"),
+    ("17_Push AUR Tag",      "Push AUR Tag"),
+    ("07_Clean srcdir",      "Clean srcdir"),
+    ("07b_Clean Everything", "Clean Everything"),
 ]
+DEFAULT_LABELS = dict(DEFAULT_ACTIONS)
 
 ROOT_GROUP = "PKGBUILD"
 
@@ -59,11 +60,15 @@ def _load_menu():
             for group in data:
                 for item in group.get("items", []):
                     if item.get("enabled", True):
-                        result.append((item["id"], item["label"], group["group"]))
+                        sid = item["id"]
+                        label = item["label"]
+                        if label == sid:
+                            label = _(DEFAULT_LABELS.get(sid, label))
+                        result.append((sid, label, group["group"]))
             return result, len(data)
         except Exception:
             pass
-    return [(sid, _(sid), ROOT_GROUP) for sid, default_label in DEFAULT_ACTIONS], 1
+    return [(sid, _(default_label), ROOT_GROUP) for sid, default_label in DEFAULT_ACTIONS], 1
 
 
 class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):

@@ -39,32 +39,44 @@ pub struct MenuGroup {
 // ── All known actions ───────────────────────────────────────────────────────────────
 
 pub fn all_actions() -> Vec<(String, String)> {
-    vec![
-        ("00_Full Workflow".into(), gettext("00_Full Workflow")),
-        ("01_Build".into(), gettext("01_Build")),
-        ("02b_Build and Clean".into(), gettext("02b_Build and Clean")),
-        ("08_Build Force".into(), gettext("08_Build Force")),
-        ("09_Build NoCheck".into(), gettext("09_Build NoCheck")),
-        ("10_Build NoGPG".into(), gettext("10_Build NoGPG")),
-        ("11_Fetch Sources".into(), gettext("11_Fetch Sources")),
-        ("02_Install".into(), gettext("02_Install")),
-        ("12_Install Force".into(), gettext("12_Install Force")),
-        ("13_Install RmDeps".into(), gettext("13_Install RmDeps")),
-        ("14_Install NoCheck".into(), gettext("14_Install NoCheck")),
-        ("15_Install NoGPG".into(), gettext("15_Install NoGPG")),
-        ("03_Update Checksums".into(), gettext("03_Update Checksums")),
-        ("04_Update .SRCINFO".into(), gettext("04_Update .SRCINFO")),
-        ("16_Gen Checksums".into(), gettext("16_Gen Checksums")),
-        ("05_Namcap".into(), gettext("05_Namcap")),
-        ("05b_ShellCheck".into(), gettext("05b_ShellCheck")),
-        ("06_Push AUR".into(), gettext("06_Push AUR")),
-        ("17_Push AUR Tag".into(), gettext("17_Push AUR Tag")),
-        ("07_Clean srcdir".into(), gettext("07_Clean srcdir")),
-        (
-            "07b_Clean Everything".into(),
-            gettext("07b_Clean Everything"),
-        ),
+    [
+        "00_Full Workflow", "01_Build", "02b_Build and Clean", "08_Build Force",
+        "09_Build NoCheck", "10_Build NoGPG", "11_Fetch Sources", "02_Install",
+        "12_Install Force", "13_Install RmDeps", "14_Install NoCheck", "15_Install NoGPG",
+        "03_Update Checksums", "04_Update .SRCINFO", "16_Gen Checksums", "05_Namcap",
+        "05b_ShellCheck", "06_Push AUR", "17_Push AUR Tag", "07_Clean srcdir",
+        "07b_Clean Everything",
     ]
+    .into_iter()
+    .map(|id| (id.into(), action_label(id)))
+    .collect()
+}
+
+fn action_label(id: &str) -> String {
+    match id {
+        "00_Full Workflow" => gettext("Full Workflow"),
+        "01_Build" => gettext("Build"),
+        "02b_Build and Clean" => gettext("Build and Clean"),
+        "08_Build Force" => gettext("Force Build"),
+        "09_Build NoCheck" => gettext("Build without Checks"),
+        "10_Build NoGPG" => gettext("Build without GPG"),
+        "11_Fetch Sources" => gettext("Fetch Sources"),
+        "02_Install" => gettext("Install"),
+        "12_Install Force" => gettext("Force Install"),
+        "13_Install RmDeps" => gettext("Install and Remove Build Dependencies"),
+        "14_Install NoCheck" => gettext("Install without Checks"),
+        "15_Install NoGPG" => gettext("Install without GPG"),
+        "03_Update Checksums" => gettext("Update Checksums"),
+        "04_Update .SRCINFO" => gettext("Update .SRCINFO"),
+        "16_Gen Checksums" => gettext("Generate Checksums"),
+        "05_Namcap" => gettext("Namcap"),
+        "05b_ShellCheck" => gettext("ShellCheck"),
+        "06_Push AUR" => gettext("Push to AUR"),
+        "17_Push AUR Tag" => gettext("Push AUR Tag"),
+        "07_Clean srcdir" => gettext("Clean srcdir"),
+        "07b_Clean Everything" => gettext("Clean Everything"),
+        _ => id.to_string(),
+    }
 }
 
 // ── Default menu ────────────────────────────────────────────────────────────────
@@ -76,22 +88,22 @@ pub fn default_menu() -> Vec<MenuGroup> {
             items: vec![
                 MenuItem {
                     id: "00_Full Workflow".into(),
-                    label: gettext("00_Full Workflow"),
+                    label: action_label("00_Full Workflow"),
                     enabled: true,
                 },
                 MenuItem {
                     id: "02_Install".into(),
-                    label: gettext("02_Install"),
+                    label: action_label("02_Install"),
                     enabled: true,
                 },
                 MenuItem {
                     id: "01_Build".into(),
-                    label: gettext("01_Build"),
+                    label: action_label("01_Build"),
                     enabled: true,
                 },
                 MenuItem {
                     id: "02b_Build and Clean".into(),
-                    label: gettext("02b_Build and Clean"),
+                    label: action_label("02b_Build and Clean"),
                     enabled: true,
                 },
             ],
@@ -101,12 +113,12 @@ pub fn default_menu() -> Vec<MenuGroup> {
             items: vec![
                 MenuItem {
                     id: "03_Update Checksums".into(),
-                    label: gettext("03_Update Checksums"),
+                    label: action_label("03_Update Checksums"),
                     enabled: true,
                 },
                 MenuItem {
                     id: "04_Update .SRCINFO".into(),
-                    label: gettext("04_Update .SRCINFO"),
+                    label: action_label("04_Update .SRCINFO"),
                     enabled: true,
                 },
             ],
@@ -116,12 +128,12 @@ pub fn default_menu() -> Vec<MenuGroup> {
             items: vec![
                 MenuItem {
                     id: "05_Namcap".into(),
-                    label: gettext("05_Namcap"),
+                    label: action_label("05_Namcap"),
                     enabled: true,
                 },
                 MenuItem {
                     id: "05b_ShellCheck".into(),
-                    label: gettext("05b_ShellCheck"),
+                    label: action_label("05b_ShellCheck"),
                     enabled: true,
                 },
             ],
@@ -130,7 +142,7 @@ pub fn default_menu() -> Vec<MenuGroup> {
             group: gettext("Git / AUR"),
             items: vec![MenuItem {
                 id: "06_Push AUR".into(),
-                label: gettext("06_Push AUR"),
+                label: action_label("06_Push AUR"),
                 enabled: true,
             }],
         },
@@ -139,12 +151,12 @@ pub fn default_menu() -> Vec<MenuGroup> {
             items: vec![
                 MenuItem {
                     id: "07_Clean srcdir".into(),
-                    label: gettext("07_Clean srcdir"),
+                    label: action_label("07_Clean srcdir"),
                     enabled: true,
                 },
                 MenuItem {
                     id: "07b_Clean Everything".into(),
-                    label: gettext("07b_Clean Everything"),
+                    label: action_label("07b_Clean Everything"),
                     enabled: true,
                 },
             ],
@@ -186,9 +198,13 @@ pub fn load_with_diagnostics() -> LoadResult {
         Some(mut groups) => {
             let mut unknown_ids: Vec<String> = Vec::new();
             for g in &mut groups {
-                for item in &g.items {
+                for item in &mut g.items {
                     if !known.contains(item.id.as_str()) {
                         unknown_ids.push(item.id.clone());
+                    } else if item.label == item.id {
+                        // Migrate labels saved by older releases without
+                        // exposing the numeric script-order prefix.
+                        item.label = action_label(&item.id);
                     }
                 }
                 g.items.retain(|i| known.contains(i.id.as_str()));

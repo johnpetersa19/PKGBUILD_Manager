@@ -84,15 +84,44 @@ if xgettext.found() and msgcat.found()
     ],
   )
 
+  bash_pot = custom_target(
+    'extract-bash-pot',
+    input:            root_dir / 'data/nautilus-scripts/_i18n',
+    output:           'bash.pot',
+    build_by_default: false,
+    command: [
+      xgettext,
+      '--from-code=UTF-8', '--language=Shell', '--keyword=_getmsg:1',
+      '--add-comments=translators',
+      '--package-name=' + pkg,
+      '--package-version=' + meson.project_version(),
+      '--output=@OUTPUT@', '@INPUT@',
+    ],
+  )
+
+  bash_legacy_pot = custom_target(
+    'extract-bash-legacy-pot',
+    input:            root_dir / 'data/nautilus-scripts/_i18n',
+    output:           'bash-legacy.pot',
+    build_by_default: false,
+    command: [
+      xgettext,
+      '--from-code=UTF-8', '--language=Shell', '--keyword=_getmsg:2',
+      '--package-name=' + pkg,
+      '--package-version=' + meson.project_version(),
+      '--output=@OUTPUT@', '@INPUT@',
+    ],
+  )
+
   custom_target(
     'generate-pot',
-    input:            [rust_pot, python_pot, po_dir / 'bash_notify.pot.in'],
+    input:            [rust_pot, python_pot, bash_pot, bash_legacy_pot],
     output:           'pkgbuild_manager.pot',
     build_by_default: false,
     install:          false,
     command: [
       msgcat, '--use-first', '--output=@OUTPUT@',
-      rust_pot, python_pot, po_dir / 'bash_notify.pot.in',
+      rust_pot, python_pot, bash_pot, bash_legacy_pot,
     ],
   )
 endif

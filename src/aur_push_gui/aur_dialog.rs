@@ -255,7 +255,7 @@ impl StepRow {
         self.row.remove_css_class("step-running");
         self.row.remove_css_class("step-error");
         self.row.add_css_class("step-ok");
-        self.icon.set_label("✔");
+        self.icon.set_label("✓");
         self.icon.remove_css_class("icon-waiting");
         self.icon.remove_css_class("icon-error");
         self.icon.add_css_class("icon-ok");
@@ -267,7 +267,7 @@ impl StepRow {
         self.row.remove_css_class("step-running");
         self.row.remove_css_class("step-ok");
         self.row.add_css_class("step-error");
-        self.icon.set_label("✖");
+        self.icon.set_label("✗");
         self.icon.remove_css_class("icon-waiting");
         self.icon.remove_css_class("icon-ok");
         self.icon.add_css_class("icon-error");

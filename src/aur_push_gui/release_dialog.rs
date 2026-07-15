@@ -16,6 +16,7 @@
 
 use adw::prelude::*;
 use adw::{ApplicationWindow, HeaderBar, StatusPage};
+use gettextrs::gettext;
 use gtk::{
     glib, glib::clone, Align, Box as GBox, Button, CssProvider, Label, Orientation, PolicyType,
     Popover, ProgressBar, ScrolledWindow, Separator, Spinner, Stack, StackTransitionType, TextView,
@@ -237,7 +238,7 @@ impl StepRow {
         self.row.remove_css_class("step-running");
         self.row.remove_css_class("step-error");
         self.row.add_css_class("step-ok");
-        self.icon.set_label("✔");
+        self.icon.set_label("✓");
         self.icon.remove_css_class("icon-waiting");
         self.icon.remove_css_class("icon-error");
         self.icon.add_css_class("icon-ok");
@@ -249,7 +250,7 @@ impl StepRow {
         self.row.remove_css_class("step-running");
         self.row.remove_css_class("step-ok");
         self.row.add_css_class("step-error");
-        self.icon.set_label("✖");
+        self.icon.set_label("✗");
         self.icon.remove_css_class("icon-waiting");
         self.icon.remove_css_class("icon-ok");
         self.icon.add_css_class("icon-error");
@@ -344,7 +345,7 @@ impl ProgressPanel {
             .css_classes(vec!["error-box".to_string()])
             .build();
         let err_title = Label::builder()
-            .label("⚠️ Errors found")
+            .label(&gettext("⚠️ Errors found"))
             .halign(Align::Start)
             .css_classes(vec!["error-title".to_string()])
             .build();
