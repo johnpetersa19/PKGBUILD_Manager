@@ -5,6 +5,7 @@
 import os
 import json
 import gettext
+import shutil
 import subprocess
 import threading
 import gi
@@ -112,17 +113,80 @@ def _repository_name(clone_url):
     return name or None
 
 
-def _clone_repository(repository, destination):
+def _repository_is_accessible(repository):
+    """Return (accessible, diagnostic) without prompting for credentials."""
+    clone_url, branch = repository
+    command = ["git", "ls-remote", "--exit-code", clone_url]
+    if branch:
+        command.append(f"refs/heads/{branch}")
+
+    environment = os.environ.copy()
+    environment["GIT_TERMINAL_PROMPT"] = "0"
+    environment["GIT_ASKPASS"] = "true"
+    try:
+        result = subprocess.run(
+            command,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            text=True,
+            env=environment,
+            timeout=30,
+        )
+        if result.returncode == 0:
+            return True, None
+        detail = (result.stderr or "").strip().splitlines()
+        return False, detail[-1] if detail else _("Git rejected the repository URL.")
+    except subprocess.TimeoutExpired:
+        return False, _("Repository validation timed out after 30 seconds.")
+    except OSError as error:
+        return False, str(error)
+
+
+def _validate_and_clone(repository, destination):
+    """Validate first, then clone only repositories Git can access."""
+    accessible, diagnostic = _repository_is_accessible(repository)
+    if not accessible:
+        GLib.idle_add(
+            _show_error_window,
+            _("The copied URL is not an accessible Git repository.")
+            + "\n\n"
+            + (diagnostic or _("Unknown Git error")),
+        )
+        return
+    _clone_repository(repository, destination)
+
+
+def _clone_repository(repository, destination, completed=None):
     clone_url, branch = repository
     command = ["git", "clone"]
     if branch:
         command.extend(["--branch", branch, "--single-branch"])
-    command.append(clone_url)
+    name = _repository_name(clone_url) or _("Git repository")
+    cloned_path = os.path.join(destination, name)
+    created_destination = False
+    try:
+        # Creating the top-level directory explicitly gives Nautilus a simple,
+        # immediate filesystem event. Git can clone into an existing empty
+        # directory and then populate it in the background.
+        os.mkdir(cloned_path)
+        created_destination = True
+        command.extend([clone_url, cloned_path])
+    except FileExistsError:
+        # Preserve git-clone's normal error handling and diagnostics when the
+        # inferred repository directory already exists.
+        command.append(clone_url)
+
     result = subprocess.run(command, cwd=destination, text=True, capture_output=True)
     if result.returncode == 0:
-        name = _repository_name(clone_url) or _("Git repository")
         GLib.idle_add(_notify, _("✓ Repository downloaded successfully: ") + name, False)
+        if completed is not None:
+            # The clone runs outside GTK's main thread.  Marshal completion
+            # back to GLib before touching the MenuProvider/Nautilus.
+            GLib.idle_add(completed, cloned_path)
     else:
+        if created_destination:
+            shutil.rmtree(cloned_path, ignore_errors=True)
         detail = (result.stderr or result.stdout).strip().splitlines()
         message = detail[-1] if detail else _("Unknown Git error")
         GLib.idle_add(_show_error_window, message)
@@ -162,75 +226,41 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
 
     def __init__(self):
         super().__init__()
-        self._repository = None
         self._destination = None
-        self._clipboard_generation = 0
         self._download_item = Nautilus.MenuItem(
             name="PkgbuildManager::CloneClipboardRepository",
-            label=_("Download Git repository"),
-            tip=_("Copy a repository URL to enable this option"),
+            label=_("Clone repository"),
+            tip=_("Validate and clone the Git repository URL from the clipboard"),
         )
-        self._download_item.set_property("sensitive", False)
         self._download_item.connect("activate", self._download_repository)
 
         display = Gdk.Display.get_default()
         self._clipboard = display.get_clipboard() if display else None
-        if self._clipboard is not None:
-            self._clipboard.connect("changed", self._on_clipboard_changed)
-            self._refresh_clipboard()
+        self._download_item.set_property("sensitive", self._clipboard is not None)
 
-    def _on_clipboard_changed(self, _clipboard):
-        """Update the existing menu item as soon as clipboard text changes."""
-        self._refresh_clipboard()
-
-    def _refresh_clipboard(self):
-        """Read and cache the repository URL without blocking Nautilus."""
-        if self._clipboard is None:
+    def _download_repository(self, _item):
+        destination = self._destination
+        if self._clipboard is None or not destination:
             return
-
-        self._clipboard_generation += 1
-        generation = self._clipboard_generation
 
         def clipboard_ready(source, result, _data=None):
             try:
                 text = source.read_text_finish(result)
             except GLib.Error:
                 text = None
-
-            if generation != self._clipboard_generation:
+            repository = _repository_from_url(text)
+            if repository is None:
+                _show_error_window(
+                    _("Copy a valid Git repository URL before using this option.")
+                )
                 return
-
-            self._repository = _repository_from_url(text)
-            if self._repository is None:
-                self._download_item.set_property("label", _("Download Git repository"))
-                self._download_item.set_property(
-                    "tip", _("Copy a repository URL to enable this option")
-                )
-                self._download_item.set_property("sensitive", False)
-            else:
-                name = _repository_name(self._repository[0]) or _("Git repository")
-                self._download_item.set_property("label", _("Download ") + name)
-                self._download_item.set_property(
-                    "tip", _("Clone the repository URL from the clipboard into this folder")
-                )
-                self._download_item.set_property("sensitive", True)
-
-            # Some Nautilus versions rebuild extension actions on this signal;
-            # versions that do not still receive the property updates above.
-            self.emit_items_updated_signal()
+            threading.Thread(
+                target=_validate_and_clone,
+                args=(repository, destination),
+                daemon=True,
+            ).start()
 
         self._clipboard.read_text_async(None, clipboard_ready, None)
-
-    def _download_repository(self, _item):
-        repository = self._repository
-        destination = self._destination
-        if repository is None or not destination:
-            return
-        threading.Thread(
-            target=_clone_repository,
-            args=(repository, destination),
-            daemon=True,
-        ).start()
 
     def _build_menu(self, pkgbuild_path):
         scripts = _scripts_dir()
@@ -328,7 +358,7 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
         if not self._destination:
             return []
 
-        # Keep the same MenuItem alive. Its label and sensitivity are updated
-        # directly by the clipboard callback, without requiring a folder change.
-        self._refresh_clipboard()
+        # This action is intentionally static. Nautilus caches background menu
+        # providers until the view changes, so URL reading and remote validation
+        # happen only after activation and never depend on a menu refresh.
         return [self._download_item]

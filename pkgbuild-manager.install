@@ -3,6 +3,17 @@ post_install() {
     echo ">>> Right-click any PKGBUILD file to see the PKGBUILD submenu."
     echo ">>> Press Ctrl+Alt+P to open the menu settings panel."
 
+    # Nautilus scans both system and per-user extension directories. A stale
+    # user copy instantiates a second MenuProvider and duplicates the option.
+    # This package's system extension is authoritative when installed.
+    _user="${SUDO_USER:-$USER}"
+    _user_home="$(eval echo ~$_user)"
+    _user_ext="$_user_home/.local/share/nautilus-python/extensions/pkgbuild_manager.py"
+    if [ -f "$_user_ext" ] || [ -L "$_user_ext" ]; then
+        rm -f "$_user_ext"
+        echo ">>> Removed duplicate Nautilus extension: $_user_ext"
+    fi
+
     # Register Ctrl+Alt+P shortcut (GNOME only, only if slot is free)
     if command -v gsettings &>/dev/null; then
         _user="${SUDO_USER:-$USER}"

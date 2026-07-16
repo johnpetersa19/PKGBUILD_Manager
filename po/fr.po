@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-14 23:00-0300\n"
+"POT-Creation-Date: 2026-07-16 00:49-0300\n"
 "PO-Revision-Date: 2026-05-31 14:10-0300\n"
 "Last-Translator: AI <ai@example.com>\n"
 "Language-Team: French\n"
@@ -588,161 +588,169 @@ msgstr ""
 msgid "Extension found"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:263
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:283
+msgid "Could not remove duplicate Nautilus extension"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:289
+msgid "Removed duplicate Nautilus extension"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:296
 msgid "Restarting Nautilus\\u{2026}"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:268
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:301
 #, fuzzy
 msgid "Done. Right-click a PKGBUILD directory to see the menu."
 msgstr ""
 "PKGBUILD Manager : extension Nautilus active. Cliquez avec le bouton droit "
 "sur n'importe quel fichier PKGBUILD pour afficher le sous-menu PKGBUILD."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:276
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:309
 #, fuzzy
 msgid "Compiled package (makepkg)"
 msgstr "Compiler le paquet (makepkg)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:277
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:310
 msgid "Compile and clean srcdir (makepkg -c)"
 msgstr "Compiler et nettoyer le répertoire source (makepkg -c)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:278
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:311
 #, fuzzy
 msgid "Force recompilation (makepkg -f)"
 msgstr "Forcer la recompilation (makepkg -f)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:279
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:312
 #, fuzzy
 msgid "Basic check() function (makepkg --nocheck)"
 msgstr "Ignorer la fonction check() (makepkg --nocheck)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:280
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:313
 #, fuzzy
 msgid "Popular PGP signature check (makepkg --skippgpcheck)"
 msgstr "Ignorer la vérification de signature PGP (makepkg --skippgpcheck)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:281
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:314
 msgid ""
 "Same as 'build' — all extra flags after the path are forwarded to makepkg"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:284
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:317
 #, fuzzy
 msgid "Compile, install and resolve dependencies (makepkg -si)"
 msgstr "Compiler, installer et résoudre les dépendances (makepkg -si)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:285
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:318
 msgid "Compile, install and clean srcdir (makepkg -sic)"
 msgstr "Compiler, installer et nettoyer le répertoire source (makepkg -sic)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:286
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:319
 #, fuzzy
 msgid "Force compilation and installation (makepkg -sif)"
 msgstr "Forcer la compilation et l'installation (makepkg -sif)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:287
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:320
 #, fuzzy
 msgid "Install and remove makedeps afterwards (makepkg -sir)"
 msgstr ""
 "Installer et supprimer les dépendances de compilation après (makepkg -sir)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:288
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:321
 msgid "Install without running check()"
 msgstr "Installer sans exécuter check()"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:289
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:322
 msgid "Install skipping PGP checks"
 msgstr "Installer en ignorant les vérifications PGP"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:290
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:323
 msgid ""
 "Same as 'install' — all extra flags after the path are forwarded to makepkg"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:293
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:326
 msgid "Download and extract sources only (makepkg -o)"
 msgstr "Télécharger et extraire les sources uniquement (makepkg -o)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:294
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:327
 #, fuzzy
 msgid "Update checksums without PKGBUILD (updpkgsums)"
 msgstr "Mettre à jour les checksums dans PKGBUILD (updpkgsums)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:295
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:328
 #, fuzzy
 msgid "Generate checksums and print to standard output (makepkg -g)"
 msgstr "Générer les checksums et afficher sur stdout (makepkg -g)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:296
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:329
 msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
 msgstr "Régénérer .SRCINFO (makepkg --printsrcinfo)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:299
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:332
 #, fuzzy
 msgid "Run namcap on PKGBUILD and compiled packages"
 msgstr "Exécuter namcap sur PKGBUILD et les paquets compilés"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:300
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:333
 #, fuzzy
 msgid "Run ShellCheck on PKGBUILD"
 msgstr "Exécuter shellcheck sur PKGBUILD"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:303
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:336
 msgid "Full offline check: syntax + namcap + shellcheck (no network)"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:304
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:337
 #, fuzzy
 msgid "Validate syntax only (makepkg --printsrcinfo)"
 msgstr "Régénérer .SRCINFO (makepkg --printsrcinfo)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:305
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:338
 msgid ""
 "Parse variables/functions without extracting (makepkg --nobuild --"
 "noextract); may access network on VCS packages"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:306
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:339
 msgid "Download sources and verify checksums (makepkg --verifysource)"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:307
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:340
 msgid ""
 "Check declared dependencies exist in repos (makepkg --syncdeps --nobuild)"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:310
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:343
 msgid "Clean srcdir with makepkg (makepkg -c)"
 msgstr "Nettoyer le répertoire source avec makepkg (makepkg -c)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:311
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:344
 #, fuzzy
 msgid "Remove src/, packages/ and compiled packages"
 msgstr "Supprimer src/, pkg/ et les paquets compilés"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:314
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:347
 #, fuzzy
 msgid "Stage, commit and push to the AUR (automatic message if not provided)"
 msgstr ""
 "Préparer, valider et pousser vers l'AUR (message automatique si non fourni)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:315
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:348
 #, fuzzy
 msgid "Push with version tag (e.g., 1.2.3-1)"
 msgstr "Pousser avec une étiquette de version (ex. 1.2.3-1)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:318
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:351
 msgid "Remove obsolete symbolic links and check the Nautilus extension"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:319
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:352
 #, fuzzy
 msgid "Display program version"
 msgstr "Afficher la version du programme"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:320
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:353
 #, fuzzy
 msgid "Display this help message"
 msgstr "Afficher ce message d'aide"
@@ -906,41 +914,49 @@ msgstr "Git / AUR"
 msgid "Clean"
 msgstr "Nettoyer"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:65
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:66
 msgid "Repository download error"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:67
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:68
 msgid "Close"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:123
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:311
-msgid "Git repository"
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:139
+msgid "Git rejected the repository URL."
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:124
-msgid "✓ Repository downloaded successfully: "
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:141
+msgid "Repository validation timed out after 30 seconds."
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:127
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:152
+msgid "The copied URL is not an accessible Git repository."
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:154
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:191
 msgid "Unknown Git error"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:303
-msgid "Repository URL error"
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:165
+msgid "Git repository"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:304
-msgid "Click to view the repository access error"
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:182
+msgid "✓ Repository downloaded successfully: "
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:311
-msgid "Download "
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:232
+msgid "Clone repository"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:312
-msgid "Clone the repository URL from the clipboard into this folder"
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:233
+msgid "Validate and clone the Git repository URL from the clipboard"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:254
+msgid "Copy a valid Git repository URL before using this option."
 msgstr ""
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:133

@@ -231,7 +231,7 @@ You can also use `--` to disambiguate pre-path flags from post-path flags:
 | | `clean-all` | Remove all build outputs | removes `src/`, `pkg/`, any `*.pkg.tar.*`, bare git caches and `_build*` dirs |
 | **AUR / Git** | `aur-push [msg]` | Stage, commit, push (auto message if omitted) | `git add && git commit && git push` |
 | | `aur-push-tag <t>` | Stage, commit, tag, push | `git tag -a <t> && git push --tags` |
-| **Other** | `setup-nautilus` | Clean up old scripts and verify Nautilus extension | `nautilus -q` + extension checks |
+| **Other** | `setup-nautilus` | Clean up old scripts, remove duplicate user/system extensions, and verify Nautilus integration | `nautilus -q` + extension checks |
 | | `--version` | Print program version | — |
 
 ### Notes on `aur-push`
