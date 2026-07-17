@@ -14,6 +14,7 @@ Gtk.Box progress_panel {
     styles ["stage-caption"]
   }
   Gtk.ProgressBar panel_progress {
+    fraction: 0.0;
     styles ["progress-bar-box"]
   }
   Adw.PreferencesGroup panel_steps { title: _("Steps"); }
@@ -55,7 +56,13 @@ Gtk.Box progress_panel {
     halign: end;
     spacing: 8;
     margin-top: 4;
-    Gtk.Button panel_back { styles ["pill"] }
-    Gtk.Button panel_run { styles ["suggested-action", "pill"] }
+    Gtk.Button panel_back {
+      label: _("Back");
+      styles ["pill"]
+    }
+    Gtk.Button panel_run {
+      label: _("Run");
+      styles ["suggested-action", "pill"]
+    }
   }
 }

@@ -12,6 +12,7 @@ Adw.ApplicationWindow push_window {
         spacing: 2;
 
         Gtk.Label push_title {
+          xalign: 0.5;
           styles ["title"]
         }
 
@@ -25,7 +26,7 @@ Adw.ApplicationWindow push_window {
             styles ["dim-label"]
           }
 
-          Gtk.Label push_badge {}
+          Gtk.Label push_badge { xalign: 0.5; }
         }
       };
     }

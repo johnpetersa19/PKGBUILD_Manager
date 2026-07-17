@@ -7,11 +7,13 @@ Adw.ApplicationWindow settings_window {
     Adw.HeaderBar {
       [start]
       Gtk.Button reset_button {
+        label: _("Reset");
         styles ["destructive-action"]
       }
 
       [end]
       Gtk.Button save_button {
+        label: _("Save");
         styles ["suggested-action"]
       }
     }

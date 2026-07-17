@@ -38,8 +38,10 @@ Adw.ApplicationWindow clean_window {
       }
 
       Adw.ActionRow unlock_row {
+        title: _("Unlock cleanup");
         Gtk.Image {
           icon-name: "changes-prevent-symbolic";
+          accessible-role: presentation;
         }
 
         [suffix]
@@ -62,9 +64,10 @@ Adw.ApplicationWindow clean_window {
         spacing: 8;
         halign: end;
 
-        Gtk.Button cancel_button {}
+        Gtk.Button cancel_button { label: _("Cancel"); }
 
         Gtk.Button clean_button {
+          label: _("Clean permanently");
           sensitive: false;
           styles ["destructive-action"]
         }

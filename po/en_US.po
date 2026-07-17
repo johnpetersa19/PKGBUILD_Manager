@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 2.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-16 23:38-0300\n"
+"POT-Creation-Date: 2026-07-16 23:48-0300\n"
 "PO-Revision-Date: 2026-07-14 21:44-0300\n"
 "Last-Translator: John Peter Sa\n"
 "Language-Team: English (United States)\n"
@@ -1024,10 +1024,23 @@ msgstr ""
 msgid "Error"
 msgstr "error"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/ui/progress-panel.blp:27
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/ui/progress-panel.blp:28
 #, fuzzy
 msgid "Errors"
 msgstr "errors"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/ui/progress-panel.blp:64
+msgid "Run"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/ui/step-row.blp:5
+#, fuzzy
+msgid "Step"
+msgstr "Steps"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/ui/step-row.blp:15
+msgid "○"
+msgstr ""
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:133
 msgid "Compiling package…"
