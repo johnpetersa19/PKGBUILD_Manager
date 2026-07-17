@@ -935,13 +935,17 @@ impl UnifiedPushWindow {
                             if ok {
                                 progress.set_fraction(1.0);
                                 run_btn.set_label(&gettext("Push again"));
-                                status_page.set_icon_name(Some("emblem-ok-symbolic"));
+                                status_page.set_icon_name(Some("object-select-symbolic"));
                                 status_page.set_title(&done_label_owned);
                                 status_page.remove_css_class("error");
                                 status_page.set_visible(true);
                             } else {
                                 progress.set_fraction(0.0);
                                 run_btn.set_label(&gettext("Try again"));
+                                status_page.set_icon_name(Some("dialog-error-symbolic"));
+                                status_page.set_title(&gettext("Process failed"));
+                                status_page.add_css_class("error");
+                                status_page.set_visible(true);
                             }
                         }
                     }

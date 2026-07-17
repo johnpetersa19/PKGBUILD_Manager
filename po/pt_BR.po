@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-16 23:48-0300\n"
-"PO-Revision-Date: 2026-07-16 23:38-0300\n"
+"POT-Creation-Date: 2026-07-17 00:00-0300\n"
+"PO-Revision-Date: 2026-07-17 00:05-0300\n"
 "Last-Translator: John Peter Sa\n"
 "Language-Team: Portuguese (Brazil)\n"
 "Language: pt_BR\n"
@@ -176,7 +176,7 @@ msgid "failed to spawn"
 msgstr "falha ao gerar"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:27
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1234
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1238
 msgid "failed"
 msgstr "falhou"
 
@@ -526,35 +526,41 @@ msgstr "Enviar novamente"
 msgid "Try again"
 msgstr "Tentar novamente"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1097
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:946
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:361
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1537
+msgid "Process failed"
+msgstr "O processo falhou"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1101
 msgid "No target directory provided."
 msgstr "Nenhum diretório de destino fornecido."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1121
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1125
 msgid "Failed to start pkgbuild_manager"
 msgstr "Falha ao iniciar o pkgbuild_manager"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1122
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1126
 msgid "Make sure it is installed and in PATH."
 msgstr "Verifique se está instalado e no PATH."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1189
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1193
 msgid "failed to start"
 msgstr "falhou ao iniciar"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1212
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1216
 msgid "git add failed"
 msgstr "git add falhou"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1225
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1229
 msgid "git commit failed (nothing to commit?)"
 msgstr "git commit falhou (nada para fazer commit?)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1251
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1255
 msgid "git tag failed"
 msgstr "git tag falhou"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1259
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1263
 msgid "git push --tags failed"
 msgstr "git push --tags falhou"
 
@@ -1043,16 +1049,15 @@ msgstr "Erros"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/ui/progress-panel.blp:64
 msgid "Run"
-msgstr ""
+msgstr "Rodando"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/ui/step-row.blp:5
-#, fuzzy
 msgid "Step"
-msgstr "Etapas"
+msgstr "Etapa"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/ui/step-row.blp:15
 msgid "○"
-msgstr ""
+msgstr "○"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:133
 msgid "Compiling package…"

@@ -348,13 +348,19 @@ impl ProgressPanel {
         if ok {
             self.bar.set_fraction(1.0);
             self.run_btn.set_label("Run again");
-            self.status_page.set_icon_name(Some("emblem-ok-symbolic"));
+            self.status_page
+                .set_icon_name(Some("object-select-symbolic"));
             self.status_page.set_title(success_title);
             self.status_page.remove_css_class("error");
             self.status_page.set_visible(true);
         } else {
             self.bar.set_fraction(0.0);
             self.run_btn.set_label("Try again");
+            self.status_page
+                .set_icon_name(Some("dialog-error-symbolic"));
+            self.status_page.set_title(&gettext("Process failed"));
+            self.status_page.add_css_class("error");
+            self.status_page.set_visible(true);
         }
     }
 
@@ -440,7 +446,12 @@ impl ReleaseWindow {
             btn
         };
 
-        let push_nav = make_nav_btn("send-symbolic", "Push", "push", content_stack.clone());
+        let push_nav = make_nav_btn(
+            "mail-send-symbolic",
+            "Push",
+            "push",
+            content_stack.clone(),
+        );
         let tags_nav = make_nav_btn(
             "bookmark-new-symbolic",
             "Tags",
@@ -1515,13 +1526,17 @@ fn handle_msg(
             if ok {
                 bar.set_fraction(1.0);
                 run_btn.set_label("Run again");
-                sp.set_icon_name(Some("emblem-ok-symbolic"));
+                sp.set_icon_name(Some("object-select-symbolic"));
                 sp.set_title(success_msg);
                 sp.remove_css_class("error");
                 sp.set_visible(true);
             } else {
                 bar.set_fraction(0.0);
                 run_btn.set_label("Try again");
+                sp.set_icon_name(Some("dialog-error-symbolic"));
+                sp.set_title(&gettext("Process failed"));
+                sp.add_css_class("error");
+                sp.set_visible(true);
             }
         }
     }

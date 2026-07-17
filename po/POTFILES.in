@@ -13,9 +13,9 @@ src/clean_gui/dialog.rs
 src/main.rs
 src/settings_gui/app.rs
 src/settings_gui/config.rs
-data/nautilus-extension/pkgbuild_manager.py
 data/nautilus-extension/pkgbuild_manager_caja.py
 data/nautilus-extension/pkgbuild_manager_nemo.py
+data/nautilus-extension/pkgbuild_manager.py
 data/ui/add-action-dialog.blp
 data/ui/attachment-chooser.blp
 data/ui/branch-popover.blp

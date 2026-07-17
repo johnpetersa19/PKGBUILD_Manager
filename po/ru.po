@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-16 23:48-0300\n"
+"POT-Creation-Date: 2026-07-17 00:00-0300\n"
 "PO-Revision-Date: 2026-05-31 14:10-0300\n"
 "Last-Translator: AI <ai@example.com>\n"
 "Language-Team: Russian\n"
@@ -181,7 +181,7 @@ msgid "failed to spawn"
 msgstr "namcap завершился со статусом"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:27
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1234
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1238
 #, fuzzy
 msgid "failed"
 msgstr "Команда завершилась с ошибкой"
@@ -517,38 +517,45 @@ msgstr ""
 msgid "Try again"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1097
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:946
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:361
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1537
+#, fuzzy
+msgid "Process failed"
+msgstr "Команда завершилась с ошибкой"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1101
 msgid "No target directory provided."
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1121
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1125
 msgid "Failed to start pkgbuild_manager"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1122
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1126
 msgid "Make sure it is installed and in PATH."
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1189
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1193
 #, fuzzy
 msgid "failed to start"
 msgstr "namcap завершился со статусом"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1212
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1216
 #, fuzzy
 msgid "git add failed"
 msgstr "Команда завершилась с ошибкой"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1225
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1229
 msgid "git commit failed (nothing to commit?)"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1251
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1255
 #, fuzzy
 msgid "git tag failed"
 msgstr "makepkg -g завершился с ошибкой:"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1259
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1263
 #, fuzzy
 msgid "git push --tags failed"
 msgstr "Примечание: отправка в origin/master завершилась с ошибкой"
