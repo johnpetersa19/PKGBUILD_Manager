@@ -10,6 +10,7 @@ import subprocess
 import threading
 import gi
 import re
+import time
 from urllib.parse import urlparse
 from pathlib import Path
 
@@ -67,6 +68,119 @@ def _show_error_window(message):
     dialog.set_detail(str(message))
     dialog.set_buttons([_("Close")])
     dialog.show(None)
+
+
+def _format_duration(seconds):
+    seconds = max(0, int(seconds))
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    if hours:
+        return f"{hours:d}:{minutes:02d}:{seconds:02d}"
+    return f"{minutes:02d}:{seconds:02d}"
+
+
+class _CloneProgressWindow:
+    """Small, thread-safe GTK window used while validating and cloning."""
+
+    def __init__(self, repository_name):
+        self._started_at = time.monotonic()
+        self._clone_started_at = None
+        self._last_percent = 0
+
+        self.window = Gtk.Window(title=_("Cloning repository"))
+        self.window.set_default_size(440, -1)
+        self.window.set_resizable(False)
+
+        content = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+            spacing=12,
+            margin_top=24,
+            margin_bottom=18,
+            margin_start=24,
+            margin_end=24,
+        )
+        self.title = Gtk.Label(label=repository_name)
+        self.title.add_css_class("title-2")
+        self.title.set_ellipsize(3)  # Pango.EllipsizeMode.END
+        self.status = Gtk.Label(label=_("Validating repository…"))
+        self.status.set_xalign(0)
+        self.progress = Gtk.ProgressBar(show_text=True)
+        self.progress.set_text(_("Preparing…"))
+        self.progress.pulse()
+        self.time_label = Gtk.Label(label=_("Elapsed time: 00:00"))
+        self.time_label.set_xalign(0)
+        self.time_label.add_css_class("dim-label")
+        self.close_button = Gtk.Button(label=_("Close"))
+        self.close_button.set_halign(Gtk.Align.END)
+        self.close_button.set_sensitive(False)
+        self.close_button.connect("clicked", lambda _button: self.window.close())
+
+        content.append(self.title)
+        content.append(self.status)
+        content.append(self.progress)
+        content.append(self.time_label)
+        content.append(self.close_button)
+        self.window.set_child(content)
+        self.window.present()
+
+        self._timer_id = GLib.timeout_add_seconds(1, self._tick)
+
+    def _tick(self):
+        if self.close_button.get_sensitive():
+            return False
+        if self._clone_started_at is None:
+            self.progress.pulse()
+        elapsed_total = time.monotonic() - self._started_at
+        if self._clone_started_at is not None and self._last_percent > 0:
+            clone_elapsed = time.monotonic() - self._clone_started_at
+            remaining = clone_elapsed * (100 - self._last_percent) / self._last_percent
+            self.time_label.set_label(
+                _("Elapsed: {elapsed} • Remaining: about {remaining}").format(
+                    elapsed=_format_duration(elapsed_total),
+                    remaining=_format_duration(remaining),
+                )
+            )
+        else:
+            self.time_label.set_label(
+                _("Elapsed time: {elapsed}").format(elapsed=_format_duration(elapsed_total))
+            )
+        return True
+
+    def cloning_started(self):
+        self._clone_started_at = time.monotonic()
+        self.status.set_label(_("Downloading repository data…"))
+        self.progress.set_fraction(0.0)
+        self.progress.set_text("0%")
+
+    def update(self, percent, phase):
+        # Git can report a new phase starting at a lower percentage. Keep the
+        # overall bar monotonic by assigning the phases portions of the clone.
+        phase_start, phase_size = {
+            "Counting objects": (0, 5),
+            "Compressing objects": (5, 15),
+            "Receiving objects": (20, 65),
+            "Resolving deltas": (85, 15),
+            "Updating files": (85, 15),
+        }.get(phase, (0, 100))
+        overall = min(100, phase_start + round(percent * phase_size / 100))
+        self._last_percent = max(self._last_percent, overall)
+        self.progress.set_fraction(self._last_percent / 100.0)
+        self.progress.set_text(f"{self._last_percent}%")
+        self.status.set_label(_(phase) + "…")
+
+    def finish(self, success, detail=None):
+        if success:
+            self._last_percent = 100
+            self.progress.set_fraction(1.0)
+            self.progress.set_text("100%")
+            self.status.set_label(_("Repository cloned successfully!"))
+            self.progress.add_css_class("success")
+        else:
+            self.status.set_label(_("Failed to clone repository"))
+            self.progress.add_css_class("error")
+            if detail:
+                self.time_label.set_label(str(detail))
+        self.close_button.set_sensitive(True)
 
 
 def _repository_from_url(text):
@@ -143,10 +257,12 @@ def _repository_is_accessible(repository):
         return False, str(error)
 
 
-def _validate_and_clone(repository, destination):
+def _validate_and_clone(repository, destination, progress=None):
     """Validate first, then clone only repositories Git can access."""
     accessible, diagnostic = _repository_is_accessible(repository)
     if not accessible:
+        if progress is not None:
+            GLib.idle_add(progress.finish, False, diagnostic)
         GLib.idle_add(
             _show_error_window,
             _("The copied URL is not an accessible Git repository.")
@@ -154,12 +270,14 @@ def _validate_and_clone(repository, destination):
             + (diagnostic or _("Unknown Git error")),
         )
         return
-    _clone_repository(repository, destination)
+    _clone_repository(repository, destination, progress=progress)
 
 
-def _clone_repository(repository, destination, completed=None):
+def _clone_repository(repository, destination, completed=None, progress=None):
     clone_url, branch = repository
-    command = ["git", "clone"]
+    # --progress forces machine-readable progress on stderr even though the
+    # extension is not attached to a terminal.
+    command = ["git", "clone", "--progress"]
     if branch:
         command.extend(["--branch", branch, "--single-branch"])
     name = _repository_name(clone_url) or _("Git repository")
@@ -177,8 +295,47 @@ def _clone_repository(repository, destination, completed=None):
         # inferred repository directory already exists.
         command.append(clone_url)
 
-    result = subprocess.run(command, cwd=destination, text=True, capture_output=True)
-    if result.returncode == 0:
+    if progress is not None:
+        GLib.idle_add(progress.cloning_started)
+
+    diagnostics = []
+    try:
+        process = subprocess.Popen(
+            command,
+            cwd=destination,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            bufsize=1,
+        )
+        # Git refreshes progress with carriage returns, so iterate over both
+        # CR and LF records rather than waiting for newline-only output.
+        pending = ""
+        while True:
+            char = process.stderr.read(1)
+            if not char:
+                if pending:
+                    diagnostics.append(pending)
+                break
+            if char in "\r\n":
+                line, pending = pending.strip(), ""
+                if not line:
+                    continue
+                diagnostics.append(line)
+                match = re.search(r"(Counting objects|Compressing objects|Receiving objects|Resolving deltas|Updating files):\s+(\d+)%", line)
+                if match and progress is not None:
+                    GLib.idle_add(progress.update, int(match.group(2)), match.group(1))
+            else:
+                pending += char
+        stdout = process.stdout.read() if process.stdout else ""
+        returncode = process.wait()
+    except OSError as error:
+        returncode, stdout = -1, ""
+        diagnostics.append(str(error))
+
+    if returncode == 0:
+        if progress is not None:
+            GLib.idle_add(progress.finish, True)
         GLib.idle_add(_notify, _("✓ Repository downloaded successfully: ") + name, False)
         if completed is not None:
             # The clone runs outside GTK's main thread.  Marshal completion
@@ -187,8 +344,10 @@ def _clone_repository(repository, destination, completed=None):
     else:
         if created_destination:
             shutil.rmtree(cloned_path, ignore_errors=True)
-        detail = (result.stderr or result.stdout).strip().splitlines()
+        detail = diagnostics or stdout.strip().splitlines()
         message = detail[-1] if detail else _("Unknown Git error")
+        if progress is not None:
+            GLib.idle_add(progress.finish, False, message)
         GLib.idle_add(_show_error_window, message)
 
 
@@ -254,9 +413,11 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
                     _("Copy a valid Git repository URL before using this option.")
                 )
                 return
+            name = _repository_name(repository[0]) or _("Git repository")
+            progress = _CloneProgressWindow(name)
             threading.Thread(
                 target=_validate_and_clone,
-                args=(repository, destination),
+                args=(repository, destination, progress),
                 daemon=True,
             ).start()
 
