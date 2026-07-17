@@ -1,0 +1,19 @@
+using Gtk 4.0;
+
+Gtk.Popover branch_popover {
+  child: Gtk.Box branch_list {
+    orientation: vertical;
+    spacing: 2;
+    margin-top: 6;
+    margin-bottom: 6;
+    margin-start: 6;
+    margin-end: 6;
+  };
+}
+
+Gtk.Button branch_button {
+  icon-name: "view-list-symbolic";
+  tooltip-text: _("Choose branch");
+  valign: center;
+  styles ["flat"]
+}

@@ -1,7 +1,8 @@
 [package]
 name = "pkgbuild_manager"
-version = "2.2.0"
+version = "2.3.0"
 edition = "2021"
+build = "build.rs"
 
 [[bin]]
 name = "pkgbuild_manager"
@@ -28,10 +29,10 @@ opt-level = "s"
 
 [dependencies.gtk]
 package  = "gtk4"
-version  = "0.11"
+version  = "0.9"
 features = ["v4_14"]
 
 [dependencies.adw]
 package  = "libadwaita"
-version  = "0.9"
+version  = "0.7"
 features = ["v1_6"]

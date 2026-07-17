@@ -1,4 +1,4 @@
-application_id = 'io.github.johnpetersa19.PkgbuildManager'
+application_id = 'io.github.PkgbuildManage'
 
 scalable_dir = 'hicolor' / 'scalable' / 'apps'
 install_data(

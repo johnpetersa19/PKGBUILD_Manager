@@ -11,7 +11,7 @@ pub mod validate;
 use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
+use std::process::Stdio;
 
 use anyhow::{anyhow, Context, Result};
 use gettextrs::gettext;
@@ -64,7 +64,7 @@ pub fn get_target_dir(path: &Path) -> Result<PathBuf> {
 pub fn run_command(cmd_name: &str, args: &[&str], dir: &Path) -> Result<()> {
     println!(">>> {} {} (in {:?})", cmd_name, args.join(" "), dir);
 
-    let status = Command::new(cmd_name)
+    let status = crate::host::command(cmd_name)
         .args(args)
         .current_dir(dir)
         .stdin(Stdio::inherit())
@@ -130,7 +130,7 @@ pub fn regenerate_srcinfo(dir: &Path) -> Result<String> {
 
     println!("{} {:?}", gettextrs::gettext(">>> Regenerating .SRCINFO in"), dir);
 
-    let output = Command::new("makepkg")
+    let output = crate::host::command("makepkg")
         .arg("--printsrcinfo")
         .current_dir(dir)
         .output()

@@ -1,0 +1,36 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.ApplicationWindow settings_window {
+  content: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {
+      [start]
+      Gtk.Button reset_button {
+        label: _("Reset");
+        styles ["destructive-action"]
+      }
+
+      [end]
+      Gtk.Button save_button {
+        label: _("Save");
+        styles ["suggested-action"]
+      }
+    }
+
+    content: Adw.ToastOverlay toast_overlay {
+      child: Gtk.ScrolledWindow settings_scroll {
+        vexpand: true;
+
+        child: Gtk.Box settings_groups {
+          orientation: vertical;
+          spacing: 12;
+          margin-top: 12;
+          margin-bottom: 12;
+          margin-start: 16;
+          margin-end: 16;
+        };
+      };
+    };
+  };
+}

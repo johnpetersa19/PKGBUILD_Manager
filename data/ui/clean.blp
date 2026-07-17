@@ -1,0 +1,77 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.ApplicationWindow clean_window {
+  default-width: 560;
+  default-height: 520;
+
+  content: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar clean_header {}
+
+    content: Gtk.Box clean_content {
+      orientation: vertical;
+      spacing: 14;
+      margin-top: 18;
+      margin-bottom: 18;
+      margin-start: 20;
+      margin-end: 20;
+
+      Gtk.Label clean_title {
+        halign: start;
+        styles ["title-2"]
+      }
+
+      Gtk.Label clean_path {
+        halign: start;
+        ellipsize: middle;
+        styles ["dim-label"]
+      }
+
+      Gtk.ScrolledWindow {
+        vexpand: true;
+
+        child: Gtk.ListBox clean_list {
+          selection-mode: none;
+          styles ["boxed-list"]
+        };
+      }
+
+      Adw.ActionRow unlock_row {
+        title: _("Unlock cleanup");
+        Gtk.Image {
+          icon-name: "changes-prevent-symbolic";
+          accessible-role: presentation;
+        }
+
+        [suffix]
+        Gtk.Switch unlock_switch {
+          valign: center;
+        }
+      }
+
+      Gtk.Label clean_status {
+        halign: start;
+        wrap: true;
+      }
+
+      Gtk.ProgressBar clean_progress {
+        visible: false;
+      }
+
+      Gtk.Box {
+        orientation: horizontal;
+        spacing: 8;
+        halign: end;
+
+        Gtk.Button cancel_button { label: _("Cancel"); }
+
+        Gtk.Button clean_button {
+          label: _("Clean permanently");
+          sensitive: false;
+          styles ["destructive-action"]
+        }
+      }
+    };
+  };
+}

@@ -1,5 +1,4 @@
 use std::path::Path;
-use std::process::Command;
 use super::{get_target_dir, run_command, regenerate_srcinfo};
 
 /// Stage PKGBUILD + .SRCINFO, commit with conventional AUR message, and push to origin.
@@ -73,7 +72,7 @@ fn run_with_dir(target_dir: &Path, message: Option<&str>) -> anyhow::Result<()> 
     };
 
     println!(">>> git commit -m {:?}", commit_msg);
-    let output = Command::new("git")
+    let output = crate::host::command("git")
         .args(["commit", "-m", commit_msg])
         .current_dir(target_dir)
         .output()?;
@@ -170,7 +169,7 @@ fn push_to_aur(dir: &Path) -> anyhow::Result<()> {
 ///   4. Retorna None → caller usa "master" como fallback.
 fn detect_remote_default_branch(dir: &Path) -> Option<String> {
     // 1. Tenta symbolic-ref (disponivel após clone ou fetch --all)
-    let output = Command::new("git")
+    let output = crate::host::command("git")
         .args(["symbolic-ref", "refs/remotes/origin/HEAD"])
         .current_dir(dir)
         .output()
@@ -189,7 +188,7 @@ fn detect_remote_default_branch(dir: &Path) -> Option<String> {
 
     // 2. Verifica se origin/main existe como ref local
     let check_ref = |refname: &str| -> bool {
-        Command::new("git")
+        crate::host::command("git")
             .args(["rev-parse", "--verify", refname])
             .current_dir(dir)
             .stdout(std::process::Stdio::null())

@@ -1,6 +1,5 @@
 use std::io;
 use std::path::Path;
-use std::process::Command;
 use super::{get_target_dir, run_command};
 
 /// Update checksums in-place using `updpkgsums`.
@@ -28,7 +27,7 @@ pub fn generate(path: &Path) -> anyhow::Result<()> {
     let target_dir = get_target_dir(path)?;
     println!(">>> makepkg -g (in {:?})", target_dir);
 
-    let output = Command::new("makepkg")
+    let output = crate::host::command("makepkg")
         .arg("-g")
         .current_dir(&target_dir)
         .output()

@@ -7,11 +7,11 @@
  */
 
 use adw::prelude::*;
-use adw::{ApplicationWindow, HeaderBar, StatusPage};
+use adw::{ApplicationWindow, StatusPage};
 use gettextrs::gettext;
 use gtk::{
     glib, glib::clone, Align, Box as GBox, Button, CssProvider, Label, Orientation, PolicyType,
-    Popover, ProgressBar, ScrolledWindow, Spinner, Stack, StackTransitionType, TextView, WrapMode,
+    Popover, ProgressBar, ScrolledWindow, Spinner, Stack, TextView,
 };
 use std::cell::RefCell;
 use std::io::{BufRead, BufReader};
@@ -164,6 +164,42 @@ const CSS: &str = "
 .mode-badge-codeberg { background-color: alpha(@blue_5,            0.15); color: #2185d0;          border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
 .mode-badge-generic  { background-color: alpha(@window_fg_color,   0.08); color: @window_fg_color; border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
 
+/* ── Auth method badges ── */
+.auth-badge-ssh   { background-color: alpha(@success_bg_color, 0.15); color: @success_color;  border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
+.auth-badge-https { background-color: alpha(@warning_bg_color, 0.15); color: @warning_color;  border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; }
+
+/* ── Auth warning banner ── */
+.auth-warning-box {
+    border-radius: 10px;
+    background-color: alpha(@warning_bg_color, 0.12);
+    border: 1px solid alpha(@warning_color, 0.35);
+    padding: 12px 14px;
+}
+.auth-warning-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: @warning_color;
+    margin-bottom: 4px;
+}
+.auth-warning-body {
+    font-size: 12px;
+    color: alpha(@window_fg_color, 0.80);
+    line-height: 1.5;
+}
+
+/* ── Auth ok banner ── */
+.auth-ok-box {
+    border-radius: 10px;
+    background-color: alpha(@success_bg_color, 0.10);
+    border: 1px solid alpha(@success_color, 0.28);
+    padding: 10px 14px;
+}
+.auth-ok-label {
+    font-size: 12px;
+    color: @success_color;
+    font-weight: 600;
+}
+
 /* ── Branch picker ── */
 .branch-item { padding: 6px 12px; border-radius: 6px; }
 .branch-item:hover { background-color: alpha(@accent_bg_color, 0.12); }
@@ -184,23 +220,12 @@ struct StepRow {
 
 impl StepRow {
     fn new(title: &str) -> Self {
-        let row = adw::ActionRow::builder().title(title).build();
-        let spinner = Spinner::builder()
-            .width_request(22)
-            .height_request(22)
-            .halign(Align::Center)
-            .valign(Align::Center)
-            .visible(false)
-            .build();
-        let icon = Label::builder()
-            .label("○")
-            .width_chars(2)
-            .halign(Align::Center)
-            .valign(Align::Center)
-            .css_classes(vec!["icon-waiting".to_string()])
-            .build();
-        row.add_prefix(&spinner);
-        row.add_prefix(&icon);
+        let builder =
+            crate::gui_blueprint::builder(include_str!(concat!(env!("OUT_DIR"), "/step-row.ui")));
+        let row: adw::ActionRow = crate::gui_blueprint::object(&builder, "step_row");
+        let spinner: Spinner = crate::gui_blueprint::object(&builder, "step_spinner");
+        let icon: Label = crate::gui_blueprint::object(&builder, "step_icon");
+        row.set_title(title);
         StepRow { row, spinner, icon }
     }
 
@@ -219,7 +244,7 @@ impl StepRow {
         self.row.remove_css_class("step-running");
         self.row.remove_css_class("step-error");
         self.row.add_css_class("step-ok");
-        self.icon.set_label("✔");
+        self.icon.set_label("✓");
         self.icon.remove_css_class("icon-waiting");
         self.icon.remove_css_class("icon-error");
         self.icon.add_css_class("icon-ok");
@@ -231,7 +256,7 @@ impl StepRow {
         self.row.remove_css_class("step-running");
         self.row.remove_css_class("step-ok");
         self.row.add_css_class("step-error");
-        self.icon.set_label("✖");
+        self.icon.set_label("✗");
         self.icon.remove_css_class("icon-waiting");
         self.icon.remove_css_class("icon-ok");
         self.icon.add_css_class("icon-error");
@@ -356,12 +381,22 @@ impl UnifiedPushWindow {
 
         // ── Window ────────────────────────────────────────────────────────────
         let (saved_w, saved_h) = load_win_size("push-window", 560, 640);
-        let win = ApplicationWindow::builder()
-            .application(app)
-            .title(&win_title)
-            .default_width(saved_w)
-            .default_height(saved_h)
-            .build();
+        let builder =
+            crate::gui_blueprint::builder(include_str!(concat!(env!("OUT_DIR"), "/push.ui")));
+        let win: ApplicationWindow = crate::gui_blueprint::object(&builder, "push_window");
+        let root: GBox = crate::gui_blueprint::object(&builder, "push_root");
+        let title_lbl: Label = crate::gui_blueprint::object(&builder, "push_title");
+        let subtitle_row: GBox = crate::gui_blueprint::object(&builder, "push_subtitle_row");
+        let path_lbl: Label = crate::gui_blueprint::object(&builder, "push_path");
+        let badge: Label = crate::gui_blueprint::object(&builder, "push_badge");
+        let stack: Stack = crate::gui_blueprint::object(&builder, "push_stack");
+        win.set_application(Some(app));
+        win.set_title(Some(&win_title));
+        win.set_default_size(saved_w, saved_h);
+        title_lbl.set_label(&win_title);
+        path_lbl.set_label(&target);
+        badge.set_label(badge_label);
+        badge.add_css_class(badge_class);
         win.connect_close_request(|w| {
             let (cw, ch) = (w.width(), w.height());
             if cw > 0 && ch > 0 {
@@ -370,63 +405,37 @@ impl UnifiedPushWindow {
             glib::Propagation::Proceed
         });
 
-        // Root
-        let root = GBox::builder()
-            .orientation(Orientation::Vertical)
-            .spacing(0)
-            .build();
-
-        // Header
-        let header = HeaderBar::new();
-        let title_box = GBox::builder()
-            .orientation(Orientation::Vertical)
-            .valign(Align::Center)
-            .spacing(2)
-            .build();
-        let title_lbl = Label::builder()
-            .label(&win_title)
-            .css_classes(vec!["title".to_string()])
-            .build();
-        let subtitle_row = GBox::builder()
-            .orientation(Orientation::Horizontal)
-            .halign(Align::Center)
-            .spacing(6)
-            .build();
-        let path_lbl = Label::builder()
-            .label(&target)
-            .ellipsize(gtk::pango::EllipsizeMode::Start)
-            .css_classes(vec!["dim-label".to_string()])
-            .build();
-        let badge = Label::builder()
-            .label(badge_label)
-            .css_classes(vec![badge_class.to_string()])
-            .build();
-        subtitle_row.append(&path_lbl);
-        subtitle_row.append(&badge);
-        title_box.append(&title_lbl);
-        title_box.append(&subtitle_row);
-        header.set_title_widget(Some(&title_box));
-        root.append(&header);
-
-        // Stack
-        let stack = Stack::builder()
-            .transition_type(StackTransitionType::SlideLeftRight)
-            .transition_duration(220)
-            .vexpand(true)
-            .hexpand(true)
-            .build();
-        root.append(&stack);
+        // ── Auth method badge (SSH / HTTPS) — all modes except Unknown ────────
+        let auth_method = if mode != RepoMode::Unknown {
+            let m = detect_auth_method(&target);
+            let (auth_label, auth_class) = if m == "SSH" {
+                ("SSH", "auth-badge-ssh")
+            } else {
+                ("HTTPS", "auth-badge-https")
+            };
+            let auth_badge = Label::builder()
+                .label(auth_label)
+                .css_classes(vec![auth_class.to_string()])
+                .build();
+            subtitle_row.append(&auth_badge);
+            m
+        } else {
+            ""
+        };
 
         // ══ UNKNOWN page ══════════════════════════════════════════════════════
         if mode == RepoMode::Unknown {
-            let unknown_page = StatusPage::builder()
-                .icon_name("dialog-question-symbolic")
-                .title(&gettext("Not a recognised repository"))
-                .description(&gettext(
-                    "The selected folder does not appear to be a Git repository.\n\
+            let unknown_builder = crate::gui_blueprint::builder(include_str!(concat!(
+                env!("OUT_DIR"),
+                "/unknown-repository.ui"
+            )));
+            let unknown_page: StatusPage =
+                crate::gui_blueprint::object(&unknown_builder, "unknown_repository_page");
+            unknown_page.set_title(&gettext("Not a recognised repository"));
+            unknown_page.set_description(Some(&gettext(
+                "The selected folder does not appear to be a Git repository.\n\
                          Make sure you select a folder that contains a .git directory.",
-                ))
-                .build();
+            )));
             stack.add_named(&unknown_page, Some("unknown"));
             stack.set_visible_child_name("unknown");
             win.set_content(Some(&root));
@@ -455,6 +464,82 @@ impl UnifiedPushWindow {
             .css_classes(vec!["stage-caption".to_string()])
             .build();
         form_content.append(&form_cap_lbl);
+
+        // ── Auth readiness banner ─────────────────────────────────────────────
+        // Check if auth is ready before allowing push.
+        // SSH: verify ssh-agent has the key loaded (ssh-add -l succeeds).
+        // HTTPS: check git credential helper is configured.
+        let auth_ready = check_auth_ready(&target, auth_method);
+
+        if !auth_ready {
+            let warn_box = GBox::builder()
+                .orientation(Orientation::Vertical)
+                .spacing(6)
+                .css_classes(vec!["auth-warning-box".to_string()])
+                .build();
+
+            let warn_title_text = if auth_method == "SSH" {
+                gettext("⚠ SSH key not loaded")
+            } else {
+                gettext("⚠ HTTPS credentials not configured")
+            };
+            let warn_title = Label::builder()
+                .label(&warn_title_text)
+                .halign(Align::Start)
+                .css_classes(vec!["auth-warning-title".to_string()])
+                .build();
+
+            let warn_body_text = if auth_method == "SSH" {
+                gettext(
+                    "No SSH key was found in ssh-agent for this remote.\n\
+                     Run the command below before pushing:\n\n\
+                     ssh-add ~/.ssh/id_ed25519\n\n\
+                     If you use a different key, replace the path accordingly.\n\
+                     You can also start the agent with: eval $(ssh-agent -s)",
+                )
+            } else {
+                gettext(
+                    "No Git credential helper is configured for HTTPS authentication.\n\
+                     To store credentials, run one of the following commands:\n\n\
+                     git config --global credential.helper store\n\
+                     git config --global credential.helper cache\n\n\
+                     Or use libsecret (GNOME Keyring):\n\
+                     git config --global credential.helper /usr/lib/git-core/git-credential-libsecret"
+                )
+            };
+            let warn_body = Label::builder()
+                .label(&warn_body_text)
+                .halign(Align::Start)
+                .wrap(true)
+                .selectable(true)
+                .css_classes(vec!["auth-warning-body".to_string()])
+                .build();
+
+            warn_box.append(&warn_title);
+            warn_box.append(&warn_body);
+            form_content.append(&warn_box);
+        } else {
+            // Auth is ready — show a small confirmation banner
+            let ok_box = GBox::builder()
+                .orientation(Orientation::Horizontal)
+                .spacing(8)
+                .css_classes(vec!["auth-ok-box".to_string()])
+                .build();
+            let ok_icon = Label::builder().label("🔐").build();
+            let ok_text_str = if auth_method == "SSH" {
+                gettext("SSH key loaded — ready to push")
+            } else {
+                gettext("HTTPS credentials configured — ready to push")
+            };
+            let ok_lbl = Label::builder()
+                .label(&ok_text_str)
+                .halign(Align::Start)
+                .css_classes(vec!["auth-ok-label".to_string()])
+                .build();
+            ok_box.append(&ok_icon);
+            ok_box.append(&ok_lbl);
+            form_content.append(&ok_box);
+        }
 
         let fields_group = adw::PreferencesGroup::builder()
             .title(&gettext("Commit"))
@@ -490,14 +575,11 @@ impl UnifiedPushWindow {
             branch_entry.set_text(&current_branch);
 
             let branches = list_branches(&target);
-            let popover_box = GBox::builder()
-                .orientation(Orientation::Vertical)
-                .spacing(2)
-                .margin_top(6)
-                .margin_bottom(6)
-                .margin_start(6)
-                .margin_end(6)
-                .build();
+            let branch_builder = crate::gui_blueprint::builder(include_str!(concat!(
+                env!("OUT_DIR"),
+                "/branch-popover.ui"
+            )));
+            let popover_box: GBox = crate::gui_blueprint::object(&branch_builder, "branch_list");
             for b in &branches {
                 let is_current = b == &current_branch;
                 let btn = Button::builder()
@@ -516,14 +598,9 @@ impl UnifiedPushWindow {
                 });
                 popover_box.append(&btn);
             }
-            let popover = Popover::builder().child(&popover_box).build();
-            let pick_btn = Button::builder()
-                .icon_name("vcs-branch-symbolic")
-                .tooltip_text(&gettext("Choose branch"))
-                .valign(Align::Center)
-                .css_classes(vec!["flat".to_string()])
-                .build();
-            popover.set_parent(&pick_btn);
+            let popover: Popover = crate::gui_blueprint::object(&branch_builder, "branch_popover");
+            let pick_btn: Button = crate::gui_blueprint::object(&branch_builder, "branch_button");
+            pick_btn.set_tooltip_text(Some(&gettext("Choose branch")));
             pick_btn.connect_clicked(clone!(
                 #[strong]
                 popover,
@@ -567,8 +644,18 @@ impl UnifiedPushWindow {
             .build();
         let push_btn = Button::builder()
             .label(&gettext("Continue to Push"))
+            .sensitive(auth_ready)
             .css_classes(vec!["suggested-action".to_string(), "pill".to_string()])
             .build();
+        // If auth is not ready, add a tooltip explaining why the button is disabled
+        if !auth_ready {
+            let tip = if auth_method == "SSH" {
+                gettext("Configure SSH authentication before pushing")
+            } else {
+                gettext("Configure HTTPS credentials before pushing")
+            };
+            push_btn.set_tooltip_text(Some(&tip));
+        }
         form_btn_box.append(&push_btn);
         form_content.append(&form_btn_box);
         stack.add_titled(&form_scroll, Some("form"), &gettext("Form"));
@@ -579,33 +666,20 @@ impl UnifiedPushWindow {
             .vscrollbar_policy(PolicyType::Automatic)
             .vexpand(true)
             .build();
-        let progress_content = GBox::builder()
-            .orientation(Orientation::Vertical)
-            .spacing(14)
-            .margin_top(16)
-            .margin_bottom(16)
-            .margin_start(14)
-            .margin_end(14)
-            .build();
+        let progress_builder = crate::gui_blueprint::builder(include_str!(concat!(
+            env!("OUT_DIR"),
+            "/progress-panel.ui"
+        )));
+        let progress_content: GBox =
+            crate::gui_blueprint::object(&progress_builder, "progress_panel");
         progress_scroll.set_child(Some(&progress_content));
-
-        let prog_cap_lbl = Label::builder()
-            .label(&progress_caption)
-            .halign(Align::Start)
-            .css_classes(vec!["stage-caption".to_string()])
-            .build();
-        progress_content.append(&prog_cap_lbl);
-
-        let progress = ProgressBar::builder()
-            .fraction(0.0)
-            .visible(true)
-            .css_classes(vec!["progress-bar-box".to_string()])
-            .build();
-        progress_content.append(&progress);
-
-        let steps_group = adw::PreferencesGroup::builder()
-            .title(&gettext("Steps"))
-            .build();
+        let prog_cap_lbl: Label = crate::gui_blueprint::object(&progress_builder, "panel_caption");
+        let progress: ProgressBar =
+            crate::gui_blueprint::object(&progress_builder, "panel_progress");
+        let steps_group: adw::PreferencesGroup =
+            crate::gui_blueprint::object(&progress_builder, "panel_steps");
+        prog_cap_lbl.set_label(&progress_caption);
+        steps_group.set_title(&gettext("Steps"));
 
         let (step_rows, total_steps): (Vec<(&'static str, StepRow)>, f64) = match mode {
             RepoMode::Aur => {
@@ -668,66 +742,18 @@ impl UnifiedPushWindow {
                 )
             }
         };
-        progress_content.append(&steps_group);
-
-        // Error area
-        let error_box = GBox::builder()
-            .orientation(Orientation::Vertical)
-            .spacing(6)
-            .visible(false)
-            .css_classes(vec!["error-box".to_string()])
-            .build();
-        let error_title_lbl = Label::builder()
-            .label(&gettext("⚠️ Errors found"))
-            .halign(Align::Start)
-            .css_classes(vec!["error-title".to_string()])
-            .build();
-        let error_scroll = ScrolledWindow::builder()
-            .hscrollbar_policy(PolicyType::Never)
-            .vscrollbar_policy(PolicyType::Automatic)
-            .max_content_height(200)
-            .propagate_natural_height(true)
-            .build();
-        let error_view = TextView::builder()
-            .editable(false)
-            .cursor_visible(false)
-            .wrap_mode(WrapMode::WordChar)
-            .monospace(true)
-            .left_margin(4)
-            .right_margin(4)
-            .top_margin(4)
-            .bottom_margin(4)
-            .css_classes(vec!["error-body".to_string()])
-            .build();
-        error_scroll.set_child(Some(&error_view));
-        error_box.append(&error_title_lbl);
-        error_box.append(&error_scroll);
-        progress_content.append(&error_box);
-
-        let status_page = StatusPage::builder()
-            .icon_name("object-select-symbolic")
-            .title("")
-            .visible(false)
-            .build();
-        progress_content.append(&status_page);
-
-        let progress_btn_box = GBox::builder()
-            .orientation(Orientation::Horizontal)
-            .halign(Align::End)
-            .margin_top(4)
-            .spacing(8)
-            .build();
-        let back_btn = Button::builder()
-            .label(&gettext("Back"))
-            .css_classes(vec!["pill".to_string()])
-            .build();
-        let run_btn = Button::builder()
-            .label(&run_label)
-            .css_classes(vec!["suggested-action".to_string(), "pill".to_string()])
-            .build();
-        progress_btn_box.append(&back_btn);
-        progress_btn_box.append(&run_btn);
-        progress_content.append(&progress_btn_box);
+        let error_box: GBox = crate::gui_blueprint::object(&progress_builder, "panel_errors");
+        let error_title_lbl: Label =
+            crate::gui_blueprint::object(&progress_builder, "panel_error_title");
+        let error_view: TextView =
+            crate::gui_blueprint::object(&progress_builder, "panel_error_view");
+        let status_page: StatusPage =
+            crate::gui_blueprint::object(&progress_builder, "panel_status");
+        let back_btn: Button = crate::gui_blueprint::object(&progress_builder, "panel_back");
+        let run_btn: Button = crate::gui_blueprint::object(&progress_builder, "panel_run");
+        error_title_lbl.set_label(&gettext("⚠️ Errors found"));
+        back_btn.set_label(&gettext("Back"));
+        run_btn.set_label(&run_label);
 
         stack.add_titled(&progress_scroll, Some("progress"), &gettext("Progress"));
         stack.set_visible_child_name("form");
@@ -909,13 +935,17 @@ impl UnifiedPushWindow {
                             if ok {
                                 progress.set_fraction(1.0);
                                 run_btn.set_label(&gettext("Push again"));
-                                status_page.set_icon_name(Some("emblem-ok-symbolic"));
+                                status_page.set_icon_name(Some("object-select-symbolic"));
                                 status_page.set_title(&done_label_owned);
                                 status_page.remove_css_class("error");
                                 status_page.set_visible(true);
                             } else {
                                 progress.set_fraction(0.0);
                                 run_btn.set_label(&gettext("Try again"));
+                                status_page.set_icon_name(Some("dialog-error-symbolic"));
+                                status_page.set_title(&gettext("Process failed"));
+                                status_page.add_css_class("error");
+                                status_page.set_visible(true);
                             }
                         }
                     }
@@ -931,7 +961,7 @@ impl UnifiedPushWindow {
 // ── detect_branch ─────────────────────────────────────────────────────────────
 
 fn detect_branch(path: &str) -> String {
-    Command::new("git")
+    crate::host::command("git")
         .args(["rev-parse", "--abbrev-ref", "HEAD"])
         .current_dir(path)
         .output()
@@ -945,7 +975,7 @@ fn detect_branch(path: &str) -> String {
 // ── list_branches ─────────────────────────────────────────────────────────────
 
 fn list_branches(path: &str) -> Vec<String> {
-    Command::new("git")
+    crate::host::command("git")
         .args(["branch", "--format=%(refname:short)"])
         .current_dir(path)
         .output()
@@ -965,7 +995,7 @@ fn list_branches(path: &str) -> Vec<String> {
 /// Returns the URL of the `origin` remote (or the first remote found).
 
 fn detect_remote(path: &str) -> String {
-    let origin = Command::new("git")
+    let origin = crate::host::command("git")
         .args(["remote", "get-url", "origin"])
         .current_dir(path)
         .output()
@@ -978,7 +1008,7 @@ fn detect_remote(path: &str) -> String {
         return url;
     }
 
-    Command::new("git")
+    crate::host::command("git")
         .args(["remote", "-v"])
         .current_dir(path)
         .output()
@@ -991,6 +1021,72 @@ fn detect_remote(path: &str) -> String {
                 .map(str::to_string)
         })
         .unwrap_or_default()
+}
+
+// ── detect_auth_method ────────────────────────────────────────────────────────
+/// Detects whether the origin remote uses SSH or HTTPS.
+/// Covers: ssh://..., git@..., aur@..., and any user@host:path pattern.
+
+fn detect_auth_method(path: &str) -> &'static str {
+    let url = crate::host::command("git")
+        .args(["remote", "get-url", "origin"])
+        .current_dir(path)
+        .output()
+        .ok()
+        .and_then(|o| String::from_utf8(o.stdout).ok())
+        .unwrap_or_default();
+    let url = url.trim();
+    if url.starts_with("ssh://")
+        || url.starts_with("git@")
+        || url.starts_with("aur@")
+        || (url.contains('@') && !url.starts_with("http"))
+    {
+        "SSH"
+    } else {
+        "HTTPS"
+    }
+}
+
+// ── check_auth_ready ──────────────────────────────────────────────────────────
+/// Returns `true` when the user is ready to push without being prompted for
+/// credentials.
+///
+/// **SSH** — Checks that ssh-agent is running and has at least one identity
+/// loaded (`ssh-add -l` exits 0). This covers aur@, git@github.com, etc.
+///
+/// **HTTPS** — Checks that a credential helper is configured in git config
+/// (global or local). If no helper is set, the push would block on a
+/// username/password prompt.
+
+fn check_auth_ready(path: &str, auth_method: &str) -> bool {
+    if auth_method == "SSH" {
+        // ssh-add -l: exit 0 = agent running + has keys
+        //             exit 1 = agent running but no keys
+        //             exit 2 = cannot connect to agent
+        crate::host::command("ssh-add")
+            .arg("-l")
+            .output()
+            .map(|o| o.status.success())
+            .unwrap_or(false)
+    } else {
+        // Check for credential.helper in local or global git config
+        let local_helper = crate::host::command("git")
+            .args(["config", "--local", "credential.helper"])
+            .current_dir(path)
+            .output()
+            .map(|o| o.status.success() && !o.stdout.is_empty())
+            .unwrap_or(false);
+
+        if local_helper {
+            return true;
+        }
+
+        crate::host::command("git")
+            .args(["config", "--global", "credential.helper"])
+            .output()
+            .map(|o| o.status.success() && !o.stdout.is_empty())
+            .unwrap_or(false)
+    }
 }
 
 // ── run_aur_worker ────────────────────────────────────────────────────────────
@@ -1006,6 +1102,7 @@ fn run_aur_worker(
         let _ = tx.send_blocking(Msg::Done(false));
         return;
     }
+    // This is our bundled CLI; it delegates only the required system tools.
     let mut cmd = Command::new("pkgbuild_manager");
     cmd.arg(if tag.is_some() {
         "aur-push-tag"
@@ -1081,7 +1178,7 @@ fn run_git_worker(
     }
 
     fn git_run(target: &str, args: &[&str], tx: &async_channel::Sender<Msg>) -> bool {
-        let mut child = match Command::new("git")
+        let mut child = match crate::host::command("git")
             .args(args)
             .current_dir(target)
             .stdout(Stdio::piped())

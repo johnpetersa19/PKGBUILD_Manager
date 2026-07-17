@@ -20,6 +20,7 @@
 
 mod config;
 mod actions;
+mod host;
 
 use anyhow::Result;
 use config::{GETTEXT_PACKAGE, LOCALEDIR, VERSION};
@@ -213,7 +214,6 @@ fn main() -> Result<()> {
 fn setup_nautilus() -> Result<()> {
     use std::fs;
     use std::path::PathBuf;
-    use std::process::Command;
 
     let home = std::env::var("HOME")?;
     let scripts_root = PathBuf::from(&home).join(".local/share/nautilus/scripts");
@@ -248,22 +248,61 @@ fn setup_nautilus() -> Result<()> {
         }
     }
 
-    let ext_path = PathBuf::from("/usr/share/nautilus-python/extensions/pkgbuild_manager.py");
-    if !ext_path.exists() {
+    let ext_path = [
+        "/usr/share/nautilus-python/extensions/pkgbuild_manager.py",
+        "/usr/local/share/nautilus-python/extensions/pkgbuild_manager.py",
+    ]
+    .into_iter()
+    .map(PathBuf::from)
+    .find(|path| path.exists());
+    if ext_path.is_none() {
         eprintln!(
-            "{}\n  {}",
+            "{}\n  /usr/share/nautilus-python/extensions/pkgbuild_manager.py\n  /usr/local/share/nautilus-python/extensions/pkgbuild_manager.py",
             gettext("Warning: Nautilus Python extension not found at"),
-            ext_path.display()
         );
         eprintln!("{}", gettext("Install the pkgbuild-manager package to get the extension."));
     } else {
+        let ext_path = ext_path.expect("checked above");
         println!("{}: {}", gettext("Extension found"), ext_path.display());
+
+        // Nautilus loads extensions from both the system and per-user data
+        // directories. Keeping this provider in both places duplicates every
+        // context-menu item. Prefer the packaged system extension when it is
+        // available and remove only this project's known user-side copies.
+        let mut user_extensions = vec![
+            PathBuf::from(&home)
+                .join(".local/share/nautilus-python/extensions/pkgbuild_manager.py"),
+        ];
+        if let Some(data_home) = std::env::var_os("XDG_DATA_HOME") {
+            let xdg_extension = PathBuf::from(data_home)
+                .join("nautilus-python/extensions/pkgbuild_manager.py");
+            if !user_extensions.iter().any(|path| path == &xdg_extension) {
+                user_extensions.push(xdg_extension);
+            }
+        }
+
+        for user_extension in user_extensions {
+            if user_extension.is_file() || user_extension.is_symlink() {
+                fs::remove_file(&user_extension).map_err(|error| {
+                    anyhow::anyhow!(
+                        "{}: {}: {error}",
+                        gettext("Could not remove duplicate Nautilus extension"),
+                        user_extension.display()
+                    )
+                })?;
+                println!(
+                    "{}: {}",
+                    gettext("Removed duplicate Nautilus extension"),
+                    user_extension.display()
+                );
+            }
+        }
     }
 
     println!("{}", gettext("Restarting Nautilus\u{2026}"));
-    let _ = Command::new("nautilus").arg("-q").status();
+    let _ = crate::host::command("nautilus").arg("-q").status();
     std::thread::sleep(std::time::Duration::from_millis(800));
-    let _ = Command::new("nautilus").spawn();
+    let _ = crate::host::command("nautilus").spawn();
 
     println!("{}", gettext("Done. Right-click a PKGBUILD directory to see the menu."));
     Ok(())

@@ -4,12 +4,18 @@
 mod aur_dialog;
 #[path = "../settings_gui/config.rs"]
 mod config;
+#[path = "../clean_gui/dialog.rs"]
+mod clean_dialog;
 #[path = "../aur_push_gui/release_dialog.rs"]
 mod release_dialog;
 #[path = "../settings_gui/app.rs"]
 mod settings_app;
 #[path = "../aur_push_gui/win_state.rs"]
 mod win_state;
+#[path = "../host.rs"]
+mod host;
+#[path = "../gui_blueprint.rs"]
+mod gui_blueprint;
 
 use adw::gio::ApplicationFlags;
 use adw::prelude::*;
@@ -18,7 +24,7 @@ use aur_dialog::{RepoMode, UnifiedPushWindow};
 use gettextrs::{bind_textdomain_codeset, bindtextdomain, setlocale, textdomain, LocaleCategory};
 use release_dialog::ReleaseWindow;
 
-const APP_ID: &str = "io.github.johnpetersa19.PkgbuildManager";
+const APP_ID: &str = "io.github.PkgbuildManage";
 const GETTEXT_PACKAGE: &str = "pkgbuild_manager";
 const LOCALEDIR: &str = match option_env!("PKGBUILD_MANAGER_LOCALEDIR_BUILD") {
     Some(value) => value,
@@ -27,13 +33,20 @@ const LOCALEDIR: &str = match option_env!("PKGBUILD_MANAGER_LOCALEDIR_BUILD") {
 
 fn main() -> gtk::glib::ExitCode {
     init_i18n();
+    if host::is_flatpak() {
+        if let Err(error) = install_flatpak_desktop_integration() {
+            eprintln!("Could not install Flatpak desktop integration: {error}");
+        }
+    }
 
     let args: Vec<String> = std::env::args().skip(1).collect();
     match args.first().map(String::as_str) {
         Some("settings") => settings_app::SettingsApp::new().run(),
         Some("push") => run_push(&args[1..]),
         Some("release") => run_release(&args[1..]),
-        Some("help" | "--help" | "-h") | None => {
+        Some("clean") => run_clean(&args[1..]),
+        None => settings_app::SettingsApp::new().run(),
+        Some("help" | "--help" | "-h") => {
             print_usage();
             gtk::glib::ExitCode::SUCCESS
         }
@@ -45,10 +58,85 @@ fn main() -> gtk::glib::ExitCode {
     }
 }
 
+fn install_flatpak_desktop_integration() -> std::io::Result<()> {
+    use std::fs;
+    use std::path::PathBuf;
+
+    fn copy_tree(source: &std::path::Path, target: &std::path::Path) -> std::io::Result<()> {
+        if !source.is_dir() { return Ok(()); }
+        fs::create_dir_all(target)?;
+        for entry in fs::read_dir(source)? {
+            let entry = entry?;
+            let destination = target.join(entry.file_name());
+            if entry.file_type()?.is_dir() {
+                copy_tree(&entry.path(), &destination)?;
+            } else {
+                fs::copy(entry.path(), destination)?;
+            }
+        }
+        Ok(())
+    }
+
+    let home = std::env::var_os("HOME")
+        .map(PathBuf::from)
+        .ok_or_else(|| std::io::Error::new(std::io::ErrorKind::NotFound, "HOME is not set"))?;
+    let source_scripts = PathBuf::from("/app/share/pkgbuild-manager/scripts");
+    let target_scripts = home.join(".local/share/pkgbuild-manager/scripts");
+    fs::create_dir_all(&target_scripts)?;
+    if source_scripts.is_dir() {
+        for entry in fs::read_dir(source_scripts)? {
+            let entry = entry?;
+            if entry.file_type()?.is_file() {
+                let target = target_scripts.join(entry.file_name());
+                fs::copy(entry.path(), &target)?;
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::PermissionsExt;
+                    fs::set_permissions(&target, fs::Permissions::from_mode(0o755))?;
+                }
+            }
+        }
+    }
+
+    let source_extension =
+        PathBuf::from("/app/share/nautilus-python/extensions/pkgbuild_manager.py");
+    let extension_dir = home.join(".local/share/nautilus-python/extensions");
+    fs::create_dir_all(&extension_dir)?;
+    let target_extension = extension_dir.join("pkgbuild_manager.py");
+    // A native package is authoritative. Ask the host because /usr is the
+    // Flatpak runtime's filesystem from inside the sandbox, not the host's.
+    let native_extension_exists = std::process::Command::new("flatpak-spawn")
+        .args([
+            "--host", "test", "-f",
+            "/usr/share/nautilus-python/extensions/pkgbuild_manager.py",
+        ])
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .status()
+        .map(|status| status.success())
+        .unwrap_or(false);
+    if native_extension_exists {
+        // Remove a copy created by an older Flatpak launch so Nautilus cannot
+        // instantiate both the native and per-user providers.
+        if target_extension.exists() {
+            fs::remove_file(&target_extension)?;
+        }
+    } else if source_extension.is_file() {
+        fs::copy(source_extension, target_extension)?;
+    }
+    copy_tree(
+        std::path::Path::new("/app/share/locale"),
+        &home.join(".local/share/locale"),
+    )?;
+    Ok(())
+}
+
 fn init_i18n() {
     setlocale(LocaleCategory::LcAll, "");
-    let locale_dir =
-        std::env::var("PKGBUILD_MANAGER_LOCALEDIR").unwrap_or_else(|_| LOCALEDIR.to_string());
+    let locale_dir = std::env::var("PKGBUILD_MANAGER_LOCALEDIR").unwrap_or_else(|_| {
+        if host::is_flatpak() { "/app/share/locale".to_string() } else { LOCALEDIR.to_string() }
+    });
     let _ = bindtextdomain(GETTEXT_PACKAGE, &locale_dir);
     let _ = bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
     let _ = textdomain(GETTEXT_PACKAGE);
@@ -85,6 +173,15 @@ fn run_release(args: &[String]) -> gtk::glib::ExitCode {
     app.run_with_args::<String>(&[])
 }
 
+fn run_clean(args: &[String]) -> gtk::glib::ExitCode {
+    let target = target_arg(args);
+    let app = new_application("Clean");
+    app.connect_activate(move |app| {
+        clean_dialog::present(app, target.clone());
+    });
+    app.run_with_args::<String>(&[])
+}
+
 fn target_arg(args: &[String]) -> String {
     args.iter()
         .find(|arg| !arg.starts_with('-'))
@@ -100,5 +197,5 @@ fn new_application(suffix: &str) -> Application {
 }
 
 fn print_usage() {
-    println!("Usage: pkgbuild-manager-gui <settings|push|release> [path] [options]");
+    println!("Usage: pkgbuild-manager-gui <settings|push|release|clean> [path] [options]");
 }

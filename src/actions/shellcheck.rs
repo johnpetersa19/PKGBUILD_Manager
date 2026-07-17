@@ -1,5 +1,5 @@
 use std::path::Path;
-use std::process::{Command, Stdio};
+use std::process::Stdio;
 
 use super::{get_target_dir, write_error_log};
 
@@ -20,7 +20,7 @@ pub fn run(path: &Path) -> anyhow::Result<()> {
         target_dir
     );
 
-    let output = Command::new("shellcheck")
+    let output = crate::host::command("shellcheck")
         .args(["--shell=bash", "--exclude=SC2034,SC2154,SC2164", "PKGBUILD"])
         .current_dir(&target_dir)
         .stdin(Stdio::inherit())

@@ -1,6 +1,31 @@
 use std::path::Path;
-use std::process::{Command, Stdio};
+use std::process::Stdio;
 use super::{get_target_dir, run_command, collect_pkg_files};
+
+/// Remove a directory tree, handling read-only files/dirs inside it.
+///
+/// `std::fs::remove_dir_all` fails with EACCES on Linux when the tree
+/// contains files or directories with restrictive permissions (e.g. git
+/// object files at chmod 444, or src/ subdirs at 555).  This helper
+/// retries after running `chmod -R u+rwX` so the caller gets the same
+/// behaviour as `rm -rf`.
+fn remove_dir_force(path: &Path) -> anyhow::Result<()> {
+    // Fast path — most trees are writable, avoid spawning chmod.
+    if std::fs::remove_dir_all(path).is_ok() {
+        return Ok(());
+    }
+    // Slow path — unlock permissions then retry.
+    let _ = crate::host::command("chmod")
+        .args(["-R", "u+rwX"])
+        .arg(path)
+        .status();
+    std::fs::remove_dir_all(path).map_err(|e| {
+        anyhow::anyhow!(
+            "remove_dir_force: could not remove {:?}: {}",
+            path, e
+        )
+    })
+}
 
 /// Clean the srcdir using `makepkg -c` (soft clean, preserves pkg/).
 /// Use `full = true` for a complete wipe: removes .makepkg.lock, src/, pkg/, built packages,
@@ -21,11 +46,12 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
             target_dir
         );
 
-        // Remove src/ and pkg/ directories
+        // Remove src/ and pkg/ — use remove_dir_force so git object files
+        // with chmod 444/555 (common in AUR source repos) never block the wipe.
         for dir in &["src", "pkg"] {
             let to_remove = target_dir.join(dir);
             if to_remove.exists() {
-                std::fs::remove_dir_all(&to_remove)?;
+                remove_dir_force(&to_remove)?;
                 println!("  {} {:?}", gettextrs::gettext("Removed"), to_remove);
             }
         }
@@ -59,8 +85,8 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
         }
 
         // Single directory traversal: removes bare git repo cache dirs and _build* dirs.
-        // FIX: a normal git clone also has HEAD + objects/ inside .git/, so we must
-        // explicitly skip .git/ to avoid destroying the package repository itself.
+        // GUARD: skip .git/ explicitly — a normal git clone has HEAD + objects/ inside
+        // .git/ and would be misidentified as a bare repo without this check.
         if let Ok(entries) = std::fs::read_dir(&target_dir) {
             for entry in entries.flatten() {
                 let Ok(ft) = entry.file_type() else { continue };
@@ -69,21 +95,21 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
                 let name = name.to_string_lossy();
 
                 if ft.is_dir() {
-                    // FIX: never remove the project's own .git/ directory
+                    // Never remove the project's own .git/ directory.
                     if name == ".git" {
                         continue;
                     }
 
-                    // FIX: use a robust helper instead of the fragile HEAD+objects heuristic
+                    // Robust bare-repo detection: requires all 4 canonical markers.
                     if is_bare_git_repo(&p) {
-                        std::fs::remove_dir_all(&p)?;
+                        remove_dir_force(&p)?;
                         println!(
                             "  {} {:?}",
                             gettextrs::gettext("Removed bare-repo cache"),
                             p
                         );
                     } else if name.starts_with("_build") {
-                        std::fs::remove_dir_all(&p)?;
+                        remove_dir_force(&p)?;
                         println!(
                             "  {} {:?}",
                             gettextrs::gettext("Removed build directory"),
@@ -169,7 +195,7 @@ fn read_pkgname(dir: &std::path::Path) -> Option<String> {
     // ── Step 2: makepkg --printsrcinfo fallback ────────────────────────────
     // Run makepkg --printsrcinfo to get the fully-expanded .SRCINFO output.
     // This is the same invocation used by `validate-syntax` — fast and offline.
-    let output = Command::new("makepkg")
+    let output = crate::host::command("makepkg")
         .arg("--printsrcinfo")
         .current_dir(dir)
         .stdin(Stdio::null())

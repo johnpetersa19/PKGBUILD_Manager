@@ -15,16 +15,16 @@
  */
 
 use adw::prelude::*;
-use adw::{ApplicationWindow, HeaderBar, StatusPage};
+use adw::{ApplicationWindow, StatusPage};
+use gettextrs::gettext;
 use gtk::{
     glib, glib::clone, Align, Box as GBox, Button, CssProvider, Label, Orientation, PolicyType,
-    Popover, ProgressBar, ScrolledWindow, Separator, Spinner, Stack, StackTransitionType, TextView,
-    WrapMode,
+    Popover, ProgressBar, ScrolledWindow, Spinner, Stack, StackTransitionType, TextView, WrapMode,
 };
 use std::cell::RefCell;
 use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
-use std::process::{Command, Stdio};
+use std::process::Stdio;
 use std::rc::Rc;
 
 // ── Platform ──────────────────────────────────────────────────────────────────
@@ -203,23 +203,12 @@ struct StepRow {
 
 impl StepRow {
     fn new(title: &str) -> Self {
-        let row = adw::ActionRow::builder().title(title).build();
-        let spinner = Spinner::builder()
-            .width_request(22)
-            .height_request(22)
-            .halign(Align::Center)
-            .valign(Align::Center)
-            .visible(false)
-            .build();
-        let icon = Label::builder()
-            .label("○")
-            .width_chars(2)
-            .halign(Align::Center)
-            .valign(Align::Center)
-            .css_classes(vec!["icon-waiting".to_string()])
-            .build();
-        row.add_prefix(&spinner);
-        row.add_prefix(&icon);
+        let builder =
+            crate::gui_blueprint::builder(include_str!(concat!(env!("OUT_DIR"), "/step-row.ui")));
+        let row: adw::ActionRow = crate::gui_blueprint::object(&builder, "step_row");
+        let spinner: Spinner = crate::gui_blueprint::object(&builder, "step_spinner");
+        let icon: Label = crate::gui_blueprint::object(&builder, "step_icon");
+        row.set_title(title);
         StepRow { row, spinner, icon }
     }
     fn set_running(&self) {
@@ -237,7 +226,7 @@ impl StepRow {
         self.row.remove_css_class("step-running");
         self.row.remove_css_class("step-error");
         self.row.add_css_class("step-ok");
-        self.icon.set_label("✔");
+        self.icon.set_label("✓");
         self.icon.remove_css_class("icon-waiting");
         self.icon.remove_css_class("icon-error");
         self.icon.add_css_class("icon-ok");
@@ -249,7 +238,7 @@ impl StepRow {
         self.row.remove_css_class("step-running");
         self.row.remove_css_class("step-ok");
         self.row.add_css_class("step-error");
-        self.icon.set_label("✖");
+        self.icon.set_label("✗");
         self.icon.remove_css_class("icon-waiting");
         self.icon.remove_css_class("icon-ok");
         self.icon.add_css_class("icon-error");
@@ -310,91 +299,25 @@ struct ProgressPanel {
 #[allow(dead_code)]
 impl ProgressPanel {
     fn new(run_label: &str) -> Self {
-        let root = GBox::builder()
-            .orientation(Orientation::Vertical)
-            .spacing(14)
-            .margin_top(16)
-            .margin_bottom(16)
-            .margin_start(14)
-            .margin_end(14)
-            .build();
-
-        let caption = Label::builder()
-            .label("")
-            .halign(Align::Start)
-            .css_classes(vec!["stage-caption".to_string()])
-            .build();
-        root.append(&caption);
-
-        let bar = ProgressBar::builder()
-            .fraction(0.0)
-            .visible(true)
-            .css_classes(vec!["progress-bar-box".to_string()])
-            .build();
-        root.append(&bar);
-
-        let steps_group = adw::PreferencesGroup::builder().title("Steps").build();
-        root.append(&steps_group);
-
-        // Error area
-        let error_box = GBox::builder()
-            .orientation(Orientation::Vertical)
-            .spacing(6)
-            .visible(false)
-            .css_classes(vec!["error-box".to_string()])
-            .build();
-        let err_title = Label::builder()
-            .label("⚠️ Errors found")
-            .halign(Align::Start)
-            .css_classes(vec!["error-title".to_string()])
-            .build();
-        let err_scroll = ScrolledWindow::builder()
-            .hscrollbar_policy(PolicyType::Never)
-            .vscrollbar_policy(PolicyType::Automatic)
-            .max_content_height(160)
-            .propagate_natural_height(true)
-            .build();
-        let error_view = TextView::builder()
-            .editable(false)
-            .cursor_visible(false)
-            .wrap_mode(WrapMode::WordChar)
-            .monospace(true)
-            .left_margin(4)
-            .right_margin(4)
-            .top_margin(4)
-            .bottom_margin(4)
-            .css_classes(vec!["error-body".to_string()])
-            .build();
-        err_scroll.set_child(Some(&error_view));
-        error_box.append(&err_title);
-        error_box.append(&err_scroll);
-        root.append(&error_box);
-
-        let status_page = StatusPage::builder()
-            .icon_name("object-select-symbolic")
-            .title("")
-            .visible(false)
-            .build();
-        root.append(&status_page);
-
-        // Buttons
-        let btn_box = GBox::builder()
-            .orientation(Orientation::Horizontal)
-            .halign(Align::End)
-            .margin_top(4)
-            .spacing(8)
-            .build();
-        let back_btn = Button::builder()
-            .label("Back")
-            .css_classes(vec!["pill".to_string()])
-            .build();
-        let run_btn = Button::builder()
-            .label(run_label)
-            .css_classes(vec!["suggested-action".to_string(), "pill".to_string()])
-            .build();
-        btn_box.append(&back_btn);
-        btn_box.append(&run_btn);
-        root.append(&btn_box);
+        let builder = crate::gui_blueprint::builder(include_str!(concat!(
+            env!("OUT_DIR"),
+            "/progress-panel.ui"
+        )));
+        let root = crate::gui_blueprint::object(&builder, "progress_panel");
+        let caption = crate::gui_blueprint::object(&builder, "panel_caption");
+        let bar = crate::gui_blueprint::object(&builder, "panel_progress");
+        let steps_group: adw::PreferencesGroup =
+            crate::gui_blueprint::object(&builder, "panel_steps");
+        let error_box = crate::gui_blueprint::object(&builder, "panel_errors");
+        let error_view = crate::gui_blueprint::object(&builder, "panel_error_view");
+        let status_page = crate::gui_blueprint::object(&builder, "panel_status");
+        let back_btn: Button = crate::gui_blueprint::object(&builder, "panel_back");
+        let run_btn: Button = crate::gui_blueprint::object(&builder, "panel_run");
+        steps_group.set_title(&gettext("Steps"));
+        let error_title: Label = crate::gui_blueprint::object(&builder, "panel_error_title");
+        error_title.set_label(&gettext("⚠️ Errors found"));
+        back_btn.set_label(&gettext("Back"));
+        run_btn.set_label(run_label);
 
         ProgressPanel {
             root,
@@ -425,13 +348,19 @@ impl ProgressPanel {
         if ok {
             self.bar.set_fraction(1.0);
             self.run_btn.set_label("Run again");
-            self.status_page.set_icon_name(Some("emblem-ok-symbolic"));
+            self.status_page
+                .set_icon_name(Some("object-select-symbolic"));
             self.status_page.set_title(success_title);
             self.status_page.remove_css_class("error");
             self.status_page.set_visible(true);
         } else {
             self.bar.set_fraction(0.0);
             self.run_btn.set_label("Try again");
+            self.status_page
+                .set_icon_name(Some("dialog-error-symbolic"));
+            self.status_page.set_title(&gettext("Process failed"));
+            self.status_page.add_css_class("error");
+            self.status_page.set_visible(true);
         }
     }
 
@@ -468,12 +397,22 @@ impl ReleaseWindow {
         };
 
         let (saved_w, saved_h) = load_win_size("release-window", 680, 740);
-        let win = ApplicationWindow::builder()
-            .application(app)
-            .title(win_title)
-            .default_width(saved_w)
-            .default_height(saved_h)
-            .build();
+        let builder =
+            crate::gui_blueprint::builder(include_str!(concat!(env!("OUT_DIR"), "/release.ui")));
+        let win: ApplicationWindow = crate::gui_blueprint::object(&builder, "release_window");
+        let root: GBox = crate::gui_blueprint::object(&builder, "release_root");
+        let title_lbl: Label = crate::gui_blueprint::object(&builder, "release_title");
+        let path_lbl: Label = crate::gui_blueprint::object(&builder, "release_path");
+        let badge: Label = crate::gui_blueprint::object(&builder, "release_badge");
+        let nav_box: GBox = crate::gui_blueprint::object(&builder, "release_nav");
+        let content_stack: Stack = crate::gui_blueprint::object(&builder, "release_stack");
+        win.set_application(Some(app));
+        win.set_title(Some(win_title));
+        win.set_default_size(saved_w, saved_h);
+        title_lbl.set_label(win_title);
+        path_lbl.set_label(&target);
+        badge.set_label(platform.label());
+        badge.add_css_class(platform.badge_class());
         win.connect_close_request(clone!(
             #[weak]
             win,
@@ -484,72 +423,6 @@ impl ReleaseWindow {
                 glib::Propagation::Proceed
             }
         ));
-
-        // Root
-        let root = GBox::builder()
-            .orientation(Orientation::Vertical)
-            .spacing(0)
-            .build();
-
-        // ── Header ────────────────────────────────────────────────────────────
-        let header = HeaderBar::new();
-        let title_box = GBox::builder()
-            .orientation(Orientation::Vertical)
-            .valign(Align::Center)
-            .spacing(2)
-            .build();
-        let title_lbl = Label::builder()
-            .label(win_title)
-            .css_classes(vec!["title".to_string()])
-            .build();
-        let subtitle_row = GBox::builder()
-            .orientation(Orientation::Horizontal)
-            .halign(Align::Center)
-            .spacing(6)
-            .build();
-        let path_lbl = Label::builder()
-            .label(&target)
-            .ellipsize(gtk::pango::EllipsizeMode::Start)
-            .css_classes(vec!["dim-label".to_string()])
-            .build();
-        let badge = Label::builder()
-            .label(platform.label())
-            .css_classes(vec![platform.badge_class().to_string()])
-            .build();
-        subtitle_row.append(&path_lbl);
-        subtitle_row.append(&badge);
-        title_box.append(&title_lbl);
-        title_box.append(&subtitle_row);
-        header.set_title_widget(Some(&title_box));
-        root.append(&header);
-
-        // ── Body: nav tabs (left) + content stack (right) ─────────────────────
-        let body = GBox::builder()
-            .orientation(Orientation::Horizontal)
-            .spacing(0)
-            .vexpand(true)
-            .hexpand(true)
-            .build();
-        root.append(&body);
-
-        // Content stack
-        let content_stack = Stack::builder()
-            .transition_type(StackTransitionType::SlideUpDown)
-            .transition_duration(200)
-            .vexpand(true)
-            .hexpand(true)
-            .build();
-
-        // Left nav panel
-        let nav_box = GBox::builder()
-            .orientation(Orientation::Vertical)
-            .spacing(4)
-            .margin_top(12)
-            .margin_bottom(12)
-            .margin_start(8)
-            .margin_end(8)
-            .width_request(140)
-            .build();
 
         // Nav tab helper
         let make_nav_btn = |icon: &str, label_text: &str, page: &str, stack: Stack| {
@@ -573,7 +446,12 @@ impl ReleaseWindow {
             btn
         };
 
-        let push_nav = make_nav_btn("send-symbolic", "Push", "push", content_stack.clone());
+        let push_nav = make_nav_btn(
+            "mail-send-symbolic",
+            "Push",
+            "push",
+            content_stack.clone(),
+        );
         let tags_nav = make_nav_btn(
             "bookmark-new-symbolic",
             "Tags",
@@ -596,15 +474,6 @@ impl ReleaseWindow {
         } else {
             None
         };
-
-        let sep = Separator::builder()
-            .orientation(Orientation::Vertical)
-            .margin_top(8)
-            .margin_bottom(8)
-            .build();
-        body.append(&nav_box);
-        body.append(&sep);
-        body.append(&content_stack);
 
         // ═══════════════════════════════════════════════════════════════════════
         // PAGE 1 — PUSH
@@ -658,14 +527,11 @@ impl ReleaseWindow {
             let cur = detect_branch(&target);
             push_branch.set_text(&cur);
             let branches = list_branches(&target);
-            let pop_box = GBox::builder()
-                .orientation(Orientation::Vertical)
-                .spacing(2)
-                .margin_top(6)
-                .margin_bottom(6)
-                .margin_start(6)
-                .margin_end(6)
-                .build();
+            let branch_builder = crate::gui_blueprint::builder(include_str!(concat!(
+                env!("OUT_DIR"),
+                "/branch-popover.ui"
+            )));
+            let pop_box: GBox = crate::gui_blueprint::object(&branch_builder, "branch_list");
             for b in &branches {
                 let is_cur = b == &cur;
                 let pb = Button::builder()
@@ -684,14 +550,9 @@ impl ReleaseWindow {
                 });
                 pop_box.append(&pb);
             }
-            let pop = Popover::builder().child(&pop_box).build();
-            let pick = Button::builder()
-                .icon_name("vcs-branch-symbolic")
-                .tooltip_text("Choose branch")
-                .valign(Align::Center)
-                .css_classes(vec!["flat".to_string()])
-                .build();
-            pop.set_parent(&pick);
+            let pop: Popover = crate::gui_blueprint::object(&branch_builder, "branch_popover");
+            let pick: Button = crate::gui_blueprint::object(&branch_builder, "branch_button");
+            pick.set_tooltip_text(Some("Choose branch"));
             pick.connect_clicked(clone!(
                 #[strong]
                 pop,
@@ -1218,14 +1079,11 @@ impl ReleaseWindow {
             rel_branch_entry.set_text(&detect_branch(&target));
             {
                 let branches = list_branches(&target);
-                let pop_box = GBox::builder()
-                    .orientation(Orientation::Vertical)
-                    .spacing(2)
-                    .margin_top(6)
-                    .margin_bottom(6)
-                    .margin_start(6)
-                    .margin_end(6)
-                    .build();
+                let branch_builder = crate::gui_blueprint::builder(include_str!(concat!(
+                    env!("OUT_DIR"),
+                    "/branch-popover.ui"
+                )));
+                let pop_box: GBox = crate::gui_blueprint::object(&branch_builder, "branch_list");
                 let cur = detect_branch(&target);
                 for b in &branches {
                     let is_c = b == &cur;
@@ -1245,14 +1103,9 @@ impl ReleaseWindow {
                     });
                     pop_box.append(&pb);
                 }
-                let pop = Popover::builder().child(&pop_box).build();
-                let pick = Button::builder()
-                    .icon_name("vcs-branch-symbolic")
-                    .tooltip_text("Choose branch")
-                    .valign(Align::Center)
-                    .css_classes(vec!["flat".to_string()])
-                    .build();
-                pop.set_parent(&pick);
+                let pop: Popover = crate::gui_blueprint::object(&branch_builder, "branch_popover");
+                let pick: Button = crate::gui_blueprint::object(&branch_builder, "branch_button");
+                pick.set_tooltip_text(Some("Choose branch"));
                 pick.connect_clicked(clone!(
                     #[strong]
                     pop,
@@ -1337,7 +1190,12 @@ impl ReleaseWindow {
                 #[strong]
                 win,
                 move |_| {
-                    let chooser = gtk::FileDialog::new();
+                    let chooser_builder = crate::gui_blueprint::builder(include_str!(concat!(
+                        env!("OUT_DIR"),
+                        "/attachment-chooser.ui"
+                    )));
+                    let chooser: gtk::FileDialog =
+                        crate::gui_blueprint::object(&chooser_builder, "attachment_chooser");
                     chooser.open(
                         Some(&win),
                         None::<&gtk::gio::Cancellable>,
@@ -1668,13 +1526,17 @@ fn handle_msg(
             if ok {
                 bar.set_fraction(1.0);
                 run_btn.set_label("Run again");
-                sp.set_icon_name(Some("emblem-ok-symbolic"));
+                sp.set_icon_name(Some("object-select-symbolic"));
                 sp.set_title(success_msg);
                 sp.remove_css_class("error");
                 sp.set_visible(true);
             } else {
                 bar.set_fraction(0.0);
                 run_btn.set_label("Try again");
+                sp.set_icon_name(Some("dialog-error-symbolic"));
+                sp.set_title(&gettext("Process failed"));
+                sp.add_css_class("error");
+                sp.set_visible(true);
             }
         }
     }
@@ -1683,7 +1545,7 @@ fn handle_msg(
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 fn detect_branch(path: &str) -> String {
-    Command::new("git")
+    crate::host::command("git")
         .args(["rev-parse", "--abbrev-ref", "HEAD"])
         .current_dir(path)
         .output()
@@ -1695,7 +1557,7 @@ fn detect_branch(path: &str) -> String {
 }
 
 fn list_branches(path: &str) -> Vec<String> {
-    Command::new("git")
+    crate::host::command("git")
         .args(["branch", "--format=%(refname:short)"])
         .current_dir(path)
         .output()
@@ -1712,7 +1574,7 @@ fn list_branches(path: &str) -> Vec<String> {
 }
 
 fn list_tags(path: &str) -> Vec<String> {
-    Command::new("git")
+    crate::host::command("git")
         .args(["tag", "--sort=-creatordate"])
         .current_dir(path)
         .output()
@@ -1729,7 +1591,7 @@ fn list_tags(path: &str) -> Vec<String> {
 }
 
 fn detect_remote(path: &str) -> String {
-    Command::new("git")
+    crate::host::command("git")
         .args(["remote", "get-url", "origin"])
         .current_dir(path)
         .output()
@@ -1743,7 +1605,7 @@ fn detect_remote(path: &str) -> String {
 // ── Workers ───────────────────────────────────────────────────────────────────
 
 fn git_run(target: &str, args: &[&str], tx: &async_channel::Sender<Msg>) -> bool {
-    let mut child = match Command::new("git")
+    let mut child = match crate::host::command("git")
         .args(args)
         .current_dir(target)
         .stdout(Stdio::piped())
@@ -2005,7 +1867,7 @@ fn run_release_worker(
 }
 
 fn run_cli(cmd: &str, args: &[&str], cwd: &str, tx: &async_channel::Sender<Msg>) -> bool {
-    let mut child = match Command::new(cmd)
+    let mut child = match crate::host::command(cmd)
         .args(args)
         .current_dir(cwd)
         .stdout(Stdio::piped())

@@ -1,0 +1,21 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.ActionRow step_row {
+  title: _("Step");
+  Gtk.Spinner step_spinner {
+    width-request: 22;
+    height-request: 22;
+    halign: center;
+    valign: center;
+    visible: false;
+  }
+
+  Gtk.Label step_icon {
+    label: _("○");
+    width-chars: 2;
+    halign: center;
+    valign: center;
+    styles ["icon-waiting"]
+  }
+}

@@ -8,55 +8,55 @@ Actions=FullWorkflow;Build;BuildClean;Install;UpdateChecksums;UpdateSrcinfo;Namc
 
 [Desktop Action FullWorkflow]
 Name=Full Workflow
-Icon=io.github.john.PkgbuildManager
+Icon=io.github.PkgbuildManage
 Exec=bash /usr/share/pkgbuild-manager/scripts/00_Full\ Workflow %F
 
 [Desktop Action Build]
 Name=Build
-Icon=io.github.john.PkgbuildManager
+Icon=io.github.PkgbuildManage
 Exec=bash /usr/share/pkgbuild-manager/scripts/01_Build %F
 
 [Desktop Action BuildClean]
 Name=Build and Clean
-Icon=io.github.john.PkgbuildManager
+Icon=io.github.PkgbuildManage
 Exec=bash /usr/share/pkgbuild-manager/scripts/02b_Build\ and\ Clean %F
 
 [Desktop Action Install]
 Name=Install
-Icon=io.github.john.PkgbuildManager
+Icon=io.github.PkgbuildManage
 Exec=bash /usr/share/pkgbuild-manager/scripts/02_Install %F
 
 [Desktop Action UpdateChecksums]
 Name=Update Checksums
-Icon=io.github.john.PkgbuildManager
+Icon=io.github.PkgbuildManage
 Exec=bash /usr/share/pkgbuild-manager/scripts/03_Update\ Checksums %F
 
 [Desktop Action UpdateSrcinfo]
 Name=Update .SRCINFO
-Icon=io.github.john.PkgbuildManager
+Icon=io.github.PkgbuildManage
 Exec=bash /usr/share/pkgbuild-manager/scripts/04_Update\ .SRCINFO %F
 
 [Desktop Action Namcap]
 Name=Namcap
-Icon=io.github.john.PkgbuildManager
+Icon=io.github.PkgbuildManage
 Exec=bash /usr/share/pkgbuild-manager/scripts/05_Namcap %F
 
 [Desktop Action ShellCheck]
 Name=ShellCheck
-Icon=io.github.john.PkgbuildManager
+Icon=io.github.PkgbuildManage
 Exec=bash /usr/share/pkgbuild-manager/scripts/05b_ShellCheck %F
 
 [Desktop Action PushAUR]
 Name=Push AUR
-Icon=io.github.john.PkgbuildManager
+Icon=io.github.PkgbuildManage
 Exec=bash /usr/share/pkgbuild-manager/scripts/06_Push\ AUR %F
 
 [Desktop Action CleanSrcdir]
 Name=Clean srcdir
-Icon=io.github.john.PkgbuildManager
+Icon=io.github.PkgbuildManage
 Exec=bash /usr/share/pkgbuild-manager/scripts/07_Clean\ srcdir %F
 
 [Desktop Action CleanAll]
 Name=Clean Everything
-Icon=io.github.john.PkgbuildManager
+Icon=io.github.PkgbuildManage
 Exec=bash /usr/share/pkgbuild-manager/scripts/07b_Clean\ Everything %F
