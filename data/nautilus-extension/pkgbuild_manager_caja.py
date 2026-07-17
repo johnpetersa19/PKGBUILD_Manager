@@ -26,9 +26,39 @@ DEFAULT_ACTIONS = [
     ("05_Namcap",            "05_Namcap"),
     ("05b_ShellCheck",       "05b_ShellCheck"),
     ("06_Push AUR",          "06_Push AUR"),
+    ("17_Push AUR Tag",      "17_Push AUR Tag"),
     ("07_Clean srcdir",      "07_Clean srcdir"),
     ("07b_Clean Everything", "07b_Clean Everything"),
 ]
+
+TAG_ACTION = "17_Push AUR Tag"
+ARCHIVE_SUFFIXES = (
+    ".zip", ".tar", ".tar.gz", ".tgz", ".tar.bz2", ".tbz2",
+    ".tar.xz", ".txz", ".tar.zst", ".tzst", ".7z", ".rar",
+)
+
+
+def _project_root(path):
+    current = Path(path).resolve().parent
+    for directory in (current, *current.parents):
+        if (directory / ".git").exists():
+            return directory
+    return None
+
+
+def _is_aur_repository(root):
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(root), "remote", "get-url", "origin"],
+            capture_output=True, text=True, timeout=2, check=False,
+        )
+        return "aur.archlinux.org" in result.stdout.lower()
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+
+
+def _is_archive(path):
+    return str(path).lower().endswith(ARCHIVE_SUFFIXES)
 
 
 def _scripts_dir():
@@ -67,9 +97,16 @@ def _load_menu():
 
 class PkgbuildMenuProvider(GObject.GObject, Caja.MenuProvider):
 
-    def _build_menu(self, pkgbuild_path):
+    def _build_menu(self, pkgbuild_path, tag_only=False):
         scripts = _scripts_dir()
         items, num_groups = _load_menu()
+        root = Path(pkgbuild_path) if Path(pkgbuild_path).is_dir() else Path(pkgbuild_path).parent
+        if _is_aur_repository(root):
+            items = [item for item in items if item[0] != TAG_ACTION]
+        elif tag_only:
+            items = [item for item in items if item[0] == TAG_ACTION]
+        if not items:
+            return []
 
         groups = {}
         group_order = []
@@ -96,8 +133,9 @@ class PkgbuildMenuProvider(GObject.GObject, Caja.MenuProvider):
                         f"Missing: {spath}\nReinstall pkgbuild-manager."
                     ], close_fds=True)
                     return
+                workdir = pkgpath if os.path.isdir(pkgpath) else os.path.dirname(pkgpath)
                 subprocess.Popen(["bash", spath, pkgpath],
-                                 cwd=os.path.dirname(pkgpath), close_fds=True)
+                                 cwd=workdir, close_fds=True)
             return cb
 
         if len(group_order) <= 1:
@@ -130,13 +168,20 @@ class PkgbuildMenuProvider(GObject.GObject, Caja.MenuProvider):
         f = files[0]
         if not f.get_uri().startswith("file://"):
             return None
-        if f.get_name() != "PKGBUILD" or f.is_directory():
+        if f.is_directory():
             return None
-        return f.get_location().get_path()
+        path = f.get_location().get_path()
+        if f.get_name() == "PKGBUILD":
+            return path, False
+        if _is_archive(path):
+            root = _project_root(path)
+            if root is not None and not _is_aur_repository(root):
+                return str(root), True
+        return None
 
     def get_file_items(self, files):
-        path = self._check_file(files)
-        return self._build_menu(path) if path else []
+        context = self._check_file(files)
+        return self._build_menu(*context) if context else []
 
     def get_background_items(self, folder):
         return []
