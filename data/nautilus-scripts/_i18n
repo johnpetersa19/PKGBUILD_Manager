@@ -106,8 +106,8 @@ _getmsg() {
 pkgbuild_manager() {
     if [[ -n "$(type -P pkgbuild_manager)" ]]; then
         "$(type -P pkgbuild_manager)" "$@"
-    elif command -v flatpak >/dev/null 2>&1 && flatpak info io.github.johnpetersa19.PkgbuildManager >/dev/null 2>&1; then
-        flatpak run --command=pkgbuild_manager io.github.johnpetersa19.PkgbuildManager "$@"
+    elif command -v flatpak >/dev/null 2>&1 && flatpak info io.github.PkgbuildManage >/dev/null 2>&1; then
+        flatpak run --command=pkgbuild_manager io.github.PkgbuildManage "$@"
     else
         printf 'PKGBUILD Manager is not installed.\n' >&2
         return 127
@@ -117,8 +117,8 @@ pkgbuild_manager() {
 pkgbuild-manager-gui() {
     if [[ -n "$(type -P pkgbuild-manager-gui)" ]]; then
         "$(type -P pkgbuild-manager-gui)" "$@"
-    elif command -v flatpak >/dev/null 2>&1 && flatpak info io.github.johnpetersa19.PkgbuildManager >/dev/null 2>&1; then
-        flatpak run --command=pkgbuild-manager-gui io.github.johnpetersa19.PkgbuildManager "$@"
+    elif command -v flatpak >/dev/null 2>&1 && flatpak info io.github.PkgbuildManage >/dev/null 2>&1; then
+        flatpak run --command=pkgbuild-manager-gui io.github.PkgbuildManage "$@"
     else
         printf 'PKGBUILD Manager is not installed.\n' >&2
         return 127

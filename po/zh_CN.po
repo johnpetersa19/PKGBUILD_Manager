@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-16 22:33-0300\n"
+"POT-Creation-Date: 2026-07-16 22:56-0300\n"
 "PO-Revision-Date: 2026-05-31 14:10-0300\n"
 "Last-Translator: AI <ai@example.com>\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -546,6 +546,71 @@ msgstr "makepkg -g 失败："
 msgid "git push --tags failed"
 msgstr "注意：推送到 origin/master 失败"
 
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:16
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:77
+#, fuzzy
+msgid "Clean Everything"
+msgstr "全部清理"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:33
+msgid "Files found for cleanup"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:52
+msgid "Nothing to clean"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:53
+msgid "No build artifacts were found."
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:61
+msgid "Contains protected files — permissions will be unlocked"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:63
+#, fuzzy
+msgid "Directory and all its contents"
+msgstr "目录不存在"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:65
+msgid "File"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:83
+msgid "Unlock cleanup"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:84
+msgid "I reviewed the list and authorize permanent removal"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:103
+msgid "Cancel"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:104
+msgid "Clean permanently"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:134
+msgid "Unlocking protected files and cleaning…"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:161
+msgid "Everything was cleaned successfully."
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:162
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:167
+msgid "Close"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:166
+#, fuzzy
+msgid "Cleanup failed."
+msgstr "命令执行失败"
+
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:184
 msgid "aur-push-tag requires a version tag argument"
 msgstr "aur-push-tag 需要一个版本标签参数"
@@ -572,179 +637,179 @@ msgstr "未知命令"
 msgid "Warning: Could not remove obsolete PKGBUILD directory"
 msgstr "警告：无法删除过期的 PKGBUILD 目录"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:255
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:261
 msgid "Warning: Nautilus Python extension not found at"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:258
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:263
 msgid "Install the pkgbuild-manager package to get the extension."
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:260
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:266
 msgid "Extension found"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:283
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:289
 msgid "Could not remove duplicate Nautilus extension"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:289
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:295
 msgid "Removed duplicate Nautilus extension"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:296
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:302
 msgid "Restarting Nautilus\\u{2026}"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:301
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:307
 #, fuzzy
 msgid "Done. Right-click a PKGBUILD directory to see the menu."
 msgstr ""
 "PKGBUILD Manager：Nautilus 扩展已启用。右键单击任意 PKGBUILD 文件可查看 "
 "PKGBUILD 子菜单。"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:309
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:315
 #, fuzzy
 msgid "Compiled package (makepkg)"
 msgstr "编译软件包（makepkg）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:310
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:316
 msgid "Compile and clean srcdir (makepkg -c)"
 msgstr "编译并清理源目录（makepkg -c）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:311
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:317
 #, fuzzy
 msgid "Force recompilation (makepkg -f)"
 msgstr "强制重新编译（makepkg -f）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:312
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:318
 #, fuzzy
 msgid "Basic check() function (makepkg --nocheck)"
 msgstr "跳过 check() 函数（makepkg --nocheck）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:313
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:319
 #, fuzzy
 msgid "Popular PGP signature check (makepkg --skippgpcheck)"
 msgstr "跳过 PGP 签名检查（makepkg --skippgpcheck）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:314
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:320
 msgid ""
 "Same as 'build' — all extra flags after the path are forwarded to makepkg"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:317
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:323
 #, fuzzy
 msgid "Compile, install and resolve dependencies (makepkg -si)"
 msgstr "编译、安装并解决依赖（makepkg -si）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:318
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:324
 msgid "Compile, install and clean srcdir (makepkg -sic)"
 msgstr "编译、安装并清理源目录（makepkg -sic）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:319
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:325
 #, fuzzy
 msgid "Force compilation and installation (makepkg -sif)"
 msgstr "强制编译并安装（makepkg -sif）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:320
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:326
 #, fuzzy
 msgid "Install and remove makedeps afterwards (makepkg -sir)"
 msgstr "安装并在之后删除构建依赖（makepkg -sir）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:321
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:327
 msgid "Install without running check()"
 msgstr "安装时不运行 check()"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:322
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:328
 msgid "Install skipping PGP checks"
 msgstr "安装时跳过 PGP 检查"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:323
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:329
 msgid ""
 "Same as 'install' — all extra flags after the path are forwarded to makepkg"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:326
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:332
 msgid "Download and extract sources only (makepkg -o)"
 msgstr "仅下载并解压源代码（makepkg -o）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:327
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:333
 #, fuzzy
 msgid "Update checksums without PKGBUILD (updpkgsums)"
 msgstr "更新 PKGBUILD 中的校验和（updpkgsums）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:328
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:334
 #, fuzzy
 msgid "Generate checksums and print to standard output (makepkg -g)"
 msgstr "生成校验和并输出到标准输出（makepkg -g）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:329
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:335
 msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
 msgstr "重新生成 .SRCINFO（makepkg --printsrcinfo）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:332
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:338
 #, fuzzy
 msgid "Run namcap on PKGBUILD and compiled packages"
 msgstr "对 PKGBUILD 和已构建软件包运行 namcap"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:333
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:339
 #, fuzzy
 msgid "Run ShellCheck on PKGBUILD"
 msgstr "对 PKGBUILD 运行 shellcheck"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:336
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:342
 msgid "Full offline check: syntax + namcap + shellcheck (no network)"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:337
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:343
 #, fuzzy
 msgid "Validate syntax only (makepkg --printsrcinfo)"
 msgstr "重新生成 .SRCINFO（makepkg --printsrcinfo）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:338
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:344
 msgid ""
 "Parse variables/functions without extracting (makepkg --nobuild --"
 "noextract); may access network on VCS packages"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:339
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:345
 msgid "Download sources and verify checksums (makepkg --verifysource)"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:340
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:346
 msgid ""
 "Check declared dependencies exist in repos (makepkg --syncdeps --nobuild)"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:343
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:349
 msgid "Clean srcdir with makepkg (makepkg -c)"
 msgstr "使用 makepkg 清理源目录（makepkg -c）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:344
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:350
 #, fuzzy
 msgid "Remove src/, packages/ and compiled packages"
 msgstr "删除 src/、pkg/ 和已构建的软件包"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:347
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:353
 #, fuzzy
 msgid "Stage, commit and push to the AUR (automatic message if not provided)"
 msgstr "暂存、提交并推送到 AUR（未提供时自动生成提交信息）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:348
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:354
 #, fuzzy
 msgid "Push with version tag (e.g., 1.2.3-1)"
 msgstr "使用版本标签推送（例如 1.2.3-1）"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:351
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:357
 msgid "Remove obsolete symbolic links and check the Nautilus extension"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:352
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:358
 #, fuzzy
 msgid "Display program version"
 msgstr "显示程序版本"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:353
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/main.rs:359
 #, fuzzy
 msgid "Display this help message"
 msgstr "显示此帮助信息"
@@ -882,11 +947,6 @@ msgstr "推送标签到 AUR"
 msgid "Clean srcdir"
 msgstr "清理源目录"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:77
-#, fuzzy
-msgid "Clean Everything"
-msgstr "全部清理"
-
 # Default group names
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:87
 msgid "Actions"
@@ -910,11 +970,6 @@ msgstr "清理"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:67
 msgid "Repository download error"
-msgstr ""
-
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:69
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:113
-msgid "Close"
 msgstr ""
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:90
@@ -975,7 +1030,7 @@ msgid "Unknown Git error"
 msgstr ""
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:283
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:416
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:426
 msgid "Git repository"
 msgstr ""
 
@@ -983,15 +1038,15 @@ msgstr ""
 msgid "✓ Repository downloaded successfully: "
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:391
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:401
 msgid "Clone repository"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:392
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:402
 msgid "Validate and clone the Git repository URL from the clipboard"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:413
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:423
 msgid "Copy a valid Git repository URL before using this option."
 msgstr ""
 

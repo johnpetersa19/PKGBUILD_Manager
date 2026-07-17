@@ -22,7 +22,7 @@ use aur_dialog::{RepoMode, UnifiedPushWindow};
 use gettextrs::{bind_textdomain_codeset, bindtextdomain, setlocale, textdomain, LocaleCategory};
 use release_dialog::ReleaseWindow;
 
-const APP_ID: &str = "io.github.johnpetersa19.PkgbuildManager";
+const APP_ID: &str = "io.github.PkgbuildManage";
 const GETTEXT_PACKAGE: &str = "pkgbuild_manager";
 const LOCALEDIR: &str = match option_env!("PKGBUILD_MANAGER_LOCALEDIR_BUILD") {
     Some(value) => value,
@@ -100,8 +100,28 @@ fn install_flatpak_desktop_integration() -> std::io::Result<()> {
         PathBuf::from("/app/share/nautilus-python/extensions/pkgbuild_manager.py");
     let extension_dir = home.join(".local/share/nautilus-python/extensions");
     fs::create_dir_all(&extension_dir)?;
-    if source_extension.is_file() {
-        fs::copy(source_extension, extension_dir.join("pkgbuild_manager.py"))?;
+    let target_extension = extension_dir.join("pkgbuild_manager.py");
+    // A native package is authoritative. Ask the host because /usr is the
+    // Flatpak runtime's filesystem from inside the sandbox, not the host's.
+    let native_extension_exists = std::process::Command::new("flatpak-spawn")
+        .args([
+            "--host", "test", "-f",
+            "/usr/share/nautilus-python/extensions/pkgbuild_manager.py",
+        ])
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .status()
+        .map(|status| status.success())
+        .unwrap_or(false);
+    if native_extension_exists {
+        // Remove a copy created by an older Flatpak launch so Nautilus cannot
+        // instantiate both the native and per-user providers.
+        if target_extension.exists() {
+            fs::remove_file(&target_extension)?;
+        }
+    } else if source_extension.is_file() {
+        fs::copy(source_extension, target_extension)?;
     }
     copy_tree(
         std::path::Path::new("/app/share/locale"),

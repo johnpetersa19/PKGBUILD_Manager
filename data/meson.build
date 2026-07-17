@@ -99,7 +99,7 @@ install_data(
 # Flatpak launcher. Its filename must match the application ID so Flatpak can
 # export it to the host desktop.
 install_data(
-  'applications/io.github.johnpetersa19.PkgbuildManager.desktop',
+  'applications/io.github.PkgbuildManage.desktop',
   install_dir: get_option('datadir') / 'applications',
 )
 

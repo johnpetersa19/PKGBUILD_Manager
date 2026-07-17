@@ -18,7 +18,7 @@ use std::time::Duration;
 use crate::config::{self, MenuGroup, MenuItem};
 use crate::win_state;
 
-const APP_ID: &str = "io.github.johnpetersa19.PkgbuildManager.Settings";
+const APP_ID: &str = "io.github.PkgbuildManage.Settings";
 
 // ── Application ───────────────────────────────────────────────────────────────
 

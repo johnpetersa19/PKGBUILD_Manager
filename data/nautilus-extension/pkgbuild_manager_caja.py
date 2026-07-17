@@ -32,13 +32,21 @@ DEFAULT_ACTIONS = [
 
 
 def _scripts_dir():
+    here = os.path.dirname(os.path.abspath(__file__))
+    if here.startswith("/usr/share/"):
+        installed = "/usr/share/pkgbuild-manager/scripts"
+        if os.path.isdir(installed):
+            return installed
+    if here.startswith("/usr/local/share/"):
+        installed = "/usr/local/share/pkgbuild-manager/scripts"
+        if os.path.isdir(installed):
+            return installed
     user_flatpak = os.path.expanduser("~/.local/share/pkgbuild-manager/scripts")
     if os.path.isdir(user_flatpak):
         return user_flatpak
     installed = "/usr/share/pkgbuild-manager/scripts"
     if os.path.isdir(installed):
         return installed
-    here = os.path.dirname(os.path.abspath(__file__))
     return os.path.normpath(os.path.join(here, "..", "nautilus-scripts"))
 
 

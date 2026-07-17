@@ -248,15 +248,21 @@ fn setup_nautilus() -> Result<()> {
         }
     }
 
-    let ext_path = PathBuf::from("/usr/share/nautilus-python/extensions/pkgbuild_manager.py");
-    if !ext_path.exists() {
+    let ext_path = [
+        "/usr/share/nautilus-python/extensions/pkgbuild_manager.py",
+        "/usr/local/share/nautilus-python/extensions/pkgbuild_manager.py",
+    ]
+    .into_iter()
+    .map(PathBuf::from)
+    .find(|path| path.exists());
+    if ext_path.is_none() {
         eprintln!(
-            "{}\n  {}",
+            "{}\n  /usr/share/nautilus-python/extensions/pkgbuild_manager.py\n  /usr/local/share/nautilus-python/extensions/pkgbuild_manager.py",
             gettext("Warning: Nautilus Python extension not found at"),
-            ext_path.display()
         );
         eprintln!("{}", gettext("Install the pkgbuild-manager package to get the extension."));
     } else {
+        let ext_path = ext_path.expect("checked above");
         println!("{}: {}", gettext("Extension found"), ext_path.display());
 
         // Nautilus loads extensions from both the system and per-user data

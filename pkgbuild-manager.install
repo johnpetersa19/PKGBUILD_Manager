@@ -1,3 +1,34 @@
+_desktop_accounts() {
+    # Package scriptlets run as root, where USER=root and SUDO_USER is often
+    # unset (notably with paru). Read real login accounts from passwd instead.
+    getent passwd | awk -F: '$3 >= 1000 && $3 < 60000 && $6 ~ /^\// { print $1 ":" $3 ":" $6 }'
+}
+
+_active_desktop_user() {
+    if [ -n "${SUDO_USER:-}" ] && [ "${SUDO_USER}" != "root" ]; then
+        printf '%s\n' "$SUDO_USER"
+        return
+    fi
+    local account name uid home
+    while IFS=: read -r name uid home; do
+        if [ -S "/run/user/${uid}/bus" ]; then
+            printf '%s\n' "$name"
+            return
+        fi
+    done < <(_desktop_accounts)
+}
+
+_remove_duplicate_nautilus_extensions() {
+    local name uid home user_ext
+    while IFS=: read -r name uid home; do
+        user_ext="$home/.local/share/nautilus-python/extensions/pkgbuild_manager.py"
+        if [ -f "$user_ext" ] || [ -L "$user_ext" ]; then
+            rm -f -- "$user_ext"
+            echo ">>> Removed duplicate Nautilus extension for $name: $user_ext"
+        fi
+    done < <(_desktop_accounts)
+}
+
 post_install() {
     echo ">>> PKGBUILD Manager installed."
     echo ">>> Right-click any PKGBUILD file to see the PKGBUILD submenu."
@@ -6,17 +37,14 @@ post_install() {
     # Nautilus scans both system and per-user extension directories. A stale
     # user copy instantiates a second MenuProvider and duplicates the option.
     # This package's system extension is authoritative when installed.
-    _user="${SUDO_USER:-$USER}"
-    _user_home="$(eval echo ~$_user)"
-    _user_ext="$_user_home/.local/share/nautilus-python/extensions/pkgbuild_manager.py"
-    if [ -f "$_user_ext" ] || [ -L "$_user_ext" ]; then
-        rm -f "$_user_ext"
-        echo ">>> Removed duplicate Nautilus extension: $_user_ext"
-    fi
+    _remove_duplicate_nautilus_extensions
 
     # Register Ctrl+Alt+P shortcut (GNOME only, only if slot is free)
     if command -v gsettings &>/dev/null; then
-        _user="${SUDO_USER:-$USER}"
+        _user="$(_active_desktop_user)"
+        if [ -z "$_user" ]; then
+            echo ">>> No active desktop user found; skipping keyboard shortcut."
+        else
         _uid=$(id -u "$_user" 2>/dev/null)
         _env="DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${_uid}/bus"
         _gset="runuser -u $_user -- env $_env gsettings"
@@ -44,6 +72,7 @@ post_install() {
             org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:${_binding} \
             binding "<Control><Alt>p" 2>/dev/null || true
         echo ">>> Keyboard shortcut Ctrl+Alt+P registered/updated."
+        fi
     fi
 
     # Detect installed file managers and show targeted hints
@@ -87,47 +116,48 @@ post_install() {
 }
 
 post_upgrade() {
-    _user="${SUDO_USER:-$USER}"
-
     # FIX: clean up stale entries from previous versions for ALL supported
     # file managers, not just Nautilus. Older versions could leave behind
     # directories/symlinks in Nemo, Caja, and Dolphin that were never removed
     # on upgrade.
 
+    while IFS=: read -r _user _uid _user_home; do
     # Nautilus
-    _nautilus_scripts="$(eval echo ~$_user)/.local/share/nautilus/scripts"
+    _nautilus_scripts="$_user_home/.local/share/nautilus/scripts"
     if [ -d "$_nautilus_scripts/PKGBUILD" ]; then
         rm -rf "$_nautilus_scripts/PKGBUILD"
         echo ">>> Removed stale PKGBUILD dir from Nautilus scripts."
     fi
 
     # Nemo
-    _nemo_scripts="$(eval echo ~$_user)/.local/share/nemo/scripts"
+    _nemo_scripts="$_user_home/.local/share/nemo/scripts"
     if [ -d "$_nemo_scripts/PKGBUILD" ]; then
         rm -rf "$_nemo_scripts/PKGBUILD"
         echo ">>> Removed stale PKGBUILD dir from Nemo scripts."
     fi
 
     # Caja
-    _caja_scripts="$(eval echo ~$_user)/.local/share/caja/scripts"
+    _caja_scripts="$_user_home/.local/share/caja/scripts"
     if [ -d "$_caja_scripts/PKGBUILD" ]; then
         rm -rf "$_caja_scripts/PKGBUILD"
         echo ">>> Removed stale PKGBUILD dir from Caja scripts."
     fi
 
     # Dolphin service menus (old versions used ~/.local/share/kservices5)
-    _dolphin_old="$(eval echo ~$_user)/.local/share/kservices5/pkgbuild-manager.desktop"
+    _dolphin_old="$_user_home/.local/share/kservices5/pkgbuild-manager.desktop"
     if [ -f "$_dolphin_old" ]; then
         rm -f "$_dolphin_old"
         echo ">>> Removed stale Dolphin service menu entry."
     fi
+    done < <(_desktop_accounts)
 
     post_install
 }
 
 post_remove() {
     if command -v gsettings &>/dev/null; then
-        _user="${SUDO_USER:-$USER}"
+        _user="$(_active_desktop_user)"
+        [ -n "$_user" ] || return 0
         _uid=$(id -u "$_user" 2>/dev/null)
         _env="DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${_uid}/bus"
         _gset="runuser -u $_user -- env $_env gsettings"

@@ -9,6 +9,7 @@ src/actions/shellcheck.rs
 src/actions/validate.rs
 src/aur_push_gui/aur_dialog.rs
 src/aur_push_gui/release_dialog.rs
+src/clean_gui/dialog.rs
 src/main.rs
 src/settings_gui/app.rs
 src/settings_gui/config.rs

@@ -54,7 +54,7 @@ for a in actions:
     lines += [
         f"[Desktop Action {key}]",
         f"Name={a['label']}",
-        "Icon=io.github.john.PkgbuildManager",
+        "Icon=io.github.PkgbuildManage",
         f"Exec=bash {script} %F",
         "",
     ]
