@@ -14,6 +14,8 @@ mod settings_app;
 mod win_state;
 #[path = "../host.rs"]
 mod host;
+#[path = "../gui_blueprint.rs"]
+mod gui_blueprint;
 
 use adw::gio::ApplicationFlags;
 use adw::prelude::*;

@@ -2,11 +2,11 @@
 //! Feature-parity with the former src/settings/app.py.
 
 use adw::prelude::*;
-use adw::{Application, ApplicationWindow, HeaderBar, Toast, ToastOverlay};
+use adw::{Application, ApplicationWindow, Toast, ToastOverlay};
 use gettextrs::gettext;
 use gtk::{
     glib::{self, clone},
-    Align, Box as GBox, Button, ListBox, ListBoxRow, Orientation, ScrolledWindow, SelectionMode,
+    Align, Box as GBox, Button, ListBox, ListBoxRow, Orientation, ScrolledWindow,
     Separator, Switch,
 };
 use std::cell::RefCell;
@@ -50,12 +50,18 @@ impl SettingsApp {
 fn build_window(app: &Application) {
     let (w, h) = win_state::load("settings", 700, 600);
 
-    let win = ApplicationWindow::builder()
-        .application(app)
-        .title(&gettext("PKGBUILD Manager — Menu Settings"))
-        .default_width(w)
-        .default_height(h)
-        .build();
+    let builder = crate::gui_blueprint::builder(include_str!(concat!(env!("OUT_DIR"), "/settings.ui")));
+    let win: ApplicationWindow = crate::gui_blueprint::object(&builder, "settings_window");
+    let reset_btn: Button = crate::gui_blueprint::object(&builder, "reset_button");
+    let save_btn: Button = crate::gui_blueprint::object(&builder, "save_button");
+    let scroll: ScrolledWindow = crate::gui_blueprint::object(&builder, "settings_scroll");
+    let main_box: GBox = crate::gui_blueprint::object(&builder, "settings_groups");
+    let toast_overlay: ToastOverlay = crate::gui_blueprint::object(&builder, "toast_overlay");
+    win.set_application(Some(app));
+    win.set_title(Some(&gettext("PKGBUILD Manager — Menu Settings")));
+    win.set_default_size(w, h);
+    reset_btn.set_label(&gettext("Reset"));
+    save_btn.set_label(&gettext("Save"));
 
     win.connect_close_request(|ww| {
         let cw = ww.width();
@@ -67,37 +73,6 @@ fn build_window(app: &Application) {
     });
 
     let menu_data: Rc<RefCell<Vec<MenuGroup>>> = Rc::new(RefCell::new(config::load()));
-
-    // ── Layout ────────────────────────────────────────────────────────────────
-    let toolbar_view = adw::ToolbarView::new();
-    let header = HeaderBar::new();
-
-    let reset_btn = Button::builder().label(&gettext("Reset")).build();
-    reset_btn.add_css_class("destructive-action");
-    header.pack_start(&reset_btn);
-
-    let save_btn = Button::builder().label(&gettext("Save")).build();
-    save_btn.add_css_class("suggested-action");
-    header.pack_end(&save_btn);
-
-    toolbar_view.add_top_bar(&header);
-
-    let scroll = ScrolledWindow::builder().vexpand(true).build();
-    let main_box = GBox::builder()
-        .orientation(Orientation::Vertical)
-        .spacing(12)
-        .margin_top(12)
-        .margin_bottom(12)
-        .margin_start(16)
-        .margin_end(16)
-        .build();
-    scroll.set_child(Some(&main_box));
-
-    // ToastOverlay wraps the scroll so toasts appear over the content
-    let toast_overlay = ToastOverlay::new();
-    toast_overlay.set_child(Some(&scroll));
-    toolbar_view.set_content(Some(&toast_overlay));
-    win.set_content(Some(&toolbar_view));
 
     render_groups(&main_box, &scroll, &menu_data, &win);
 
@@ -499,26 +474,10 @@ fn show_add_item_dialog(
     scroll: &ScrolledWindow,
     win: &ApplicationWindow,
 ) {
-    let dialog = adw::Dialog::builder()
-        .title(&gettext("Add Action"))
-        .content_width(360)
-        .content_height(480)
-        .build();
-
-    let toolbar = adw::ToolbarView::new();
-    toolbar.add_top_bar(&HeaderBar::new());
-
-    let inner_scroll = ScrolledWindow::builder().vexpand(true).build();
-    inner_scroll.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Automatic);
-
-    let list_box = ListBox::builder()
-        .selection_mode(SelectionMode::Single)
-        .build();
-    list_box.add_css_class("boxed-list");
-    list_box.set_margin_top(12);
-    list_box.set_margin_bottom(12);
-    list_box.set_margin_start(12);
-    list_box.set_margin_end(12);
+    let builder = crate::gui_blueprint::builder(include_str!(concat!(env!("OUT_DIR"), "/add-action-dialog.ui")));
+    let dialog: adw::Dialog = crate::gui_blueprint::object(&builder, "add_action_dialog");
+    let list_box: ListBox = crate::gui_blueprint::object(&builder, "add_action_list");
+    dialog.set_title(&gettext("Add Action"));
 
     let all = config::all_actions();
     for (_id, label) in &all {
@@ -562,9 +521,6 @@ fn show_add_item_dialog(
         }
     ));
 
-    inner_scroll.set_child(Some(&list_box));
-    toolbar.set_content(Some(&inner_scroll));
-    dialog.set_child(Some(&toolbar));
     dialog.present(Some(win));
 }
 

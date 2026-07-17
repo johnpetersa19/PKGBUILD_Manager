@@ -1,0 +1,31 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.ApplicationWindow clone_window {
+  default-width: 440;
+  resizable: false;
+
+  content: Gtk.Box {
+    orientation: vertical;
+    spacing: 12;
+    margin-top: 24;
+    margin-bottom: 18;
+    margin-start: 24;
+    margin-end: 24;
+
+    Gtk.Label clone_title {
+      ellipsize: end;
+      styles ["title-2"]
+    }
+    Gtk.Label clone_status { xalign: 0; }
+    Gtk.ProgressBar clone_progress { show-text: true; }
+    Gtk.Label clone_time {
+      xalign: 0;
+      styles ["dim-label"]
+    }
+    Gtk.Button clone_close {
+      halign: end;
+      sensitive: false;
+    }
+  };
+}

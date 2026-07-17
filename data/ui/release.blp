@@ -1,0 +1,62 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.ApplicationWindow release_window {
+  content: Gtk.Box release_root {
+    orientation: vertical;
+
+    Adw.HeaderBar {
+      title-widget: Gtk.Box {
+        orientation: vertical;
+        valign: center;
+        spacing: 2;
+
+        Gtk.Label release_title {
+          styles ["title"]
+        }
+
+        Gtk.Box {
+          orientation: horizontal;
+          halign: center;
+          spacing: 6;
+
+          Gtk.Label release_path {
+            ellipsize: start;
+            styles ["dim-label"]
+          }
+
+          Gtk.Label release_badge {}
+        }
+      };
+    }
+
+    Gtk.Box release_body {
+      orientation: horizontal;
+      vexpand: true;
+      hexpand: true;
+
+      Gtk.Box release_nav {
+        orientation: vertical;
+        spacing: 4;
+        margin-top: 12;
+        margin-bottom: 12;
+        margin-start: 8;
+        margin-end: 8;
+        width-request: 140;
+      }
+
+      Gtk.Separator {
+        orientation: vertical;
+        margin-top: 8;
+        margin-bottom: 8;
+      }
+
+      Gtk.Stack release_stack {
+        transition-type: slide_up_down;
+        transition-duration: 200;
+        vexpand: true;
+        hexpand: true;
+      }
+    }
+  };
+}

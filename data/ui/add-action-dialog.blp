@@ -1,0 +1,27 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.Dialog add_action_dialog {
+  content-width: 360;
+  content-height: 480;
+
+  child: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {}
+
+    content: Gtk.ScrolledWindow {
+      vexpand: true;
+      hscrollbar-policy: never;
+      vscrollbar-policy: automatic;
+
+      child: Gtk.ListBox add_action_list {
+        selection-mode: single;
+        margin-top: 12;
+        margin-bottom: 12;
+        margin-start: 12;
+        margin-end: 12;
+        styles ["boxed-list"]
+      };
+    };
+  };
+}

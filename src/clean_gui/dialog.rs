@@ -2,7 +2,7 @@
 
 use adw::prelude::*;
 use gettextrs::gettext;
-use gtk::{glib, Align, Box as GBox, Button, Label, Orientation, ProgressBar, ScrolledWindow, Switch};
+use gtk::{glib, Button, Label, ProgressBar, Switch};
 use std::path::{Path, PathBuf};
 use std::process::Stdio;
 use std::thread;
@@ -10,43 +10,22 @@ use std::thread;
 pub fn present(app: &adw::Application, target: String) {
     let target = resolve_target(&target);
     let candidates = find_candidates(&target);
+    let builder = crate::gui_blueprint::builder(include_str!(concat!(env!("OUT_DIR"), "/clean.ui")));
+    let window: adw::ApplicationWindow = crate::gui_blueprint::object(&builder, "clean_window");
+    let title: Label = crate::gui_blueprint::object(&builder, "clean_title");
+    let path_label: Label = crate::gui_blueprint::object(&builder, "clean_path");
+    let list: gtk::ListBox = crate::gui_blueprint::object(&builder, "clean_list");
+    let unlock_row: adw::ActionRow = crate::gui_blueprint::object(&builder, "unlock_row");
+    let unlock: Switch = crate::gui_blueprint::object(&builder, "unlock_switch");
+    let status: Label = crate::gui_blueprint::object(&builder, "clean_status");
+    let progress: ProgressBar = crate::gui_blueprint::object(&builder, "clean_progress");
+    let cancel: Button = crate::gui_blueprint::object(&builder, "cancel_button");
+    let clean: Button = crate::gui_blueprint::object(&builder, "clean_button");
 
-    let window = adw::ApplicationWindow::builder()
-        .application(app)
-        .title(&gettext("Clean Everything"))
-        .default_width(560)
-        .default_height(520)
-        .build();
-
-    let toolbar = adw::ToolbarView::new();
-    toolbar.add_top_bar(&adw::HeaderBar::new());
-    let content = GBox::builder()
-        .orientation(Orientation::Vertical)
-        .spacing(14)
-        .margin_top(18)
-        .margin_bottom(18)
-        .margin_start(20)
-        .margin_end(20)
-        .build();
-
-    let title = Label::builder()
-        .label(&gettext("Files found for cleanup"))
-        .halign(Align::Start)
-        .build();
-    title.add_css_class("title-2");
-    content.append(&title);
-
-    let path_label = Label::builder()
-        .label(target.to_string_lossy())
-        .halign(Align::Start)
-        .ellipsize(gtk::pango::EllipsizeMode::Middle)
-        .build();
-    path_label.add_css_class("dim-label");
-    content.append(&path_label);
-
-    let list = gtk::ListBox::new();
-    list.add_css_class("boxed-list");
-    list.set_selection_mode(gtk::SelectionMode::None);
+    window.set_application(Some(app));
+    window.set_title(Some(&gettext("Clean Everything")));
+    title.set_label(&gettext("Files found for cleanup"));
+    path_label.set_label(&target.to_string_lossy());
     if candidates.is_empty() {
         let row = adw::ActionRow::builder()
             .title(&gettext("Nothing to clean"))
@@ -76,37 +55,11 @@ pub fn present(app: &adw::Application, target: String) {
             list.append(&row);
         }
     }
-    let scroll = ScrolledWindow::builder().vexpand(true).child(&list).build();
-    content.append(&scroll);
-
-    let unlock_row = adw::ActionRow::builder()
-        .title(&gettext("Unlock cleanup"))
-        .subtitle(&gettext("I reviewed the list and authorize permanent removal"))
-        .build();
-    unlock_row.add_prefix(&gtk::Image::from_icon_name("changes-prevent-symbolic"));
-    let unlock = Switch::builder().valign(Align::Center).build();
-    unlock_row.add_suffix(&unlock);
+    unlock_row.set_title(&gettext("Unlock cleanup"));
+    unlock_row.set_subtitle(&gettext("I reviewed the list and authorize permanent removal"));
     unlock_row.set_activatable_widget(Some(&unlock));
-    content.append(&unlock_row);
-
-    let status = Label::builder().halign(Align::Start).wrap(true).build();
-    let progress = ProgressBar::new();
-    progress.set_visible(false);
-    content.append(&status);
-    content.append(&progress);
-
-    let actions = GBox::builder()
-        .orientation(Orientation::Horizontal)
-        .spacing(8)
-        .halign(Align::End)
-        .build();
-    let cancel = Button::with_label(&gettext("Cancel"));
-    let clean = Button::with_label(&gettext("Clean permanently"));
-    clean.add_css_class("destructive-action");
-    clean.set_sensitive(false);
-    actions.append(&cancel);
-    actions.append(&clean);
-    content.append(&actions);
+    cancel.set_label(&gettext("Cancel"));
+    clean.set_label(&gettext("Clean permanently"));
 
     unlock.connect_state_set(glib::clone!(
         #[strong] clean,
@@ -174,8 +127,6 @@ pub fn present(app: &adw::Application, target: String) {
         }
     ));
 
-    toolbar.set_content(Some(&content));
-    window.set_content(Some(&toolbar));
     window.present();
 }
 

@@ -1,0 +1,61 @@
+using Gtk 4.0;
+using Adw 1;
+
+Gtk.Box progress_panel {
+  orientation: vertical;
+  spacing: 14;
+  margin-top: 16;
+  margin-bottom: 16;
+  margin-start: 14;
+  margin-end: 14;
+
+  Gtk.Label panel_caption {
+    halign: start;
+    styles ["stage-caption"]
+  }
+  Gtk.ProgressBar panel_progress {
+    styles ["progress-bar-box"]
+  }
+  Adw.PreferencesGroup panel_steps { title: _("Steps"); }
+  Gtk.Box panel_errors {
+    orientation: vertical;
+    spacing: 6;
+    visible: false;
+    styles ["error-box"]
+
+    Gtk.Label panel_error_title {
+      label: _("Errors");
+      halign: start;
+      styles ["error-title"]
+    }
+    Gtk.ScrolledWindow {
+      hscrollbar-policy: never;
+      vscrollbar-policy: automatic;
+      max-content-height: 160;
+      propagate-natural-height: true;
+      child: Gtk.TextView panel_error_view {
+        editable: false;
+        cursor-visible: false;
+        wrap-mode: word_char;
+        monospace: true;
+        left-margin: 4;
+        right-margin: 4;
+        top-margin: 4;
+        bottom-margin: 4;
+        styles ["error-body"]
+      };
+    }
+  }
+  Adw.StatusPage panel_status {
+    icon-name: "object-select-symbolic";
+    visible: false;
+  }
+  Gtk.Box {
+    orientation: horizontal;
+    halign: end;
+    spacing: 8;
+    margin-top: 4;
+    Gtk.Button panel_back { styles ["pill"] }
+    Gtk.Button panel_run { styles ["suggested-action", "pill"] }
+  }
+}

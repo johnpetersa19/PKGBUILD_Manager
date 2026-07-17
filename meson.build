@@ -6,6 +6,7 @@ project('pkgbuild_manager', 'rust',
 
 i18n = import('i18n')
 gnome = import('gnome')
+blueprint_compiler = find_program('blueprint-compiler', required: true)
 
 
 

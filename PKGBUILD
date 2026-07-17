@@ -14,7 +14,7 @@ depends=(
   'gtk4'
   'libadwaita'
 )
-makedepends=('git' 'meson' 'ninja' 'rust' 'cargo' 'gettext')
+makedepends=('git' 'meson' 'ninja' 'rust' 'cargo' 'gettext' 'blueprint-compiler')
 optdepends=(
   'namcap: for auditing package metadata and structure'
   'shellcheck: for linting PKGBUILD bash code'

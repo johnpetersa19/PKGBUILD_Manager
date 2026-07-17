@@ -1,0 +1,40 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.ApplicationWindow push_window {
+  content: Gtk.Box push_root {
+    orientation: vertical;
+
+    Adw.HeaderBar {
+      title-widget: Gtk.Box {
+        orientation: vertical;
+        valign: center;
+        spacing: 2;
+
+        Gtk.Label push_title {
+          styles ["title"]
+        }
+
+        Gtk.Box push_subtitle_row {
+          orientation: horizontal;
+          halign: center;
+          spacing: 6;
+
+          Gtk.Label push_path {
+            ellipsize: start;
+            styles ["dim-label"]
+          }
+
+          Gtk.Label push_badge {}
+        }
+      };
+    }
+
+    Gtk.Stack push_stack {
+      transition-type: slide_left_right;
+      transition-duration: 220;
+      vexpand: true;
+      hexpand: true;
+    }
+  };
+}

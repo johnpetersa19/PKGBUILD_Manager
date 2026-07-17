@@ -28,7 +28,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'build.rs', 'data/ui/*.blp') }}
           restore-keys: |
             ${{ runner.os }}-cargo-
 
@@ -46,6 +46,7 @@ jobs:
             desktop-file-utils \
             gettext \
             libxml2 \
+            blueprint-compiler \
             rustup
 
       - name: Initialize stable Rust toolchain
@@ -57,6 +58,17 @@ jobs:
 
       - name: Validate Meson configuration
         run: meson setup build-ci --buildtype=release
+
+      - name: Validate Blueprint interfaces
+        run: |
+          blueprint-compiler --version
+          mkdir -p build-blueprints
+          for blueprint in data/ui/*.blp; do
+            blueprint-compiler lint "$blueprint"
+            output="build-blueprints/$(basename "${blueprint%.blp}").ui"
+            blueprint-compiler compile --output "$output" "$blueprint"
+            xmllint --noout "$output"
+          done
 
       - name: Validate project metadata and scripts
         run: |
@@ -78,6 +90,9 @@ jobs:
           PKG_CONFIG_PATH: /usr/lib/pkgconfig:/usr/share/pkgconfig
           LD_LIBRARY_PATH: /usr/lib
         run: cargo build --release --locked
+
+      - name: Verify Blueprint-backed GUI target
+        run: cargo check --bin pkgbuild-manager-gui --release --locked
 
       - name: Run tests
         run: cargo test --locked

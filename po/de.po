@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-16 22:56-0300\n"
+"POT-Creation-Date: 2026-07-16 23:38-0300\n"
 "PO-Revision-Date: 2026-05-31 14:10-0300\n"
 "Last-Translator: AI <ai@example.com>\n"
 "Language-Team: German\n"
@@ -184,7 +184,7 @@ msgid "failed to spawn"
 msgstr "namcap ist mit Status fehlgeschlagen"
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/actions/validate.rs:27
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1345
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1234
 #, fuzzy
 msgid "failed"
 msgstr "Befehl fehlgeschlagen"
@@ -232,144 +232,144 @@ msgstr ""
 msgid "validate check(s) failed"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:336
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:373
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:325
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:362
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:74
 #, fuzzy
 msgid "Push to AUR"
 msgstr "Zum AUR pushen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:337
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:326
 msgid "Push to GitHub"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:338
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:327
 msgid "Push to GitLab"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:339
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:328
 msgid "Push to Codeberg"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:340
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:329
 #, fuzzy
 msgid "Push to Git Remote"
 msgstr "Zum AUR pushen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:341
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:330
 msgid "Push — Unknown Repository"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:361
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:350
 msgid "Step 1 of 2 — Review commit information"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:364
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:353
 msgid "Step 2 of 2 — Sending changes to AUR"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:365
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:354
 msgid "Step 2 of 2 — Sending changes to GitHub"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:366
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:355
 msgid "Step 2 of 2 — Sending changes to GitLab"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:367
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:356
 msgid "Step 2 of 2 — Sending changes to Codeberg"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:368
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:357
 msgid "Step 2 of 2 — Sending changes to remote"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:372
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:361
 #, fuzzy
 msgid "Push + Tag to AUR"
 msgstr "Zum AUR pushen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:374
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:363
 msgid "Commit + Tag → GitHub"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:375
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:364
 msgid "Commit & Push → GitHub"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:376
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:365
 msgid "Commit + Tag → GitLab"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:377
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:366
 msgid "Commit & Push → GitLab"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:378
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:367
 msgid "Commit + Tag → Codeberg"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:379
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:368
 msgid "Commit & Push → Codeberg"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:380
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:369
 msgid "Commit + Tag + Push"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:381
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:370
 msgid "Commit & Push"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:382
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:371
 msgid "Push"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:385
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:374
 #, fuzzy
 msgid "Pushed to AUR!"
 msgstr "Zum AUR pushen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:386
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:375
 #, fuzzy
 msgid "Pushed to GitHub!"
 msgstr "Zum AUR pushen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:387
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:376
 #, fuzzy
 msgid "Pushed to GitLab!"
 msgstr "Zum AUR pushen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:388
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:377
 #, fuzzy
 msgid "Pushed to Codeberg!"
 msgstr "Zum AUR pushen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:389
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:378
 #, fuzzy
 msgid "Pushed to remote!"
 msgstr "Zum AUR pushen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:479
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:434
 msgid "Not a recognised repository"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:481
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:436
 msgid ""
 "The selected folder does not appear to be a Git repository.\n"
 "                         Make sure you select a folder that contains a .git "
 "directory."
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:527
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:482
 msgid "⚠ SSH key not loaded"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:529
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:484
 msgid "⚠ HTTPS credentials not configured"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:539
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:494
 msgid ""
 "No SSH key was found in ssh-agent for this remote.\n"
 "                     Run the command below before pushing:\n"
@@ -381,7 +381,7 @@ msgid ""
 "                     You can also start the agent with: eval $(ssh-agent -s)"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:547
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:502
 msgid ""
 "No Git credential helper is configured for HTTPS authentication.\n"
 "                     To store credentials, run one of the following "
@@ -395,226 +395,228 @@ msgid ""
 "git-credential-libsecret"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:574
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:530
 msgid "SSH key loaded — ready to push"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:576
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:532
 msgid "HTTPS credentials configured — ready to push"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:589
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:545
 msgid "Commit"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:594
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:550
 #, fuzzy
 msgid "Message"
 msgstr "Verwendung:"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:601
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:557
 #, fuzzy
 msgid "Tag version  (e.g. 1.2.3-1)"
 msgstr "Mit Versions-Tag pushen (z.B. 1.2.3-1)"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:612
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:568
 msgid "Branch"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:651
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:603
 msgid "Choose branch"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:669
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:617
 #, fuzzy
 msgid "Remote"
 msgstr "Entfernt"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:698
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:646
 msgid "Continue to Push"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:705
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:653
 msgid "Configure SSH authentication before pushing"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:707
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:655
 msgid "Configure HTTPS credentials before pushing"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:713
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:661
 msgid "Form"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:746
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:682
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:316
 msgid "Steps"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:751
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:686
 #, fuzzy
 msgid "Regenerating .SRCINFO"
 msgstr ">>> .SRCINFO wird neu generiert in"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:752
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:782
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:687
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:717
 msgid "Checking repository status"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:753
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:688
 msgid "Staging PKGBUILD and .SRCINFO"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:754
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:784
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:689
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:719
 #, fuzzy
 msgid "Creating commit"
 msgstr "Bereinigungsbefehle"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:755
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:690
 #, fuzzy
 msgid "Pushing to AUR"
 msgstr "Zum AUR pushen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:756
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:786
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:691
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:721
 msgid "Creating version tag"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:757
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:692
 msgid "Pushing tags"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:783
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:718
 msgid "Staging all changes"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:785
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:720
 #, fuzzy
 msgid "Pushing to remote"
 msgstr "Zum AUR pushen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:787
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:722
 msgid "Pushing tags to remote"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:820
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:348
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:754
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:318
 msgid "⚠️ Errors found"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:860
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:755
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:319
 msgid "Back"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:871
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:758
 msgid "Progress"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1050
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:937
 msgid "Push again"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1057
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:944
 msgid "Try again"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1208
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1097
 msgid "No target directory provided."
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1232
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1121
 msgid "Failed to start pkgbuild_manager"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1233
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1122
 msgid "Make sure it is installed and in PATH."
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1300
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1189
 #, fuzzy
 msgid "failed to start"
 msgstr "namcap ist mit Status fehlgeschlagen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1323
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1212
 #, fuzzy
 msgid "git add failed"
 msgstr "Befehl fehlgeschlagen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1336
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1225
 msgid "git commit failed (nothing to commit?)"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1362
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1251
 #, fuzzy
 msgid "git tag failed"
 msgstr "makepkg -g fehlgeschlagen:"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1370
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1259
 #, fuzzy
 msgid "git push --tags failed"
 msgstr "Hinweis: Push zu origin/master fehlgeschlagen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:16
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:26
 #: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/config.rs:77
 #, fuzzy
 msgid "Clean Everything"
 msgstr "Alles bereinigen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:33
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:27
 msgid "Files found for cleanup"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:52
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:31
 msgid "Nothing to clean"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:53
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:32
 msgid "No build artifacts were found."
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:61
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:40
 msgid "Contains protected files — permissions will be unlocked"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:63
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:42
 #, fuzzy
 msgid "Directory and all its contents"
 msgstr "Verzeichnis existiert nicht"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:65
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:44
 msgid "File"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:83
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:58
 msgid "Unlock cleanup"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:84
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:59
 msgid "I reviewed the list and authorize permanent removal"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:103
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:61
 msgid "Cancel"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:104
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:62
 msgid "Clean permanently"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:134
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:87
 msgid "Unlocking protected files and cleaning…"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:161
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:114
 msgid "Everything was cleaned successfully."
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:162
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:167
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:115
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:120
 msgid "Close"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:166
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:119
 #, fuzzy
 msgid "Cleanup failed."
 msgstr "Befehl fehlgeschlagen"
@@ -827,42 +829,42 @@ msgid "Display this help message"
 msgstr "Diese Hilfemeldung anzeigen"
 
 # Settings panel
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:55
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:61
 msgid "PKGBUILD Manager — Menu Settings"
 msgstr "PKGBUILD-Manager — Menüeinstellungen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:75
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:63
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:79
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:64
 msgid "Save"
 msgstr "Speichern"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:132
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:107
 #, fuzzy
 msgid "Saved! Restarting file manager…"
 msgstr ""
 "Gespeichert! Starten Sie den Dateimanager neu, um die Änderungen zu "
 "übernehmen."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:139
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:114
 msgid "Error saving"
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:175
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:150
 msgid "+ Add Group"
 msgstr "+ Gruppe hinzufügen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:189
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:164
 msgid "New Group"
 msgstr "Neue Gruppe"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:337
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:312
 msgid "+ Add Item"
 msgstr "+ Element hinzufügen"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:503
+#: /home/john/Projects/PKGBUILD_Manager/po/../src/settings_gui/app.rs:480
 msgid "Add Action"
 msgstr "Aktion hinzufügen"
 
@@ -1062,6 +1064,14 @@ msgstr ""
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:423
 msgid "Copy a valid Git repository URL before using this option."
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/ui/error-alert.blp:5
+msgid "Error"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/ui/progress-panel.blp:27
+msgid "Errors"
 msgstr ""
 
 #: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:133

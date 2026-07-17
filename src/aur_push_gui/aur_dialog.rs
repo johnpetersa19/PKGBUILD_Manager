@@ -7,11 +7,11 @@
  */
 
 use adw::prelude::*;
-use adw::{ApplicationWindow, HeaderBar, StatusPage};
+use adw::{ApplicationWindow, StatusPage};
 use gettextrs::gettext;
 use gtk::{
     glib, glib::clone, Align, Box as GBox, Button, CssProvider, Label, Orientation, PolicyType,
-    Popover, ProgressBar, ScrolledWindow, Spinner, Stack, StackTransitionType, TextView, WrapMode,
+    Popover, ProgressBar, ScrolledWindow, Spinner, Stack, TextView,
 };
 use std::cell::RefCell;
 use std::io::{BufRead, BufReader};
@@ -220,23 +220,12 @@ struct StepRow {
 
 impl StepRow {
     fn new(title: &str) -> Self {
-        let row = adw::ActionRow::builder().title(title).build();
-        let spinner = Spinner::builder()
-            .width_request(22)
-            .height_request(22)
-            .halign(Align::Center)
-            .valign(Align::Center)
-            .visible(false)
-            .build();
-        let icon = Label::builder()
-            .label("○")
-            .width_chars(2)
-            .halign(Align::Center)
-            .valign(Align::Center)
-            .css_classes(vec!["icon-waiting".to_string()])
-            .build();
-        row.add_prefix(&spinner);
-        row.add_prefix(&icon);
+        let builder =
+            crate::gui_blueprint::builder(include_str!(concat!(env!("OUT_DIR"), "/step-row.ui")));
+        let row: adw::ActionRow = crate::gui_blueprint::object(&builder, "step_row");
+        let spinner: Spinner = crate::gui_blueprint::object(&builder, "step_spinner");
+        let icon: Label = crate::gui_blueprint::object(&builder, "step_icon");
+        row.set_title(title);
         StepRow { row, spinner, icon }
     }
 
@@ -392,12 +381,22 @@ impl UnifiedPushWindow {
 
         // ── Window ────────────────────────────────────────────────────────────
         let (saved_w, saved_h) = load_win_size("push-window", 560, 640);
-        let win = ApplicationWindow::builder()
-            .application(app)
-            .title(&win_title)
-            .default_width(saved_w)
-            .default_height(saved_h)
-            .build();
+        let builder =
+            crate::gui_blueprint::builder(include_str!(concat!(env!("OUT_DIR"), "/push.ui")));
+        let win: ApplicationWindow = crate::gui_blueprint::object(&builder, "push_window");
+        let root: GBox = crate::gui_blueprint::object(&builder, "push_root");
+        let title_lbl: Label = crate::gui_blueprint::object(&builder, "push_title");
+        let subtitle_row: GBox = crate::gui_blueprint::object(&builder, "push_subtitle_row");
+        let path_lbl: Label = crate::gui_blueprint::object(&builder, "push_path");
+        let badge: Label = crate::gui_blueprint::object(&builder, "push_badge");
+        let stack: Stack = crate::gui_blueprint::object(&builder, "push_stack");
+        win.set_application(Some(app));
+        win.set_title(Some(&win_title));
+        win.set_default_size(saved_w, saved_h);
+        title_lbl.set_label(&win_title);
+        path_lbl.set_label(&target);
+        badge.set_label(badge_label);
+        badge.add_css_class(badge_class);
         win.connect_close_request(|w| {
             let (cw, ch) = (w.width(), w.height());
             if cw > 0 && ch > 0 {
@@ -405,40 +404,6 @@ impl UnifiedPushWindow {
             }
             glib::Propagation::Proceed
         });
-
-        // Root
-        let root = GBox::builder()
-            .orientation(Orientation::Vertical)
-            .spacing(0)
-            .build();
-
-        // Header
-        let header = HeaderBar::new();
-        let title_box = GBox::builder()
-            .orientation(Orientation::Vertical)
-            .valign(Align::Center)
-            .spacing(2)
-            .build();
-        let title_lbl = Label::builder()
-            .label(&win_title)
-            .css_classes(vec!["title".to_string()])
-            .build();
-        let subtitle_row = GBox::builder()
-            .orientation(Orientation::Horizontal)
-            .halign(Align::Center)
-            .spacing(6)
-            .build();
-        let path_lbl = Label::builder()
-            .label(&target)
-            .ellipsize(gtk::pango::EllipsizeMode::Start)
-            .css_classes(vec!["dim-label".to_string()])
-            .build();
-        let badge = Label::builder()
-            .label(badge_label)
-            .css_classes(vec![badge_class.to_string()])
-            .build();
-        subtitle_row.append(&path_lbl);
-        subtitle_row.append(&badge);
 
         // ── Auth method badge (SSH / HTTPS) — all modes except Unknown ────────
         let auth_method = if mode != RepoMode::Unknown {
@@ -458,30 +423,19 @@ impl UnifiedPushWindow {
             ""
         };
 
-        title_box.append(&title_lbl);
-        title_box.append(&subtitle_row);
-        header.set_title_widget(Some(&title_box));
-        root.append(&header);
-
-        // Stack
-        let stack = Stack::builder()
-            .transition_type(StackTransitionType::SlideLeftRight)
-            .transition_duration(220)
-            .vexpand(true)
-            .hexpand(true)
-            .build();
-        root.append(&stack);
-
         // ══ UNKNOWN page ══════════════════════════════════════════════════════
         if mode == RepoMode::Unknown {
-            let unknown_page = StatusPage::builder()
-                .icon_name("dialog-question-symbolic")
-                .title(&gettext("Not a recognised repository"))
-                .description(&gettext(
-                    "The selected folder does not appear to be a Git repository.\n\
+            let unknown_builder = crate::gui_blueprint::builder(include_str!(concat!(
+                env!("OUT_DIR"),
+                "/unknown-repository.ui"
+            )));
+            let unknown_page: StatusPage =
+                crate::gui_blueprint::object(&unknown_builder, "unknown_repository_page");
+            unknown_page.set_title(&gettext("Not a recognised repository"));
+            unknown_page.set_description(Some(&gettext(
+                "The selected folder does not appear to be a Git repository.\n\
                          Make sure you select a folder that contains a .git directory.",
-                ))
-                .build();
+            )));
             stack.add_named(&unknown_page, Some("unknown"));
             stack.set_visible_child_name("unknown");
             win.set_content(Some(&root));
@@ -519,7 +473,8 @@ impl UnifiedPushWindow {
 
         if !auth_ready {
             let warn_box = GBox::builder()
-                .orientation(Orientation::Vertical).spacing(6)
+                .orientation(Orientation::Vertical)
+                .spacing(6)
                 .css_classes(vec!["auth-warning-box".to_string()])
                 .build();
 
@@ -540,7 +495,7 @@ impl UnifiedPushWindow {
                      Run the command below before pushing:\n\n\
                      ssh-add ~/.ssh/id_ed25519\n\n\
                      If you use a different key, replace the path accordingly.\n\
-                     You can also start the agent with: eval $(ssh-agent -s)"
+                     You can also start the agent with: eval $(ssh-agent -s)",
                 )
             } else {
                 gettext(
@@ -566,7 +521,8 @@ impl UnifiedPushWindow {
         } else {
             // Auth is ready — show a small confirmation banner
             let ok_box = GBox::builder()
-                .orientation(Orientation::Horizontal).spacing(8)
+                .orientation(Orientation::Horizontal)
+                .spacing(8)
                 .css_classes(vec!["auth-ok-box".to_string()])
                 .build();
             let ok_icon = Label::builder().label("🔐").build();
@@ -619,14 +575,11 @@ impl UnifiedPushWindow {
             branch_entry.set_text(&current_branch);
 
             let branches = list_branches(&target);
-            let popover_box = GBox::builder()
-                .orientation(Orientation::Vertical)
-                .spacing(2)
-                .margin_top(6)
-                .margin_bottom(6)
-                .margin_start(6)
-                .margin_end(6)
-                .build();
+            let branch_builder = crate::gui_blueprint::builder(include_str!(concat!(
+                env!("OUT_DIR"),
+                "/branch-popover.ui"
+            )));
+            let popover_box: GBox = crate::gui_blueprint::object(&branch_builder, "branch_list");
             for b in &branches {
                 let is_current = b == &current_branch;
                 let btn = Button::builder()
@@ -645,14 +598,9 @@ impl UnifiedPushWindow {
                 });
                 popover_box.append(&btn);
             }
-            let popover = Popover::builder().child(&popover_box).build();
-            let pick_btn = Button::builder()
-                .icon_name("vcs-branch-symbolic")
-                .tooltip_text(&gettext("Choose branch"))
-                .valign(Align::Center)
-                .css_classes(vec!["flat".to_string()])
-                .build();
-            popover.set_parent(&pick_btn);
+            let popover: Popover = crate::gui_blueprint::object(&branch_builder, "branch_popover");
+            let pick_btn: Button = crate::gui_blueprint::object(&branch_builder, "branch_button");
+            pick_btn.set_tooltip_text(Some(&gettext("Choose branch")));
             pick_btn.connect_clicked(clone!(
                 #[strong]
                 popover,
@@ -718,33 +666,20 @@ impl UnifiedPushWindow {
             .vscrollbar_policy(PolicyType::Automatic)
             .vexpand(true)
             .build();
-        let progress_content = GBox::builder()
-            .orientation(Orientation::Vertical)
-            .spacing(14)
-            .margin_top(16)
-            .margin_bottom(16)
-            .margin_start(14)
-            .margin_end(14)
-            .build();
+        let progress_builder = crate::gui_blueprint::builder(include_str!(concat!(
+            env!("OUT_DIR"),
+            "/progress-panel.ui"
+        )));
+        let progress_content: GBox =
+            crate::gui_blueprint::object(&progress_builder, "progress_panel");
         progress_scroll.set_child(Some(&progress_content));
-
-        let prog_cap_lbl = Label::builder()
-            .label(&progress_caption)
-            .halign(Align::Start)
-            .css_classes(vec!["stage-caption".to_string()])
-            .build();
-        progress_content.append(&prog_cap_lbl);
-
-        let progress = ProgressBar::builder()
-            .fraction(0.0)
-            .visible(true)
-            .css_classes(vec!["progress-bar-box".to_string()])
-            .build();
-        progress_content.append(&progress);
-
-        let steps_group = adw::PreferencesGroup::builder()
-            .title(&gettext("Steps"))
-            .build();
+        let prog_cap_lbl: Label = crate::gui_blueprint::object(&progress_builder, "panel_caption");
+        let progress: ProgressBar =
+            crate::gui_blueprint::object(&progress_builder, "panel_progress");
+        let steps_group: adw::PreferencesGroup =
+            crate::gui_blueprint::object(&progress_builder, "panel_steps");
+        prog_cap_lbl.set_label(&progress_caption);
+        steps_group.set_title(&gettext("Steps"));
 
         let (step_rows, total_steps): (Vec<(&'static str, StepRow)>, f64) = match mode {
             RepoMode::Aur => {
@@ -807,66 +742,18 @@ impl UnifiedPushWindow {
                 )
             }
         };
-        progress_content.append(&steps_group);
-
-        // Error area
-        let error_box = GBox::builder()
-            .orientation(Orientation::Vertical)
-            .spacing(6)
-            .visible(false)
-            .css_classes(vec!["error-box".to_string()])
-            .build();
-        let error_title_lbl = Label::builder()
-            .label(&gettext("⚠️ Errors found"))
-            .halign(Align::Start)
-            .css_classes(vec!["error-title".to_string()])
-            .build();
-        let error_scroll = ScrolledWindow::builder()
-            .hscrollbar_policy(PolicyType::Never)
-            .vscrollbar_policy(PolicyType::Automatic)
-            .max_content_height(200)
-            .propagate_natural_height(true)
-            .build();
-        let error_view = TextView::builder()
-            .editable(false)
-            .cursor_visible(false)
-            .wrap_mode(WrapMode::WordChar)
-            .monospace(true)
-            .left_margin(4)
-            .right_margin(4)
-            .top_margin(4)
-            .bottom_margin(4)
-            .css_classes(vec!["error-body".to_string()])
-            .build();
-        error_scroll.set_child(Some(&error_view));
-        error_box.append(&error_title_lbl);
-        error_box.append(&error_scroll);
-        progress_content.append(&error_box);
-
-        let status_page = StatusPage::builder()
-            .icon_name("object-select-symbolic")
-            .title("")
-            .visible(false)
-            .build();
-        progress_content.append(&status_page);
-
-        let progress_btn_box = GBox::builder()
-            .orientation(Orientation::Horizontal)
-            .halign(Align::End)
-            .margin_top(4)
-            .spacing(8)
-            .build();
-        let back_btn = Button::builder()
-            .label(&gettext("Back"))
-            .css_classes(vec!["pill".to_string()])
-            .build();
-        let run_btn = Button::builder()
-            .label(&run_label)
-            .css_classes(vec!["suggested-action".to_string(), "pill".to_string()])
-            .build();
-        progress_btn_box.append(&back_btn);
-        progress_btn_box.append(&run_btn);
-        progress_content.append(&progress_btn_box);
+        let error_box: GBox = crate::gui_blueprint::object(&progress_builder, "panel_errors");
+        let error_title_lbl: Label =
+            crate::gui_blueprint::object(&progress_builder, "panel_error_title");
+        let error_view: TextView =
+            crate::gui_blueprint::object(&progress_builder, "panel_error_view");
+        let status_page: StatusPage =
+            crate::gui_blueprint::object(&progress_builder, "panel_status");
+        let back_btn: Button = crate::gui_blueprint::object(&progress_builder, "panel_back");
+        let run_btn: Button = crate::gui_blueprint::object(&progress_builder, "panel_run");
+        error_title_lbl.set_label(&gettext("⚠️ Errors found"));
+        back_btn.set_label(&gettext("Back"));
+        run_btn.set_label(&run_label);
 
         stack.add_titled(&progress_scroll, Some("progress"), &gettext("Progress"));
         stack.set_visible_child_name("form");
@@ -1186,7 +1073,9 @@ fn check_auth_ready(path: &str, auth_method: &str) -> bool {
             .map(|o| o.status.success() && !o.stdout.is_empty())
             .unwrap_or(false);
 
-        if local_helper { return true; }
+        if local_helper {
+            return true;
+        }
 
         crate::host::command("git")
             .args(["config", "--global", "credential.helper"])

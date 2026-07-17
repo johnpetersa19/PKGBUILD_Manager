@@ -2,6 +2,7 @@
 name = "pkgbuild_manager"
 version = "2.2.0"
 edition = "2021"
+build = "build.rs"
 
 [[bin]]
 name = "pkgbuild_manager"
