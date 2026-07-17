@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 2.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-16 00:49-0300\n"
+"POT-Creation-Date: 2026-07-16 22:33-0300\n"
 "PO-Revision-Date: 2026-07-14 21:44-0300\n"
 "Last-Translator: John Peter Sa\n"
 "Language-Team: English (United States)\n"
@@ -867,52 +867,97 @@ msgstr "Git / AUR"
 msgid "Clean"
 msgstr "Clean"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:66
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:67
 msgid "Repository download error"
 msgstr "Repository download error"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:68
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:69
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:113
 msgid "Close"
 msgstr "Close"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:139
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:90
+#, fuzzy
+msgid "Cloning repository"
+msgstr "Git repository"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:105
+#, fuzzy
+msgid "Validating repository…"
+msgstr "Git repository"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:108
+msgid "Preparing…"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:110
+msgid "Elapsed time: 00:00"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:138
+#, python-brace-format
+msgid "Elapsed: {elapsed} • Remaining: about {remaining}"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:145
+#, python-brace-format
+msgid "Elapsed time: {elapsed}"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:151
+#, fuzzy
+msgid "Downloading repository data…"
+msgstr "Download copied repository"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:176
+#, fuzzy
+msgid "Repository cloned successfully!"
+msgstr "✓ Repository downloaded successfully: "
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:179
+#, fuzzy
+msgid "Failed to clone repository"
+msgstr "✗ Failed to download repository: "
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:253
 #, fuzzy
 msgid "Git rejected the repository URL."
 msgstr "Could not access the clipboard."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:141
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:255
 msgid "Repository validation timed out after 30 seconds."
 msgstr ""
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:152
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:268
 #, fuzzy
 msgid "The copied URL is not an accessible Git repository."
 msgstr "The clipboard does not contain a valid repository URL."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:154
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:191
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:270
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:348
 msgid "Unknown Git error"
 msgstr "Unknown Git error"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:165
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:283
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:416
 msgid "Git repository"
 msgstr "Git repository"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:182
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:339
 msgid "✓ Repository downloaded successfully: "
 msgstr "✓ Repository downloaded successfully: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:232
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:391
 #, fuzzy
 msgid "Clone repository"
 msgstr "Git repository"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:233
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:392
 #, fuzzy
 msgid "Validate and clone the Git repository URL from the clipboard"
 msgstr "Clone the repository URL from the clipboard into this folder"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:254
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:413
 msgid "Copy a valid Git repository URL before using this option."
 msgstr ""
 
@@ -1165,10 +1210,6 @@ msgid "✗ Full workflow failed! See: "
 msgstr "✗ Full workflow failed! See: "
 
 #, fuzzy
-#~ msgid "Download Git repository"
-#~ msgstr "Download copied repository"
-
-#, fuzzy
 #~ msgid "Checking whether this Git repository is accessible"
 #~ msgstr "Click to view the repository access error"
 
@@ -1187,9 +1228,6 @@ msgstr "✗ Full workflow failed! See: "
 
 #~ msgid "Branch not found: "
 #~ msgstr "Branch not found: "
-
-#~ msgid "✗ Failed to download repository: "
-#~ msgstr "✗ Failed to download repository: "
 
 #~ msgid "Could not read the clipboard."
 #~ msgstr "Could not read the clipboard."

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-16 00:49-0300\n"
+"POT-Creation-Date: 2026-07-16 22:33-0300\n"
 "PO-Revision-Date: 2026-07-16 00:52-0300\n"
 "Last-Translator: John Peter Sa\n"
 "Language-Team: Portuguese (Brazil)\n"
@@ -887,51 +887,99 @@ msgstr "Git / AUR"
 msgid "Clean"
 msgstr "Limpar"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:66
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:67
 msgid "Repository download error"
 msgstr "Erro ao baixar repositório"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:68
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:69
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:113
 msgid "Close"
 msgstr "Fechar"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:139
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:90
+#, fuzzy
+msgid "Cloning repository"
+msgstr "Clonar repositório"
+
+# ---------------------------------------------------------------------------
+# Step row labels — aur_dialog.rs (mode: Git/GitLab/Codeberg/Generic)
+# ---------------------------------------------------------------------------
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:105
+#, fuzzy
+msgid "Validating repository…"
+msgstr "repositório Git"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:108
+msgid "Preparing…"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:110
+msgid "Elapsed time: 00:00"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:138
+#, python-brace-format
+msgid "Elapsed: {elapsed} • Remaining: about {remaining}"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:145
+#, python-brace-format
+msgid "Elapsed time: {elapsed}"
+msgstr ""
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:151
+#, fuzzy
+msgid "Downloading repository data…"
+msgstr "Baixar repositório copiado"
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:176
+#, fuzzy
+msgid "Repository cloned successfully!"
+msgstr "✓ Repositório baixado com sucesso: "
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:179
+#, fuzzy
+msgid "Failed to clone repository"
+msgstr "✗ Falha ao baixar o repositório: "
+
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:253
 msgid "Git rejected the repository URL."
 msgstr "O Git rejeitou a URL do repositório."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:141
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:255
 msgid "Repository validation timed out after 30 seconds."
 msgstr "A validação do repositório excedeu o limite de 30 segundos."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:152
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:268
 msgid "The copied URL is not an accessible Git repository."
 msgstr "A URL copiada não é um repositório Git acessível."
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:154
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:191
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:270
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:348
 msgid "Unknown Git error"
 msgstr "Erro desconhecido do Git"
 
 # ---------------------------------------------------------------------------
 # Step row labels — aur_dialog.rs (mode: Git/GitLab/Codeberg/Generic)
 # ---------------------------------------------------------------------------
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:165
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:283
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:416
 msgid "Git repository"
 msgstr "repositório Git"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:182
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:339
 msgid "✓ Repository downloaded successfully: "
 msgstr "✓ Repositório baixado com sucesso: "
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:232
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:391
 msgid "Clone repository"
 msgstr "Clonar repositório"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:233
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:392
 msgid "Validate and clone the Git repository URL from the clipboard"
 msgstr "Validar e clonar a URL do repositório Git da área de transferência"
 
-#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:254
+#: /home/john/Projects/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:413
 msgid "Copy a valid Git repository URL before using this option."
 msgstr "Copie uma URL válida de repositório Git antes de usar esta opção."
 
@@ -1187,10 +1235,6 @@ msgid "✗ Full workflow failed! See: "
 msgstr "✗ Falha no fluxo completo! Ver: "
 
 #, fuzzy
-#~ msgid "Download Git repository"
-#~ msgstr "Baixar repositório copiado"
-
-#, fuzzy
 #~ msgid "Checking whether this Git repository is accessible"
 #~ msgstr "Clique para ver o erro de acesso ao repositório"
 
@@ -1212,9 +1256,6 @@ msgstr "✗ Falha no fluxo completo! Ver: "
 
 #~ msgid "Branch not found: "
 #~ msgstr "Branch não encontrada: "
-
-#~ msgid "✗ Failed to download repository: "
-#~ msgstr "✗ Falha ao baixar o repositório: "
 
 #~ msgid "Could not read the clipboard."
 #~ msgstr "Não foi possível ler a área de transferência."
