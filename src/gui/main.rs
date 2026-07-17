@@ -4,6 +4,8 @@
 mod aur_dialog;
 #[path = "../settings_gui/config.rs"]
 mod config;
+#[path = "../clean_gui/dialog.rs"]
+mod clean_dialog;
 #[path = "../aur_push_gui/release_dialog.rs"]
 mod release_dialog;
 #[path = "../settings_gui/app.rs"]
@@ -40,6 +42,7 @@ fn main() -> gtk::glib::ExitCode {
         Some("settings") => settings_app::SettingsApp::new().run(),
         Some("push") => run_push(&args[1..]),
         Some("release") => run_release(&args[1..]),
+        Some("clean") => run_clean(&args[1..]),
         None => settings_app::SettingsApp::new().run(),
         Some("help" | "--help" | "-h") => {
             print_usage();
@@ -148,6 +151,15 @@ fn run_release(args: &[String]) -> gtk::glib::ExitCode {
     app.run_with_args::<String>(&[])
 }
 
+fn run_clean(args: &[String]) -> gtk::glib::ExitCode {
+    let target = target_arg(args);
+    let app = new_application("Clean");
+    app.connect_activate(move |app| {
+        clean_dialog::present(app, target.clone());
+    });
+    app.run_with_args::<String>(&[])
+}
+
 fn target_arg(args: &[String]) -> String {
     args.iter()
         .find(|arg| !arg.starts_with('-'))
@@ -163,5 +175,5 @@ fn new_application(suffix: &str) -> Application {
 }
 
 fn print_usage() {
-    println!("Usage: pkgbuild-manager-gui <settings|push|release> [path] [options]");
+    println!("Usage: pkgbuild-manager-gui <settings|push|release|clean> [path] [options]");
 }
