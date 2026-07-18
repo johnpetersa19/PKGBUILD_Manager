@@ -18,8 +18,9 @@
 #    Finds every src/**/*.py and data/**/*.py file and runs
 #    xgettext -L Python (keyword: _()) to produce a temporary python.pot.
 #
-#  Step 3 — Blueprint source scan
-#    Finds every data/ui/*.blp file and extracts strings marked with _().
+#  Step 3 — UI source scan
+#    Finds Blueprint (.blp) and native GtkBuilder (.ui) files and extracts
+#    strings marked with _() or translatable="yes".
 #
 #  Step 4 — Bash extraction + POTFILES.in regeneration
 #    Extracts the English msgid (argument 1) directly from _i18n.
@@ -70,18 +71,110 @@ LINGUAS_FILE="$PO_DIR/LINGUAS"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
+# ── Dependencies and helpers ─────────────────────────────────────────────────
+REQUIRED_CMDS=(date grep mktemp msgcat msginit msgmerge python3 sed sort xgettext)
+
+for cmd in "${REQUIRED_CMDS[@]}"; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+        echo "Error: required command not found: $cmd" >&2
+        exit 1
+    fi
+done
+
+mkdir -p "$PO_DIR"
+[[ -f "$LINGUAS_FILE" ]] || touch "$LINGUAS_FILE"
+
+PKG_VER=$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' \
+    "$ROOT/Cargo.toml" | head -n 1)
+if [[ -z "$PKG_VER" ]]; then
+    echo "Error: could not read package version from $ROOT/Cargo.toml" >&2
+    exit 1
+fi
+
+count_po_entries() {
+    local file="$1"
+    local count
+
+    [[ -s "$file" ]] || {
+        echo 0
+        return
+    }
+
+    count=$(grep -c '^msgid ' "$file" || true)
+    (( count > 0 )) && count=$((count - 1))
+    echo "$count"
+}
+
+clean_linguas_file() {
+    local file="$1"
+
+    sed -e 's/#.*//' \
+        -e 's/^[[:space:]]*//;s/[[:space:]]*$//' \
+        -e '/^$/d' "$file" \
+        | LC_ALL=C sort -u
+}
+
+write_sorted_linguas() {
+    local file="$1"
+    shift
+
+    {
+        echo "# Please keep this file sorted alphabetically."
+        echo ""
+        printf '%s\n' "$@" | sed '/^$/d' | LC_ALL=C sort -u
+    } > "$file"
+}
+
+is_valid_locale() {
+    [[ "$1" =~ ^[a-z]{2,3}(_[A-Z]{2})?(@[A-Za-z0-9_-]+)?$ ]]
+}
+
 echo "=== PKGBUILD Manager — regenerating .pot ==="
 echo ""
 
-# ── 1. Discover and filter Rust files containing gettext() ───────────────────
-echo "[1/7] Discovering Rust files (.rs with gettext())..."
-# Filter only .rs files that actually contain gettext() — avoids xgettext
-# warnings when parsing Rust syntax as C (arrows, lifetimes, etc.)
-mapfile -t RUST_FILES < <(
-    find "$ROOT/src" -name "*.rs" -type f \
-    | xargs grep -l 'gettext(' 2>/dev/null \
-    | sort
+# Discover all supported source types in one safe, NUL-delimited walk.
+RUST_FILES=()
+PY_FILES=()
+BLUEPRINT_FILES=()
+UI_FILES=()
+
+while IFS= read -r -d '' kind && IFS= read -r -d '' file; do
+    case "$kind" in
+        rust) RUST_FILES+=("$file") ;;
+        python) PY_FILES+=("$file") ;;
+        blueprint) BLUEPRINT_FILES+=("$file") ;;
+        ui) UI_FILES+=("$file") ;;
+    esac
+done < <(python3 - "$ROOT" << 'PYEOF'
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+search_roots = [root / "src", root / "data"]
+patterns = {
+    ".rs": ("rust", "gettext("),
+    ".py": ("python", "_("),
+    ".blp": ("blueprint", '_("'),
+    ".ui": ("ui", 'translatable="yes"'),
+}
+
+for source_root in search_roots:
+    if not source_root.is_dir():
+        continue
+    for path in sorted(source_root.rglob("*")):
+        match = patterns.get(path.suffix)
+        if match is None or not path.is_file():
+            continue
+        kind, marker = match
+        content = path.read_text(encoding="utf-8", errors="replace")
+        if marker in content:
+            sys.stdout.buffer.write(kind.encode() + b"\0")
+            sys.stdout.buffer.write(str(path).encode() + b"\0")
+PYEOF
 )
+
+# ── 1. Extract Rust strings ──────────────────────────────────────────────────
+echo "[1/7] Discovering Rust files (.rs with gettext())..."
 echo "   → ${#RUST_FILES[@]} .rs files with gettext() found"
 
 if [[ ${#RUST_FILES[@]} -gt 0 ]]; then
@@ -92,23 +185,17 @@ if [[ ${#RUST_FILES[@]} -gt 0 ]]; then
         --keyword=gettext \
         --add-comments=translators \
         --package-name=pkgbuild_manager \
-        --package-version="$(grep -m1 '^version' "$ROOT/Cargo.toml" | sed 's/.*= *"//;s/"//')" \
+        --package-version="$PKG_VER" \
         --output="$TMP/rust.pot" \
         "${RUST_FILES[@]}" 2>/dev/null
-    COUNT=$(grep -c '^msgid ' "$TMP/rust.pot" 2>/dev/null || echo 0)
+    COUNT=$(count_po_entries "$TMP/rust.pot")
     echo "   → rust.pot generated ($COUNT entries)"
 else
     echo "   → no .rs files with gettext() found"
 fi
 
-# ── 2. Discover Python files ──────────────────────────────────────────────────
+# ── 2. Extract Python strings ────────────────────────────────────────────────
 echo "[2/7] Discovering Python files (.py with _())..."
-mapfile -t PY_FILES < <(
-    {
-        find "$ROOT/src"  -name "*.py" -type f
-        find "$ROOT/data" -name "*.py" -type f
-    } | sort -u
-)
 echo "   → ${#PY_FILES[@]} .py files found"
 
 if [[ ${#PY_FILES[@]} -gt 0 ]]; then
@@ -121,7 +208,7 @@ if [[ ${#PY_FILES[@]} -gt 0 ]]; then
         --output="$TMP/python.pot" \
         "${PY_FILES[@]}" 2>/dev/null || true
     if [[ -f "$TMP/python.pot" ]]; then
-        COUNT=$(grep -c '^msgid ' "$TMP/python.pot" 2>/dev/null || echo 0)
+        COUNT=$(count_po_entries "$TMP/python.pot")
         echo "   → python.pot generated ($COUNT entries)"
     else
         echo "   → python.pot empty (no _() strings found in .py files)"
@@ -130,12 +217,10 @@ else
     echo "   → no .py files found"
 fi
 
-# ── 3. Discover Blueprint files and extract _() strings ──────────────────────
-echo "[3/7] Discovering Blueprint files (.blp)..."
-mapfile -t BLUEPRINT_FILES < <(
-    find "$ROOT/data/ui" -name "*.blp" -type f | sort
-)
+# ── 3. Extract Blueprint and native UI strings ───────────────────────────────
+echo "[3/7] Discovering Blueprint (.blp) and GtkBuilder (.ui) files..."
 echo "   → ${#BLUEPRINT_FILES[@]} .blp files found"
+echo "   → ${#UI_FILES[@]} .ui files found"
 
 if [[ ${#BLUEPRINT_FILES[@]} -gt 0 ]]; then
     # Blueprint's translated-string syntax is _("...") and is compatible
@@ -148,8 +233,22 @@ if [[ ${#BLUEPRINT_FILES[@]} -gt 0 ]]; then
         --package-name=pkgbuild_manager \
         --output="$TMP/blueprint.pot" \
         "${BLUEPRINT_FILES[@]}" 2>/dev/null
-    COUNT=$(grep -c '^msgid ' "$TMP/blueprint.pot" 2>/dev/null || echo 0)
+    COUNT=$(count_po_entries "$TMP/blueprint.pot")
     echo "   → blueprint.pot generated ($COUNT entries)"
+fi
+
+if [[ ${#UI_FILES[@]} -gt 0 ]]; then
+    xgettext \
+        --from-code=UTF-8 \
+        --language=Glade \
+        --add-comments=translators \
+        --package-name=pkgbuild_manager \
+        --output="$TMP/ui.pot" \
+        "${UI_FILES[@]}" 2>/dev/null || true
+    if [[ -f "$TMP/ui.pot" ]]; then
+        COUNT=$(count_po_entries "$TMP/ui.pot")
+        echo "   → ui.pot generated ($COUNT entries)"
+    fi
 fi
 
 # ── 4. Extract Bash _getmsg() strings and update POTFILES.in ─────────────────
@@ -164,15 +263,18 @@ xgettext \
     --output="$TMP/bash.pot" \
     "$BASH_I18N"
 {
-    echo "# Auto-generated by po/update-pot.sh — do not edit manually"
-    echo ""
-    for f in "${RUST_FILES[@]}" "${PY_FILES[@]}" "${BLUEPRINT_FILES[@]}"; do
+    for f in "${RUST_FILES[@]}" "${PY_FILES[@]}" "${BLUEPRINT_FILES[@]}" "${UI_FILES[@]}"; do
         echo "${f#"$ROOT/"}"
     done
     echo "${BASH_I18N#"$ROOT/"}"
+} | LC_ALL=C sort -u > "$TMP/potfiles"
+{
+    echo "# Auto-generated by po/update-pot.sh — do not edit manually"
+    echo ""
+    cat "$TMP/potfiles"
 } > "$POTFILES"
-echo "   → bash.pot generated ($(grep -c '^msgid ' "$TMP/bash.pot") entries)"
-echo "   → POTFILES.in updated with $((${#RUST_FILES[@]} + ${#PY_FILES[@]} + ${#BLUEPRINT_FILES[@]} + 1)) entries"
+echo "   → bash.pot generated ($(count_po_entries "$TMP/bash.pot") entries)"
+echo "   → POTFILES.in updated with $((${#RUST_FILES[@]} + ${#PY_FILES[@]} + ${#BLUEPRINT_FILES[@]} + ${#UI_FILES[@]} + 1)) entries"
 
 # ── 5. Merge all sources ──────────────────────────────────────────────────────
 echo "[5/7] Merging extracted Rust, Python, Blueprint and Bash .pot files..."
@@ -180,6 +282,7 @@ MERGE=()
 [[ -f "$TMP/rust.pot" ]]   && MERGE+=("$TMP/rust.pot")
 [[ -f "$TMP/python.pot" ]] && MERGE+=("$TMP/python.pot")
 [[ -f "$TMP/blueprint.pot" ]] && MERGE+=("$TMP/blueprint.pot")
+[[ -f "$TMP/ui.pot" ]]     && MERGE+=("$TMP/ui.pot")
 [[ -f "$TMP/bash.pot" ]]   && MERGE+=("$TMP/bash.pot")
 
 msgcat \
@@ -187,12 +290,11 @@ msgcat \
     --output="$TMP/merged.pot" \
     "${MERGE[@]}"
 
-TOTAL=$(grep -c '^msgid ' "$TMP/merged.pot" 2>/dev/null || echo 0)
+TOTAL=$(count_po_entries "$TMP/merged.pot")
 echo "   → $TOTAL entries merged in total"
 
 # ── 6. Fix header and write final .pot ────────────────────────────────────────
 echo "[6/7] Writing $OUT..."
-PKG_VER=$(grep -m1 '^version' "$ROOT/Cargo.toml" | sed 's/.*= *"//;s/"//')
 DATE=$(date +"%Y-%m-%d %H:%M%z")
 
 sed \
@@ -210,11 +312,14 @@ echo "   → $OUT written"
 echo "[7/7] Syncing LINGUAS <-> .po files..."
 
 declare -A LINGUAS_SET
-while IFS= read -r lang || [[ -n "$lang" ]]; do
-    lang="$(echo "$lang" | tr -d '[:space:]')"
-    [[ -z "$lang" || "$lang" == \#* ]] && continue
+mapfile -t CLEAN_LANGS < <(clean_linguas_file "$LINGUAS_FILE")
+for lang in "${CLEAN_LANGS[@]}"; do
+    if ! is_valid_locale "$lang"; then
+        echo "   ⚠ Ignoring invalid locale in LINGUAS: '$lang'" >&2
+        continue
+    fi
     LINGUAS_SET["$lang"]=1
-done < "$LINGUAS_FILE"
+done
 
 ADDED_TO_LINGUAS=()
 CREATED_PO=()
@@ -223,9 +328,12 @@ CREATED_PO=()
 for po_file in "$PO_DIR"/*.po; do
     [[ -f "$po_file" ]] || continue
     lang=$(basename "$po_file" .po)
+    if ! is_valid_locale "$lang"; then
+        echo "   ⚠ Ignoring non-locale PO file: $(basename "$po_file")" >&2
+        continue
+    fi
     if [[ -z "${LINGUAS_SET[$lang]:-}" ]]; then
         echo "   + LINGUAS: adding '$lang' (.po file exists)"
-        echo "$lang" >> "$LINGUAS_FILE"
         LINGUAS_SET["$lang"]=1
         ADDED_TO_LINGUAS+=("$lang")
     fi
@@ -243,7 +351,7 @@ for lang in "${!LINGUAS_SET[@]}"; do
             --no-translator \
             2>/dev/null || true
         if [[ -f "$po_file" ]]; then
-            COUNT=$(grep -c '^msgid ' "$po_file" 2>/dev/null || echo 0)
+            COUNT=$(count_po_entries "$po_file")
             echo "   → $lang.po created ($COUNT entries)"
             CREATED_PO+=("$lang")
         else
@@ -252,9 +360,11 @@ for lang in "${!LINGUAS_SET[@]}"; do
     fi
 done
 
-# Rewrite LINGUAS sorted and deduplicated
-sort -u "$LINGUAS_FILE" > "$TMP/linguas_sorted"
-mv "$TMP/linguas_sorted" "$LINGUAS_FILE"
+# Rewrite LINGUAS sorted and deduplicated.
+mapfile -t FINAL_LANGS < <(
+    printf '%s\n' "${!LINGUAS_SET[@]}" | LC_ALL=C sort -u
+)
+write_sorted_linguas "$LINGUAS_FILE" "${FINAL_LANGS[@]}"
 
 [[ ${#ADDED_TO_LINGUAS[@]} -gt 0 ]] && echo "   → Added to LINGUAS: ${ADDED_TO_LINGUAS[*]}"
 [[ ${#CREATED_PO[@]}       -gt 0 ]] && echo "   → .po files created: ${CREATED_PO[*]}"
@@ -265,17 +375,23 @@ echo ""
 echo "✓ Generated: $OUT"
 echo "✓ Total entries: $TOTAL"
 echo "✓ Version: pkgbuild_manager $PKG_VER"
-echo "✓ Languages: $(tr '\n' ' ' < "$LINGUAS_FILE" | xargs)"
+echo "✓ Languages: ${FINAL_LANGS[*]}"
 
 # ── Update ALL .po files automatically (always) ──────────────────────────────
 echo ""
 echo "=== Updating all .po files with msgmerge ==="
 for po in "$PO_DIR"/*.po; do
+    [[ -f "$po" ]] || continue
     lang=$(basename "$po" .po)
+    is_valid_locale "$lang" || continue
     printf "  → %-14s" "$lang.po"
     msgmerge --quiet --update --backup=none "$po" "$OUT"
+    sed -i \
+        "s|^\"Project-Id-Version:.*|\"Project-Id-Version: pkgbuild_manager $PKG_VER\\\\n\"|" \
+        "$po"
     UNTRANSLATED=$(grep -c '^msgstr ""' "$po" 2>/dev/null || echo 0)
-    TOTAL_ENTRIES=$(grep -c '^msgid '   "$po" 2>/dev/null || echo 0)
+    TOTAL_ENTRIES=$(count_po_entries "$po")
+    (( UNTRANSLATED > 0 )) && UNTRANSLATED=$((UNTRANSLATED - 1))
     echo " ($UNTRANSLATED/$TOTAL_ENTRIES untranslated)"
 done
 echo "✓ All .po files updated!"
