@@ -16,12 +16,13 @@ mod win_state;
 mod host;
 #[path = "../gui_blueprint.rs"]
 mod gui_blueprint;
+#[path = "../i18n.rs"]
+mod i18n;
 
 use adw::gio::ApplicationFlags;
 use adw::prelude::*;
 use adw::Application;
 use aur_dialog::{RepoMode, UnifiedPushWindow};
-use gettextrs::{bind_textdomain_codeset, bindtextdomain, setlocale, textdomain, LocaleCategory};
 use release_dialog::ReleaseWindow;
 
 const APP_ID: &str = "io.github.PkgbuildManage";
@@ -133,13 +134,10 @@ fn install_flatpak_desktop_integration() -> std::io::Result<()> {
 }
 
 fn init_i18n() {
-    setlocale(LocaleCategory::LcAll, "");
     let locale_dir = std::env::var("PKGBUILD_MANAGER_LOCALEDIR").unwrap_or_else(|_| {
         if host::is_flatpak() { "/app/share/locale".to_string() } else { LOCALEDIR.to_string() }
     });
-    let _ = bindtextdomain(GETTEXT_PACKAGE, &locale_dir);
-    let _ = bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-    let _ = textdomain(GETTEXT_PACKAGE);
+    i18n::init(GETTEXT_PACKAGE, &locale_dir);
 }
 
 fn run_push(args: &[String]) -> gtk::glib::ExitCode {

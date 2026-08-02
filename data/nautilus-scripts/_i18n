@@ -6,7 +6,9 @@
 # ---------------------------------------------------------------------------
 # Detect locale
 # ---------------------------------------------------------------------------
-_LANG="${LANGUAGE:-${LC_ALL:-${LC_MESSAGES:-${LANG:-en}}}}"
+# Follow the desktop language. LC_ALL=C is commonly inherited from launchers
+# and build tools; it must not hide an otherwise valid LANG translation.
+_LANG="${LANGUAGE:-${LANG:-${LC_MESSAGES:-${LC_ALL:-en}}}}"
 _LANG="${_LANG%%:*}"
 _LANG="${_LANG%%.*}"
 _LANG_SHORT="${_LANG%%_*}"

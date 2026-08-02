@@ -21,21 +21,18 @@
 mod config;
 mod actions;
 mod host;
+mod i18n;
 
 use anyhow::Result;
 use config::{GETTEXT_PACKAGE, LOCALEDIR, VERSION};
-use gettextrs::{bind_textdomain_codeset, bindtextdomain, textdomain, gettext, LocaleCategory};
+use gettextrs::gettext;
 use std::env;
 use std::path::Path;
 
 fn main() -> Result<()> {
-    gettextrs::setlocale(LocaleCategory::LcAll, "");
-
     let locale_dir = std::env::var("PKGBUILD_MANAGER_LOCALEDIR")
         .unwrap_or_else(|_| LOCALEDIR.to_string());
-    let _ = bindtextdomain(GETTEXT_PACKAGE, &locale_dir);
-    let _ = bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-    let _ = textdomain(GETTEXT_PACKAGE);
+    i18n::init(GETTEXT_PACKAGE, &locale_dir);
 
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {

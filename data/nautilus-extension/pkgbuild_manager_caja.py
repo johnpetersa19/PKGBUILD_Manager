@@ -10,9 +10,10 @@ from pathlib import Path
 from gi.repository import Caja, GObject
 
 _user_locale = os.path.expanduser("~/.local/share/locale")
-gettext.bindtextdomain("pkgbuild_manager", _user_locale if os.path.isdir(_user_locale) else "/usr/share/locale")
-gettext.textdomain("pkgbuild_manager")
-_ = gettext.gettext
+_locale_dir = _user_locale if os.path.isdir(_user_locale) else "/usr/share/locale"
+_language = (os.environ.get("LANGUAGE") or os.environ.get("LANG") or "en").split(":", 1)[0]
+_translation = gettext.translation("pkgbuild_manager", _locale_dir, languages=[_language], fallback=True)
+_ = _translation.gettext
 
 CONFIG_FILE = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "pkgbuild-manager" / "menu.json"
 

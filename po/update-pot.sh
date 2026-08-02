@@ -48,7 +48,7 @@
 # ──────────────────────────────────────────────────────────────────────────────
 #
 #  At application runtime the locale is resolved in this order:
-#    $LANGUAGE  →  $LC_ALL  →  $LC_MESSAGES  →  $LANG
+#    $LANGUAGE  →  $LANG  →  $LC_MESSAGES  →  $LC_ALL
 #  Falls back to English if no matching translation is found.
 #
 # ──────────────────────────────────────────────────────────────────────────────

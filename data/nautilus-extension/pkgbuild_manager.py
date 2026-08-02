@@ -6,12 +6,14 @@ import os
 import json
 import gettext
 import shutil
+import shlex
 import subprocess
 import threading
 import gi
 import re
 import time
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
+from urllib.request import Request, urlopen
 from pathlib import Path
 
 gi.require_version("Nautilus", "4.1")
@@ -20,9 +22,10 @@ gi.require_version("Gtk", "4.0")
 from gi.repository import Nautilus, GObject, Gdk, Gtk, GLib
 
 _user_locale = os.path.expanduser("~/.local/share/locale")
-gettext.bindtextdomain("pkgbuild_manager", _user_locale if os.path.isdir(_user_locale) else "/usr/share/locale")
-gettext.textdomain("pkgbuild_manager")
-_ = gettext.gettext
+_locale_dir = _user_locale if os.path.isdir(_user_locale) else "/usr/share/locale"
+_language = (os.environ.get("LANGUAGE") or os.environ.get("LANG") or "en").split(":", 1)[0]
+_translation = gettext.translation("pkgbuild_manager", _locale_dir, languages=[_language], fallback=True)
+_ = _translation.gettext
 
 CONFIG_FILE = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "pkgbuild-manager" / "menu.json"
 
@@ -110,12 +113,14 @@ def _format_duration(seconds):
 class _CloneProgressWindow:
     """Small, thread-safe GTK window used while validating and cloning."""
 
-    def __init__(self, repository_name):
+    def __init__(self, repository_name, file_download=False):
         self._started_at = time.monotonic()
         self._clone_started_at = None
         self._last_percent = 0
+        self._file_download = file_download
 
-        self.window = Gtk.Window(title=_("Cloning repository"))
+        window_title = _("Downloading file") if file_download else _("Cloning repository")
+        self.window = Gtk.Window(title=window_title)
         self.window.set_default_size(440, -1)
         self.window.set_resizable(False)
 
@@ -130,7 +135,8 @@ class _CloneProgressWindow:
         self.title = Gtk.Label(label=repository_name)
         self.title.add_css_class("title-2")
         self.title.set_ellipsize(3)  # Pango.EllipsizeMode.END
-        self.status = Gtk.Label(label=_("Validating repository…"))
+        initial_status = _("Preparing download…") if file_download else _("Validating repository…")
+        self.status = Gtk.Label(label=initial_status)
         self.status.set_xalign(0)
         self.progress = Gtk.ProgressBar(show_text=True)
         self.progress.set_text(_("Preparing…"))
@@ -180,6 +186,30 @@ class _CloneProgressWindow:
         self.progress.set_fraction(0.0)
         self.progress.set_text("0%")
 
+    def file_download_started(self):
+        self._clone_started_at = time.monotonic()
+        self.status.set_label(_("Downloading file…"))
+        self.progress.set_fraction(0.0)
+        self.progress.set_text("0%")
+
+    def file_download_progress(self, downloaded, total):
+        if total > 0:
+            percent = min(100, round(downloaded * 100 / total))
+            self._last_percent = percent
+            self.progress.set_fraction(percent / 100.0)
+            self.progress.set_text(f"{percent}%")
+        else:
+            self.progress.pulse()
+            self.progress.set_text(_("Downloading…"))
+
+    def file_download_finished(self):
+        self._last_percent = 100
+        self.progress.set_fraction(1.0)
+        self.progress.set_text("100%")
+        self.status.set_label(_("File downloaded successfully!"))
+        self.progress.add_css_class("success")
+        self.close_button.set_sensitive(True)
+
     def update(self, percent, phase):
         # Git can report a new phase starting at a lower percentage. Keep the
         # overall bar monotonic by assigning the phases portions of the clone.
@@ -204,7 +234,8 @@ class _CloneProgressWindow:
             self.status.set_label(_("Repository cloned successfully!"))
             self.progress.add_css_class("success")
         else:
-            self.status.set_label(_("Failed to clone repository"))
+            failure = _("Failed to download file") if self._file_download else _("Failed to clone repository")
+            self.status.set_label(failure)
             self.progress.add_css_class("error")
             if detail:
                 self.time_label.set_label(str(detail))
@@ -212,10 +243,53 @@ class _CloneProgressWindow:
 
 
 def _repository_from_url(text):
-    """Return (clone_url, optional_branch) for a copied repository URL."""
+    """Return (clone_url, optional_branch) for a copied URL or git clone command."""
     value = (text or "").strip().splitlines()[0] if (text or "").strip() else ""
+    # Documentation commonly presents clone links as a complete command. Parse
+    # the simple `git clone URL` form, but never execute clipboard contents.
+    try:
+        command = shlex.split(value.removeprefix("$ ").strip())
+    except ValueError:
+        return None
+    requested_branch = None
+    requested_depth = None
+    if command[:2] == ["git", "clone"]:
+        urls = []
+        index = 2
+        while index < len(command):
+            token = command[index]
+            if token in ("-b", "--branch"):
+                index += 1
+                if index >= len(command) or not command[index]:
+                    return None
+                requested_branch = command[index]
+            elif token.startswith("--branch="):
+                requested_branch = token.split("=", 1)[1]
+                if not requested_branch:
+                    return None
+            elif token == "--depth":
+                index += 1
+                if index >= len(command) or not command[index].isdigit():
+                    return None
+                requested_depth = int(command[index])
+            elif token.startswith("--depth="):
+                depth = token.split("=", 1)[1]
+                if not depth.isdigit():
+                    return None
+                requested_depth = int(depth)
+            elif token == "--single-branch":
+                pass
+            elif token.startswith("-"):
+                return None
+            else:
+                urls.append(token)
+            index += 1
+        if len(urls) != 1 or requested_depth == 0:
+            return None
+        value = urls[0]
+
     if re.match(r"^[^\s@]+@[^\s:]+:.+", value):
-        return value, None
+        return value, requested_branch, requested_depth
 
     parsed = urlparse(value)
     if parsed.scheme not in ("http", "https", "ssh", "git") or not parsed.netloc:
@@ -229,23 +303,175 @@ def _repository_from_url(text):
         owner, repository = parts[0], parts[1].removesuffix(".git")
         if len(parts) >= 4 and parts[2] == "tree":
             branch = "/".join(parts[3:])
-        return f"{parsed.scheme}://{parsed.netloc}/{owner}/{repository}.git", branch
+        return f"{parsed.scheme}://{parsed.netloc}/{owner}/{repository}.git", requested_branch or branch, requested_depth
 
     # GitLab uses /owner/repository/-/tree/branch.
     if "-/tree" in parsed.path:
         prefix, branch = parsed.path.split("/-/tree/", 1)
-        return f"{parsed.scheme}://{parsed.netloc}{prefix}.git", branch.strip("/")
+        return f"{parsed.scheme}://{parsed.netloc}{prefix}.git", requested_branch or branch.strip("/"), requested_depth
 
     # Codeberg/Gitea uses /owner/repository/src/branch/branch-name.
     if "/src/branch/" in parsed.path:
         prefix, branch = parsed.path.split("/src/branch/", 1)
-        return f"{parsed.scheme}://{parsed.netloc}{prefix}.git", branch.strip("/")
+        return f"{parsed.scheme}://{parsed.netloc}{prefix}.git", requested_branch or branch.strip("/"), requested_depth
 
     if len(parts) >= 2:
         # Unknown Git servers are tested as copied. Some do not accept a .git
         # suffix, so avoid rewriting URLs when their web layout is unknown.
-        return value.rstrip("/"), None
+        return value.rstrip("/"), requested_branch, requested_depth
     return None
+
+
+def _safe_download_name(name):
+    """Return a destination filename, rejecting paths and special names."""
+    name = unquote(name or "").strip()
+    if not name or name in (".", "..") or name != os.path.basename(name):
+        return None
+    if "/" in name or "\\" in name or "\0" in name:
+        return None
+    return name
+
+
+def _file_download_from_text(text):
+    """Parse an allowlisted download command without executing a shell."""
+    value = (text or "").strip().splitlines()[0] if (text or "").strip() else ""
+    try:
+        tokens = shlex.split(value.removeprefix("$ ").strip())
+    except ValueError:
+        return None
+    if not tokens or any(token in ("|", ";", "&&", "||", ">", ">>") for token in tokens):
+        return None
+
+    output_name = None
+    urls = []
+    program = tokens[0]
+    index = 1
+
+    if program == "curl":
+        allowed = {"-f", "-s", "-S", "-L", "-O", "--fail", "--silent", "--show-error", "--location", "--remote-name"}
+        while index < len(tokens):
+            token = tokens[index]
+            if token in ("-o", "--output"):
+                index += 1
+                if index >= len(tokens):
+                    return None
+                output_name = _safe_download_name(tokens[index])
+                if output_name is None:
+                    return None
+            elif token in allowed:
+                pass
+            elif token.startswith("-") and len(token) > 2 and not token.startswith("--"):
+                if any(f"-{flag}" not in allowed for flag in token[1:]):
+                    return None
+            elif token.startswith("-") and token not in allowed:
+                return None
+            elif token.startswith(("http://", "https://")):
+                urls.append(token)
+            else:
+                return None
+            index += 1
+    elif program == "wget":
+        allowed = {"-q", "--quiet", "--show-progress"}
+        while index < len(tokens):
+            token = tokens[index]
+            if token in ("-O", "--output-document"):
+                index += 1
+                if index >= len(tokens):
+                    return None
+                output_name = _safe_download_name(tokens[index])
+                if output_name is None:
+                    return None
+            elif token.startswith("--output-document="):
+                output_name = _safe_download_name(token.split("=", 1)[1])
+                if output_name is None:
+                    return None
+            elif token in allowed:
+                pass
+            elif token.startswith("-") and token not in allowed:
+                return None
+            elif token.startswith(("http://", "https://")):
+                urls.append(token)
+            else:
+                return None
+            index += 1
+    elif program == "aria2c":
+        while index < len(tokens):
+            token = tokens[index]
+            if token in ("-o", "--out"):
+                index += 1
+                if index >= len(tokens):
+                    return None
+                output_name = _safe_download_name(tokens[index])
+                if output_name is None:
+                    return None
+            elif token.startswith("--out="):
+                output_name = _safe_download_name(token.split("=", 1)[1])
+                if output_name is None:
+                    return None
+            elif token.startswith("-"):
+                return None
+            elif token.startswith(("http://", "https://")):
+                urls.append(token)
+            else:
+                return None
+            index += 1
+    elif len(tokens) == 1 and tokens[0].startswith(("http://", "https://")):
+        urls = tokens
+    else:
+        return None
+
+    if len(urls) != 1:
+        return None
+    url = urls[0]
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https") or not parsed.netloc:
+        return None
+    inferred_name = _safe_download_name(os.path.basename(parsed.path.rstrip("/")))
+    return (url, output_name or inferred_name) if output_name or inferred_name else None
+
+
+def _clipboard_download(text):
+    """Return ('git', repository) or ('file', (url, filename))."""
+    value = (text or "").strip()
+    command = value.removeprefix("$ ").strip()
+    if command.startswith("git clone "):
+        repository = _repository_from_url(value)
+        if repository is not None:
+            return "git", repository
+
+    file_download = _file_download_from_text(value)
+    if file_download is not None:
+        # A raw .git URL is unambiguously a repository. Other raw URLs are
+        # treated as files; web project URLs can still use `git clone URL`.
+        if len(shlex.split(command)) == 1 and urlparse(file_download[0]).path.endswith(".git"):
+            repository = _repository_from_url(value)
+            return ("git", repository) if repository else None
+        return "file", file_download
+
+    # A copied command may contain execution operators or unsafe options. In
+    # that case salvage exactly one plain HTTP(S) URL and discard everything
+    # else. Nothing from the original command is executed or forwarded.
+    try:
+        tokens = shlex.split(command)
+    except ValueError:
+        return None
+    urls = []
+    for token in tokens:
+        parsed = urlparse(token)
+        if parsed.scheme in ("http", "https") and parsed.netloc:
+            urls.append(token)
+    if len(urls) != 1:
+        return None
+
+    url = urls[0]
+    if tokens[:2] == ["git", "clone"] or urlparse(url).path.endswith(".git"):
+        # Re-parse the URL alone, thereby dropping options such as
+        # --upload-pack and all shell syntax around it.
+        repository = _repository_from_url(url)
+        return ("git", repository) if repository else None
+
+    filename = _safe_download_name(os.path.basename(urlparse(url).path.rstrip("/")))
+    return ("file", (url, filename)) if filename else None
 
 
 def _repository_name(clone_url):
@@ -257,7 +483,7 @@ def _repository_name(clone_url):
 
 def _repository_is_accessible(repository):
     """Return (accessible, diagnostic) without prompting for credentials."""
-    clone_url, branch = repository
+    clone_url, branch, _depth = repository
     command = ["git", "ls-remote", "--exit-code", clone_url]
     if branch:
         command.append(f"refs/heads/{branch}")
@@ -302,10 +528,12 @@ def _validate_and_clone(repository, destination, progress=None):
 
 
 def _clone_repository(repository, destination, completed=None, progress=None):
-    clone_url, branch = repository
+    clone_url, branch, depth = repository
     # --progress forces machine-readable progress on stderr even though the
     # extension is not attached to a terminal.
     command = ["git", "clone", "--progress"]
+    if depth:
+        command.extend(["--depth", str(depth)])
     if branch:
         command.extend(["--branch", branch, "--single-branch"])
     name = _repository_name(clone_url) or _("Git repository")
@@ -379,6 +607,58 @@ def _clone_repository(repository, destination, completed=None, progress=None):
         GLib.idle_add(_show_error_window, message)
 
 
+def _download_file(download, destination, progress=None):
+    """Download one HTTP(S) file without invoking curl, wget, or a shell."""
+    url, filename = download
+    target = Path(destination) / filename
+    partial = Path(destination) / f".{filename}.part"
+    if target.exists() or partial.exists():
+        message = _("A file with this name already exists: {name}").format(name=filename)
+        if progress is not None:
+            GLib.idle_add(progress.finish, False, message)
+        GLib.idle_add(_show_error_window, message)
+        return
+
+    try:
+        request = Request(url, headers={"User-Agent": "PKGBUILD-Manager/2.4"})
+        with urlopen(request, timeout=30) as response:
+            final_url = urlparse(response.geturl())
+            if final_url.scheme not in ("http", "https"):
+                raise ValueError(_("The download redirected to an unsupported address."))
+            total = int(response.headers.get("Content-Length") or 0)
+            downloaded = 0
+            if progress is not None:
+                GLib.idle_add(progress.file_download_started)
+            with partial.open("xb") as output:
+                while True:
+                    chunk = response.read(256 * 1024)
+                    if not chunk:
+                        break
+                    output.write(chunk)
+                    downloaded += len(chunk)
+                    if progress is not None:
+                        GLib.idle_add(progress.file_download_progress, downloaded, total)
+            if total > 0 and downloaded != total:
+                raise OSError(_("The download ended before the complete file was received."))
+        # Publish atomically without overwriting a file created while the
+        # download was running. Both paths are in the same destination folder.
+        os.link(partial, target)
+        partial.unlink()
+    except Exception as error:
+        try:
+            partial.unlink(missing_ok=True)
+        except OSError:
+            pass
+        if progress is not None:
+            GLib.idle_add(progress.finish, False, str(error))
+        GLib.idle_add(_show_error_window, str(error))
+        return
+
+    if progress is not None:
+        GLib.idle_add(progress.file_download_finished)
+    GLib.idle_add(_notify, _("✓ File downloaded successfully: ") + filename, False)
+
+
 def _scripts_dir():
     here = os.path.dirname(os.path.abspath(__file__))
     # A system extension must use the scripts shipped by the same native
@@ -426,8 +706,8 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
         self._destination = None
         self._download_item = Nautilus.MenuItem(
             name="PkgbuildManager::CloneClipboardRepository",
-            label=_("Clone repository"),
-            tip=_("Validate and clone the Git repository URL from the clipboard"),
+            label=_("Download from clipboard"),
+            tip=_("Download a Git repository or file from a safe clipboard command"),
         )
         self._download_item.connect("activate", self._download_repository)
 
@@ -445,17 +725,19 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
                 text = source.read_text_finish(result)
             except GLib.Error:
                 text = None
-            repository = _repository_from_url(text)
-            if repository is None:
+            download = _clipboard_download(text)
+            if download is None:
                 _show_error_window(
-                    _("Copy a valid Git repository URL before using this option.")
+                    _("Copy a supported Git, curl, wget, aria2c, or HTTP(S) download before using this option.")
                 )
                 return
-            name = _repository_name(repository[0]) or _("Git repository")
-            progress = _CloneProgressWindow(name)
+            kind, request = download
+            name = (_repository_name(request[0]) or _("Git repository")) if kind == "git" else request[1]
+            progress = _CloneProgressWindow(name, file_download=(kind == "file"))
+            target = _validate_and_clone if kind == "git" else _download_file
             threading.Thread(
-                target=_validate_and_clone,
-                args=(repository, destination, progress),
+                target=target,
+                args=(request, destination, progress),
                 daemon=True,
             ).start()
 
