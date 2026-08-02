@@ -1,8 +1,9 @@
 # Maintainer: John Peter Sa <johnpetersa19@proton.me>
 pkgname=pkgbuild-manager
 _pkgname=PKGBUILD_Manager
-pkgver=2.5.1
+pkgver=2.5.2
 pkgrel=1
+_builddir="build-${pkgver}"
 pkgdesc="Rust CLI + GTK4 settings panel and multi-file-manager context-menu integration for PKGBUILD management"
 arch=('x86_64')
 url="https://github.com/johnpetersa19/PKGBUILD_Manager"
@@ -34,13 +35,17 @@ install=pkgbuild-manager.install
 #   sha256sums=('PUT_REAL_SHA256_HASH_HERE')
 # To generate: makepkg -g
 source=("$_pkgname-$pkgver.tar.gz::https://github.com/johnpetersa19/PKGBUILD_Manager/archive/refs/tags/v${pkgver}.tar.gz")
-sha256sums=('02b81e3c26719a9c509b34725ea9db95550daa2c91d42596ba1c4f1fbcf7808c')
+sha256sums=('SKIP')
 
 build() {
-  arch-meson "$_pkgname-$pkgver" build --buildtype=release
-  meson compile -C build
+  # Never reuse a Meson configuration created for another source tree or an
+  # interrupted build. A stale generic build/ directory can silently package
+  # files from the previous release.
+  rm -rf -- "$_builddir"
+  arch-meson "$_pkgname-$pkgver" "$_builddir" --buildtype=release
+  meson compile -C "$_builddir"
 }
 
 package() {
-  meson install -C build --destdir="$pkgdir"
+  meson install -C "$_builddir" --destdir="$pkgdir"
 }

@@ -9,6 +9,7 @@ pub mod aur_push;
 pub mod validate;
 
 use std::fs;
+use std::hash::{Hash, Hasher};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::Stdio;
@@ -97,7 +98,85 @@ pub fn run_makepkg(path: &Path, base_args: &[&str], extra_flags: &[&str]) -> Res
     let target_dir = get_target_dir(path)?;
     let mut args: Vec<&str> = base_args.to_vec();
     args.extend_from_slice(extra_flags);
-    run_command("makepkg", &args, &target_dir)
+
+    // makepkg normally creates $srcdir as <PKGBUILD directory>/src. That is
+    // destructive for source repositories (including this one) which already
+    // track a real src/ directory: `makepkg -c` or `makepkg -C` can remove the
+    // application's source code. Keep all makepkg work trees in a per-project
+    // cache directory instead.
+    let build_dir = makepkg_build_dir(&target_dir)?;
+    println!(
+        ">>> makepkg {} (in {:?}, BUILDDIR={:?})",
+        args.join(" "),
+        target_dir,
+        build_dir
+    );
+
+    let status = crate::host::command("makepkg")
+        .args(&args)
+        .env("BUILDDIR", &build_dir)
+        .current_dir(&target_dir)
+        .stdin(Stdio::inherit())
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit())
+        .status()
+        .with_context(|| {
+            format!(
+                "PKGBUILD Manager: {} 'makepkg'",
+                gettext("failed to spawn command")
+            )
+        })?;
+
+    if status.success() {
+        Ok(())
+    } else {
+        Err(anyhow!(
+            "PKGBUILD Manager: {} 'makepkg' {} {}",
+            gettext("command failed"),
+            gettext("with status"),
+            status
+        ))
+    }
+}
+
+fn makepkg_build_dir(target_dir: &Path) -> Result<PathBuf> {
+    let cache_root = std::env::var_os("XDG_CACHE_HOME")
+        .map(PathBuf::from)
+        .or_else(|| std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".cache")))
+        .ok_or_else(|| anyhow!(gettext("HOME environment variable is not set")))?;
+
+    let build_dir = makepkg_build_dir_path(&cache_root, target_dir);
+    fs::create_dir_all(&build_dir).with_context(|| {
+        format!(
+            "PKGBUILD Manager: {}: {}",
+            gettext("failed to create makepkg build directory"),
+            build_dir.display()
+        )
+    })?;
+    Ok(build_dir)
+}
+
+fn makepkg_build_dir_path(cache_root: &Path, target_dir: &Path) -> PathBuf {
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    target_dir.hash(&mut hasher);
+    let project = target_dir
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("package")
+        .chars()
+        .map(|character| {
+            if character.is_ascii_alphanumeric() || matches!(character, '-' | '_' | '.') {
+                character
+            } else {
+                '_'
+            }
+        })
+        .collect::<String>();
+    cache_root.join("pkgbuild-manager/makepkg").join(format!(
+        "{}-{:016x}",
+        project,
+        hasher.finish()
+    ))
 }
 
 /// Collect all *.pkg.tar.* file names in `dir`.
@@ -261,4 +340,28 @@ pub(super) fn unix_to_datetime(secs: u64) -> (String, String) {
 #[inline]
 fn is_leap(year: u64) -> bool {
     (year % 4 == 0 && year % 100 != 0) || year % 400 == 0
+}
+
+#[cfg(test)]
+mod tests {
+    use super::makepkg_build_dir_path;
+    use std::path::Path;
+
+    #[test]
+    fn makepkg_work_tree_is_outside_the_source_repository() {
+        let repository = Path::new("/home/user/project");
+        let build_dir = makepkg_build_dir_path(Path::new("/home/user/.cache"), repository);
+
+        assert!(build_dir.starts_with("/home/user/.cache/pkgbuild-manager/makepkg"));
+        assert!(!build_dir.starts_with(repository));
+    }
+
+    #[test]
+    fn makepkg_work_trees_are_distinct_per_repository() {
+        let cache = Path::new("/home/user/.cache");
+        let first = makepkg_build_dir_path(cache, Path::new("/work/first/package"));
+        let second = makepkg_build_dir_path(cache, Path::new("/work/second/package"));
+
+        assert_ne!(first, second);
+    }
 }

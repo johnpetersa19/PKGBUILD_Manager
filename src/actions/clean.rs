@@ -1,6 +1,6 @@
 use std::path::Path;
 use std::process::Stdio;
-use super::{get_target_dir, run_command, collect_pkg_files};
+use super::{collect_pkg_files, get_target_dir};
 
 /// Remove a directory tree, handling read-only files/dirs inside it.
 ///
@@ -51,6 +51,14 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
         for dir in &["src", "pkg"] {
             let to_remove = target_dir.join(dir);
             if to_remove.exists() {
+                if is_git_tracked_directory(&target_dir, dir) {
+                    eprintln!(
+                        "  {} {:?}",
+                        gettextrs::gettext("Skipped Git-tracked source directory"),
+                        to_remove
+                    );
+                    continue;
+                }
                 remove_dir_force(&to_remove)?;
                 println!("  {} {:?}", gettextrs::gettext("Removed"), to_remove);
             }
@@ -120,10 +128,26 @@ pub fn run(path: &Path, full: bool) -> anyhow::Result<()> {
             }
         }
     } else {
-        run_command("makepkg", &["-c"], &target_dir)?;
+        // Use the isolated BUILDDIR from run_makepkg. Running makepkg -c in a
+        // source repository that tracks src/ can otherwise delete real code.
+        super::run_makepkg(&target_dir, &["-c"], &[])?;
     }
 
     Ok(())
+}
+
+fn is_git_tracked_directory(repository: &Path, directory: &str) -> bool {
+    if !repository.join(".git").exists() {
+        return false;
+    }
+
+    crate::host::command("git")
+        .args(["-C"])
+        .arg(repository)
+        .args(["ls-files", "--", directory])
+        .output()
+        .map(|output| output.status.success() && !output.stdout.is_empty())
+        .unwrap_or(false)
 }
 
 /// Returns true only when `dir` looks like a genuine git bare repository.
