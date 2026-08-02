@@ -34,7 +34,7 @@ install=pkgbuild-manager.install
 #   sha256sums=('PUT_REAL_SHA256_HASH_HERE')
 # To generate: makepkg -g
 source=("$_pkgname-$pkgver.tar.gz::https://github.com/johnpetersa19/PKGBUILD_Manager/archive/refs/tags/v${pkgver}.tar.gz")
-sha256sums=('SKIP')
+sha256sums=('320f4e50d69659e9afe82ec23ec311585e977ecdfabc734f665fae46ad4fb19d')
 
 build() {
   arch-meson "$_pkgname-$pkgver" build --buildtype=release
