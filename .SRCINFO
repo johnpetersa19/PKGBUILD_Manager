@@ -29,6 +29,6 @@ pkgbase = pkgbuild-manager
 	provides = pkgbuild-manager
 	conflicts = pkgbuild-manager-git
 	source = PKGBUILD_Manager-2.5.2.tar.gz::https://github.com/johnpetersa19/PKGBUILD_Manager/archive/refs/tags/v2.5.2.tar.gz
-	sha256sums = SKIP
+	sha256sums = 53ac6a48f73db8faa2e8469e8f1ffb289166e7c3e3927d22d5731ae33450c258
 
 pkgname = pkgbuild-manager
