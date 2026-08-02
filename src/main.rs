@@ -245,13 +245,28 @@ fn setup_nautilus() -> Result<()> {
         }
     }
 
-    let ext_path = [
+    let system_extensions = [
         "/usr/share/nautilus-python/extensions/pkgbuild_manager.py",
         "/usr/local/share/nautilus-python/extensions/pkgbuild_manager.py",
     ]
     .into_iter()
     .map(PathBuf::from)
-    .find(|path| path.exists());
+    .collect::<Vec<_>>();
+
+    let mut user_extensions = vec![
+        PathBuf::from(&home)
+            .join(".local/share/nautilus-python/extensions/pkgbuild_manager.py"),
+    ];
+    if let Some(data_home) = std::env::var_os("XDG_DATA_HOME") {
+        let xdg_extension = PathBuf::from(data_home)
+            .join("nautilus-python/extensions/pkgbuild_manager.py");
+        if !user_extensions.iter().any(|path| path == &xdg_extension) {
+            user_extensions.push(xdg_extension);
+        }
+    }
+
+    let (ext_path, duplicate_extensions) =
+        nautilus_extension_cleanup_plan(&system_extensions, &user_extensions);
     if ext_path.is_none() {
         eprintln!(
             "{}\n  /usr/share/nautilus-python/extensions/pkgbuild_manager.py\n  /usr/local/share/nautilus-python/extensions/pkgbuild_manager.py",
@@ -262,37 +277,16 @@ fn setup_nautilus() -> Result<()> {
         let ext_path = ext_path.expect("checked above");
         println!("{}: {}", gettext("Extension found"), ext_path.display());
 
-        // Nautilus loads extensions from both the system and per-user data
-        // directories. Keeping this provider in both places duplicates every
-        // context-menu item. Prefer the packaged system extension when it is
-        // available and remove only this project's known user-side copies.
-        let mut user_extensions = vec![
-            PathBuf::from(&home)
-                .join(".local/share/nautilus-python/extensions/pkgbuild_manager.py"),
-        ];
-        if let Some(data_home) = std::env::var_os("XDG_DATA_HOME") {
-            let xdg_extension = PathBuf::from(data_home)
-                .join("nautilus-python/extensions/pkgbuild_manager.py");
-            if !user_extensions.iter().any(|path| path == &xdg_extension) {
-                user_extensions.push(xdg_extension);
-            }
-        }
-
-        for user_extension in user_extensions {
-            if user_extension.is_file() || user_extension.is_symlink() {
-                fs::remove_file(&user_extension).map_err(|error| {
-                    anyhow::anyhow!(
-                        "{}: {}: {error}",
-                        gettext("Could not remove duplicate Nautilus extension"),
-                        user_extension.display()
-                    )
-                })?;
-                println!(
-                    "{}: {}",
-                    gettext("Removed duplicate Nautilus extension"),
-                    user_extension.display()
-                );
-            }
+        // Nautilus scans /usr, /usr/local and the per-user data directory.
+        // Keep the first system provider (the packaged /usr copy has priority)
+        // and remove every other known copy of this project's provider.
+        for duplicate in duplicate_extensions {
+            remove_nautilus_extension(&duplicate)?;
+            println!(
+                "{}: {}",
+                gettext("Removed duplicate Nautilus extension"),
+                duplicate.display()
+            );
         }
     }
 
@@ -303,6 +297,116 @@ fn setup_nautilus() -> Result<()> {
 
     println!("{}", gettext("Done. Right-click a PKGBUILD directory to see the menu."));
     Ok(())
+}
+
+fn nautilus_extension_cleanup_plan(
+    system_extensions: &[std::path::PathBuf],
+    user_extensions: &[std::path::PathBuf],
+) -> (Option<std::path::PathBuf>, Vec<std::path::PathBuf>) {
+    let preferred = system_extensions.iter().find(|path| path.exists()).cloned();
+    let Some(preferred_path) = preferred.clone() else {
+        return (None, Vec::new());
+    };
+
+    let duplicates = system_extensions
+        .iter()
+        .chain(user_extensions)
+        .filter(|path| path.as_path() != preferred_path.as_path())
+        .filter(|path| path.is_file() || path.is_symlink())
+        .cloned()
+        .collect();
+
+    (preferred, duplicates)
+}
+
+fn remove_nautilus_extension(path: &std::path::Path) -> Result<()> {
+    match std::fs::remove_file(path) {
+        Ok(()) => Ok(()),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(()),
+        Err(error) if error.kind() == std::io::ErrorKind::PermissionDenied => {
+            let status = crate::host::command("pkexec")
+                .arg("rm")
+                .arg("-f")
+                .arg("--")
+                .arg(path)
+                .status()
+                .map_err(|pkexec_error| {
+                    anyhow::anyhow!(
+                        "{}: {}: {pkexec_error}",
+                        gettext("Could not remove duplicate Nautilus extension"),
+                        path.display()
+                    )
+                })?;
+            if status.success() {
+                Ok(())
+            } else {
+                Err(anyhow::anyhow!(
+                    "{}: {}: {error}",
+                    gettext("Could not remove duplicate Nautilus extension"),
+                    path.display()
+                ))
+            }
+        }
+        Err(error) => Err(anyhow::anyhow!(
+            "{}: {}: {error}",
+            gettext("Could not remove duplicate Nautilus extension"),
+            path.display()
+        )),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::nautilus_extension_cleanup_plan;
+    use std::fs;
+    use std::path::PathBuf;
+
+    fn temp_dir(name: &str) -> PathBuf {
+        let path = std::env::temp_dir().join(format!(
+            "pkgbuild-manager-{name}-{}-{:?}",
+            std::process::id(),
+            std::thread::current().id()
+        ));
+        fs::create_dir_all(&path).unwrap();
+        path
+    }
+
+    #[test]
+    fn cleanup_plan_prefers_usr_and_removes_usr_local_and_user_copies() {
+        let root = temp_dir("nautilus-duplicates");
+        let usr = root.join("usr/pkgbuild_manager.py");
+        let usr_local = root.join("usr-local/pkgbuild_manager.py");
+        let user = root.join("home/pkgbuild_manager.py");
+        for path in [&usr, &usr_local, &user] {
+            fs::create_dir_all(path.parent().unwrap()).unwrap();
+            fs::write(path, "provider").unwrap();
+        }
+
+        let (preferred, duplicates) = nautilus_extension_cleanup_plan(
+            &[usr.clone(), usr_local.clone()],
+            std::slice::from_ref(&user),
+        );
+
+        assert_eq!(preferred, Some(usr));
+        assert_eq!(duplicates, vec![usr_local, user]);
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn cleanup_plan_keeps_usr_local_when_it_is_the_only_system_copy() {
+        let root = temp_dir("nautilus-usr-local-only");
+        let usr = root.join("usr/pkgbuild_manager.py");
+        let usr_local = root.join("usr-local/pkgbuild_manager.py");
+        fs::create_dir_all(usr_local.parent().unwrap()).unwrap();
+        fs::write(&usr_local, "provider").unwrap();
+
+        let (preferred, duplicates) =
+            nautilus_extension_cleanup_plan(&[usr, usr_local.clone()], &[]);
+
+        assert_eq!(preferred, Some(usr_local));
+        assert!(duplicates.is_empty());
+        fs::remove_dir_all(root).unwrap();
+    }
 }
 
 fn print_usage() {

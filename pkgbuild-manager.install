@@ -19,7 +19,18 @@ _active_desktop_user() {
 }
 
 _remove_duplicate_nautilus_extensions() {
-    local name uid home user_ext
+    local system_ext local_ext name uid home user_ext
+
+    # Meson installs made with its default /usr/local prefix can coexist with
+    # the Arch package in /usr. Nautilus scans both prefixes and would create
+    # the same menu twice. The packaged /usr copy is authoritative.
+    system_ext="/usr/share/nautilus-python/extensions/pkgbuild_manager.py"
+    local_ext="/usr/local/share/nautilus-python/extensions/pkgbuild_manager.py"
+    if [ -f "$system_ext" ] && { [ -f "$local_ext" ] || [ -L "$local_ext" ]; }; then
+        rm -f -- "$local_ext"
+        echo ">>> Removed duplicate Nautilus extension: $local_ext"
+    fi
+
     while IFS=: read -r name uid home; do
         user_ext="$home/.local/share/nautilus-python/extensions/pkgbuild_manager.py"
         if [ -f "$user_ext" ] || [ -L "$user_ext" ]; then
