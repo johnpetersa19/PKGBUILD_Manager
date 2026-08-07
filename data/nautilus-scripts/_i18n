@@ -200,3 +200,6 @@ MSG_CLEAN_ALL_FAIL=$(       _getmsg "✗ Failed to clean everything! See: " "not
 MSG_FULL_WORKFLOW=$(        _getmsg "Running full workflow…" "notify_full_workflow" )
 MSG_FULL_WORKFLOW_OK=$(     _getmsg "✓ Full workflow completed successfully!" "notify_full_workflow_ok" )
 MSG_FULL_WORKFLOW_FAIL=$(   _getmsg "✗ Full workflow failed! See: " "notify_full_workflow_fail" )
+# Terminal helper
+MSG_PRESS_ANY_KEY=$(        _getmsg "Press any key to exit..." )
+MSG_NO_TERMINAL=$(          _getmsg "No compatible terminal emulator found." )

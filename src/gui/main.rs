@@ -36,7 +36,10 @@ fn main() -> gtk::glib::ExitCode {
     init_i18n();
     if host::is_flatpak() {
         if let Err(error) = install_flatpak_desktop_integration() {
-            eprintln!("Could not install Flatpak desktop integration: {error}");
+            eprintln!(
+                "{}: {error}",
+                gettextrs::gettext("Could not install Flatpak desktop integration")
+            );
         }
     }
 
@@ -52,7 +55,7 @@ fn main() -> gtk::glib::ExitCode {
             gtk::glib::ExitCode::SUCCESS
         }
         Some(command) => {
-            eprintln!("Unknown GUI command: {command}");
+            eprintln!("{}: {command}", gettextrs::gettext("Unknown GUI command"));
             print_usage();
             gtk::glib::ExitCode::FAILURE
         }
@@ -80,7 +83,12 @@ fn install_flatpak_desktop_integration() -> std::io::Result<()> {
 
     let home = std::env::var_os("HOME")
         .map(PathBuf::from)
-        .ok_or_else(|| std::io::Error::new(std::io::ErrorKind::NotFound, "HOME is not set"))?;
+        .ok_or_else(|| {
+            std::io::Error::new(
+                std::io::ErrorKind::NotFound,
+                gettextrs::gettext("HOME is not set"),
+            )
+        })?;
     let source_scripts = PathBuf::from("/app/share/pkgbuild-manager/scripts");
     let target_scripts = home.join(".local/share/pkgbuild-manager/scripts");
     fs::create_dir_all(&target_scripts)?;
@@ -195,5 +203,8 @@ fn new_application(suffix: &str) -> Application {
 }
 
 fn print_usage() {
-    println!("Usage: pkgbuild-manager-gui <settings|push|release|clean> [path] [options]");
+    println!(
+        "{}: pkgbuild-manager-gui <settings|push|release|clean> [path] [options]",
+        gettextrs::gettext("Usage")
+    );
 }

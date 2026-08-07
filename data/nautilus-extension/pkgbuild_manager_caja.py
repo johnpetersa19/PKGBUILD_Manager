@@ -10,27 +10,35 @@ from pathlib import Path
 from gi.repository import Caja, GObject
 
 _user_locale = os.path.expanduser("~/.local/share/locale")
-_locale_dir = _user_locale if os.path.isdir(_user_locale) else "/usr/share/locale"
 _language = (os.environ.get("LANGUAGE") or os.environ.get("LANG") or "en").split(":", 1)[0]
-_translation = gettext.translation("pkgbuild_manager", _locale_dir, languages=[_language], fallback=True)
+_system_translation = gettext.translation(
+    "pkgbuild_manager", "/usr/share/locale", languages=[_language], fallback=True
+)
+_translation = gettext.translation(
+    "pkgbuild_manager", _user_locale, languages=[_language], fallback=True
+)
+if _translation is not _system_translation:
+    _translation.add_fallback(_system_translation)
 _ = _translation.gettext
 
 CONFIG_FILE = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "pkgbuild-manager" / "menu.json"
 
 DEFAULT_ACTIONS = [
-    ("00_Full Workflow",     "00_Full Workflow"),
-    ("01_Build",             "01_Build"),
-    ("02b_Build and Clean",  "02b_Build and Clean"),
-    ("02_Install",           "02_Install"),
-    ("03_Update Checksums",  "03_Update Checksums"),
-    ("04_Update .SRCINFO",   "04_Update .SRCINFO"),
-    ("05_Namcap",            "05_Namcap"),
-    ("05b_ShellCheck",       "05b_ShellCheck"),
-    ("06_Push AUR",          "06_Push AUR"),
-    ("17_Push AUR Tag",      "17_Push AUR Tag"),
-    ("07_Clean srcdir",      "07_Clean srcdir"),
-    ("07b_Clean Everything", "07b_Clean Everything"),
+    ("00_Full Workflow",     "Full Workflow"),
+    ("01_Build",             "Build"),
+    ("02b_Build and Clean",  "Build and Clean"),
+    ("02_Install",           "Install"),
+    ("03_Update Checksums",  "Update Checksums"),
+    ("04_Update .SRCINFO",   "Update .SRCINFO"),
+    ("05_Namcap",            "Namcap"),
+    ("05b_ShellCheck",       "ShellCheck"),
+    ("06_Push AUR",          "Push to AUR"),
+    ("17_Push AUR Tag",      "Push AUR Tag"),
+    ("07_Clean srcdir",      "Clean srcdir"),
+    ("07b_Clean Everything", "Clean Everything"),
 ]
+DEFAULT_LABELS = dict(DEFAULT_ACTIONS)
+DEFAULT_GROUPS = {"Actions", "Metadata", "Audit", "Git / AUR", "Clean"}
 
 TAG_ACTION = "17_Push AUR Tag"
 ARCHIVE_SUFFIXES = (
@@ -89,11 +97,18 @@ def _load_menu():
             for group in data:
                 for item in group.get("items", []):
                     if item.get("enabled", True):
-                        result.append((item["id"], item["label"], group["group"]))
+                        sid = item["id"]
+                        label = item["label"]
+                        if label in (sid, DEFAULT_LABELS.get(sid)):
+                            label = _(DEFAULT_LABELS.get(sid, label))
+                        group_name = group["group"]
+                        if group_name in DEFAULT_GROUPS:
+                            group_name = _(group_name)
+                        result.append((sid, label, group_name))
             return result, len(data)
         except Exception:
             pass
-    return [(sid, _(sid), "PKGBUILD") for sid, _ in DEFAULT_ACTIONS], 1
+    return [(sid, _(label), "PKGBUILD") for sid, label in DEFAULT_ACTIONS], 1
 
 
 class PkgbuildMenuProvider(GObject.GObject, Caja.MenuProvider):
@@ -120,7 +135,7 @@ class PkgbuildMenuProvider(GObject.GObject, Caja.MenuProvider):
         top = Caja.MenuItem(
             name="PkgbuildManager::TopMenu",
             label="PKGBUILD",
-            tip="PKGBUILD Manager actions",
+            tip=_("PKGBUILD Manager actions"),
         )
         top_submenu = Caja.Menu()
         top.set_submenu(top_submenu)
@@ -130,8 +145,8 @@ class PkgbuildMenuProvider(GObject.GObject, Caja.MenuProvider):
                 if not os.path.isfile(spath) or not os.access(spath, os.X_OK):
                     subprocess.Popen([
                         "notify-send", "-a", "PKGBUILD Manager",
-                        "Script not found",
-                        f"Missing: {spath}\nReinstall pkgbuild-manager."
+                        _("Script not found"),
+                        _("Missing: {path}\nReinstall pkgbuild-manager.").format(path=spath)
                     ], close_fds=True)
                     return
                 workdir = pkgpath if os.path.isdir(pkgpath) else os.path.dirname(pkgpath)
@@ -143,7 +158,7 @@ class PkgbuildMenuProvider(GObject.GObject, Caja.MenuProvider):
             for sid, label in groups.get(group_order[0] if group_order else "", []):
                 sp = os.path.join(scripts, sid)
                 it = Caja.MenuItem(name=f"PkgbuildManager::{sid.replace(' ','_')}",
-                                   label=label, tip=f"Run {sid}")
+                                   label=label, tip=_("Run {action}").format(action=sid))
                 it.connect("activate", make_cb(sp, pkgbuild_path))
                 top_submenu.append_item(it)
         else:
@@ -156,7 +171,7 @@ class PkgbuildMenuProvider(GObject.GObject, Caja.MenuProvider):
                 for sid, label in groups[gname]:
                     sp = os.path.join(scripts, sid)
                     it = Caja.MenuItem(name=f"PkgbuildManager::{sid.replace(' ','_')}",
-                                       label=label, tip=f"Run {sid}")
+                                       label=label, tip=_("Run {action}").format(action=sid))
                     it.connect("activate", make_cb(sp, pkgbuild_path))
                     gsub.append_item(it)
                 top_submenu.append_item(git)

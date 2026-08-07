@@ -198,13 +198,25 @@ pub fn load_with_diagnostics() -> LoadResult {
         Some(mut groups) => {
             let mut unknown_ids: Vec<String> = Vec::new();
             for g in &mut groups {
+                g.group = match g.group.as_str() {
+                    "Actions" => gettext("Actions"),
+                    "Metadata" => gettext("Metadata"),
+                    "Audit" => gettext("Audit"),
+                    "Git / AUR" => gettext("Git / AUR"),
+                    "Clean" => gettext("Clean"),
+                    _ => g.group.clone(),
+                };
                 for item in &mut g.items {
                     if !known.contains(item.id.as_str()) {
                         unknown_ids.push(item.id.clone());
-                    } else if item.label == item.id {
-                        // Migrate labels saved by older releases without
-                        // exposing the numeric script-order prefix.
-                        item.label = action_label(&item.id);
+                    } else {
+                        let translated = action_label(&item.id);
+                        let english = action_label_english(&item.id);
+                        if item.label == item.id || item.label == english {
+                            // Migrate numeric or English labels saved by older
+                            // releases while preserving custom labels.
+                            item.label = translated;
+                        }
                     }
                 }
                 g.items.retain(|i| known.contains(i.id.as_str()));
@@ -215,6 +227,34 @@ pub fn load_with_diagnostics() -> LoadResult {
             }
         }
     }
+}
+
+fn action_label_english(id: &str) -> String {
+    match id {
+        "00_Full Workflow" => "Full Workflow",
+        "01_Build" => "Build",
+        "02b_Build and Clean" => "Build and Clean",
+        "08_Build Force" => "Force Build",
+        "09_Build NoCheck" => "Build without Checks",
+        "10_Build NoGPG" => "Build without GPG",
+        "11_Fetch Sources" => "Fetch Sources",
+        "02_Install" => "Install",
+        "12_Install Force" => "Force Install",
+        "13_Install RmDeps" => "Install and Remove Build Dependencies",
+        "14_Install NoCheck" => "Install without Checks",
+        "15_Install NoGPG" => "Install without GPG",
+        "03_Update Checksums" => "Update Checksums",
+        "04_Update .SRCINFO" => "Update .SRCINFO",
+        "16_Gen Checksums" => "Generate Checksums",
+        "05_Namcap" => "Namcap",
+        "05b_ShellCheck" => "ShellCheck",
+        "06_Push AUR" => "Push to AUR",
+        "17_Push AUR Tag" => "Push AUR Tag",
+        "07_Clean srcdir" => "Clean srcdir",
+        "07b_Clean Everything" => "Clean Everything",
+        _ => id,
+    }
+    .to_string()
 }
 
 pub fn save(data: &[MenuGroup]) -> std::io::Result<()> {

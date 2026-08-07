@@ -162,6 +162,17 @@ for source_root in search_roots:
     if not source_root.is_dir():
         continue
     for path in sorted(source_root.rglob("*")):
+        relative_parts = path.relative_to(root).parts
+        # Ignore makepkg/Cargo output and extracted release archives living
+        # below src/. They are generated copies, not project sources, and can
+        # introduce dependency gettext APIs or stale messages into the POT.
+        if any(
+            part == "target"
+            or part.startswith("build-")
+            or part.startswith("PKGBUILD_Manager-")
+            for part in relative_parts
+        ):
+            continue
         match = patterns.get(path.suffix)
         if match is None or not path.is_file():
             continue

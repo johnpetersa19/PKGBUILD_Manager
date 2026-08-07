@@ -22,9 +22,17 @@ gi.require_version("Gtk", "4.0")
 from gi.repository import Nautilus, GObject, Gdk, Gtk, GLib
 
 _user_locale = os.path.expanduser("~/.local/share/locale")
-_locale_dir = _user_locale if os.path.isdir(_user_locale) else "/usr/share/locale"
 _language = (os.environ.get("LANGUAGE") or os.environ.get("LANG") or "en").split(":", 1)[0]
-_translation = gettext.translation("pkgbuild_manager", _locale_dir, languages=[_language], fallback=True)
+_system_translation = gettext.translation(
+    "pkgbuild_manager", "/usr/share/locale", languages=[_language], fallback=True
+)
+_translation = gettext.translation(
+    "pkgbuild_manager", _user_locale, languages=[_language], fallback=True
+)
+if _translation is not _system_translation:
+    # A stale per-user catalog must not hide newer translations installed by
+    # the package. Missing messages continue through the system catalog.
+    _translation.add_fallback(_system_translation)
 _ = _translation.gettext
 
 CONFIG_FILE = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "pkgbuild-manager" / "menu.json"
@@ -54,6 +62,7 @@ DEFAULT_ACTIONS = [
     ("07b_Clean Everything", "Clean Everything"),
 ]
 DEFAULT_LABELS = dict(DEFAULT_ACTIONS)
+DEFAULT_GROUPS = {"Actions", "Metadata", "Audit", "Git / AUR", "Clean"}
 
 ROOT_GROUP = "PKGBUILD"
 TAG_ACTION = "17_Push AUR Tag"
@@ -690,9 +699,12 @@ def _load_menu():
                     if item.get("enabled", True):
                         sid = item["id"]
                         label = item["label"]
-                        if label == sid:
+                        if label in (sid, DEFAULT_LABELS.get(sid)):
                             label = _(DEFAULT_LABELS.get(sid, label))
-                        result.append((sid, label, group["group"]))
+                        group_name = group["group"]
+                        if group_name in DEFAULT_GROUPS:
+                            group_name = _(group_name)
+                        result.append((sid, label, group_name))
             return result, len(data)
         except Exception:
             pass
@@ -765,7 +777,7 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
         top = Nautilus.MenuItem(
             name="PkgbuildManager::TopMenu",
             label="PKGBUILD",
-            tip="PKGBUILD Manager actions",
+            tip=_("PKGBUILD Manager actions"),
         )
         top_submenu = Nautilus.Menu()
         top.set_submenu(top_submenu)
@@ -775,8 +787,8 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
                 if not os.path.isfile(spath) or not os.access(spath, os.X_OK):
                     subprocess.Popen([
                         "notify-send", "-a", "PKGBUILD Manager",
-                        "Script not found",
-                        f"Missing: {spath}\nReinstall pkgbuild-manager."
+                        _("Script not found"),
+                        _("Missing: {path}\nReinstall pkgbuild-manager.").format(path=spath)
                     ], close_fds=True)
                     return
                 workdir = pkgpath if os.path.isdir(pkgpath) else os.path.dirname(pkgpath)
@@ -790,7 +802,7 @@ class PkgbuildMenuProvider(GObject.GObject, Nautilus.MenuProvider):
                 it = Nautilus.MenuItem(
                     name=f"PkgbuildManager::{sid.replace(' ', '_')}",
                     label=label,
-                    tip=f"Run {sid}"
+                    tip=_("Run {action}").format(action=sid)
                 )
                 it.connect("activate", make_cb(sp, pkgbuild_path))
                 target_menu.append_item(it)

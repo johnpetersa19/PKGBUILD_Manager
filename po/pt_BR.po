@@ -4,9 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: pkgbuild_manager 2.5.2\n"
+"Project-Id-Version: pkgbuild_manager 2.5.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-02 13:21-0300\n"
+"POT-Creation-Date: 2026-08-07 16:35-0300\n"
 "PO-Revision-Date: 2026-07-17 00:05-0300\n"
 "Last-Translator: John Peter Sa\n"
 "Language-Team: Portuguese (Brazil)\n"
@@ -69,69 +69,113 @@ msgstr "falha ao iniciar o makepkg"
 msgid "makepkg -g failed:"
 msgstr "makepkg -g falhou:"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/clean.rs:45
+#: /home/john/PKGBUILD_Manager/po/../src/actions/clean.rs:25
+msgid "could not remove"
+msgstr "não foi possível remover"
+
+#: /home/john/PKGBUILD_Manager/po/../src/actions/clean.rs:47
 msgid "Removing src/ pkg/ and compiled packages in"
 msgstr "Removendo src/ pkg/ e pacotes compilados em"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/clean.rs:55
-#: /home/john/PKGBUILD_Manager/po/../src/actions/clean.rs:83
+#: /home/john/PKGBUILD_Manager/po/../src/actions/clean.rs:59
+msgid "Skipped Git-tracked source directory"
+msgstr "Diretório de fontes rastreado pelo Git ignorado"
+
+#: /home/john/PKGBUILD_Manager/po/../src/actions/clean.rs:65
+#: /home/john/PKGBUILD_Manager/po/../src/actions/clean.rs:93
 msgid "Removed"
 msgstr "Removido"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/clean.rs:73
+#: /home/john/PKGBUILD_Manager/po/../src/actions/clean.rs:83
 msgid "Warning: could not determine pkgname — removing all .pkg.tar.* files:"
 msgstr ""
 "Aviso: não foi possível determinar o nome do pacote — removendo todos os "
 "arquivos .pkg.tar.*:"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/clean.rs:108
+#: /home/john/PKGBUILD_Manager/po/../src/actions/clean.rs:118
 msgid "Removed bare-repo cache"
 msgstr "Cache do repositório bare removido"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/clean.rs:115
+#: /home/john/PKGBUILD_Manager/po/../src/actions/clean.rs:125
 msgid "Removed build directory"
 msgstr "Diretório de build removido"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:27
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:28
 msgid "failed to canonicalize path"
 msgstr "falha ao canonicalizar o caminho"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:36
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:37
 msgid "Failed to resolve parent directory"
 msgstr "Falha ao resolver o diretório pai"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:43
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:44
 msgid "Directory does not exist"
 msgstr "O diretório não existe"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:51
-#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:126
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:52
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:205
 msgid "No PKGBUILD found in directory"
 msgstr "Nenhum PKGBUILD encontrado no diretório"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:77
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:78
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:126
 msgid "failed to spawn command"
 msgstr "falha ao iniciar o comando"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:87
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:88
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:135
 msgid "command failed"
 msgstr "comando falhou"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:89
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:90
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:136
 msgid "with status"
 msgstr "com status"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:131
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:146
+msgid "HOME environment variable is not set"
+msgstr "A variável de ambiente HOME não está definida."
+
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:152
+msgid "failed to create makepkg build directory"
+msgstr "falha ao criar o diretório de compilação do makepkg"
+
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:210
 msgid ">>> Regenerating .SRCINFO in"
 msgstr ">>> Regenerando .SRCINFO em"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:143
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:219
+#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:49
+msgid "failed to run makepkg --printsrcinfo"
+msgstr "falha ao executar makepkg --printsrcinfo"
+
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:227
 msgid "makepkg --printsrcinfo failed"
 msgstr "makepkg --printsrcinfo falhou"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:169
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:235
+msgid "failed to write .SRCINFO"
+msgstr "falha ao gravar .SRCINFO"
+
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:257
 msgid "HOME env var not set"
 msgstr "A variável de ambiente HOME não está definida."
+
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:274
+msgid "error log"
+msgstr "registro de erros"
+
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:280
+msgid "PKGBUILD directory"
+msgstr "Diretório do PKGBUILD"
+
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:283
+msgid "Timestamp (UTC)"
+msgstr "Data e hora (UTC)"
+
+#: /home/john/PKGBUILD_Manager/po/../src/actions/mod.rs:285
+msgid "output"
+msgstr "saída"
 
 #: /home/john/PKGBUILD_Manager/po/../src/actions/namcap.rs:60
 #: /home/john/PKGBUILD_Manager/po/../src/actions/shellcheck.rs:64
@@ -176,7 +220,8 @@ msgid "failed to spawn"
 msgstr "falha ao gerar"
 
 #: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:27
-#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1238
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1237
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1700
 msgid "failed"
 msgstr "falhou"
 
@@ -184,40 +229,40 @@ msgstr "falhou"
 msgid "Validating PKGBUILD syntax (makepkg --printsrcinfo)…"
 msgstr "Validando a sintaxe do PKGBUILD (makepkg --printsrcinfo)..."
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:55
+#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:61
 msgid "PKGBUILD syntax OK"
 msgstr "Sintaxe PKGBUILD OK"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:58
+#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:64
 msgid "PKGBUILD has syntax errors"
 msgstr "O PKGBUILD apresenta erros de sintaxe."
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:73
+#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:79
 msgid "Parsing PKGBUILD variables (makepkg --nobuild --noextract)…"
 msgstr "Analisando variáveis ​​PKGBUILD (makepkg --nobuild --noextract)..."
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:82
+#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:88
 msgid "Verifying source checksums (makepkg --verifysource)…"
 msgstr ""
 "Verificando as somas de verificação da origem (makepkg --verify source)..."
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:91
+#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:97
 msgid "Checking declared dependencies (makepkg --syncdeps --nobuild)…"
 msgstr "Verificando dependências declaradas (makepkg --syncdeps --nobuild)..."
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:104
+#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:110
 msgid "validate-offline: PKGBUILD full offline check"
 msgstr "validate-offline: Verificação offline completa do PKGBUILD"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:115
+#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:121
 msgid "All offline checks passed."
 msgstr "Todas as verificações offline foram aprovadas."
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:120
+#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:126
 msgid "check(s) failed"
 msgstr "verificação falhou"
 
-#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:134
+#: /home/john/PKGBUILD_Manager/po/../src/actions/validate.rs:140
 msgid "validate check(s) failed"
 msgstr "A(s) verificação(ões) de validação falharam"
 
@@ -251,6 +296,7 @@ msgid "Push — Unknown Repository"
 msgstr "Enviar — Repositório desconhecido"
 
 #: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:350
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:505
 msgid "Step 1 of 2 — Review commit information"
 msgstr "Etapa 1 de 2 — Revisar as informações de confirmação"
 
@@ -271,6 +317,7 @@ msgid "Step 2 of 2 — Sending changes to Codeberg"
 msgstr "Passo 2 de 2 — Enviando alterações para o Codeberg"
 
 #: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:357
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:615
 msgid "Step 2 of 2 — Sending changes to remote"
 msgstr "Passo 2 de 2 — Enviando alterações para o repositório remoto"
 
@@ -307,10 +354,12 @@ msgid "Commit + Tag + Push"
 msgstr "Commit + Tag + Enviar"
 
 #: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:370
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:610
 msgid "Commit & Push"
 msgstr "Commit e Enviar"
 
 #: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:371
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:451
 msgid "Push"
 msgstr "Enviar"
 
@@ -411,6 +460,7 @@ msgid "HTTPS credentials configured — ready to push"
 msgstr "Credenciais HTTPS configuradas — pronto para enviar"
 
 #: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:545
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:512
 msgid "Commit"
 msgstr "Commit"
 
@@ -423,18 +473,23 @@ msgid "Tag version  (e.g. 1.2.3-1)"
 msgstr "Versão da tag  (ex: 1.2.3-1)"
 
 #: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:568
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:524
 msgid "Branch"
 msgstr "Branch"
 
 #: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:603
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:557
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1122
 msgid "Choose branch"
 msgstr "Escolher branch"
 
 #: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:617
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:572
 msgid "Remote"
 msgstr "Remoto"
 
 #: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:646
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:595
 msgid "Continue to Push"
 msgstr "Continuar para envio"
 
@@ -523,12 +578,14 @@ msgid "Push again"
 msgstr "Enviar novamente"
 
 #: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:944
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:358
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1549
 msgid "Try again"
 msgstr "Tentar novamente"
 
 #: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:946
 #: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:361
-#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1537
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1551
 msgid "Process failed"
 msgstr "O processo falhou"
 
@@ -549,20 +606,233 @@ msgid "failed to start"
 msgstr "falhou ao iniciar"
 
 #: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1216
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1684
 msgid "git add failed"
 msgstr "git add falhou"
 
-#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1229
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1225
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1676
+msgid "Update"
+msgstr "Atualização"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1228
 msgid "git commit failed (nothing to commit?)"
 msgstr "git commit falhou (nada para fazer commit?)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1255
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1250
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1721
+msgid "Version"
+msgstr "Versão"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1254
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1728
 msgid "git tag failed"
 msgstr "git tag falhou"
 
-#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1263
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/aur_dialog.rs:1262
 msgid "git push --tags failed"
 msgstr "git push --tags falhou"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:350
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1542
+msgid "Run again"
+msgstr "Executar novamente"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:393
+msgid "Push · Tags · Releases — GitHub"
+msgstr "Enviar · Tags · Lançamentos — GitHub"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:394
+msgid "Push · Tags · Releases — GitLab"
+msgstr "Enviar · Tags · Lançamentos — GitLab"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:395
+msgid "Push · Tags · Releases — Codeberg"
+msgstr "Enviar · Tags · Lançamentos — Codeberg"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:396
+msgid "Push · Tags — Git Remote"
+msgstr "Enviar · Tags — Repositório Git"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:457
+msgid "Tags"
+msgstr "Tags"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:468
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1065
+msgid "Release"
+msgstr "Lançamento"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:516
+msgid "Commit message"
+msgstr "Mensagem do commit"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:765
+msgid "Pushed successfully!"
+msgstr "Enviado com sucesso!"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:799
+msgid "Step 1 of 2 — Create and push an annotated tag"
+msgstr "Etapa 1 de 2 — Criar e enviar uma tag anotada"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:807
+msgid "New Tag"
+msgstr "Nova tag"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:811
+msgid "Tag name  (e.g. v1.0.0)"
+msgstr "Nome da tag  (ex.: v1.0.0)"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:817
+msgid "Tag message  (e.g. Version 1.0.0)"
+msgstr "Mensagem da tag  (ex.: Versão 1.0.0)"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:824
+msgid "Push style"
+msgstr "Modo de envio"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:827
+msgid "Push this tag only  (git push origin <tag>)"
+msgstr "Enviar somente esta tag  (git push origin <tag>)"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:828
+msgid "Push all tags       (git push --tags)"
+msgstr "Enviar todas as tags       (git push --tags)"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:841
+msgid "Existing Tags — click to prefill"
+msgstr "Tags existentes — clique para preencher"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:866
+msgid "Continue to Tag Push"
+msgstr "Continuar para o envio da tag"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:879
+msgid "Create & Push Tag"
+msgstr "Criar e enviar tag"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:882
+msgid "Step 2 of 2 — Creating and pushing tag"
+msgstr "Etapa 2 de 2 — Criando e enviando a tag"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1023
+msgid "Tag created and pushed!"
+msgstr "Tag criada e enviada!"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1058
+msgid "Step 1 of 2 — Fill release information"
+msgstr "Etapa 1 de 2 — Preencher as informações do lançamento"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1069
+msgid "Tag"
+msgstr "Tag"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1070
+msgid "Select an existing tag or type below"
+msgstr "Selecione uma tag existente ou digite abaixo"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1082
+msgid "Or type a new tag  (e.g. v1.0.0)"
+msgstr "Ou digite uma nova tag  (ex.: v1.0.0)"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1089
+msgid "Target branch"
+msgstr "Branch de destino"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1135
+msgid "Release title  (e.g. PKGBUILD Manager 1.0.0)"
+msgstr "Título do lançamento  (ex.: PKGBUILD Manager 1.0.0)"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1142
+msgid "Release Notes (Markdown)"
+msgstr "Notas de lançamento (Markdown)"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1180
+msgid "Attachments (optional)"
+msgstr "Anexos (opcional)"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1186
+msgid "Add attachment"
+msgstr "Adicionar anexo"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1274
+msgid "Continue to Publish"
+msgstr "Continuar para publicação"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1288
+msgid "Step 2 of 2 — Publishing release via GitHub CLI"
+msgstr "Etapa 2 de 2 — Publicando o lançamento pela CLI do GitHub"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1289
+msgid "Step 2 of 2 — Publishing release via GitLab CLI"
+msgstr "Etapa 2 de 2 — Publicando o lançamento pela CLI do GitLab"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1290
+msgid "Step 2 of 2 — Publishing release via Codeberg API"
+msgstr "Etapa 2 de 2 — Publicando o lançamento pela API do Codeberg"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1294
+msgid "Publish Release → GitHub"
+msgstr "Publicar lançamento → GitHub"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1295
+msgid "Publish Release → GitLab"
+msgstr "Publicar lançamento → GitLab"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1296
+msgid "Publish Release → Codeberg"
+msgstr "Publicar lançamento → Codeberg"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1297
+msgid "Publish Release"
+msgstr "Publicar lançamento"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1305
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1309
+msgid "Upload assets"
+msgstr "Enviar arquivos"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1474
+msgid "Release published!"
+msgstr "Lançamento publicado!"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1692
+msgid "nothing to commit?"
+msgstr "nada para fazer commit?"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1741
+msgid "git push tag failed"
+msgstr "falha ao enviar a tag com git push"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1760
+msgid "Tag is required to publish a release."
+msgstr "Uma tag é obrigatória para publicar um lançamento."
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1820
+msgid "Could not parse owner/repo from remote URL."
+msgstr "Não foi possível identificar proprietário/repositório pela URL remota."
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1860
+msgid "Release creation failed"
+msgstr "Falha ao criar o lançamento"
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1869
+msgid ""
+"Note: asset upload for Codeberg requires the CODEBERG_TOKEN environment "
+"variable and a release ID. Assets must be uploaded manually through the web "
+"interface or a dedicated upload step."
+msgstr ""
+"Nota: o envio de arquivos para o Codeberg exige a variável de ambiente "
+"CODEBERG_TOKEN e um ID de lançamento. Os arquivos devem ser enviados "
+"manualmente pela interface web ou por uma etapa de envio dedicada."
+
+#: /home/john/PKGBUILD_Manager/po/../src/aur_push_gui/release_dialog.rs:1891
+msgid ""
+"{command} was not found or failed to start: {error}\n"
+"Make sure '{command}' is installed."
+msgstr ""
+"{command} não foi encontrado ou falhou ao iniciar: {error}\n"
+"Verifique se '{command}' está instalado."
 
 #: /home/john/PKGBUILD_Manager/po/../src/clean_gui/dialog.rs:26
 #: /home/john/PKGBUILD_Manager/po/../src/settings_gui/config.rs:77
@@ -626,6 +896,23 @@ msgstr "Fechar"
 msgid "Cleanup failed."
 msgstr "A limpeza falhou."
 
+#: /home/john/PKGBUILD_Manager/po/../src/gui/main.rs:41
+msgid "Could not install Flatpak desktop integration"
+msgstr ""
+"Não foi possível instalar a integração do Flatpak com a área de trabalho"
+
+#: /home/john/PKGBUILD_Manager/po/../src/gui/main.rs:58
+msgid "Unknown GUI command"
+msgstr "Comando da interface gráfica desconhecido"
+
+#: /home/john/PKGBUILD_Manager/po/../src/gui/main.rs:89
+msgid "HOME is not set"
+msgstr "A variável de ambiente HOME não está definida."
+
+#: /home/john/PKGBUILD_Manager/po/../src/gui/main.rs:208
+msgid "Usage"
+msgstr "Uso"
+
 #: /home/john/PKGBUILD_Manager/po/../src/main.rs:181
 msgid "aur-push-tag requires a version tag argument"
 msgstr "aur-push-tag requer um argumento de tag de versão"
@@ -652,128 +939,158 @@ msgstr "Comando desconhecido"
 msgid "Warning: Could not remove obsolete PKGBUILD directory"
 msgstr "Aviso: não foi possível remover o diretório PKGBUILD obsoleto"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:258
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:273
 msgid "Warning: Nautilus Python extension not found at"
 msgstr "Aviso: extensão Python do Nautilus não encontrada em"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:260
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:275
 msgid "Install the pkgbuild-manager package to get the extension."
 msgstr "Instale o pacote pkgbuild-manager para obter a extensão."
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:263
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:278
 msgid "Extension found"
 msgstr "Extensão encontrada"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:286
-msgid "Could not remove duplicate Nautilus extension"
-msgstr "Não foi possível remover a extensão duplicada do Nautilus"
-
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:292
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:287
 msgid "Removed duplicate Nautilus extension"
 msgstr "Extensão duplicada do Nautilus removida"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:299
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:293
 msgid "Restarting Nautilus\\u{2026}"
 msgstr "Reiniciando o Nautilus…"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:304
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:298
 msgid "Done. Right-click a PKGBUILD directory to see the menu."
 msgstr ""
 "Pronto. Clique com o botão direito em um diretório PKGBUILD para ver o menu."
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:312
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:336
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:345
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:352
+msgid "Could not remove duplicate Nautilus extension"
+msgstr "Não foi possível remover a extensão duplicada do Nautilus"
+
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:413
+msgid "PKGBUILD Manager - CLI Tool"
+msgstr "PKGBUILD Manager - Ferramenta CLI"
+
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:414
+msgid "Usage:"
+msgstr "Uso:"
+
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:415
+msgid "Compilation commands:"
+msgstr "Comandos de compilação:"
+
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:416
 msgid "Compiled package (makepkg)"
 msgstr "Compilar pacote (makepkg)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:313
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:417
 msgid "Compile and clean srcdir (makepkg -c)"
 msgstr "Compilar e limpar srcdir (makepkg -c)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:314
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:418
 msgid "Force recompilation (makepkg -f)"
 msgstr "Forçar recompilação (makepkg -f)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:315
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:419
 msgid "Basic check() function (makepkg --nocheck)"
 msgstr "Pular função check() (makepkg --nocheck)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:316
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:420
 msgid "Popular PGP signature check (makepkg --skippgpcheck)"
 msgstr "Pular verificação de assinatura PGP (makepkg --skippgpcheck)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:317
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:421
 msgid ""
 "Same as 'build' — all extra flags after the path are forwarded to makepkg"
 msgstr ""
 "Semelhante a 'build' — todos os parâmetros extras após o caminho são "
 "encaminhados para makepkg."
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:320
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:423
+msgid "Installation commands:"
+msgstr "Comandos de instalação:"
+
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:424
 msgid "Compile, install and resolve dependencies (makepkg -si)"
 msgstr "Compilar, instalar e resolver dependências (makepkg -si)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:321
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:425
 msgid "Compile, install and clean srcdir (makepkg -sic)"
 msgstr "Compilar, instalar e limpar srcdir (makepkg -sic)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:322
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:426
 msgid "Force compilation and installation (makepkg -sif)"
 msgstr "Forçar compilação e instalação (makepkg -sif)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:323
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:427
 msgid "Install and remove makedeps afterwards (makepkg -sir)"
 msgstr "Instalar e remover makedeps depois (makepkg -sir)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:324
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:428
 msgid "Install without running check()"
 msgstr "Instalar sem executar check()"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:325
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:429
 msgid "Install skipping PGP checks"
 msgstr "Instalar pulando verificações PGP"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:326
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:430
 msgid ""
 "Same as 'install' — all extra flags after the path are forwarded to makepkg"
 msgstr ""
 "O mesmo que 'install' — todos os parâmetros extras após o caminho são "
 "encaminhados para makepkg."
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:329
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:432
+msgid "Package metadata commands:"
+msgstr "Comandos de metadados do pacote:"
+
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:433
 msgid "Download and extract sources only (makepkg -o)"
 msgstr "Baixar e extrair fontes apenas (makepkg -o)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:330
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:434
 msgid "Update checksums without PKGBUILD (updpkgsums)"
 msgstr "Atualizar checksums no PKGBUILD (updpkgsums)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:331
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:435
 msgid "Generate checksums and print to standard output (makepkg -g)"
 msgstr "Gerar checksums e imprimir na saída padrão (makepkg -g)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:332
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:436
 msgid "Regenerate .SRCINFO (makepkg --printsrcinfo)"
 msgstr "Regenerar .SRCINFO (makepkg --printsrcinfo)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:335
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:438
+msgid "Auditing commands:"
+msgstr "Comandos de auditoria:"
+
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:439
 msgid "Run namcap on PKGBUILD and compiled packages"
 msgstr "Executar namcap no PKGBUILD e pacotes compilados"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:336
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:440
 msgid "Run ShellCheck on PKGBUILD"
 msgstr "Executar ShellCheck no PKGBUILD"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:339
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:442
+msgid "Validation commands (no compilation):"
+msgstr "Comandos de validação (sem compilação):"
+
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:443
 msgid "Full offline check: syntax + namcap + shellcheck (no network)"
 msgstr ""
 "Verificação offline completa: sintaxe + captura de nomes + verificação de "
 "shell (sem rede)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:340
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:444
 msgid "Validate syntax only (makepkg --printsrcinfo)"
 msgstr "Validar apenas a sintaxe (makepkg --printsrcinfo)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:341
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:445
 msgid ""
 "Parse variables/functions without extracting (makepkg --nobuild --"
 "noextract); may access network on VCS packages"
@@ -781,43 +1098,55 @@ msgstr ""
 "Analisar variáveis/funções sem extrair (makepkg --nobuild --noextract); pode "
 "acessar a rede em pacotes VCS."
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:342
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:446
 msgid "Download sources and verify checksums (makepkg --verifysource)"
 msgstr ""
 "Baixe os arquivos-fonte e verifique os checksums (makepkg --verify source)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:343
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:447
 msgid ""
 "Check declared dependencies exist in repos (makepkg --syncdeps --nobuild)"
 msgstr ""
 "Verifique se as dependências declaradas existem nos repositórios (makepkg --"
 "syncdeps --nobuild)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:346
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:449
+msgid "Cleanup commands:"
+msgstr "Comandos de limpeza:"
+
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:450
 msgid "Clean srcdir with makepkg (makepkg -c)"
 msgstr "Limpar srcdir com makepkg (makepkg -c)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:347
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:451
 msgid "Remove src/, packages/ and compiled packages"
 msgstr "Remover src/, pkg/ e pacotes compilados"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:350
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:453
+msgid "AUR/Git commands:"
+msgstr "Comandos do AUR/Git:"
+
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:454
 msgid "Stage, commit and push to the AUR (automatic message if not provided)"
 msgstr "Stage, commit e push para o AUR (mensagem automática se não fornecida)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:351
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:455
 msgid "Push with version tag (e.g., 1.2.3-1)"
 msgstr "Push com tag de versão (ex: 1.2.3-1)"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:354
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:457
+msgid "Other:"
+msgstr "Outros:"
+
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:458
 msgid "Remove obsolete symbolic links and check the Nautilus extension"
 msgstr "Remover links simbólicos obsoletos e verificar a extensão do Nautilus"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:355
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:459
 msgid "Display program version"
 msgstr "Exibir a versão do programa"
 
-#: /home/john/PKGBUILD_Manager/po/../src/main.rs:356
+#: /home/john/PKGBUILD_Manager/po/../src/main.rs:460
 msgid "Display this help message"
 msgstr "Exibir esta mensagem de ajuda"
 
@@ -934,157 +1263,194 @@ msgid "Clean srcdir"
 msgstr "Limpar srcdir"
 
 #: /home/john/PKGBUILD_Manager/po/../src/settings_gui/config.rs:87
+#: /home/john/PKGBUILD_Manager/po/../src/settings_gui/config.rs:202
 msgid "Actions"
 msgstr "Ações"
 
 #: /home/john/PKGBUILD_Manager/po/../src/settings_gui/config.rs:112
+#: /home/john/PKGBUILD_Manager/po/../src/settings_gui/config.rs:203
 msgid "Metadata"
 msgstr "Metadados"
 
 #: /home/john/PKGBUILD_Manager/po/../src/settings_gui/config.rs:127
+#: /home/john/PKGBUILD_Manager/po/../src/settings_gui/config.rs:204
 msgid "Audit"
 msgstr "Auditoria"
 
 #: /home/john/PKGBUILD_Manager/po/../src/settings_gui/config.rs:142
+#: /home/john/PKGBUILD_Manager/po/../src/settings_gui/config.rs:205
 msgid "Git / AUR"
 msgstr "Git / AUR"
 
 #: /home/john/PKGBUILD_Manager/po/../src/settings_gui/config.rs:150
+#: /home/john/PKGBUILD_Manager/po/../src/settings_gui/config.rs:206
 msgid "Clean"
 msgstr "Limpar"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:98
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:107
 msgid "Repository download error"
 msgstr "Erro ao baixar repositório"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:122
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:131
 msgid "Downloading file"
 msgstr "Baixando arquivo"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:122
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:131
 msgid "Cloning repository"
 msgstr "Clonando repositório"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:138
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:147
 msgid "Preparing download…"
 msgstr "Preparando download…"
 
 # ---------------------------------------------------------------------------
 # Step row labels — aur_dialog.rs (mode: Git/GitLab/Codeberg/Generic)
 # ---------------------------------------------------------------------------
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:138
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:147
 msgid "Validating repository…"
 msgstr "Validando repositório…"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:142
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:151
 msgid "Preparing…"
 msgstr "Preparando…"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:144
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:153
 msgid "Elapsed time: 00:00"
 msgstr "Tempo decorrido: 00:00"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:172
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:181
 #, python-brace-format
 msgid "Elapsed: {elapsed} • Remaining: about {remaining}"
 msgstr "Decorrido: {elapsed} • Restante: cerca de {remaining}"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:179
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:188
 #, python-brace-format
 msgid "Elapsed time: {elapsed}"
 msgstr "Tempo decorrido: {elapsed}"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:185
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:194
 msgid "Downloading repository data…"
 msgstr "Baixando dados do repositório…"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:191
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:200
 msgid "Downloading file…"
 msgstr "Baixando arquivo…"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:203
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:212
 msgid "Downloading…"
 msgstr "Baixando…"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:209
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:218
 msgid "File downloaded successfully!"
 msgstr "Arquivo baixado com sucesso!"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:234
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:243
 msgid "Repository cloned successfully!"
 msgstr "Repositório clonado com sucesso!"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:237
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:246
 msgid "Failed to download file"
 msgstr "Falha ao baixar o arquivo"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:237
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:246
 msgid "Failed to clone repository"
 msgstr "Falha ao clonar o repositório"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:507
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:516
 msgid "Git rejected the repository URL."
 msgstr "O Git rejeitou a URL do repositório."
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:509
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:518
 msgid "Repository validation timed out after 30 seconds."
 msgstr "A validação do repositório excedeu o limite de 30 segundos."
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:522
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:531
 msgid "The copied URL is not an accessible Git repository."
 msgstr "A URL copiada não é um repositório Git acessível."
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:524
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:604
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:533
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:613
 msgid "Unknown Git error"
 msgstr "Erro desconhecido do Git"
 
 # ---------------------------------------------------------------------------
 # Step row labels — aur_dialog.rs (mode: Git/GitLab/Codeberg/Generic)
 # ---------------------------------------------------------------------------
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:539
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:735
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:548
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:747
 msgid "Git repository"
 msgstr "repositório Git"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:595
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:604
 msgid "✓ Repository downloaded successfully: "
 msgstr "✓ Repositório baixado com sucesso: "
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:616
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:625
 #, python-brace-format
 msgid "A file with this name already exists: {name}"
 msgstr "Já existe um arquivo com este nome: {name}"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:627
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:636
 msgid "The download redirected to an unsupported address."
 msgstr "O download foi redirecionado para um endereço não suportado."
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:642
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:651
 msgid "The download ended before the complete file was received."
 msgstr "O download terminou antes que o arquivo completo fosse recebido."
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:659
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:668
 msgid "✓ File downloaded successfully: "
 msgstr "✓ Arquivo baixado com sucesso: "
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:709
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:721
 msgid "Download from clipboard"
 msgstr "Baixar da área de transferência"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:710
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:722
 msgid "Download a Git repository or file from a safe clipboard command"
 msgstr ""
 "Baixar um repositório Git ou arquivo usando um comando seguro da área de "
 "transferência"
 
-#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:731
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:743
 msgid ""
 "Copy a supported Git, curl, wget, aria2c, or HTTP(S) download before using "
 "this option."
 msgstr ""
 "Copie um download compatível com Git, curl, wget, aria2c ou HTTP(S) antes de "
 "usar esta opção."
+
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:780
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager_caja.py:138
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager_nemo.py:138
+msgid "PKGBUILD Manager actions"
+msgstr "Ações do PKGBUILD Manager"
+
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:790
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager_caja.py:148
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager_nemo.py:148
+msgid "Script not found"
+msgstr "Script não encontrado"
+
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:791
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager_caja.py:149
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager_nemo.py:149
+#, python-brace-format
+msgid ""
+"Missing: {path}\n"
+"Reinstall pkgbuild-manager."
+msgstr ""
+"Ausente: {path}\n"
+"Reinstale o pkgbuild-manager."
+
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager.py:805
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager_caja.py:161
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager_caja.py:174
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager_nemo.py:161
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-extension/pkgbuild_manager_nemo.py:174
+#, python-brace-format
+msgid "Run {action}"
+msgstr "Executar {action}"
 
 #: /home/john/PKGBUILD_Manager/po/../data/ui/error-alert.blp:5
 msgid "Error"
@@ -1096,7 +1462,7 @@ msgstr "Erros"
 
 #: /home/john/PKGBUILD_Manager/po/../data/ui/progress-panel.blp:64
 msgid "Run"
-msgstr "Rodando"
+msgstr "Executar"
 
 #: /home/john/PKGBUILD_Manager/po/../data/ui/step-row.blp:5
 msgid "Step"
@@ -1357,6 +1723,14 @@ msgstr "✓ Fluxo completo concluído com sucesso!"
 msgid "✗ Full workflow failed! See: "
 msgstr "✗ Falha no fluxo completo! Ver: "
 
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:204
+msgid "Press any key to exit..."
+msgstr "Pressione qualquer tecla para sair..."
+
+#: /home/john/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:205
+msgid "No compatible terminal emulator found."
+msgstr "Nenhum emulador de terminal compatível foi encontrado."
+
 #~ msgid "Clone repository"
 #~ msgstr "Clonar repositório"
 
@@ -1376,9 +1750,6 @@ msgstr "✗ Falha no fluxo completo! Ver: "
 
 #~ msgid "The repository check timed out."
 #~ msgstr "A verificação do repositório excedeu o tempo limite."
-
-#~ msgid "Branch not found: "
-#~ msgstr "Branch não encontrada: "
 
 #~ msgid "notify_building"
 #~ msgstr "Compilando pacote…"
@@ -1619,10 +1990,6 @@ msgstr "✗ Falha no fluxo completo! Ver: "
 #~ msgstr "Passo 2 de 2 — Enviando alterações para o GitHub"
 
 #, fuzzy
-#~ msgid "Step 2 of 2 — Sending changes"
-#~ msgstr "Passo 2 de 2 — Enviando alterações para o AUR"
-
-#, fuzzy
 #~ msgid "git status failed"
 #~ msgstr "git tag falhou"
 
@@ -1649,32 +2016,8 @@ msgstr "✗ Falha no fluxo completo! Ver: "
 #~ "Extensão do Nautilus não encontrada em /usr/share/nautilus-python/"
 #~ "extensions/pkgbuild_manager.py. Por favor, reinstale o pacote."
 
-#~ msgid "PKGBUILD Manager - CLI Tool"
-#~ msgstr "PKGBUILD Manager - Ferramenta CLI"
-
-#~ msgid "Usage:"
-#~ msgstr "Uso:"
-
 #~ msgid "Build commands"
 #~ msgstr "Comandos de compilação"
-
-#~ msgid "Install commands"
-#~ msgstr "Comandos de instalação"
-
-#~ msgid "Package metadata commands"
-#~ msgstr "Comandos de metadados do pacote"
-
-#~ msgid "Audit commands"
-#~ msgstr "Comandos de auditoria"
-
-#~ msgid "Clean commands"
-#~ msgstr "Comandos de limpeza"
-
-#~ msgid "AUR/Git commands"
-#~ msgstr "Comandos AUR/Git"
-
-#~ msgid "Other"
-#~ msgstr "Outros"
 
 #~ msgid "Symlink scripts to user directory with localization"
 #~ msgstr ""

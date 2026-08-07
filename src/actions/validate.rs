@@ -43,7 +43,13 @@ pub fn syntax(path: &Path) -> Result<()> {
         .arg("--printsrcinfo")
         .current_dir(&dir)
         .output()
-        .map_err(|e| anyhow!("failed to run makepkg --printsrcinfo: {}", e))?;
+        .map_err(|e| {
+            anyhow!(
+                "{}: {}",
+                gettext("failed to run makepkg --printsrcinfo"),
+                e
+            )
+        })?;
 
     // Always print stderr so the user sees makepkg warnings
     let stderr = String::from_utf8_lossy(&output.stderr);

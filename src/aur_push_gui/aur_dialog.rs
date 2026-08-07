@@ -1221,11 +1221,10 @@ fn run_git_worker(
 
     // 3. git commit
     let commit_msg = message
-        .as_deref()
         .filter(|s| !s.is_empty())
-        .unwrap_or("Update");
+        .unwrap_or_else(|| gettext("Update"));
     step!(start "git-commit");
-    if !git_run(target, &["commit", "-m", commit_msg], &tx) {
+    if !git_run(target, &["commit", "-m", &commit_msg], &tx) {
         step!(err "git-commit", gettext("git commit failed (nothing to commit?)"));
         let _ = tx.send_blocking(Msg::Done(false));
         return;
@@ -1248,7 +1247,7 @@ fn run_git_worker(
         } else {
             format!("v{ver}")
         };
-        let tag_msg = format!("Version {ver}");
+        let tag_msg = format!("{} {ver}", gettext("Version"));
 
         step!(start "git-tag");
         if !git_run(target, &["tag", "-a", &tag_name, "-m", &tag_msg], &tx) {

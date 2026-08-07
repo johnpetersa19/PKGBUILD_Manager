@@ -213,7 +213,12 @@ pub fn regenerate_srcinfo(dir: &Path) -> Result<String> {
         .arg("--printsrcinfo")
         .current_dir(dir)
         .output()
-        .with_context(|| "PKGBUILD Manager: failed to run makepkg --printsrcinfo")?;
+        .with_context(|| {
+            format!(
+                "PKGBUILD Manager: {}",
+                gettext("failed to run makepkg --printsrcinfo")
+            )
+        })?;
 
     if !output.status.success() {
         let err_msg = String::from_utf8_lossy(&output.stderr);
@@ -224,8 +229,12 @@ pub fn regenerate_srcinfo(dir: &Path) -> Result<String> {
         ));
     }
 
-    fs::write(dir.join(".SRCINFO"), &output.stdout)
-        .with_context(|| "PKGBUILD Manager: failed to write .SRCINFO")?;
+    fs::write(dir.join(".SRCINFO"), &output.stdout).with_context(|| {
+        format!(
+            "PKGBUILD Manager: {}",
+            gettext("failed to write .SRCINFO")
+        )
+    })?;
 
     Ok(String::from_utf8_lossy(&output.stdout).into_owned())
 }
@@ -259,11 +268,21 @@ pub(super) fn write_error_log(
     let log_path = log_dir.join(&filename);
 
     let mut file = fs::File::create(&log_path)?;
-    writeln!(file, "=== {} error log ===", tool.to_uppercase())?;
-    writeln!(file, "PKGBUILD directory : {}", pkgbuild_dir.display())?;
-    writeln!(file, "Timestamp (UTC)    : {}-{}", date, time)?;
+    writeln!(
+        file,
+        "=== {}: {} ===",
+        gettext("error log"),
+        tool.to_uppercase()
+    )?;
+    writeln!(
+        file,
+        "{}: {}",
+        gettext("PKGBUILD directory"),
+        pkgbuild_dir.display()
+    )?;
+    writeln!(file, "{}: {}-{}", gettext("Timestamp (UTC)"), date, time)?;
     writeln!(file)?;
-    writeln!(file, "--- output ---")?;
+    writeln!(file, "--- {} ---", gettext("output"))?;
     write!(file, "{}", content)?;
 
     Ok(log_path)

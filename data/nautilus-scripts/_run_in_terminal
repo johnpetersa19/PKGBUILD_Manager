@@ -7,7 +7,7 @@
 
 run_in_terminal() {
     local cmd="$1"
-    local wait_key='echo; read -n1 -rsp "Press any key to exit..." && echo'
+    local wait_key="echo; read -n1 -rsp '$MSG_PRESS_ANY_KEY' && echo"
 
     # setsid cria uma nova sessão de processo, isolando completamente do
     # Nautilus. Sem isso, gnome-terminal/kgx perdem a sessão D-Bus antes
@@ -55,7 +55,7 @@ run_in_terminal() {
         _launch xterm -e "bash -c '$cmd; $wait_key; exec bash'"
     else
         notify-send -u critical "PKGBUILD Manager" \
-            "No compatible terminal emulator found."
+            "$MSG_NO_TERMINAL"
         return 1
     fi
 }

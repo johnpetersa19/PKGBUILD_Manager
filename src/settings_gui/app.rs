@@ -550,4 +550,37 @@ fn notify_file_managers() {
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .spawn();
+
+    // Caja
+    let _ = crate::host::command("caja")
+        .arg("-q")
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status();
+    thread::sleep(Duration::from_millis(400));
+    let _ = crate::host::command("caja")
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn();
+
+    // Dolphin reads its service menu through KDE's service cache. Regenerate
+    // the user-specific menu and refresh the cache without ending the session.
+    let _ = crate::host::command("/usr/share/pkgbuild-manager/regen-dolphin-desktop")
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status();
+    let cache_tool = if std::path::Path::new("/usr/bin/kbuildsycoca6").exists() {
+        Some("kbuildsycoca6")
+    } else if std::path::Path::new("/usr/bin/kbuildsycoca5").exists() {
+        Some("kbuildsycoca5")
+    } else {
+        None
+    };
+    if let Some(tool) = cache_tool {
+        let _ = crate::host::command(tool)
+            .arg("--noincremental")
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status();
+    }
 }

@@ -347,7 +347,7 @@ impl ProgressPanel {
         self.back_btn.set_sensitive(true);
         if ok {
             self.bar.set_fraction(1.0);
-            self.run_btn.set_label("Run again");
+            self.run_btn.set_label(&gettext("Run again"));
             self.status_page
                 .set_icon_name(Some("object-select-symbolic"));
             self.status_page.set_title(success_title);
@@ -355,7 +355,7 @@ impl ProgressPanel {
             self.status_page.set_visible(true);
         } else {
             self.bar.set_fraction(0.0);
-            self.run_btn.set_label("Try again");
+            self.run_btn.set_label(&gettext("Try again"));
             self.status_page
                 .set_icon_name(Some("dialog-error-symbolic"));
             self.status_page.set_title(&gettext("Process failed"));
@@ -390,10 +390,10 @@ impl ReleaseWindow {
         let platform = Platform::detect(&target);
         let remote_url = detect_remote(&target);
         let win_title = match platform {
-            Platform::GitHub => "Push · Tags · Releases — GitHub",
-            Platform::GitLab => "Push · Tags · Releases — GitLab",
-            Platform::Codeberg => "Push · Tags · Releases — Codeberg",
-            Platform::Generic => "Push · Tags — Git Remote",
+            Platform::GitHub => gettext("Push · Tags · Releases — GitHub"),
+            Platform::GitLab => gettext("Push · Tags · Releases — GitLab"),
+            Platform::Codeberg => gettext("Push · Tags · Releases — Codeberg"),
+            Platform::Generic => gettext("Push · Tags — Git Remote"),
         };
 
         let (saved_w, saved_h) = load_win_size("release-window", 680, 740);
@@ -407,9 +407,9 @@ impl ReleaseWindow {
         let nav_box: GBox = crate::gui_blueprint::object(&builder, "release_nav");
         let content_stack: Stack = crate::gui_blueprint::object(&builder, "release_stack");
         win.set_application(Some(app));
-        win.set_title(Some(win_title));
+        win.set_title(Some(&win_title));
         win.set_default_size(saved_w, saved_h);
-        title_lbl.set_label(win_title);
+        title_lbl.set_label(&win_title);
         path_lbl.set_label(&target);
         badge.set_label(platform.label());
         badge.add_css_class(platform.badge_class());
@@ -448,13 +448,13 @@ impl ReleaseWindow {
 
         let push_nav = make_nav_btn(
             "mail-send-symbolic",
-            "Push",
+            &gettext("Push"),
             "push",
             content_stack.clone(),
         );
         let tags_nav = make_nav_btn(
             "bookmark-new-symbolic",
-            "Tags",
+            &gettext("Tags"),
             "tags",
             content_stack.clone(),
         );
@@ -465,7 +465,7 @@ impl ReleaseWindow {
         let _release_nav_opt = if platform.supports_releases() {
             let rb = make_nav_btn(
                 "software-update-available-symbolic",
-                "Release",
+                &gettext("Release"),
                 "release",
                 content_stack.clone(),
             );
@@ -502,16 +502,18 @@ impl ReleaseWindow {
         push_form_scroll.set_child(Some(&push_form));
 
         let push_cap = Label::builder()
-            .label("Step 1 of 2 — Review commit information")
+            .label(&gettext("Step 1 of 2 — Review commit information"))
             .halign(Align::Start)
             .css_classes(vec!["stage-caption".to_string()])
             .build();
         push_form.append(&push_cap);
 
-        let push_group = adw::PreferencesGroup::builder().title("Commit").build();
+        let push_group = adw::PreferencesGroup::builder()
+            .title(&gettext("Commit"))
+            .build();
 
         let push_msg = adw::EntryRow::builder()
-            .title("Commit message")
+            .title(&gettext("Commit message"))
             .show_apply_button(false)
             .build();
         push_group.add(&push_msg);
@@ -519,7 +521,7 @@ impl ReleaseWindow {
         // Branch picker
         let push_branch: Rc<adw::EntryRow> = Rc::new(
             adw::EntryRow::builder()
-                .title("Branch")
+                .title(&gettext("Branch"))
                 .show_apply_button(false)
                 .build(),
         );
@@ -552,7 +554,7 @@ impl ReleaseWindow {
             }
             let pop: Popover = crate::gui_blueprint::object(&branch_builder, "branch_popover");
             let pick: Button = crate::gui_blueprint::object(&branch_builder, "branch_button");
-            pick.set_tooltip_text(Some("Choose branch"));
+            pick.set_tooltip_text(Some(&gettext("Choose branch")));
             pick.connect_clicked(clone!(
                 #[strong]
                 pop,
@@ -567,7 +569,7 @@ impl ReleaseWindow {
         // Remote info row
         if !remote_url.is_empty() {
             let rem_row = adw::ActionRow::builder()
-                .title("Remote")
+                .title(&gettext("Remote"))
                 .subtitle(&remote_url)
                 .activatable(false)
                 .build();
@@ -590,7 +592,7 @@ impl ReleaseWindow {
             .spacing(8)
             .build();
         let push_continue_btn = Button::builder()
-            .label("Continue to Push")
+            .label(&gettext("Continue to Push"))
             .css_classes(vec!["suggested-action".to_string(), "pill".to_string()])
             .build();
         push_form_btns.append(&push_continue_btn);
@@ -603,10 +605,14 @@ impl ReleaseWindow {
             .vscrollbar_policy(PolicyType::Automatic)
             .vexpand(true)
             .build();
-        let push_panel = ProgressPanel::new(&format!("Commit & Push → {}", platform.label()));
+        let push_panel = ProgressPanel::new(&format!(
+            "{} → {}",
+            gettext("Commit & Push"),
+            platform.label()
+        ));
         push_panel
             .caption
-            .set_label("Step 2 of 2 — Sending changes to remote");
+            .set_label(&gettext("Step 2 of 2 — Sending changes to remote"));
         let push_steps = vec![
             ("git-status", StepRow::new("git status")),
             ("git-add", StepRow::new("git add .")),
@@ -756,7 +762,7 @@ impl ReleaseWindow {
                             &push_sp2,
                             &push_run_btn3,
                             &push_back_btn3,
-                            "Pushed successfully!",
+                            &gettext("Pushed successfully!"),
                         );
                     }
                 }
@@ -790,33 +796,39 @@ impl ReleaseWindow {
         tags_form_scroll.set_child(Some(&tags_form));
 
         let tags_cap = Label::builder()
-            .label("Step 1 of 2 — Create and push an annotated tag")
+            .label(&gettext("Step 1 of 2 — Create and push an annotated tag"))
             .halign(Align::Start)
             .css_classes(vec!["stage-caption".to_string()])
             .build();
         tags_form.append(&tags_cap);
 
         // New tag fields
-        let new_tag_group = adw::PreferencesGroup::builder().title("New Tag").build();
+        let new_tag_group = adw::PreferencesGroup::builder()
+            .title(&gettext("New Tag"))
+            .build();
 
         let tag_name_row = adw::EntryRow::builder()
-            .title("Tag name  (e.g. v1.0.0)")
+            .title(&gettext("Tag name  (e.g. v1.0.0)"))
             .show_apply_button(false)
             .build();
         new_tag_group.add(&tag_name_row);
 
         let tag_msg_row = adw::EntryRow::builder()
-            .title("Tag message  (e.g. Version 1.0.0)")
+            .title(&gettext("Tag message  (e.g. Version 1.0.0)"))
             .show_apply_button(false)
             .build();
         new_tag_group.add(&tag_msg_row);
 
         // Push style switcher via ComboRow
-        let push_style_row = adw::ComboRow::builder().title("Push style").build();
-        let push_style_model = gtk::StringList::new(&[
-            "Push this tag only  (git push origin <tag>)",
-            "Push all tags       (git push --tags)",
-        ]);
+        let push_style_row = adw::ComboRow::builder()
+            .title(&gettext("Push style"))
+            .build();
+        let push_style_options = [
+            gettext("Push this tag only  (git push origin <tag>)"),
+            gettext("Push all tags       (git push --tags)"),
+        ];
+        let push_style_refs: Vec<&str> = push_style_options.iter().map(String::as_str).collect();
+        let push_style_model = gtk::StringList::new(&push_style_refs);
         push_style_row.set_model(Some(&push_style_model));
         push_style_row.set_selected(0);
         new_tag_group.add(&push_style_row);
@@ -826,7 +838,7 @@ impl ReleaseWindow {
         let existing_tags = list_tags(&target);
         if !existing_tags.is_empty() {
             let exist_group = adw::PreferencesGroup::builder()
-                .title("Existing Tags — click to prefill")
+                .title(&gettext("Existing Tags — click to prefill"))
                 .build();
             for t in &existing_tags {
                 let trow = adw::ActionRow::builder()
@@ -851,7 +863,7 @@ impl ReleaseWindow {
             .spacing(8)
             .build();
         let tags_continue_btn = Button::builder()
-            .label("Continue to Tag Push")
+            .label(&gettext("Continue to Tag Push"))
             .css_classes(vec!["suggested-action".to_string(), "pill".to_string()])
             .build();
         tags_form_btns.append(&tags_continue_btn);
@@ -864,10 +876,10 @@ impl ReleaseWindow {
             .vscrollbar_policy(PolicyType::Automatic)
             .vexpand(true)
             .build();
-        let tags_panel = ProgressPanel::new("Create & Push Tag");
+        let tags_panel = ProgressPanel::new(&gettext("Create & Push Tag"));
         tags_panel
             .caption
-            .set_label("Step 2 of 2 — Creating and pushing tag");
+            .set_label(&gettext("Step 2 of 2 — Creating and pushing tag"));
         let tag_steps = vec![
             ("git-tag", StepRow::new("git tag -a")),
             ("git-push-tag", StepRow::new("git push origin <tag>")),
@@ -1008,7 +1020,7 @@ impl ReleaseWindow {
                             &tags_sp2,
                             &tags_run_btn3,
                             &tags_back_btn3,
-                            "Tag created and pushed!",
+                            &gettext("Tag created and pushed!"),
                         );
                     }
                 }
@@ -1043,17 +1055,19 @@ impl ReleaseWindow {
             rel_form_scroll.set_child(Some(&rel_form));
 
             let rel_cap = Label::builder()
-                .label("Step 1 of 2 — Fill release information")
+                .label(&gettext("Step 1 of 2 — Fill release information"))
                 .halign(Align::Start)
                 .css_classes(vec!["stage-caption".to_string()])
                 .build();
             rel_form.append(&rel_cap);
 
-            let rel_group = adw::PreferencesGroup::builder().title("Release").build();
+            let rel_group = adw::PreferencesGroup::builder()
+                .title(&gettext("Release"))
+                .build();
 
             let rel_tag_row = adw::ComboRow::builder()
-                .title("Tag")
-                .subtitle("Select an existing tag or type below")
+                .title(&gettext("Tag"))
+                .subtitle(&gettext("Select an existing tag or type below"))
                 .build();
             let all_tags = list_tags(&target);
             let tag_strings: Vec<&str> = all_tags.iter().map(String::as_str).collect();
@@ -1065,14 +1079,14 @@ impl ReleaseWindow {
             rel_group.add(&rel_tag_row);
 
             let rel_tag_entry = adw::EntryRow::builder()
-                .title("Or type a new tag  (e.g. v1.0.0)")
+                .title(&gettext("Or type a new tag  (e.g. v1.0.0)"))
                 .show_apply_button(false)
                 .build();
             rel_group.add(&rel_tag_entry);
 
             let rel_branch_entry: Rc<adw::EntryRow> = Rc::new(
                 adw::EntryRow::builder()
-                    .title("Target branch")
+                    .title(&gettext("Target branch"))
                     .show_apply_button(false)
                     .build(),
             );
@@ -1105,7 +1119,7 @@ impl ReleaseWindow {
                 }
                 let pop: Popover = crate::gui_blueprint::object(&branch_builder, "branch_popover");
                 let pick: Button = crate::gui_blueprint::object(&branch_builder, "branch_button");
-                pick.set_tooltip_text(Some("Choose branch"));
+                pick.set_tooltip_text(Some(&gettext("Choose branch")));
                 pick.connect_clicked(clone!(
                     #[strong]
                     pop,
@@ -1118,14 +1132,14 @@ impl ReleaseWindow {
             }
 
             let rel_title_row = adw::EntryRow::builder()
-                .title("Release title  (e.g. PKGBUILD Manager 1.0.0)")
+                .title(&gettext("Release title  (e.g. PKGBUILD Manager 1.0.0)"))
                 .show_apply_button(false)
                 .build();
             rel_group.add(&rel_title_row);
             rel_form.append(&rel_group);
 
             let notes_group = adw::PreferencesGroup::builder()
-                .title("Release Notes (Markdown)")
+                .title(&gettext("Release Notes (Markdown)"))
                 .build();
             let notes_frame = gtk::Frame::builder()
                 .css_classes(vec!["notes-frame".to_string()])
@@ -1163,13 +1177,13 @@ impl ReleaseWindow {
             rel_form.append(&notes_group);
 
             let attach_group = adw::PreferencesGroup::builder()
-                .title("Attachments (optional)")
+                .title(&gettext("Attachments (optional)"))
                 .build();
             let attachments: Rc<RefCell<Vec<String>>> = Rc::new(RefCell::new(Vec::new()));
 
             let add_file_btn = Button::builder()
                 .icon_name("list-add-symbolic")
-                .tooltip_text("Add attachment")
+                .tooltip_text(&gettext("Add attachment"))
                 .valign(Align::Center)
                 .css_classes(vec!["flat".to_string()])
                 .build();
@@ -1257,7 +1271,7 @@ impl ReleaseWindow {
                 .spacing(8)
                 .build();
             let rel_continue_btn = Button::builder()
-                .label("Continue to Publish")
+                .label(&gettext("Continue to Publish"))
                 .css_classes(vec!["suggested-action".to_string(), "pill".to_string()])
                 .build();
             rel_form_btns.append(&rel_continue_btn);
@@ -1271,28 +1285,28 @@ impl ReleaseWindow {
                 .vexpand(true)
                 .build();
             let rel_caption = match platform {
-                Platform::GitHub => "Step 2 of 2 — Publishing release via GitHub CLI",
-                Platform::GitLab => "Step 2 of 2 — Publishing release via GitLab CLI",
-                Platform::Codeberg => "Step 2 of 2 — Publishing release via Codeberg API",
-                Platform::Generic => "",
+                Platform::GitHub => gettext("Step 2 of 2 — Publishing release via GitHub CLI"),
+                Platform::GitLab => gettext("Step 2 of 2 — Publishing release via GitLab CLI"),
+                Platform::Codeberg => gettext("Step 2 of 2 — Publishing release via Codeberg API"),
+                Platform::Generic => String::new(),
             };
             let rel_run_label = match platform {
-                Platform::GitHub => "Publish Release → GitHub",
-                Platform::GitLab => "Publish Release → GitLab",
-                Platform::Codeberg => "Publish Release → Codeberg",
-                Platform::Generic => "Publish Release",
+                Platform::GitHub => gettext("Publish Release → GitHub"),
+                Platform::GitLab => gettext("Publish Release → GitLab"),
+                Platform::Codeberg => gettext("Publish Release → Codeberg"),
+                Platform::Generic => gettext("Publish Release"),
             };
-            let rel_panel = ProgressPanel::new(rel_run_label);
-            rel_panel.caption.set_label(rel_caption);
+            let rel_panel = ProgressPanel::new(&rel_run_label);
+            rel_panel.caption.set_label(&rel_caption);
 
             let rel_steps: Vec<(&'static str, StepRow)> = match platform {
                 Platform::GitHub => vec![
                     ("create-release", StepRow::new("gh release create")),
-                    ("upload-assets", StepRow::new("Upload assets")),
+                    ("upload-assets", StepRow::new(&gettext("Upload assets"))),
                 ],
                 Platform::GitLab => vec![
                     ("create-release", StepRow::new("glab release create")),
-                    ("upload-assets", StepRow::new("Upload assets")),
+                    ("upload-assets", StepRow::new(&gettext("Upload assets"))),
                 ],
                 Platform::Codeberg => vec![
                     ("create-release", StepRow::new("curl: POST /releases")),
@@ -1457,7 +1471,7 @@ impl ReleaseWindow {
                             &rel_sp2,
                             &rel_run_btn3,
                             &rel_back_btn3,
-                            "Release published!",
+                            &gettext("Release published!"),
                         );
                     }
                 }
@@ -1525,14 +1539,14 @@ fn handle_msg(
             back_btn.set_sensitive(true);
             if ok {
                 bar.set_fraction(1.0);
-                run_btn.set_label("Run again");
+                run_btn.set_label(&gettext("Run again"));
                 sp.set_icon_name(Some("object-select-symbolic"));
                 sp.set_title(success_msg);
                 sp.remove_css_class("error");
                 sp.set_visible(true);
             } else {
                 bar.set_fraction(0.0);
-                run_btn.set_label("Try again");
+                run_btn.set_label(&gettext("Try again"));
                 sp.set_icon_name(Some("dialog-error-symbolic"));
                 sp.set_title(&gettext("Process failed"));
                 sp.add_css_class("error");
@@ -1658,9 +1672,8 @@ fn run_push_worker(
 ) {
     let br = branch.unwrap_or_else(|| detect_branch(target));
     let cm = message
-        .as_deref()
         .filter(|s| !s.is_empty())
-        .unwrap_or("Update");
+        .unwrap_or_else(|| gettext("Update"));
 
     step!(start tx, "git-status");
     git_run(target, &["status", "--short"], &tx);
@@ -1668,15 +1681,15 @@ fn run_push_worker(
 
     step!(start tx, "git-add");
     if !git_run(target, &["add", "."], &tx) {
-        step!(err tx, "git-add", "git add failed");
+        step!(err tx, "git-add", gettext("git add failed"));
         let _ = tx.send_blocking(Msg::Done(false));
         return;
     }
     step!(ok tx, "git-add");
 
     step!(start tx, "git-commit");
-    if !git_run(target, &["commit", "-m", cm], &tx) {
-        step!(err tx, "git-commit", "nothing to commit?");
+    if !git_run(target, &["commit", "-m", &cm], &tx) {
+        step!(err tx, "git-commit", gettext("nothing to commit?"));
         let _ = tx.send_blocking(Msg::Done(false));
         return;
     }
@@ -1684,7 +1697,7 @@ fn run_push_worker(
 
     step!(start tx, "git-push");
     if !git_run(target, &["push", "origin", &br], &tx) {
-        step!(err tx, "git-push", format!("git push origin {br} failed").as_str());
+        step!(err tx, "git-push", format!("git push origin {br}: {}", gettext("failed")));
         let _ = tx.send_blocking(Msg::Done(false));
         return;
     }
@@ -1705,14 +1718,14 @@ fn run_tag_worker(
         format!("v{name}")
     };
     let tag_msg = if msg.is_empty() {
-        format!("Version {}", name.trim_start_matches('v'))
+        format!("{} {}", gettext("Version"), name.trim_start_matches('v'))
     } else {
         msg
     };
 
     step!(start tx, "git-tag");
     if !git_run(target, &["tag", "-a", &tag_name, "-m", &tag_msg], &tx) {
-        step!(err tx, "git-tag", "git tag failed");
+        step!(err tx, "git-tag", gettext("git tag failed"));
         let _ = tx.send_blocking(Msg::Done(false));
         return;
     }
@@ -1725,7 +1738,7 @@ fn run_tag_worker(
         git_run(target, &["push", "origin", &tag_name], &tx)
     };
     if !push_ok {
-        step!(err tx, "git-push-tag", "git push tag failed");
+        step!(err tx, "git-push-tag", gettext("git push tag failed"));
         let _ = tx.send_blocking(Msg::Done(false));
         return;
     }
@@ -1744,7 +1757,7 @@ fn run_release_worker(
     tx: async_channel::Sender<Msg>,
 ) {
     if tag.is_empty() {
-        let _ = tx.send_blocking(Msg::Log("Tag is required to publish a release.".into()));
+        let _ = tx.send_blocking(Msg::Log(gettext("Tag is required to publish a release.")));
         let _ = tx.send_blocking(Msg::Done(false));
         return;
     }
@@ -1803,9 +1816,9 @@ fn run_release_worker(
             let remote = detect_remote(target);
             let (owner, repo) = parse_owner_repo(&remote);
             if owner.is_empty() || repo.is_empty() {
-                let _ = tx.send_blocking(Msg::Log(
-                    "Could not parse owner/repo from remote URL.".into(),
-                ));
+                let _ = tx.send_blocking(Msg::Log(gettext(
+                    "Could not parse owner/repo from remote URL.",
+                )));
                 let _ = tx.send_blocking(Msg::Done(false));
                 return;
             }
@@ -1844,7 +1857,7 @@ fn run_release_worker(
     };
 
     if !ok {
-        step!(err tx, "create-release", "Release creation failed");
+        step!(err tx, "create-release", gettext("Release creation failed"));
         let _ = tx.send_blocking(Msg::Done(false));
         return;
     }
@@ -1852,11 +1865,9 @@ fn run_release_worker(
 
     if !attachments.is_empty() && matches!(platform, Platform::Codeberg) {
         step!(start tx, "upload-assets");
-        let _ = tx.send_blocking(Msg::Log(
-            "Note: asset upload for Codeberg requires CODEBERG_TOKEN env var and release ID.\n\
-             Assets must be uploaded manually via the web UI or a dedicated upload step."
-                .into(),
-        ));
+        let _ = tx.send_blocking(Msg::Log(gettext(
+            "Note: asset upload for Codeberg requires the CODEBERG_TOKEN environment variable and a release ID. Assets must be uploaded manually through the web interface or a dedicated upload step.",
+        )));
         step!(ok tx, "upload-assets");
     } else if !attachments.is_empty() {
         step!(start tx, "upload-assets");
@@ -1876,9 +1887,12 @@ fn run_cli(cmd: &str, args: &[&str], cwd: &str, tx: &async_channel::Sender<Msg>)
     {
         Ok(c) => c,
         Err(e) => {
-            let _ = tx.send_blocking(Msg::Log(format!(
-                "{cmd} not found or failed to start: {e}\nMake sure '{cmd}' is installed."
-            )));
+            let message = gettext(
+                "{command} was not found or failed to start: {error}\nMake sure '{command}' is installed.",
+            )
+            .replace("{command}", cmd)
+            .replace("{error}", &e.to_string());
+            let _ = tx.send_blocking(Msg::Log(message));
             return false;
         }
     };

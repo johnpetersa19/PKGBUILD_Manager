@@ -410,9 +410,9 @@ mod tests {
 }
 
 fn print_usage() {
-    println!("PKGBUILD Manager - CLI Tool\n");
-    println!("Usages:\n");
-    println!("Compilation Commands:");
+    println!("{}\n", gettext("PKGBUILD Manager - CLI Tool"));
+    println!("{}\n", gettext("Usage:"));
+    println!("{}", gettext("Compilation commands:"));
     println!("  build              {}", gettext("Compiled package (makepkg)"));
     println!("  build-clean        {}", gettext("Compile and clean srcdir (makepkg -c)"));
     println!("  build-force        {}", gettext("Force recompilation (makepkg -f)"));
@@ -420,7 +420,7 @@ fn print_usage() {
     println!("  build-nogpg        {}", gettext("Popular PGP signature check (makepkg --skippgpcheck)"));
     println!("  build-custom       {}", gettext("Same as 'build' — all extra flags after the path are forwarded to makepkg"));
     println!();
-    println!("Installation Commands:");
+    println!("{}", gettext("Installation commands:"));
     println!("  install            {}", gettext("Compile, install and resolve dependencies (makepkg -si)"));
     println!("  install-clean      {}", gettext("Compile, install and clean srcdir (makepkg -sic)"));
     println!("  install-force      {}", gettext("Force compilation and installation (makepkg -sif)"));
@@ -429,32 +429,32 @@ fn print_usage() {
     println!("  install-nogpg      {}", gettext("Install skipping PGP checks"));
     println!("  install-custom     {}", gettext("Same as 'install' — all extra flags after the path are forwarded to makepkg"));
     println!();
-    println!("Package metadata commands:");
+    println!("{}", gettext("Package metadata commands:"));
     println!("  fetch-sources      {}", gettext("Download and extract sources only (makepkg -o)"));
     println!("  checksums          {}", gettext("Update checksums without PKGBUILD (updpkgsums)"));
     println!("  genchecksums       {}", gettext("Generate checksums and print to standard output (makepkg -g)"));
     println!("  srcinfo            {}", gettext("Regenerate .SRCINFO (makepkg --printsrcinfo)"));
     println!();
-    println!("Auditing commands:");
+    println!("{}", gettext("Auditing commands:"));
     println!("  namcap             {}", gettext("Run namcap on PKGBUILD and compiled packages"));
     println!("  shellcheck         {}", gettext("Run ShellCheck on PKGBUILD"));
     println!();
-    println!("Validate commands (no compilation):");
+    println!("{}", gettext("Validation commands (no compilation):"));
     println!("  validate           {}", gettext("Full offline check: syntax + namcap + shellcheck (no network)"));
     println!("  validate-syntax    {}", gettext("Validate syntax only (makepkg --printsrcinfo)"));
     println!("  validate-parse     {}", gettext("Parse variables/functions without extracting (makepkg --nobuild --noextract); may access network on VCS packages"));
     println!("  validate-sources   {}", gettext("Download sources and verify checksums (makepkg --verifysource)"));
     println!("  validate-deps      {}", gettext("Check declared dependencies exist in repos (makepkg --syncdeps --nobuild)"));
     println!();
-    println!("Cleanup commands:");
+    println!("{}", gettext("Cleanup commands:"));
     println!("  clean              {}", gettext("Clean srcdir with makepkg (makepkg -c)"));
     println!("  clean-all          {}", gettext("Remove src/, packages/ and compiled packages"));
     println!();
-    println!("AUR/Git commands:");
+    println!("{}", gettext("AUR/Git commands:"));
     println!("  aur-push [msg]     {}", gettext("Stage, commit and push to the AUR (automatic message if not provided)"));
     println!("  aur-push-tag <tag> {}", gettext("Push with version tag (e.g., 1.2.3-1)"));
     println!();
-    println!("Other:");
+    println!("{}", gettext("Other:"));
     println!("  setup-nautilus     {}", gettext("Remove obsolete symbolic links and check the Nautilus extension"));
     println!("  --version          {}", gettext("Display program version"));
     println!("  help, -h, --help   {}", gettext("Display this help message"));

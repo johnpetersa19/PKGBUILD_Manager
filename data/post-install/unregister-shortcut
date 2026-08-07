@@ -18,27 +18,22 @@ detect_de() {
 
 unregister_gnome() {
     local schema="org.gnome.settings-daemon.plugins.media-keys"
-    local base_path="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
     local full_schema="${schema}.custom-keybinding"
 
     local existing
     existing=$(gsettings get "$schema" custom-keybindings 2>/dev/null || echo "@as []")
 
-    # Encontra tanto o comando atual quanto o usado por versões antigas.
-    local slot_path
-    local index=0
-    slot_path=""
-    while true; do
-        local p="${base_path}/custom${index}/"
-        local cmd
-        cmd=$(gsettings get "${full_schema}:${p}" command 2>/dev/null || echo "")
-        if [ -z "$cmd" ]; then break; fi
+    # Inspect the registered paths rather than assuming their numeric slots
+    # are contiguous. Other applications may leave gaps in this list.
+    local slot_path=""
+    local p cmd
+    while IFS= read -r p; do
+        cmd=$(gsettings get "${full_schema}:${p}" command 2>/dev/null || true)
         if echo "$cmd" | grep -Eq "pkgbuild-manager-(gui settings|settings)"; then
             slot_path="$p"
             break
         fi
-        (( index++ ))
-    done
+    done < <(printf '%s\n' "$existing" | grep -o "'[^']*'" | tr -d "'")
 
     if [ -z "$slot_path" ]; then
         echo "[pkgbuild-manager] Atalho GNOME não encontrado — nenhuma alteração."
@@ -66,7 +61,7 @@ unregister_kde() {
     "$kwrite" --file kglobalshortcutsrc \
         --group "pkgbuild-manager-settings.desktop" \
         --key "_launch" \
-        "none,none,PKGBUILD Manager Settings"
+        --delete ""
     echo "[pkgbuild-manager] Atalho KDE removido."
 }
 
@@ -81,16 +76,28 @@ unregister_xfce() {
 unregister_cinnamon() {
     local schema="org.cinnamon.desktop.keybindings"
     local slot="pkgbuild-manager-settings"
+    local slot_schema="org.cinnamon.desktop.keybindings.custom-keybinding"
+    local slot_path="/org/cinnamon/desktop/keybindings/custom-keybindings/${slot}/"
 
     local existing
     existing=$(gsettings get "$schema" custom-list 2>/dev/null || echo "@as []")
     local new_list
     new_list=$(echo "$existing" | sed "s|'${slot}'||g" | sed "s|, ,|,|g" | sed "s|\[, |[|g" | sed "s|, \]|]|g")
     gsettings set "$schema" custom-list "$new_list" 2>/dev/null || true
+    gsettings reset "${slot_schema}:${slot_path}" name 2>/dev/null || true
+    gsettings reset "${slot_schema}:${slot_path}" command 2>/dev/null || true
+    gsettings reset "${slot_schema}:${slot_path}" binding 2>/dev/null || true
     echo "[pkgbuild-manager] Atalho Cinnamon removido."
 }
 
 main() {
+    if [ "${1:-}" = "--all" ]; then
+        unregister_gnome
+        unregister_kde
+        unregister_xfce
+        unregister_cinnamon
+        return
+    fi
     local de
     de=$(detect_de)
     case "$de" in

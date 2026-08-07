@@ -21,8 +21,10 @@ fn remove_dir_force(path: &Path) -> anyhow::Result<()> {
         .status();
     std::fs::remove_dir_all(path).map_err(|e| {
         anyhow::anyhow!(
-            "remove_dir_force: could not remove {:?}: {}",
-            path, e
+            "remove_dir_force: {} {:?}: {}",
+            gettextrs::gettext("could not remove"),
+            path,
+            e
         )
     })
 }
