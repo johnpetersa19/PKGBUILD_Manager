@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pkgbuild_manager 2.5.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-07 16:35-0300\n"
+"POT-Creation-Date: 2026-08-07 17:01-0300\n"
 "PO-Revision-Date: 2026-06-04 01:15-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1659,4 +1659,117 @@ msgstr ""
 
 #: /home/john/PKGBUILD_Manager/po/../data/nautilus-scripts/_i18n:205
 msgid "No compatible terminal emulator found."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:53
+#, sh-printf-format
+msgid "Removed duplicate Nautilus extension: %s"
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:60
+#, sh-printf-format
+msgid "Removed duplicate Nautilus extension for %s: %s"
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:79
+#, sh-printf-format
+msgid "Updated per-user %s translation for %s."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:101
+#, sh-printf-format
+msgid "Nautilus integration reloaded for %s."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:113
+#, sh-printf-format
+msgid "Nemo integration reloaded for %s."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:125
+#, sh-printf-format
+msgid "Caja integration reloaded for %s."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:131
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:135
+#, sh-printf-format
+msgid "Dolphin/KDE service cache refreshed for %s."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:141
+msgid "PKGBUILD Manager installed."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:142
+msgid "Right-click any PKGBUILD file to see the PKGBUILD submenu."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:143
+msgid "Press Ctrl+Alt+P to open the menu settings panel."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:155
+msgid "No active desktop user found; skipping keyboard shortcut."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:183
+msgid "Keyboard shortcut Ctrl+Alt+P registered/updated."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:192
+msgid "Nautilus detected -- install python-nautilus for right-click support:"
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:195
+msgid "Nautilus extension ready; it will be reloaded automatically."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:201
+msgid "Nemo detected -- install nemo-python for right-click support:"
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:204
+msgid "Nemo extension ready."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:210
+msgid "Caja detected -- install python-caja for right-click support:"
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:213
+msgid "Caja extension ready."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:218
+msgid "Dolphin detected -- right-click service menu installed automatically."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:221
+msgid "No supported file manager detected."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:222
+msgid "Supported: Nautilus, Nemo, Caja, Dolphin."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:242
+msgid "Removed stale PKGBUILD dir from Nautilus scripts."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:249
+msgid "Removed stale PKGBUILD dir from Nemo scripts."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:256
+msgid "Removed stale PKGBUILD dir from Caja scripts."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:263
+msgid "Removed stale Dolphin service menu entry."
+msgstr ""
+
+#: /home/john/PKGBUILD_Manager/po/../pkgbuild-manager.install:330
+#, sh-printf-format
+msgid "Removed PKGBUILD Manager user data for %s."
 msgstr ""

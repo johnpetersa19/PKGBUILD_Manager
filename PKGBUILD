@@ -2,7 +2,7 @@
 pkgname=pkgbuild-manager
 _pkgname=PKGBUILD_Manager
 pkgver=2.5.3
-pkgrel=1
+pkgrel=2
 _builddir="build-${pkgver}"
 pkgdesc="Rust CLI + GTK4 settings panel and multi-file-manager context-menu integration for PKGBUILD management"
 arch=('x86_64')
@@ -16,6 +16,7 @@ depends=(
   'gtk4'
   'libadwaita'
   'git'
+  'gettext'
 )
 makedepends=('meson' 'ninja' 'rust' 'cargo' 'gettext' 'blueprint-compiler')
 optdepends=(
