@@ -36,7 +36,7 @@ install=pkgbuild-manager.install
 #   sha256sums=('PUT_REAL_SHA256_HASH_HERE')
 # To generate: makepkg -g
 source=("$_pkgname-$pkgver.tar.gz::https://github.com/johnpetersa19/PKGBUILD_Manager/archive/refs/tags/v${pkgver}.tar.gz")
-sha256sums=('c97ed3414f0838d96694f270d2ab1014ddb6c986e60695deba130480c4f90ac0')
+sha256sums=('74855ed6cf37750cf5cbfc8774074ca23c647bbadbab49ee628e929fc9713d0b')
 
 build() {
   # Never reuse a Meson configuration created for another source tree or an
