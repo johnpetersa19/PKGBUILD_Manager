@@ -341,6 +341,29 @@ def _safe_download_name(name):
     return name
 
 
+def _is_repository_web_url(value):
+    """Return whether a plain web URL can be validated as a Git repository."""
+    parsed = urlparse(value)
+    if parsed.scheme not in ("http", "https") or not parsed.netloc:
+        return False
+
+    parts = [part for part in parsed.path.split("/") if part]
+    if len(parts) < 2:
+        return False
+
+    # Do not maintain a forge/domain allowlist: self-hosted GitLab, Gitea,
+    # Forgejo and plain Git HTTP servers must work too. Obvious file URLs stay
+    # downloads; every other candidate is safely confirmed by `git ls-remote`
+    # in _validate_and_clone before a destination directory is populated.
+    path = unquote(parsed.path).lower()
+    if path.endswith(ARCHIVE_SUFFIXES):
+        return False
+    if any(marker in path for marker in ("/raw/", "/blob/", "/archive/", "/attachments/")):
+        return False
+
+    return _repository_from_url(value) is not None
+
+
 def _file_download_from_text(text):
     """Parse an allowlisted download command without executing a shell."""
     value = (text or "").strip().splitlines()[0] if (text or "").strip() else ""
@@ -450,11 +473,15 @@ def _clipboard_download(text):
 
     file_download = _file_download_from_text(value)
     if file_download is not None:
-        # A raw .git URL is unambiguously a repository. Other raw URLs are
-        # treated as files; web project URLs can still use `git clone URL`.
-        if len(shlex.split(command)) == 1 and urlparse(file_download[0]).path.endswith(".git"):
-            repository = _repository_from_url(value)
-            return ("git", repository) if repository else None
+        # A raw .git URL or a supported repository web page is a clone request.
+        # Commands such as curl/wget remain file downloads even when their URL
+        # happens to point at a repository page.
+        tokens = shlex.split(command)
+        if len(tokens) == 1:
+            url = file_download[0]
+            if urlparse(url).path.endswith(".git") or _is_repository_web_url(url):
+                repository = _repository_from_url(url)
+                return ("git", repository) if repository else None
         return "file", file_download
 
     # A copied command may contain execution operators or unsafe options. In
